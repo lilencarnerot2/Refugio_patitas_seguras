@@ -34,6 +34,9 @@ services:
     volumes:
       - ./frontend:/var/www/html
 
+    environment:
+      BACKEND_URL: ${BACKEND_SERVICE_URL}
+      
     networks:
       - patitas_network
 
