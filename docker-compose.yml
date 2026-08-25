@@ -1,25 +1,4 @@
 services:
-  postgres:
-    image: postgres:17
-    container_name: patitas_postgres_local
-    restart: unless-stopped
-
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-
-    ports:
-      - "${DB_PORT}:5432"
-
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./database/init:/docker-entrypoint-initdb.d
-
-    networks:
-      - patitas_network
-
-
   frontend:
     build:
       context: ./frontend
@@ -35,7 +14,7 @@ services:
       - ./frontend:/var/www/html
 
     environment:
-      BACKEND_URL: ${BACKEND_SERVICE_URL}
+      BACKEND_SERVICE_URL: ${BACKEND_SERVICE_URL}
       
     networks:
       - patitas_network
@@ -53,13 +32,10 @@ services:
 
     environment:
       DB_HOST: ${DB_HOST}
-      DB_PORT: 5432
+      DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
-
-    depends_on:
-      - postgres
 
     networks:
       - patitas_network

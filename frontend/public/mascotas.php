@@ -84,5 +84,15 @@
         </div>
     </footer>
 
+<script>
+    window.APP_CONFIG = {
+        backendUrl: <?php echo json_encode(getenv('BACKEND_SERVICE_URL')); ?>
+    };
+</script>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/mascotas.js"></script>
+
 </body>
 </html>

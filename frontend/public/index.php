@@ -177,23 +177,12 @@
     </div>
 
     <script>
-        function scrollToSection(id) {
-            const element = document.getElementById(id);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-            }
+        window.APP_CONFIG = {
+            backendUrl: <?php echo json_encode(getenv('BACKEND_SERVICE_URL')); ?>  
         }
 
-        function openModal(title, text) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalText').innerText = text;
-            document.getElementById('customModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('customModal').style.display = 'none';
-        }
     </script>
+
 
 </body>
 </html>

@@ -1,0 +1,1 @@
+const API_URL = window.APP_CONFIG.backendUrl;
