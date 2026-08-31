@@ -155,6 +155,14 @@
             gap: 10px;
         }
 
+        .nav-toggle {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
         .menu-toggle {
             display: none;
             background: none;
@@ -164,6 +172,10 @@
             cursor: pointer;
             padding: 6px;
             line-height: 1;
+        }
+
+        .menu-icon-close {
+            display: none;
         }
 
         .btn-donate {
@@ -410,6 +422,10 @@
             z-index: 2000;
         }
 
+        .modal-overlay:target {
+            display: flex;
+        }
+
         .modal-content {
             background: white;
             padding: 30px;
@@ -441,6 +457,8 @@
             border-radius: 20px;
             cursor: pointer;
             font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
         }
 
         /* FOOTER */
@@ -502,8 +520,16 @@
                 box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
             }
 
-            header.nav-open nav {
+            .nav-toggle:checked ~ nav {
                 display: block;
+            }
+
+            .nav-toggle:checked ~ .header-actions .menu-icon-bars {
+                display: none;
+            }
+
+            .nav-toggle:checked ~ .header-actions .menu-icon-close {
+                display: inline;
             }
 
             nav > ul {
@@ -516,6 +542,8 @@
 
             nav > ul > li {
                 width: 100%;
+                height: auto;
+                display: block;
                 text-align: center;
             }
 
@@ -541,10 +569,6 @@
 
             .nav-dropdown:hover .dropdown-menu,
             .nav-dropdown:focus-within .dropdown-menu {
-                display: none;
-            }
-
-            .nav-dropdown.open .dropdown-menu {
                 display: block;
             }
 
