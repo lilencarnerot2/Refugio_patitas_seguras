@@ -1,24 +1,29 @@
 # 04 - Estructura del Proyecto
+
 ## 1. Introducción
 
-El proyecto Patitas Seguras se organiza mediante una estructura modular que separa claramente las responsabilidades de cada componente del sistema.
+El proyecto **Patitas Seguras** se organiza mediante una estructura modular que separa claramente las responsabilidades de cada componente del sistema.
 
 La estructura contempla:
 
-Frontend.
-Backend principal.
-Microservicios.
-Servicios externos.
-Base de datos.
-Documentación.
-Pruebas.
-Configuración general mediante Docker y variables de entorno.
+- Frontend.
+- Backend principal.
+- Microservicios.
+- Servicios externos.
+- Base de datos.
+- Documentación.
+- Pruebas.
+- Configuración general mediante Docker y variables de entorno.
 
 Esta organización permite mantener el proyecto ordenado, facilitar el trabajo en equipo y permitir que cada parte del sistema pueda evolucionar de manera independiente.
 
-Es importante aclarar que esta estructura representa la organización general prevista para el proyecto. Algunas carpetas o archivos pueden incorporarse progresivamente a medida que avancen los distintos Sprints.
+> **Importante:** Es importante aclarar que esta estructura representa la organización general prevista para el proyecto. Algunas carpetas o archivos pueden incorporarse progresivamente a medida que avancen los distintos Sprints.
+
+---
 
 ## 2. Estructura general
+
+```
 patitas-seguras/
 │
 ├── frontend/
@@ -39,35 +44,42 @@ patitas-seguras/
 ├── .env
 ├── .gitignore
 └── README.md
+```
 
 Cada directorio contiene una parte específica de la solución.
+
+---
 
 ## 3. Frontend
 
 La carpeta:
 
+```
 frontend/
+```
 
-contiene toda la interfaz visual de Patitas Seguras.
+contiene toda la interfaz visual de **Patitas Seguras**.
 
 Las principales tecnologías utilizadas son:
 
-HTML.
-CSS.
-Bootstrap.
-JavaScript.
+- HTML.
+- CSS.
+- Bootstrap.
+- JavaScript.
 
 El frontend se encarga de:
 
-Mostrar información al usuario.
-Capturar formularios y acciones.
-Consumir la API del backend.
-Procesar respuestas JSON.
-Renderizar los datos recibidos.
+- Mostrar información al usuario.
+- Capturar formularios y acciones.
+- Consumir la API del backend.
+- Procesar respuestas JSON.
+- Renderizar los datos recibidos.
 
-El frontend no accede directamente a PostgreSQL.
+El frontend **no accede directamente a PostgreSQL**.
 
-Estructura
+### Estructura
+
+```
 frontend/
 │
 ├── public/
@@ -117,6 +129,7 @@ frontend/
 │   └── img/
 │
 └── Dockerfile
+```
 
 ### 3.1 public/
 
@@ -124,13 +137,13 @@ Contiene las páginas accesibles sin necesidad de iniciar sesión.
 
 Desde esta sección un visitante podrá:
 
-Acceder a la landing page.
-Consultar el catálogo de mascotas.
-Visualizar el detalle de una mascota.
-Consultar información sobre adopciones.
-Consultar información sobre hogares de tránsito.
-Participar en actividades de voluntariado.
-Consultar las opciones de donación.
+- Acceder a la landing page.
+- Consultar el catálogo de mascotas.
+- Visualizar el detalle de una mascota.
+- Consultar información sobre adopciones.
+- Consultar información sobre hogares de tránsito.
+- Participar en actividades de voluntariado.
+- Consultar las opciones de donación.
 
 ### 3.2 user/
 
@@ -138,10 +151,10 @@ Contiene las páginas correspondientes a usuarios autenticados.
 
 Entre las funcionalidades previstas se encuentran:
 
-Consultar y modificar datos personales.
-Completar solicitudes de adopción.
-Completar solicitudes de hogar de tránsito.
-Consultar el estado de las solicitudes realizadas.
+- Consultar y modificar datos personales.
+- Completar solicitudes de adopción.
+- Completar solicitudes de hogar de tránsito.
+- Consultar el estado de las solicitudes realizadas.
 
 ### 3.3 admin/
 
@@ -149,13 +162,13 @@ Contiene el panel administrativo utilizado por administradores y superadministra
 
 Desde esta sección se podrán gestionar:
 
-Mascotas.
-Información médica.
-Solicitudes.
-Hogares de tránsito.
-Donaciones y aportes.
-Usuarios.
-Configuraciones y catálogos del sistema.
+- Mascotas.
+- Información médica.
+- Solicitudes.
+- Hogares de tránsito.
+- Donaciones y aportes.
+- Usuarios.
+- Configuraciones y catálogos del sistema.
 
 Las acciones disponibles dependerán del rol del usuario autenticado.
 
@@ -163,62 +176,66 @@ Las acciones disponibles dependerán del rol del usuario autenticado.
 
 Contiene recursos reutilizables del frontend.
 
-css/
+#### css/
 
-Almacena los estilos personalizados de Patitas Seguras.
+Almacena los estilos personalizados de **Patitas Seguras**.
 
-bootstrap/
+#### bootstrap
 
 Contiene los recursos correspondientes a Bootstrap, utilizado para:
 
-Diseño responsive.
-Componentes visuales.
-Interacciones básicas de interfaz.
-js/
+- Diseño responsive.
+- Componentes visuales.
+- Interacciones básicas de interfaz.
+
+#### js/
 
 Contiene los archivos JavaScript encargados principalmente de consumir la API y representar la información recibida.
 
 Por ejemplo:
 
-mascotas.js
-
-se utiliza para obtener y mostrar información relacionada con mascotas.
+- `mascotas.js` se utiliza para obtener y mostrar información relacionada con mascotas.
 
 Mientras que:
 
-api.js
-
-podrá centralizar funciones HTTP reutilizables.
+- `api.js` podrá centralizar funciones HTTP reutilizables.
 
 Por ejemplo:
 
-GET
-POST
-PUT
-DELETE
+- `GET`
+- `POST`
+- `PUT`
+- `DELETE`
 
 De esta forma se evita repetir la misma lógica de comunicación con el backend en distintos archivos.
 
-La lógica principal del negocio se mantiene fuera del frontend.
+> La lógica principal del negocio se mantiene fuera del frontend.
+
+---
 
 ## 4. Backend
 
 La carpeta:
 
+```
 backend/
+```
 
-contiene el backend principal del sistema, desarrollado en PHP.
+contiene el backend principal del sistema, desarrollado en **PHP**.
 
 Su responsabilidad es:
 
-Recibir solicitudes HTTP.
-Validar información.
-Aplicar reglas de negocio.
-Acceder a PostgreSQL.
-Coordinar los microservicios.
-Comunicarse con servicios externos.
-Devolver respuestas JSON al frontend.
-Estructura
+- Recibir solicitudes HTTP.
+- Validar información.
+- Aplicar reglas de negocio.
+- Acceder a PostgreSQL.
+- Coordinar los microservicios.
+- Comunicarse con servicios externos.
+- Devolver respuestas JSON al frontend.
+
+### Estructura
+
+```
 backend/
 │
 ├── public/
@@ -226,8 +243,8 @@ backend/
 │
 ├── src/
 │   ├── config/
-│   │   ├── database.php
-│   │   └── env.php
+│   │   └──  database.php
+│   │   
 │   │
 │   ├── controllers/
 │   │   ├── UsuarioController.php
@@ -238,15 +255,6 @@ backend/
 │   │   ├── TransitoController.php
 │   │   ├── DonacionController.php
 │   │   └── VoluntariadoController.php
-│   │
-│   ├── models/
-│   │   ├── Usuario.php
-│   │   ├── Mascota.php
-│   │   ├── FichaMedica.php
-│   │   ├── Solicitud.php
-│   │   ├── FormularioAdopcion.php
-│   │   ├── FormularioTransito.php
-│   │   └── Movimiento.php
 │   │
 │   ├── repositories/
 │   │   ├── BaseRepository.php
@@ -277,12 +285,17 @@ backend/
 │       └── HttpClient.php
 │
 └── Dockerfile
+```
+
+---
 
 ## 5. backend/public
 
 Contiene el punto de entrada público del backend.
 
+```
 index.php
+```
 
 Funciona como punto único de acceso a la API.
 
@@ -290,6 +303,7 @@ Su función principal es recibir las solicitudes HTTP y dirigirlas hacia las rut
 
 Conceptualmente:
 
+```
 Request HTTP
      │
      ▼
@@ -300,80 +314,65 @@ routes
      │
      ▼
 controller
+```
+
+---
 
 ## 6. backend/src/config
 
 Contiene configuraciones internas.
 
-database.php
+### database.php
 
 Centraliza la conexión reutilizable con PostgreSQL.
 
 La conexión se realiza mediante PHP y PDO utilizando el controlador PostgreSQL correspondiente.
 
-env.php
 
-Se encarga de leer las variables definidas en el archivo .env ubicado en la raíz del proyecto.
-
-Esto permite evitar que credenciales y configuraciones dependientes del entorno queden escritas directamente dentro del código fuente.
+---
 
 ## 7. Controllers
+
+```
 controllers/
+```
 
 Los controladores reciben las solicitudes correspondientes a cada módulo y coordinan el flujo necesario para resolverlas.
 
 Por ejemplo:
 
-MascotaController.php
+- `MascotaController.php` puede recibir una solicitud para consultar una mascota y utilizar posteriormente:
 
-puede recibir una solicitud para consultar una mascota y utilizar posteriormente:
+- `MascotaRepository.php` para obtener los datos desde PostgreSQL.
 
-MascotaRepository.php
+Los controladores **no deberían contener consultas SQL directamente**.
 
-para obtener los datos desde PostgreSQL.
+---
 
-Los controladores no deberían contener consultas SQL directamente.
+## 8. Repositories
 
-## 8. Models
-models/
-
-Representan las principales entidades y estructuras de información utilizadas dentro del sistema.
-
-Por ejemplo:
-
-Usuario.
-Mascota.
-Ficha médica.
-Solicitud.
-Formularios.
-Movimientos.
-
-Permiten organizar los datos utilizados por el backend y mantener una representación coherente de las entidades del dominio.
-
-## 9. Repositories
+```
 repositories/
+```
 
 Esta capa se encarga específicamente del acceso a PostgreSQL.
 
 Contiene las consultas necesarias para:
 
-Obtener información.
-Insertar registros.
-Modificar datos.
-Realizar operaciones relacionadas con cada módulo.
+- Obtener información.
+- Insertar registros.
+- Modificar datos.
+- Realizar operaciones relacionadas con cada módulo.
 
 Ejemplo:
 
-MascotaRepository.php
+- `MascotaRepository.php` contiene las operaciones relacionadas con la persistencia de mascotas.
 
-contiene las operaciones relacionadas con la persistencia de mascotas.
-
-BaseRepository.php
-
-Puede centralizar funciones reutilizables relacionadas con la base de datos para evitar duplicación de código.
+- `BaseRepository.php` puede centralizar funciones reutilizables relacionadas con la base de datos para evitar duplicación de código.
 
 El flujo principal es:
 
+```
 Controller
     │
     ▼
@@ -381,114 +380,124 @@ Repository
     │
     ▼
 PostgreSQL
+```
 
-## 10. Services
+---
+
+## 9. Services
+
+```
 services/
+```
 
 Contiene clases encargadas de comunicarse con servicios externos al backend PHP.
 
-AuthService.php
-
-Consume el servicio externo de autenticación.
-
-CompatibilityService.php
-
-Se comunica con el microservicio Python + Flask encargado de evaluar compatibilidad entre una mascota y un postulante.
-
-NotificationService.php
-
-Se comunica con el microservicio Go + Fiber encargado del envío de notificaciones.
+- `AuthService.php` - Consume el servicio externo de autenticación.
+- `CompatibilityService.php` - Se comunica con el microservicio Python + Flask encargado de evaluar compatibilidad entre una mascota y un postulante.
+- `NotificationService.php` - Se comunica con el microservicio Go + Fiber encargado del envío de notificaciones.
 
 Esto permite que los controladores no tengan que implementar directamente la comunicación HTTP con otros servicios.
 
-## 11. Routes
+---
+
+## 10. Routes
+
+```
 routes/api.php
+```
 
 Centraliza la definición de los endpoints disponibles en la API.
 
 Las rutas permiten relacionar:
 
+```
 Método HTTP + URL
+```
 
 con el controlador correspondiente.
 
 Por ejemplo, conceptualmente:
 
+```
 GET /mascotas
+```
 
 puede dirigir la solicitud hacia:
 
+```
 MascotaController
+```
 
-## 12. Middleware
+---
+
+## 11. Middleware
+
+```
 middleware/
+```
 
 Contiene componentes que se ejecutan antes de permitir determinadas operaciones.
 
-AuthMiddleware.php
-
-Comprueba que el usuario se encuentre correctamente autenticado.
-
-RoleMiddleware.php
-
-Comprueba que el usuario tenga el rol necesario para ejecutar una determinada acción.
+- `AuthMiddleware.php` - Comprueba que el usuario se encuentre correctamente autenticado.
+- `RoleMiddleware.php` - Comprueba que el usuario tenga el rol necesario para ejecutar una determinada acción.
 
 Por ejemplo:
 
-Usuario
-Administrador
-Superadministrador
+- Usuario
+- Administrador
+- Superadministrador
 
 De esta forma los permisos no tienen que verificarse manualmente en cada controlador.
 
-## 13. Utils
+---
+
+## 12. Utils
+
+```
 utils/
+```
 
 Contiene funciones y clases reutilizables por diferentes módulos.
 
-Request.php
+- `Request.php` - Facilita la lectura de JSON, parámetros HTTP y datos enviados mediante formularios.
+- `Response.php` - Permite mantener un formato uniforme en las respuestas JSON.
+- `Validator.php` - Centraliza validaciones generales.
+- `HttpClient.php` - Facilita la comunicación HTTP entre el backend y otros servicios.
 
-Facilita la lectura de:
+---
 
-JSON.
-Parámetros HTTP.
-Datos enviados mediante formularios.
-Response.php
-
-Permite mantener un formato uniforme en las respuestas JSON.
-
-Validator.php
-
-Centraliza validaciones generales.
-
-HttpClient.php
-
-Facilita la comunicación HTTP entre el backend y otros servicios.
-
-
-## 14. Microservicios
+## 13. Microservicios
 
 La carpeta:
 
+```
 microservices/
+```
 
 contiene los servicios desarrollados por el propio grupo que funcionan de manera independiente al backend PHP.
 
 Actualmente se contemplan dos microservicios:
 
-compatibility-service/
-notification-service/
+- `compatibility-service/`
+- `notification-service/`
 
-## 15. Compatibility Service
+---
+
+## 14. Compatibility Service
+
+```
 microservices/compatibility-service/
+```
 
 Microservicio desarrollado utilizando:
 
-Python + Flask
+- Python + Flask
 
 Su responsabilidad es evaluar la compatibilidad entre una mascota y una persona postulante.
 
-Estructura
+### Estructura
+
+```
 compatibility-service/
 │
 ├── app/
@@ -500,36 +509,36 @@ compatibility-service/
 ├── requirements.txt
 ├── run.py
 └── Dockerfile
-routes.py
+```
 
-Define los endpoints HTTP disponibles.
+- `routes.py` - Define los endpoints HTTP disponibles.
+- `services.py` - Contiene la lógica necesaria para realizar la evaluación.
+- `rules.py` - Contiene las reglas utilizadas para determinar la compatibilidad.
 
-services.py
+> La evaluación generada es orientativa. El microservicio **no aprueba ni rechaza automáticamente** una solicitud de adopción.
 
-Contiene la lógica necesaria para realizar la evaluación.
+---
 
-rules.py
+## 15. Notification Service
 
-Contiene las reglas utilizadas para determinar la compatibilidad.
-
-La evaluación generada es orientativa.
-
-El microservicio no aprueba ni rechaza automáticamente una solicitud de adopción.
-
-## 16. Notification Service
+```
 microservices/notification-service/
+```
 
 Microservicio desarrollado utilizando:
 
-Go + Fiber
+- Go + Fiber
 
 Su responsabilidad es gestionar las notificaciones del sistema.
 
 Puede utilizar canales como:
 
-Correo electrónico.
-WhatsApp.
-Estructura
+- Correo electrónico.
+- WhatsApp.
+
+### Estructura
+
+```
 notification-service/
 │
 ├── cmd/
@@ -547,65 +556,64 @@ notification-service/
 │
 ├── go.mod
 └── Dockerfile
-cmd/main.go
+```
 
-Es el punto de entrada del microservicio.
+- `cmd/main.go` - Es el punto de entrada del microservicio.
+- `handlers/` - Recibe las solicitudes HTTP enviadas al servicio.
+- `services/` - Contiene la lógica relacionada con la preparación y envío de notificaciones.
+- `routes/` - Define los endpoints disponibles mediante Fiber.
 
-handlers/
+---
 
-Recibe las solicitudes HTTP enviadas al servicio.
-
-services/
-
-Contiene la lógica relacionada con la preparación y envío de notificaciones.
-
-routes/
-
-Define los endpoints disponibles mediante Fiber.
-
-## 17. Servicios externos
+## 16. Servicios externos
 
 La carpeta:
 
+```
 external-services/
+```
 
-representa servicios utilizados por Patitas Seguras pero desarrollados fuera del grupo.
+representa servicios utilizados por **Patitas Seguras** pero desarrollados fuera del grupo.
 
 Actualmente se contempla:
 
-auth-service/
+- `auth-service/`
 
 Este servicio será responsable de:
 
-Login.
-Validación de autenticación.
-Verificación mediante correo electrónico.
+- Login.
+- Validación de autenticación.
+- Verificación mediante correo electrónico.
 
-La carpeta no contiene necesariamente el código fuente del servicio externo.
+La carpeta **no contiene necesariamente el código fuente del servicio externo**.
 
 Puede contener únicamente:
 
-README.md
-
-con la documentación necesaria para realizar la integración.
+- `README.md` con la documentación necesaria para realizar la integración.
 
 Esto permite distinguir claramente entre:
 
-Servicios desarrollados por el grupo
+- Servicios desarrollados por el grupo
 
 y:
 
-Servicios externos consumidos por el proyecto
+- Servicios externos consumidos por el proyecto
 
-## 18. Base de datos
+---
+
+## 17. Base de datos
 
 La carpeta:
 
+```
 database/
+```
 
 contiene los recursos relacionados con PostgreSQL.
 
-Estructura
+### Estructura
+
+```
 database/
 │
 ├── init/
@@ -615,108 +623,124 @@ database/
 │   └── datos_prueba.sql
 │
 └── README.md
-init/
+```
+
+### init/
 
 Contiene el script principal encargado de crear la estructura de la base de datos.
 
-01_patitas_seguras.sql
+`01_patitas_seguras.sql` incluye:
 
-incluye:
+- Tablas.
+- Restricciones.
+- Relaciones.
+- Índices.
+- Elementos necesarios para inicializar la base.
 
-Tablas.
-Restricciones.
-Relaciones.
-Índices.
-Elementos necesarios para inicializar la base.
-seeds/
+### seeds/
 
 Contiene datos ficticios destinados exclusivamente a desarrollo y pruebas.
 
 Por ejemplo:
 
-datos_prueba.sql
+- `datos_prueba.sql` permite cargar registros necesarios para probar diferentes funcionalidades sin utilizar información real.
 
-permite cargar registros necesarios para probar diferentes funcionalidades sin utilizar información real.
-
-README.md
+### README.md
 
 Documenta:
 
-Cómo crear la base.
-Cómo ejecutar los scripts.
-Configuración necesaria.
-Consideraciones del entorno PostgreSQL.
+- Cómo crear la base.
+- Cómo ejecutar los scripts.
+- Configuración necesaria.
+- Consideraciones del entorno PostgreSQL.
 
-## 19. Documentación
+---
+
+## 18. Documentación
 
 La carpeta:
 
+```
 docs/
+```
 
 centraliza la documentación formal del proyecto.
 
 Se divide en:
 
+```
 docs/
 ├── arquitectura/
 ├── api/
 ├── database/
 ├── diagramas/
 └── proyecto/
-arquitectura/
+```
+
+### arquitectura/
 
 Documentación de:
 
-Arquitectura general.
-Servicios.
-Comunicación entre componentes.
-Flujos.
-api/
+- Arquitectura general.
+- Servicios.
+- Comunicación entre componentes.
+- Flujos.
+
+### api/
 
 Documentación de:
 
-Endpoints.
-Métodos HTTP.
-Parámetros.
-Requests.
-Responses.
-Contratos JSON.
-database/
+- Endpoints.
+- Métodos HTTP.
+- Parámetros.
+- Requests.
+- Responses.
+- Contratos JSON.
+
+### database/
 
 Contiene documentación como:
 
-DER.
-Modelo relacional.
-Diccionario de datos.
-diagramas/
+- DER.
+- Modelo relacional.
+- Diccionario de datos.
+
+### diagramas/
 
 Contiene diagramas relacionados con el sistema.
 
 Por ejemplo:
 
-UML.
-Casos de uso.
-Diagramas de secuencia.
-proyecto/
+- UML.
+- Casos de uso.
+- Diagramas de secuencia.
+
+### proyecto/
 
 Contiene documentación general relacionada con:
 
-Objetivos.
-Alcance.
-Exclusiones.
-Convenio.
-Sprints.
-Organización del proyecto.
+- Objetivos.
+- Alcance.
+- Exclusiones.
+- Convenio.
+- Sprints.
+- Organización del proyecto.
 
-## 20. Tests
+---
+
+## 19. Tests
 
 La carpeta:
 
+```
 tests/
+```
 
 centraliza las pruebas del sistema.
 
-Estructura
+### Estructura
+
+```
 tests/
 ├── backend/
 ├── microservices/
@@ -724,63 +748,62 @@ tests/
 │   └── notifications/
 │
 └── integration/
-backend/
+```
 
-Pruebas correspondientes al backend PHP.
-
-microservices/compatibility/
-
-Pruebas relacionadas con el microservicio Flask.
-
-microservices/notifications/
-
-Pruebas relacionadas con el microservicio Go + Fiber.
-
-integration/
-
-Pruebas destinadas a comprobar la comunicación entre distintos servicios.
+- `backend/` - Pruebas correspondientes al backend PHP.
+- `microservices/compatibility/` - Pruebas relacionadas con el microservicio Flask.
+- `microservices/notifications/` - Pruebas relacionadas con el microservicio Go + Fiber.
+- `integration/` - Pruebas destinadas a comprobar la comunicación entre distintos servicios.
 
 Por ejemplo:
 
-Frontend → Backend
-Backend → PostgreSQL
-Backend → Flask
-Backend → Go
+- Frontend → Backend
+- Backend → PostgreSQL
+- Backend → Flask
+- Backend → Go
 
-## 21. Docker Compose
+---
+
+## 20. Docker Compose
 
 El archivo:
 
+```
 docker-compose.yml
+```
 
 ubicado en la raíz permite levantar y coordinar los distintos componentes del sistema.
 
 Actualmente el entorno contempla principalmente:
 
-Frontend
-Backend
-PostgreSQL
+- Frontend
+- Backend
+- PostgreSQL
 
 y posteriormente podrá incluir:
 
-Compatibility Service
-Notification Service
+- Compatibility Service
+- Notification Service
 
 Docker Compose permite configurar:
 
-Construcción de imágenes.
-Contenedores.
-Redes.
-Puertos.
-Volúmenes.
-Variables de entorno.
-Dependencias entre servicios.
+- Construcción de imágenes.
+- Contenedores.
+- Redes.
+- Puertos.
+- Volúmenes.
+- Variables de entorno.
+- Dependencias entre servicios.
 
-## 22. Archivo .env
+---
+
+## 21. Archivo .env
 
 El proyecto utiliza un único archivo:
 
+```
 .env
+```
 
 ubicado en la raíz.
 
@@ -788,64 +811,76 @@ Contiene configuraciones reales y credenciales utilizadas por los distintos serv
 
 Por ejemplo:
 
+```
 DB_HOST
 DB_PORT
 DB_NAME
 DB_USER
 DB_PASSWORD
+```
 
 También podrá incluir configuraciones necesarias para:
 
-Servicios externos.
-Microservicios.
-Notificaciones.
-Autenticación.
+- Servicios externos.
+- Microservicios.
+- Notificaciones.
+- Autenticación.
 
-El archivo .env no debe subirse al repositorio Git.
+> El archivo `.env` **no debe subirse al repositorio Git**.
 
-## 23. .gitignore
+---
+
+## 22. .gitignore
 
 Define archivos y directorios que Git debe ignorar.
 
 Entre ellos puede encontrarse:
 
-.env
+- `.env`
 
 junto con archivos temporales, dependencias locales o elementos generados automáticamente.
 
-## 24. README.md
+---
+
+## 23. README.md
 
 El archivo ubicado en la raíz funciona como documentación inicial del repositorio.
 
 Debe permitir que una persona que accede por primera vez al proyecto pueda comprender:
 
-Qué es Patitas Seguras.
-Qué tecnologías utiliza.
-Cómo está organizado.
-Cómo levantar el entorno.
-Qué configuraciones necesita.
-Dónde encontrar la documentación detallada.
+- Qué es Patitas Seguras.
+- Qué tecnologías utiliza.
+- Cómo está organizado.
+- Cómo levantar el entorno.
+- Qué configuraciones necesita.
+- Dónde encontrar la documentación detallada.
 
-## 25. Separación de responsabilidades
+---
+
+## 24. Separación de responsabilidades
 
 La estructura del proyecto busca mantener una separación clara:
 
-Componente	Responsabilidad principal
-Frontend	Interfaz y comunicación con la API
-Backend PHP	Lógica de negocio y coordinación
-PostgreSQL	Persistencia de información
-Compatibility Service	Evaluación de compatibilidad
-Notification Service	Gestión de notificaciones
-Auth Service	Autenticación externa
-Docker	Contenerización
-Docker Compose	Coordinación del entorno
-Tests	Verificación del funcionamiento
-Docs	Documentación técnica y funcional
+| Componente | Responsabilidad principal |
+|------------|---------------------------|
+| Frontend | Interfaz y comunicación con la API |
+| Backend PHP | Lógica de negocio y coordinación |
+| PostgreSQL | Persistencia de información |
+| Compatibility Service | Evaluación de compatibilidad |
+| Notification Service | Gestión de notificaciones |
+| Auth Service | Autenticación externa |
+| Docker | Contenerización |
+| Docker Compose | Coordinación del entorno |
+| Tests | Verificación del funcionamiento |
+| Docs | Documentación técnica y funcional |
 
-## 26. Flujo general dentro de la estructura
+---
+
+## 25. Flujo general dentro de la estructura
 
 La organización de carpetas refleja el flujo arquitectónico del sistema.
 
+```
 Usuario
    │
    ▼
@@ -855,26 +890,29 @@ frontend/
    ▼
 backend/
    │
-   ├──────────────► database/
+   ├─────────────────────► database/
    │                  PostgreSQL
    │
-   ├──────────────► microservices/
+   ├─────────────────────► microservices/
    │                  │
    │                  ├── compatibility-service
    │                  └── notification-service
    │
-   └──────────────► external-services/
+   └─────────────────────► external-services/
                       auth-service
+```
 
 El backend PHP funciona como coordinador principal.
 
 El frontend no accede directamente a la base de datos ni implementa la lógica central del negocio.
 
+---
 
-## 27. Resumen
+## 26. Resumen
 
-La estructura de Patitas Seguras busca separar claramente las diferentes responsabilidades del sistema:
+La estructura de **Patitas Seguras** busca separar claramente las diferentes responsabilidades del sistema:
 
+```
 Interfaz
    ↓
 Frontend
@@ -894,5 +932,6 @@ Microservicios
 Servicios externos
    ↓
 Autenticación
+```
 
 Esta organización facilita el mantenimiento del código, el trabajo colaborativo, las pruebas, el despliegue mediante Docker y la incorporación progresiva de nuevas funcionalidades durante los distintos Sprints.
