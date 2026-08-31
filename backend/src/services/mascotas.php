@@ -1,6 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../repositories/mascotas.php';
+require_once __DIR__ . '/../repositories/especies.php';
+require_once __DIR__ . '/../repositories/razas.php';
 
 function listarMascotas(){
     return obtenerMascotas();

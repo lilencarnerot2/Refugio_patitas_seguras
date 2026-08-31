@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../controllers/mascotas.php';
 require_once __DIR__ . '/../utils/response.php';
+require_once __DIR__ . '/../controllers/especies.php';
+require_once __DIR__ . '/../controllers/razas.php';
 
 function manejarRutas()
 {
@@ -18,6 +20,14 @@ function manejarRutas()
                 true,
                 'API Patitas Seguras funcionando.'
             );
+            break;
+
+        case 'especies':
+            manejarEspecies();
+            break;
+
+        case 'razas':
+            manejarRazas();
             break;
 
         default:
