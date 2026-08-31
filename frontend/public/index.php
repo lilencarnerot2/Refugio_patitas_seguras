@@ -6,7 +6,7 @@
     <title>Patitas Seguras - Refugio de animales</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=menu2">
 </head>
 <body>
 
@@ -25,16 +25,26 @@
             <ul>
                 <li><a onclick="scrollToSection('inicio')">INICIO</a></li>
                 <li><a onclick="scrollToSection('nosotros')">NOSOTROS</a></li>
-                <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
-                <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
-                <li><a onclick="openModal('Voluntariado', '¡Gracias por querer sumarte! Dejanos tu mensaje y nos pondremos en contacto para coordinar las actividades.')">SE VOLUNTARIO</a></li>
+                <li class="nav-dropdown">
+                    <a onclick="toggleSumate(event)">SUMATE</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
+                        <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
+                        <li><a onclick="openModal('Voluntariado', '¡Gracias por querer sumarte! Dejanos tu mensaje y nos pondremos en contacto para coordinar las actividades.')">SE VOLUNTARIO</a></li>
+                    </ul>
+                </li>
                 <li><a onclick="scrollToSection('ayudar')">CÓMO AYUDAR</a></li>
                 <li><a onclick="scrollToSection('contacto')">CONTACTO</a></li>
             </ul>
         </nav>
-        <button class="btn-donate" onclick="openModal('Donaciones', '¡Muchas gracias! Podés colaborar mediante transferencia a nuestro alias oficial: PATITAS.SEGURAS.MP o por Mercado Pago.')">
-            <i class="fa-solid fa-heart"></i> DONAR
-        </button>
+        <div class="header-actions">
+            <button class="btn-donate" onclick="openModal('Donaciones', '¡Muchas gracias! Podés colaborar mediante transferencia a nuestro alias oficial: PATITAS.SEGURAS.MP o por Mercado Pago.')">
+                <i class="fa-solid fa-heart"></i> DONAR
+            </button>
+            <button type="button" class="menu-toggle" aria-label="Menú" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
     </header>
 
     <!-- INICIO / HERO -->
@@ -42,11 +52,6 @@
         <div class="hero-content">
             <h2>CAMBIÁ UNA VIDA, <span>GANÁ UN AMIGO.</span></h2>
             <p>En Patitas Seguras rescatamos, cuidamos y buscamos un hogar lleno de amor para cada patita que lo necesita.</p>
-            <div class="hero-buttons">
-                <a class="btn-primary" href="mascotas.php#adopcion"><i class="fa-solid fa-paw"></i> ADOPTÁ</a>
-                <a class="btn-primary" href="mascotas.php#transito"><i class="fa-solid fa-paw"></i> HOGAR DE TRÁNSITO</a>
-                <button class="btn-outline" onclick="openModal('Donaciones', '¡Muchas gracias! Podés colaborar mediante transferencia a nuestro alias oficial: PATITAS.SEGURAS.MP')"><i class="fa-solid fa-heart"></i> DONAR</button>
-            </div>
         </div>
         <div class="hero-images">
             <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1" alt="Perro y gato felices">
@@ -176,11 +181,33 @@
         </div>
     </div>
 
+    <script src="../assets/js/app.js"></script>
     <script>
         window.APP_CONFIG = {
-            backendUrl: <?php echo json_encode(getenv('BACKEND_SERVICE_URL')); ?>  
+            backendUrl: <?php echo json_encode(getenv('BACKEND_SERVICE_URL')); ?>
+        };
+
+        function toggleMenu() {
+            const header = document.querySelector('header');
+            const icon = document.querySelector('.menu-toggle i');
+            header.classList.toggle('nav-open');
+            icon.className = header.classList.contains('nav-open') ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
         }
 
+        function toggleSumate(event) {
+            if (window.innerWidth > 992) return;
+            event.currentTarget.parentElement.classList.toggle('open');
+        }
+
+        document.querySelectorAll('nav a').forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (link.parentElement.classList.contains('nav-dropdown')) return;
+                const header = document.querySelector('header');
+                if (!header.classList.contains('nav-open')) return;
+                header.classList.remove('nav-open');
+                document.querySelector('.menu-toggle i').className = 'fa-solid fa-bars';
+            });
+        });
     </script>
 
 
