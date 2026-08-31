@@ -33,7 +33,13 @@
                         <li><a onclick="openModal('Voluntariado', '¡Gracias por querer sumarte! Dejanos tu mensaje y nos pondremos en contacto para coordinar las actividades.')">SE VOLUNTARIO</a></li>
                     </ul>
                 </li>
-                <li><a onclick="scrollToSection('ayudar')">CÓMO AYUDAR</a></li>
+                <li class="nav-dropdown">
+                    <a onclick="toggleSumate(event)">CÓMO AYUDAR</a>
+                    <ul class="dropdown-menu">
+                        <li><a onclick="openModal('Castración', 'Organizamos y difundimos campañas de castración para prevenir el abandono y mejorar la salud de perros y gatos.')">CASTRACIÓN</a></li>
+                        <li><a onclick="openModal('Denuncia maltrato', 'Si presenciás maltrato animal, escribinos y te orientamos para hacer la denuncia correspondiente.')">DENUNCIA MALTRATO</a></li>
+                    </ul>
+                </li>
                 <li><a onclick="scrollToSection('contacto')">CONTACTO</a></li>
             </ul>
         </nav>
