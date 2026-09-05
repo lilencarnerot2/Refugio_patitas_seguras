@@ -1,3 +1,4 @@
+/* Colores principales del sitio */
 :root {
             --primary-color: #2e5229;
             --accent-color: #d97724;
@@ -6,6 +7,7 @@
             --white: #ffffff;
         }
 
+       
         * {
             margin: 0;
             padding: 0;
@@ -14,13 +16,14 @@
             scroll-behavior: smooth;
         }
 
+        /* Fondo crema y color de texto de todas las páginas */
         body {
             background-color: var(--bg-cream);
             color: var(--text-dark);
             overflow-x: hidden;
         }
 
-        /* HEADER */
+        /* Barra superior fija (logo + menú + donar) */
         header {
             display: flex;
             justify-content: space-between;
@@ -33,6 +36,7 @@
             z-index: 1000;
         }
 
+        /* Logo con ícono de pata y texto */
         .logo-container {
             display: flex;
             align-items: center;
@@ -41,6 +45,7 @@
             cursor: pointer;
         }
 
+        /* Nombre "PATITAS SEGURAS" */
         .logo-text h1 {
             font-size: 18px;
             color: var(--primary-color);
@@ -48,18 +53,20 @@
             line-height: 1;
         }
 
+        /* Subtítulo "Refugio de animales" */
         .logo-text span {
             font-size: 10px;
             color: #666;
         }
 
-
+        /* Menú centrado en el header*/
         nav {
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
         }
 
+        /* Lista horizontal de links: Inicio, Mascotas, etc. */
         nav > ul {
             display: flex;
             list-style: none;
@@ -74,6 +81,7 @@
             height: 24px;
         }
 
+        /* Estilo de cada link del menú */
         nav a {
             text-decoration: none;
             color: var(--text-dark);
@@ -90,6 +98,7 @@
             color: var(--text-dark);
         }
 
+        /* Ítem del menú que abre un submenú (Sumate, Cómo ayudar) */
         .nav-dropdown {
             position: relative;
         }
@@ -103,6 +112,7 @@
             height: 16px;
         }
 
+        /* Caja del submenú desplegable */
         nav .dropdown-menu {
             display: none;
             position: absolute;
@@ -121,6 +131,7 @@
             text-align: center;
         }
 
+        /* Muestra el submenú al pasar el mouse o al enfocar */
         .nav-dropdown:hover .dropdown-menu,
         .nav-dropdown:focus-within .dropdown-menu {
             display: block;
@@ -132,6 +143,7 @@
             height: auto;
         }
 
+        /* Links dentro del submenú */
         nav .dropdown-menu a {
             display: block;
             padding: 10px 16px;
@@ -149,12 +161,14 @@
             color: var(--text-dark);
         }
 
+        /* Contenedor de la derecha: botón Donar + menú hamburguesa */
         .header-actions {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
+        /* Ícono hamburguesa (oculto en escritorio, visible en celular) */
         .menu-toggle {
             display: none;
             background: none;
@@ -166,6 +180,7 @@
             line-height: 1;
         }
 
+        /* Botón naranja "DONAR" */
         .btn-donate {
             background-color: var(--accent-color);
             color: var(--white);
@@ -181,13 +196,13 @@
             border: none;
         }
 
-        /* SECCIONES */
+        /* Espaciado de cada bloque de página (inicio, mascotas, detalle, etc.) */
         section {
             padding: 40px 5%;
             scroll-margin-top: 80px;
         }
 
-        /* HERO SECTION */
+        /* Portada de index.php: texto a la izquierda, foto a la derecha */
         .hero {
             display: flex;
             justify-content: space-between;
@@ -199,6 +214,7 @@
             flex: 1;
         }
 
+        /* Título grande del hero */
         .hero-content h2 {
             font-size: 42px;
             color: #2b2b2b;
@@ -206,6 +222,7 @@
             margin-bottom: 20px;
         }
 
+        /* Palabra resaltada en verde dentro del título */
         .hero-content h2 span {
             color: var(--primary-color);
         }
@@ -217,12 +234,14 @@
             line-height: 1.6;
         }
 
+        /* Botones debajo del texto del hero */
         .hero-buttons {
             display: flex;
             gap: 15px;
             align-items: center;
         }
 
+        /* Botón verde relleno */
         .btn-primary{
             background-color: var(--primary-color);
             color: var(--white);
@@ -237,6 +256,7 @@
             border: none;
         }
 
+        /* Botón verde solo con borde */
         .btn-outline {
             border: 2px solid var(--primary-color);
             color: var(--primary-color);
@@ -251,6 +271,7 @@
             cursor: pointer;
         }
 
+        /* Foto del hero */
         .hero-images {
             flex: 1;
             display: flex;
@@ -264,13 +285,14 @@
             border-radius: 20px;
         }
 
-        /* CARDS GRID */
+        /* Grilla de 3 tarjetas en index: Adoptá, Voluntariado, etc. */
         .action-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
         }
 
+        /* Cada tarjeta clickeable de esa grilla */
         .card {
             background: var(--white);
             border-radius: 15px;
@@ -312,6 +334,7 @@
             object-fit: cover;
         }
 
+        /* Franja verde inferior de la tarjeta */
         .card-btn {
             display: block;
             text-align: center;
@@ -322,7 +345,7 @@
             font-weight: 500;
         }
 
-        /* STATS COUNTER */
+        /* Fila de números/estadísticas del refugio en index */
         .stats-container {
             background: var(--white);
             margin: 0 5%;
@@ -349,7 +372,7 @@
             margin-top: 5px;
         }
 
-        /* OTRAS FORMAS DE AYUDAR */
+        /* Grilla "otras formas de ayudar" en index (donar, castrar, etc.) */
         .other-ways {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -396,7 +419,7 @@
             color: #666;
         }
 
-        /* MODAL / VENTANA EMERGENTE INTERACTIVA */
+        /* Fondo oscuro que cubre la pantalla cuando se abre un modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -410,6 +433,7 @@
             z-index: 2000;
         }
 
+        /* Caja blanca del modal (donaciones, voluntariado, etc.) */
         .modal-content {
             background: white;
             padding: 30px;
@@ -433,6 +457,7 @@
             line-height: 1.5;
         }
 
+        /* Botón para cerrar el modal */
         .close-modal {
             background: var(--primary-color);
             color: white;
@@ -443,7 +468,7 @@
             font-weight: 500;
         }
 
-        /* FOOTER */
+        /* Pie de página verde oscuro */
         footer {
             background-color: #244121;
             color: white;
@@ -451,6 +476,7 @@
             margin-top: 20px;
         }
 
+        /* Íconos de redes en el footer */
         .social-icons {
             display: flex;
             gap: 15px;
@@ -474,8 +500,9 @@
             background: var(--accent-color);
         }
 
-        /* RESPONSIVE */
+        /* Ajustes para tablet y celular (hasta 992px) */
         @media (max-width: 992px) {
+            /* Hero en columna: texto arriba, imagen abajo */
             .hero {
                 flex-direction: column;
                 text-align: center;
@@ -483,13 +510,16 @@
             .hero-buttons {
                 justify-content: center;
             }
+            /* Tarjetas de index en una sola columna */
             .action-cards, .other-ways {
                 grid-template-columns: 1fr;
             }
+            /* Estadísticas en 2 columnas */
             .stats-container {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 20px;
             }
+            /* Menú oculto; se abre como panel debajo del header */
             nav {
                 display: none;
                 position: absolute;
@@ -548,11 +578,13 @@
                 display: block;
             }
 
+            /* Muestra el botón hamburguesa */
             .menu-toggle {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
             }
+            /* Tarjetas de info y catálogo de mascotas en 1 columna */
             .info-cards {
                 grid-template-columns: 1fr;
             }
@@ -561,7 +593,7 @@
             }
         }
 
-        /* PÁGINA MASCOTAS */
+        /* Título y texto intro de mascotas.php */
         .page-intro {
             text-align: center;
             max-width: 720px;
@@ -580,6 +612,7 @@
             line-height: 1.6;
         }
 
+        /* Dos tarjetas: Adopción responsable y Hogar de tránsito */
         .info-cards {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -618,6 +651,7 @@
             line-height: 1.7;
         }
 
+        /* Título "Mascotas disponibles" + contador */
         .catalog-header {
             display: flex;
             justify-content: space-between;
@@ -637,12 +671,14 @@
             color: #777;
         }
 
+        /* Grilla de tarjetas de cada mascota en el listado */
         .pet-catalog {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
         }
 
+        /* Tarjeta de una mascota (foto + nombre + botones) */
         .pet-card {
             background: var(--white);
             border-radius: 15px;
@@ -672,20 +708,15 @@
             margin-bottom: 6px;
         }
 
-        .pet-card-meta {
-            font-size: 12px;
-            color: #777;
-            margin-bottom: 10px;
-        }
-
-        .pet-card-body p {
+        /* Texto de especie debajo del nombre */
+        .pet-card-especie {
             font-size: 13px;
-            color: #666;
-            line-height: 1.5;
+            font-weight: 500;
+            color: #777;
             margin-bottom: 15px;
-            flex: 1;
         }
 
+        /* Columna de botones: Adoptar, Tránsito, Ver detalle */
         .pet-card-actions {
             display: flex;
             flex-direction: column;
@@ -706,22 +737,26 @@
             opacity: 0.9;
         }
 
+        /* Botón verde Adoptar */
         .btn-adopt {
             background: var(--primary-color);
             color: var(--white);
         }
 
+        /* Botón naranja Hogar de tránsito */
         .btn-transito {
             background: var(--accent-color);
             color: var(--white);
         }
 
+        /* Botón con borde Ver detalle */
         .btn-detail {
             border: 2px solid var(--primary-color);
             color: var(--primary-color);
             background: transparent;
         }
 
+        /* Mensaje cuando no hay mascotas o no se encontró el detalle */
         .catalog-empty {
             grid-column: 1 / -1;
             background: var(--white);
@@ -747,3 +782,155 @@
             font-size: 13px;
             color: #666;
         }
+
+        /* Layout de mascota-detalle.php: foto a la izquierda, datos a la derecha */
+        .pet-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        /* Foto grande del detalle */
+        .pet-detail img {
+            width: 100%;
+            height: 100%;
+            min-height: 320px;
+            object-fit: cover;
+            background: #eaf0e9;
+        }
+
+        /* Bloque de nombre, raza, historial y botones */
+        .pet-detail-body {
+            padding: 30px;
+        }
+
+        .pet-detail-body h2 {
+            font-size: 28px;
+            color: var(--primary-color);
+            margin-bottom: 6px;
+        }
+
+        /* Lista: raza, sexo, tamaño, nacimiento */
+        .pet-detail-meta {
+            list-style: none;
+            margin: 0 0 18px;
+            padding: 0;
+            color: #555;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* Párrafo del historial de la mascota */
+        .pet-detail-historial {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        /* En celular el detalle pasa a una columna (foto arriba, datos abajo) */
+        @media (max-width: 768px) {
+            .pet-detail {
+                grid-template-columns: 1fr;
+            }
+
+            .pet-detail img {
+                min-height: 220px;
+            }
+        }
+
+        /* ===== Actualizaciones: hamburguesa, menú centrado y desplegables ===== */
+
+        .nav-toggle,
+        .nav-drop-toggle {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .menu-icon-close {
+            display: none;
+        }
+
+        .nav-dropdown > label {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            line-height: 24px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .nav-drop-toggle:checked ~ .dropdown-menu {
+            display: block;
+        }
+
+        @media (max-width: 992px) {
+            #nav-toggle:checked ~ nav {
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+
+            #nav-toggle:checked ~ .header-actions .menu-icon-bars {
+                display: none;
+            }
+
+            #nav-toggle:checked ~ .header-actions .menu-icon-close {
+                display: inline;
+            }
+
+            nav > ul {
+                justify-content: center;
+                width: 100%;
+            }
+
+            nav > ul > li {
+                display: block;
+                height: auto;
+                text-align: center;
+            }
+
+            nav a,
+            .nav-dropdown > label,
+            nav .dropdown-menu a {
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+
+            nav .dropdown-menu {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-drop-toggle:checked ~ .dropdown-menu,
+            .nav-dropdown:focus-within .dropdown-menu {
+                display: block;
+            }
+        }
+
+        /* La barra verde del footer queda siempre al pie de la ventana */
+        html {
+            height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        footer {
+            margin-top: auto;
+        }
+        
