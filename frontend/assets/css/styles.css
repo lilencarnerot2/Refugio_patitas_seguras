@@ -788,41 +788,76 @@
         }
 
         #catalogo {
-            padding-top: 0;
+            padding-top: 10px;
+            padding-bottom: 20px;
         }
-        .catalog-header {
+
+        .catalog-eyebrow {
+            display: block;
+            width: 88px;
+            height: 12px;
+            margin: 0 auto 18px;
+            border-radius: 20px;
+            background: #e4e0d4;
+        }
+
+        .catalog-filters {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: center;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 14px;
+            margin: 8px 0 36px;
         }
 
-        .catalog-header h3 {
-            font-size: 22px;
-            color: var(--primary-color);
+        .catalog-filters input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .catalog-header span {
-            font-size: 13px;
-            color: var(--text-light);
+        .catalog-filters label {
+            padding: 8px 28px;
+            border-radius: 999px;
+            background: #eceae3;
+            color: var(--text-dark);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
         }
 
-        /* Grilla de tarjetas de cada mascota en el listado */
+        .catalog-filters input:checked + label {
+            background: var(--text-dark);
+            color: var(--white);
+        }
+
         .pet-catalog {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 28px;
+            max-width: 1080px;
+            margin: 0 auto;
         }
 
         @media (max-width: 992px) {
             .info-cards {
                 grid-template-columns: 1fr;
             }
+
+            .pet-catalog {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
         }
 
-        /* Tarjeta de una mascota (foto + nombre + botones) */
+        @media (max-width: 640px) {
+            .pet-catalog {
+                grid-template-columns: 1fr;
+            }
+
+            .requisitos-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .pet-card {
             background: var(--white);
             border-radius: 15px;
@@ -832,31 +867,31 @@
             flex-direction: column;
         }
 
-        .pet-card img {
+        .pet-card img,
+        .pet-card .pet-photo-empty {
             width: 100%;
-            height: 200px;
+            height: 180px;
             object-fit: cover;
             background: var(--icon-bg);
-            padding: 18px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        }
+
+        .pet-card-body {
+            padding: 16px 18px 20px;
         }
 
         .pet-card-body h4 {
             font-size: 18px;
-            color: var(--primary-color);
+            color: var(--text-dark);
             margin-bottom: 6px;
         }
 
-        /* Texto de especie debajo del nombre */
         .pet-card-especie {
             font-size: 13px;
             font-weight: 500;
             color: var(--text-light);
+            margin-bottom: 14px;
         }
 
-        /* Columna de botones: Adoptar, Tránsito, Ver detalle */
         .pet-card-actions {
             display: flex;
             flex-direction: column;
@@ -875,6 +910,62 @@
 
         .pet-card-actions a:hover {
             opacity: 0.9;
+        }
+
+        .requisitos-section {
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+
+        .requisitos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px 56px;
+            max-width: 720px;
+            margin: 0 auto 28px;
+        }
+
+        .requisito-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .requisito-mark {
+            width: 28px;
+            height: 10px;
+            background: var(--text-dark);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .proceso-adopcion {
+            max-width: 720px;
+            margin: 0 auto;
+            background: #eceae3;
+            border-radius: 6px;
+        }
+
+        .proceso-adopcion summary {
+            padding: 12px 18px;
+            cursor: pointer;
+            list-style: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .proceso-adopcion summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .proceso-adopcion ol {
+            margin: 0;
+            padding: 0 18px 16px 36px;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.7;
         }
 
         /* Botón verde Adoptar */
