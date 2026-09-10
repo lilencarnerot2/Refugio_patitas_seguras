@@ -13,38 +13,34 @@ function cargarCatalogo() {
             const mascotas = Array.isArray(data.data) ? data.data : [];
 
             if (!mascotas.length) {
-                contenedor.innerHTML = '<div class="col-12">' + mensajeVacio(
+                contenedor.innerHTML = mensajeVacio(
                     'Todavía no hay mascotas cargadas',
                     'No se encontraron mascotas disponibles.'
-                ) + '</div>';
+                );
                 if (contador) contador.textContent = '0 mascotas disponibles';
                 return;
             }
 
             contenedor.innerHTML = mascotas.map(function (m) {
                 const nombre = texto(m.nombre) || 'Mascota';
-                const especie = texto(m.especie).trim().toLowerCase();
-                const raza = texto(m.raza).trim().toLowerCase();
                 return `
-                    <div class="col-md-6 col-lg-4" data-especie="${especie}" data-raza="${raza}">
-                        <article class="pet-card h-100">
-                            ${fotoMascota(m)}
-                            <div class="pet-card-body">
-                                <h4>${nombre}</h4>
-                                <div class="pet-card-actions">
-                                    <a class="btn-adopt" href="../user/solicitar_adopcion.php?id=${m.id}">
-                                        <i class="fa-solid fa-heart"></i> Adoptar
-                                    </a>
-                                    <a class="btn-transito" href="../user/solicitar_transito.php?id=${m.id}">
-                                        <i class="fa-solid fa-house-chimney"></i> Hogar de tránsito
-                                    </a>
-                                    <a class="btn-detail" href="mascota-detalle.php?id=${m.id}">
-                                        <i class="fa-solid fa-circle-info"></i> Ver detalle
-                                    </a>
-                                </div>
+                    <article class="pet-card">
+                        ${fotoMascota(m)}
+                        <div class="pet-card-body">
+                            <h4>${nombre}</h4>
+                            <div class="pet-card-actions">
+                                <a class="btn-adopt" href="../user/solicitar_adopcion.php?id=${m.id}">
+                                    <i class="fa-solid fa-heart"></i> Adoptar
+                                </a>
+                                <a class="btn-transito" href="../user/solicitar_transito.php?id=${m.id}">
+                                    <i class="fa-solid fa-house-chimney"></i> Hogar de tránsito
+                                </a>
+                                <a class="btn-detail" href="mascota-detalle.php?id=${m.id}">
+                                    <i class="fa-solid fa-circle-info"></i> Ver detalle
+                                </a>
                             </div>
-                        </article>
-                    </div>`;
+                        </div>
+                    </article>`;
             }).join('');
 
             if (contador) {
@@ -54,10 +50,10 @@ function cargarCatalogo() {
         })
         .catch(function (error) {
             console.error('Error al cargar mascotas:', error);
-            contenedor.innerHTML = '<div class="col-12">' + mensajeVacio(
+            contenedor.innerHTML = mensajeVacio(
                 'No se pudieron cargar las mascotas',
                 error.message || 'Intentá de nuevo más tarde.'
-            ) + '</div>';
+            );
         });
 }
 
