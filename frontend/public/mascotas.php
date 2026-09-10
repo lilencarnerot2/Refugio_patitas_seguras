@@ -9,11 +9,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
-<body>
+<body class="page-mascotas">
 
     <header>
         <a class="logo-container" href="index.php">
-            <div style="background: var(--primary-color); border-radius: 50%; padding: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
+            <div class="logo-icon">
                 <i class="fa-solid fa-paw"></i>
             </div>
             <div class="logo-text">
@@ -27,21 +27,23 @@
                 <li><a href="index.php">INICIO</a></li>
                 <li><a href="index.php#nosotros">NOSOTROS</a></li>
                 <li class="nav-dropdown">
-                    <input type="checkbox" id="drop-sumate" class="nav-drop-toggle">
-                    <label for="drop-sumate">SUMATE</label>
-                    <ul class="dropdown-menu">
-                        <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
-                        <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
-                        <li><a href="index.php#modal-voluntariado">SE VOLUNTARIO</a></li>
-                    </ul>
+                    <details>
+                        <summary>SUMATE</summary>
+                        <ul class="dropdown-menu">
+                            <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
+                            <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
+                            <li><a href="index.php#modal-voluntariado">SE VOLUNTARIO</a></li>
+                        </ul>
+                    </details>
                 </li>
                 <li class="nav-dropdown">
-                    <input type="checkbox" id="drop-ayudar" class="nav-drop-toggle">
-                    <label for="drop-ayudar">CÓMO AYUDAR</label>
-                    <ul class="dropdown-menu">
-                        <li><a href="index.php#modal-castracion">CASTRACIÓN</a></li>
-                        <li><a href="index.php#modal-maltrato">DENUNCIA MALTRATO</a></li>
-                    </ul>
+                    <details>
+                        <summary>CÓMO AYUDAR</summary>
+                        <ul class="dropdown-menu">
+                            <li><a href="index.php#modal-castracion">CASTRACIÓN</a></li>
+                            <li><a href="index.php#modal-maltrato">DENUNCIA MALTRATO</a></li>
+                        </ul>
+                    </details>
                 </li>
                 <li><a href="index.php#contacto">CONTACTO</a></li>
             </ul>
@@ -85,7 +87,7 @@
         </div>
     </section>
 
-    <section id="catalogo" style="padding-top: 0;">
+    <section id="catalogo">
         <div class="catalog-header">
             <h3><i class="fa-solid fa-paw"></i> Mascotas disponibles</h3>
             <span id="catalogo-count">Cargando...</span>
@@ -95,14 +97,14 @@
     </section>
 
     <footer>
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        <div class="footer-inner">
             <div>
                 <h3>PATITAS SEGURAS</h3>
-                <p style="font-size: 12px; color: #ccc;">Refugio de animales</p>
+                <p class="footer-tagline">Refugio de animales</p>
             </div>
-            <div>
-                <p style="font-size: 13px;"><i class="fa-solid fa-envelope"></i> hola@patitaseguras.org</p>
-                <p style="font-size: 13px; margin-top: 5px;"><i class="fa-solid fa-location-dot"></i> Merlo, Buenos Aires, Argentina</p>
+            <div class="footer-contact">
+                <p><i class="fa-solid fa-envelope"></i> hola@patitaseguras.org</p>
+                <p><i class="fa-solid fa-location-dot"></i> Merlo, Buenos Aires, Argentina</p>
             </div>
         </div>
     </footer>
