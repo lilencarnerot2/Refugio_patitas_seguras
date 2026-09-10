@@ -6,7 +6,7 @@
     <title>Patitas Seguras - Refugio de animales</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/styles.css?v=menu4">
+    <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body>
 
@@ -166,9 +166,7 @@
                 <h3>PATITAS SEGURAS</h3>
                 <p style="font-size: 12px; color: #ccc;">Refugio de animales</p>
                 <div class="social-icons">
-                    <a href="https://facebook.com" target="_blank" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="https://instagram.com" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://tiktok.com" target="_blank" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="https://instagram.com" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>   
                 </div>
             </div>
             <div>
