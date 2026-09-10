@@ -27,7 +27,8 @@
                 <li><a href="#inicio">INICIO</a></li>
                 <li><a href="#nosotros">NOSOTROS</a></li>
                 <li class="nav-dropdown">
-                    <a tabindex="0">SUMATE</a>
+                    <input type="checkbox" id="drop-sumate" class="nav-drop-toggle">
+                    <label for="drop-sumate">SUMATE</label>
                     <ul class="dropdown-menu">
                         <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
                         <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
@@ -35,7 +36,8 @@
                     </ul>
                 </li>
                 <li class="nav-dropdown">
-                    <a tabindex="0">CÓMO AYUDAR</a>
+                    <input type="checkbox" id="drop-ayudar" class="nav-drop-toggle">
+                    <label for="drop-ayudar">CÓMO AYUDAR</label>
                     <ul class="dropdown-menu">
                         <li><a href="#modal-castracion">CASTRACIÓN</a></li>
                         <li><a href="#modal-maltrato">DENUNCIA MALTRATO</a></li>
