@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
-<body>
+<body class="page-index has-mobile-nav">
 
     <!-- HEADER -->
     <header>
         <a class="logo-container" href="#inicio">
-            <div style="background: var(--primary-color); border-radius: 50%; padding: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
+            <div class="logo-icon">
                 <i class="fa-solid fa-paw"></i>
             </div>
             <div class="logo-text">
@@ -27,21 +27,23 @@
                 <li><a href="#inicio">INICIO</a></li>
                 <li><a href="#nosotros">NOSOTROS</a></li>
                 <li class="nav-dropdown">
-                    <input type="checkbox" id="drop-sumate" class="nav-drop-toggle">
-                    <label for="drop-sumate">SUMATE</label>
-                    <ul class="dropdown-menu">
-                        <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
-                        <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
-                        <li><a href="#modal-voluntariado">SE VOLUNTARIO</a></li>
-                    </ul>
+                    <details>
+                        <summary>SUMATE</summary>
+                        <ul class="dropdown-menu">
+                            <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
+                            <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
+                            <li><a href="#modal-voluntariado">SE VOLUNTARIO</a></li>
+                        </ul>
+                    </details>
                 </li>
                 <li class="nav-dropdown">
-                    <input type="checkbox" id="drop-ayudar" class="nav-drop-toggle">
-                    <label for="drop-ayudar">CÓMO AYUDAR</label>
-                    <ul class="dropdown-menu">
-                        <li><a href="#modal-castracion">CASTRACIÓN</a></li>
-                        <li><a href="#modal-maltrato">DENUNCIA MALTRATO</a></li>
-                    </ul>
+                    <details>
+                        <summary>CÓMO AYUDAR</summary>
+                        <ul class="dropdown-menu">
+                            <li><a href="#modal-castracion">CASTRACIÓN</a></li>
+                            <li><a href="#modal-maltrato">DENUNCIA MALTRATO</a></li>
+                        </ul>
+                    </details>
                 </li>
                 <li><a href="#contacto">CONTACTO</a></li>
             </ul>
@@ -100,19 +102,19 @@
     <section>
         <div class="stats-container">
             <div class="stat-item">
-                <h4><i class="fa-solid fa-paw" style="font-size: 16px;"></i> +1200</h4>
+                <h4><i class="fa-solid fa-paw"></i> +1200</h4>
                 <p>Rescates realizados</p>
             </div>
             <div class="stat-item">
-                <h4><i class="fa-solid fa-heart" style="font-size: 16px;"></i> +980</h4>
+                <h4><i class="fa-solid fa-heart"></i> +980</h4>
                 <p>Adopciones felices</p>
             </div>
             <div class="stat-item">
-                <h4><i class="fa-solid fa-house" style="font-size: 16px;"></i> +150</h4>
+                <h4><i class="fa-solid fa-house"></i> +150</h4>
                 <p>Hogares de tránsito</p>
             </div>
             <div class="stat-item">
-                <h4><i class="fa-solid fa-users" style="font-size: 16px;"></i> +200</h4>
+                <h4><i class="fa-solid fa-users"></i> +200</h4>
                 <p>Voluntarios activos</p>
             </div>
         </div>
@@ -120,15 +122,15 @@
 
     <!-- NOSOTROS -->
     <section id="nosotros">
-        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-            <h3 style="color: var(--primary-color); margin-bottom: 15px; font-size: 24px;">SOBRE NOSOTROS</h3>
-            <p style="color: #555; line-height: 1.6; font-size: 14px;">Somos un refugio independiente sin fines de lucro. Trabajamos con compromiso y amor para rescatar animales en situación de calle o abandono, brindarles atención veterinaria, alimento y contención, y encontrarles el hogar que merecen.</p>
+        <div class="about-card">
+            <h3>SOBRE NOSOTROS</h3>
+            <p>Somos un refugio independiente sin fines de lucro. Trabajamos con compromiso y amor para rescatar animales en situación de calle o abandono, brindarles atención veterinaria, alimento y contención, y encontrarles el hogar que merecen.</p>
         </div>
     </section>
 
     <!-- OTRAS FORMAS DE AYUDAR -->
     <section id="ayudar">
-        <h3 style="color: var(--primary-color); margin-bottom: 20px; text-align: center; font-size: 22px;">OTRAS FORMAS DE AYUDAR</h3>
+        <h3 class="section-heading">OTRAS FORMAS DE AYUDAR</h3>
         <div class="other-ways">
             <a class="way-card" href="#modal-alimentos">
                 <i class="fa-solid fa-bowl-food"></i>
@@ -163,19 +165,19 @@
 
     <!-- FOOTER / CONTACTO -->
     <footer id="contacto">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        <div class="footer-inner">
             <div>
                 <h3>PATITAS SEGURAS</h3>
-                <p style="font-size: 12px; color: #ccc;">Refugio de animales</p>
+                <p class="footer-tagline">Refugio de animales</p>
                 <div class="social-icons">
                     <a href="https://instagram.com" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>   
                 </div>
             </div>
-            <div>
-                <p style="font-size: 13px;"><i class="fa-solid fa-phone"></i> 11 2345 6789</p>
-                <p style="font-size: 13px; margin-top: 5px;"><i class="fa-solid fa-envelope"></i> hola@patitaseguras.org</p>
-                <p style="font-size: 13px; margin-top: 5px;"><i class="fa-solid fa-location-dot"></i> Merlo, Buenos Aires, Argentina</p>
-                <p style="font-size: 12px; margin-top: 10px; color: #ccc;">Amor que se nota, huellas que quedan. 🐾</p>
+            <div class="footer-contact">
+                <p><i class="fa-solid fa-phone"></i> 11 2345 6789</p>
+                <p><i class="fa-solid fa-envelope"></i> hola@patitaseguras.org</p>
+                <p><i class="fa-solid fa-location-dot"></i> Merlo, Buenos Aires, Argentina</p>
+                <p class="footer-note">Amor que se nota, huellas que quedan. 🐾</p>
             </div>
         </div>
     </footer>
