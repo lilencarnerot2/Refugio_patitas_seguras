@@ -4,7 +4,16 @@
             --accent-color: #d97724;
             --bg-cream: #fae6b3;
             --text-dark: #2b2b2b;
+            --text-muted: #555;
+            --text-soft: #666;
+            --text-light: #777;
+            --footer-bg: #244121;
+            --footer-muted: #ccc;
+            --border-light: #eee;
+            --icon-bg: #eaf0e9;
             --white: #ffffff;
+            --header-pad-x: 5%;
+            --header-pad-y: 15px;
         }
 
        
@@ -21,19 +30,24 @@
             background-color: var(--bg-cream);
             color: var(--text-dark);
             overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Barra superior fija (logo + menú + donar) */
         header {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
-            padding: 15px 5%;
+            padding: var(--header-pad-y) 0;
             background-color: var(--white);
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--border-light);
             position: sticky;
             top: 0;
             z-index: 1000;
+            container-type: inline-size;
+            container-name: site-header;
         }
 
         /* Logo con ícono de pata y texto */
@@ -43,6 +57,10 @@
             gap: 10px;
             text-decoration: none;
             cursor: pointer;
+            justify-self: start;
+            z-index: 2;
+            grid-column: 1;
+            padding-left: var(--header-pad-x);
         }
 
         /* Nombre "PATITAS SEGURAS" */
@@ -56,14 +74,24 @@
         /* Subtítulo "Refugio de animales" */
         .logo-text span {
             font-size: 10px;
-            color: #666;
+            color: var(--text-soft);
         }
 
-        /* Menú centrado en el header*/
+        .logo-icon {
+            background: var(--primary-color);
+            border-radius: 50%;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 20px;
+        }
+
+        /* Menú centrado en el header */
         nav {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
+            justify-self: center;
+            grid-column: 2;
         }
 
         /* Lista horizontal de links: Inicio, Mascotas, etc. */
@@ -125,7 +153,7 @@
             margin: 0;
             list-style: none;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            border: 1px solid #eee;
+            border: 1px solid var(--border-light);
             border-radius: 8px;
             z-index: 1100;
             text-align: center;
@@ -166,9 +194,18 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            justify-self: end;
+            z-index: 2;
+            grid-column: 3;
+            padding-right: var(--header-pad-x);
         }
 
         /* Ícono hamburguesa (oculto en escritorio, visible en celular) */
+        .nav-toggle,
+        .nav-drop-toggle {
+            display: none;
+        }
+
         .menu-toggle {
             display: none;
             background: none;
@@ -178,6 +215,96 @@
             cursor: pointer;
             padding: 6px;
             line-height: 1;
+        }
+
+        .menu-toggle .menu-icon-close {
+            display: none;
+        }
+
+        /* Menú hamburguesa según el ancho real del header (no del viewport) */
+        @container site-header (max-width: 992px) {
+            .menu-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            nav {
+                display: none;
+                grid-column: 1 / -1;
+                grid-row: 2;
+                width: 100%;
+                justify-self: stretch;
+                background: var(--white);
+                border-bottom: 1px solid var(--border-light);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+                text-align: center;
+            }
+
+            .logo-container,
+            .header-actions {
+                grid-row: 1;
+            }
+
+            #nav-toggle:checked ~ nav {
+                display: block;
+            }
+
+            #nav-toggle:checked ~ .header-actions .menu-icon-bars {
+                display: none;
+            }
+
+            #nav-toggle:checked ~ .header-actions .menu-icon-close {
+                display: inline-block;
+            }
+
+            nav > ul {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                justify-content: center;
+                gap: 0;
+                width: 100%;
+                padding: 10px 0 16px;
+            }
+
+            nav > ul > li,
+            nav details,
+            nav summary,
+            nav a,
+            .nav-dropdown > label,
+            nav .dropdown-menu a {
+                display: block;
+                width: 100%;
+                height: auto;
+                text-align: center;
+            }
+
+            nav summary,
+            nav a,
+            .nav-dropdown > label,
+            nav .dropdown-menu a {
+                padding: 12px 16px;
+            }
+
+            nav .dropdown-menu {
+                position: static;
+                transform: none;
+                display: none;
+                box-shadow: none;
+                border: none;
+                min-width: 0;
+                width: 100%;
+                padding: 0;
+                background: var(--icon-bg);
+                text-align: center;
+            }
+
+            .nav-dropdown:focus-within .dropdown-menu,
+            .nav-drop-toggle:checked ~ .dropdown-menu,
+            details[open] .dropdown-menu {
+                display: block;
+            }
         }
 
         /* Botón naranja "DONAR" */
@@ -217,7 +344,7 @@
         /* Título grande del hero */
         .hero-content h2 {
             font-size: 42px;
-            color: #2b2b2b;
+            color: var(--text-dark);
             line-height: 1.1;
             margin-bottom: 20px;
         }
@@ -229,7 +356,7 @@
 
         .hero-content p {
             font-size: 15px;
-            color: #555;
+            color: var(--text-muted);
             margin-bottom: 25px;
             line-height: 1.6;
         }
@@ -325,7 +452,7 @@
 
         .card-body p {
             font-size: 13px;
-            color: #666;
+            color: var(--text-soft);
         }
 
         .card img {
@@ -366,9 +493,13 @@
             gap: 8px;
         }
 
+        .stat-item h4 i {
+            font-size: 16px;
+        }
+
         .stat-item p {
             font-size: 12px;
-            color: #777;
+            color: var(--text-light);
             margin-top: 5px;
         }
 
@@ -403,7 +534,7 @@
         .way-card i {
             font-size: 24px;
             color: var(--primary-color);
-            background: #eaf0e9;
+            background: var(--icon-bg);
             padding: 12px;
             border-radius: 50%;
         }
@@ -416,7 +547,33 @@
 
         .way-card p {
             font-size: 12px;
-            color: #666;
+            color: var(--text-soft);
+        }
+
+        .about-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        }
+
+        .about-card h3,
+        .section-heading {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .section-heading {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        .about-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 14px;
         }
 
         /* Fondo oscuro que cubre la pantalla cuando se abre un modal */
@@ -430,12 +587,15 @@
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 2000;
         }
 
-        /* Caja blanca del modal (donaciones, voluntariado, etc.) */
+        .modal-overlay:target {
+            display: flex;
+        }
+
+        /* Caja blanca (donaciones, voluntariado, etc.) */
         .modal-content {
-            background: white;
+            background: var(--white);
             padding: 30px;
             border-radius: 15px;
             max-width: 450px;
@@ -452,28 +612,57 @@
 
         .modal-content p {
             font-size: 14px;
-            color: #555;
-            margin-bottom: 20px;
+            color: var(--text-muted);
             line-height: 1.5;
         }
 
         /* Botón para cerrar el modal */
         .close-modal {
             background: var(--primary-color);
-            color: white;
+            color: var(--white);
             border: none;
             padding: 8px 20px;
             border-radius: 20px;
             cursor: pointer;
             font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
         }
 
         /* Pie de página verde oscuro */
         footer {
-            background-color: #244121;
-            color: white;
+            background-color: var(--footer-bg);
+            color: var(--white);
             padding: 40px 5% 20px 5%;
-            margin-top: 20px;
+            margin-top: auto;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-tagline {
+            font-size: 12px;
+            color: var(--footer-muted);
+        }
+
+        .footer-contact p {
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .footer-contact p:first-child {
+            margin-top: 0;
+        }
+
+        .footer-note {
+            font-size: 12px;
+            margin-top: 10px;
+            color: var(--footer-muted);
         }
 
         /* Íconos de redes en el footer */
@@ -485,8 +674,7 @@
 
         .social-icons a {
             background: var(--primary-color);
-            color: white;
-            width: 35px;
+            color: var(--white);
             height: 35px;
             border-radius: 50%;
             display: flex;
@@ -519,78 +707,29 @@
                 grid-template-columns: repeat(2, 1fr);
                 gap: 20px;
             }
-            /* Menú oculto; se abre como panel debajo del header */
-            nav {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                transform: none;
-                background: var(--white);
-                border-bottom: 1px solid #eee;
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
-            }
+        }
 
-            header.nav-open nav {
-                display: block;
-            }
+        /* Menú de mascotas.php: hamburguesa y desplegables solo con CSS */
+        .page-mascotas nav summary {
+            cursor: pointer;
+            list-style: none;
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            line-height: 24px;
+            color: var(--text-dark);
+            font-family: inherit;
+        }
 
-            nav > ul {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 0;
-                padding: 10px 0 16px;
-            }
+        .page-mascotas nav summary::-webkit-details-marker,
+        .page-mascotas nav summary::marker {
+            display: none;
+            content: "";
+        }
 
-            nav > ul > li {
-                width: 100%;
-                text-align: center;
-            }
-
-            nav a,
-            nav .dropdown-menu a {
-                display: block;
-                padding: 12px 16px;
-                font-size: 13px;
-                font-weight: 500;
-                letter-spacing: 0.4px;
-            }
-
-            nav .dropdown-menu {
-                position: static;
-                transform: none;
-                display: none;
-                box-shadow: none;
-                border: none;
-                min-width: 0;
-                padding: 0;
-                background: #fafafa;
-            }
-
-            .nav-dropdown:hover .dropdown-menu,
-            .nav-dropdown:focus-within .dropdown-menu {
-                display: none;
-            }
-
-            .nav-dropdown.open .dropdown-menu {
-                display: block;
-            }
-
-            /* Muestra el botón hamburguesa */
-            .menu-toggle {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            }
-            /* Tarjetas de info y catálogo de mascotas en 1 columna */
-            .info-cards {
-                grid-template-columns: 1fr;
-            }
-            .pet-catalog {
-                grid-template-columns: 1fr;
-            }
+        .page-mascotas details[open] .dropdown-menu {
+            display: block;
         }
 
         /* Título y texto intro de mascotas.php */
@@ -608,7 +747,7 @@
 
         .page-intro p {
             font-size: 14px;
-            color: #555;
+            color: var(--text-muted);
             line-height: 1.6;
         }
 
@@ -639,19 +778,18 @@
 
         .info-card p {
             font-size: 13px;
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 8px;
+            color: var(--text-soft);
         }
 
         .info-card ul {
             margin: 10px 0 0 18px;
             font-size: 13px;
-            color: #666;
-            line-height: 1.7;
+            color: var(--text-soft);
         }
 
-        /* Título "Mascotas disponibles" + contador */
+        #catalogo {
+            padding-top: 0;
+        }
         .catalog-header {
             display: flex;
             justify-content: space-between;
@@ -668,7 +806,7 @@
 
         .catalog-header span {
             font-size: 13px;
-            color: #777;
+            color: var(--text-light);
         }
 
         /* Grilla de tarjetas de cada mascota en el listado */
@@ -676,6 +814,12 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Tarjeta de una mascota (foto + nombre + botones) */
@@ -692,10 +836,7 @@
             width: 100%;
             height: 200px;
             object-fit: cover;
-            background: #eaf0e9;
-        }
-
-        .pet-card-body {
+            background: var(--icon-bg);
             padding: 18px;
             flex: 1;
             display: flex;
@@ -712,8 +853,7 @@
         .pet-card-especie {
             font-size: 13px;
             font-weight: 500;
-            color: #777;
-            margin-bottom: 15px;
+            color: var(--text-light);
         }
 
         /* Columna de botones: Adoptar, Tránsito, Ver detalle */
@@ -780,10 +920,9 @@
 
         .catalog-empty p {
             font-size: 13px;
-            color: #666;
+            color: var(--text-soft);
         }
 
-        /* Layout de mascota-detalle.php: foto a la izquierda, datos a la derecha */
         .pet-detail {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -802,10 +941,9 @@
             height: 100%;
             min-height: 320px;
             object-fit: cover;
-            background: #eaf0e9;
+            background: var(--icon-bg);
         }
 
-        /* Bloque de nombre, raza, historial y botones */
         .pet-detail-body {
             padding: 30px;
         }
@@ -821,16 +959,14 @@
             list-style: none;
             margin: 0 0 18px;
             padding: 0;
-            color: #555;
-            font-size: 14px;
+            color: var(--text-muted);
             line-height: 1.8;
         }
 
         /* Párrafo del historial de la mascota */
         .pet-detail-historial {
             font-size: 14px;
-            color: #555;
-            line-height: 1.6;
+            color: var(--text-muted);
             margin-bottom: 22px;
         }
 
@@ -842,130 +978,6 @@
 
             .pet-detail img {
                 min-height: 220px;
-            }
-        }
-
-        /* ===== Actualizaciones: hamburguesa, menú centrado y desplegables ===== */
-
-        .nav-toggle,
-        .nav-drop-toggle {
-            display: none;
-        }
-
-        .menu-toggle .menu-icon-close {
-            display: none;
-        }
-
-        .menu-toggle .menu-icon-bars {
-            display: inline-block;
-        }
-
-        .nav-dropdown > label {
-            text-decoration: none;
-            color: var(--text-dark);
-            font-family: 'Poppins', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            letter-spacing: 0.4px;
-            line-height: 24px;
-            text-transform: uppercase;
-            cursor: pointer;
-        }
-
-        .nav-drop-toggle:checked ~ .dropdown-menu {
-            display: block;
-        }
-
-        @media (max-width: 992px) {
-            #nav-toggle:checked ~ nav {
-                display: block;
-                width: 100%;
-                text-align: center;
-            }
-
-            #nav-toggle:checked ~ .header-actions .menu-icon-bars {
-                display: none;
-            }
-
-            #nav-toggle:checked ~ .header-actions .menu-icon-close {
-                display: inline;
-            }
-
-            nav > ul {
-                justify-content: center;
-                width: 100%;
-            }
-
-            nav > ul > li {
-                display: block;
-                height: auto;
-                text-align: center;
-            }
-
-            nav a,
-            .nav-dropdown > label,
-            nav .dropdown-menu a {
-                display: block;
-                width: 100%;
-                text-align: center;
-            }
-
-            nav .dropdown-menu {
-                width: 100%;
-                text-align: center;
-            }
-
-            .nav-drop-toggle:checked ~ .dropdown-menu,
-            .nav-dropdown:focus-within .dropdown-menu {
-                display: block;
-            }
-        }
-
-        /* La barra verde del footer queda siempre al pie de la ventana */
-        html {
-            height: 100%;
-        }
-
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        footer {
-            margin-top: auto;
-        }
-
-        /* Páginas sin hamburguesa (mascotas.php): menú igual que el detalle, centrado */
-        @media (max-width: 992px) {
-            header:not(:has(#nav-toggle)) {
-                flex-wrap: wrap;
-            }
-
-            header:not(:has(#nav-toggle)) nav {
-                display: block;
-                position: static;
-                width: 100%;
-                left: 0;
-                transform: none;
-                text-align: center;
-            }
-
-            header:not(:has(#nav-toggle)) nav > ul {
-                width: 100%;
-                justify-content: center;
-            }
-
-            header:not(:has(#nav-toggle)) nav > ul > li {
-                display: block;
-                height: auto;
-                text-align: center;
-            }
-
-            header:not(:has(#nav-toggle)) nav a {
-                display: block;
-                width: 100%;
-                text-align: center;
             }
         }
         
