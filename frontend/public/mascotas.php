@@ -93,7 +93,37 @@
             <span id="catalogo-count">Cargando...</span>
         </div>
 
+        <div class="catalog-filters">
+            <input type="radio" name="filtro-especie" id="filtro-todos" checked>
+            <label for="filtro-todos">Todos</label>
+        </div>
+
         <div id="contenedor-mascotas" class="pet-catalog"></div>
+    </section>
+
+    <section class="requisitos-section">
+        <div class="page-intro">
+            <h2>Requisitos para adoptar</h2>
+            <p>El formulario lo evalúa el refugio. La decisión la toma el personal autorizado.</p>
+        </div>
+
+        <div class="requisitos-grid">
+            <div class="requisito-item"><span class="requisito-mark" aria-hidden="true"></span>Usuario registrado.</div>
+            <div class="requisito-item"><span class="requisito-mark" aria-hidden="true"></span>La solicitud va asociada a una mascota.</div>
+            <div class="requisito-item"><span class="requisito-mark" aria-hidden="true"></span>Completar vivienda, patio y hogar.</div>
+            <div class="requisito-item"><span class="requisito-mark" aria-hidden="true"></span>Integrantes, menores y horas sola.</div>
+            <div class="requisito-item"><span class="requisito-mark" aria-hidden="true"></span>Otras mascotas, experiencia y cuidado.</div>
+            <div class="requisito-item"><span class="requisito-mark" aria-hidden="true"></span>Compromisos y seguimiento posterior.</div>
+        </div>
+
+        <details class="proceso-adopcion">
+            <summary>Proceso de adopción</summary>
+            <ol>
+                <li>Ingresá con un usuario registrado.</li>
+                <li>Elegí la mascota y completá el formulario.</li>
+                <li>El refugio evalúa. La compatibilidad es orientativa.</li>
+            </ol>
+        </details>
     </section>
 
     <footer>
