@@ -21,17 +21,40 @@
                 <span>Refugio de animales</span>
             </div>
         </a>
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
         <nav>
             <ul>
                 <li><a href="index.php">INICIO</a></li>
-                <li><a href="mascotas.php" class="active">MASCOTAS</a></li>
-                <li><a href="voluntariado.php">VOLUNTARIADO</a></li>
-                <li><a href="donaciones.php">DONACIONES</a></li>
+                <li><a href="index.php#nosotros">NOSOTROS</a></li>
+                <li class="nav-dropdown">
+                    <input type="checkbox" id="drop-sumate" class="nav-drop-toggle">
+                    <label for="drop-sumate">SUMATE</label>
+                    <ul class="dropdown-menu">
+                        <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
+                        <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
+                        <li><a href="index.php#modal-voluntariado">SE VOLUNTARIO</a></li>
+                    </ul>
+                </li>
+                <li class="nav-dropdown">
+                    <input type="checkbox" id="drop-ayudar" class="nav-drop-toggle">
+                    <label for="drop-ayudar">CÓMO AYUDAR</label>
+                    <ul class="dropdown-menu">
+                        <li><a href="index.php#modal-castracion">CASTRACIÓN</a></li>
+                        <li><a href="index.php#modal-maltrato">DENUNCIA MALTRATO</a></li>
+                    </ul>
+                </li>
+                <li><a href="index.php#contacto">CONTACTO</a></li>
             </ul>
         </nav>
-        <a class="btn-donate" href="donaciones.php">
-            <i class="fa-solid fa-heart"></i> DONAR
-        </a>
+        <div class="header-actions">
+            <a class="btn-donate" href="index.php#modal-donaciones">
+                <i class="fa-solid fa-heart"></i> DONAR
+            </a>
+            <label for="nav-toggle" class="menu-toggle" aria-label="Menú">
+                <i class="fa-solid fa-bars menu-icon-bars"></i>
+                <i class="fa-solid fa-xmark menu-icon-close"></i>
+            </label>
+        </div>
     </header>
 
     <section>
@@ -84,12 +107,7 @@
         </div>
     </footer>
 
-<script>
-    window.APP_CONFIG = {
-        backendUrl: <?php echo json_encode(getenv('BACKEND_SERVICE_URL')); ?>
-    };
-</script>
-
+<script src="config.php"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/app.js"></script>
 <script src="../assets/js/mascotas.js"></script>
