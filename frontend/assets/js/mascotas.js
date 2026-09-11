@@ -22,20 +22,21 @@ function cargarCatalogo() {
             }
 
             contenedor.innerHTML = mascotas.map(function (m) {
-                const nombre = texto(m.nombre) || 'Mascota';
+                const nombre = escapar(texto(m.nombre) || 'Mascota');
+                const id = encodeURIComponent(m.id);
                 return `
                     <article class="pet-card">
                         ${fotoMascota(m)}
                         <div class="pet-card-body">
                             <h4>${nombre}</h4>
                             <div class="pet-card-actions">
-                                <a class="btn-adopt" href="../user/solicitar_adopcion.php?id=${m.id}">
+                                <a class="btn-adopt" href="../user/solicitar_adopcion.php?id=${id}">
                                     <i class="fa-solid fa-heart"></i> Adoptar
                                 </a>
-                                <a class="btn-transito" href="../user/solicitar_transito.php?id=${m.id}">
+                                <a class="btn-transito" href="../user/solicitar_transito.php?id=${id}">
                                     <i class="fa-solid fa-house-chimney"></i> Hogar de tránsito
                                 </a>
-                                <a class="btn-detail" href="mascota-detalle.php?id=${m.id}">
+                                <a class="btn-detail" href="mascota-detalle.php?id=${id}">
                                     <i class="fa-solid fa-circle-info"></i> Ver detalle
                                 </a>
                             </div>
@@ -94,7 +95,7 @@ function mostrarFicha(mascota) {
     document.getElementById('detalle-especie').textContent = texto(mascota.especie);
     document.getElementById('detalle-raza').textContent = texto(mascota.raza);
     document.getElementById('detalle-sexo').textContent = texto(mascota.sexo);
-    document.getElementById('detalle-tamano').textContent = texto(mascota['tamaño']);
+    document.getElementById('detalle-tamano').textContent = texto(mascota.tamano || mascota['tamaño']);
     document.getElementById('detalle-nacimiento').textContent = texto(mascota.fecha_nacimiento_estimada);
     document.getElementById('detalle-historial').textContent = texto(mascota.historial);
 
@@ -128,11 +129,19 @@ function fotoMascota(mascota) {
     if (!mascota.foto_url) {
         return '<div class="pet-photo-empty" aria-hidden="true"></div>';
     }
-    return '<img src="' + mascota.foto_url + '" alt="Foto de ' + (texto(mascota.nombre) || 'mascota') + '">';
+    return '<img src="' + escapar(mascota.foto_url) + '" alt="Foto de ' + escapar(texto(mascota.nombre) || 'mascota') + '">';
 }
 
 function texto(valor) {
     return valor == null ? '' : String(valor);
+}
+
+function escapar(valor) {
+    return String(valor)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
 }
 
 function mensajeVacio(titulo, textoMsg, conVolver) {
