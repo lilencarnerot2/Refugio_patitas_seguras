@@ -1,38 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mascotas - Patitas Seguras</title>
-    <script src="../assets/js/mascotas.js" defer></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/styles.css">
-</head>
-<body>
-
-    <header>
-        <a class="logo-container" href="index.php">
-            <div style="background: var(--primary-color); border-radius: 50%; padding: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
-                <i class="fa-solid fa-paw"></i>
-            </div>
-            <div class="logo-text">
-                <h1>PATITAS SEGURAS</h1>
-                <span>Refugio de animales</span>
-            </div>
-        </a>
-        <nav>
-            <ul>
-                <li><a href="index.php">INICIO</a></li>
-                <li><a href="mascotas.php" class="active">MASCOTAS</a></li>
-                <li><a href="voluntariado.php">VOLUNTARIADO</a></li>
-                <li><a href="donaciones.php">DONACIONES</a></li>
-            </ul>
-        </nav>
-        <a class="btn-donate" href="donaciones.php">
-            <i class="fa-solid fa-heart"></i> DONAR
-        </a>
-    </header>
+<?php
+$tituloPagina = 'Mascotas - Patitas Seguras';
+require __DIR__ . '/includes/head.php';
+require __DIR__ . '/includes/header.php';
+?>
 
     <section>
         <div class="page-intro">
@@ -71,28 +41,7 @@
         <div id="contenedor-mascotas" class="pet-catalog"></div>
     </section>
 
-    <footer>
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-            <div>
-                <h3>PATITAS SEGURAS</h3>
-                <p style="font-size: 12px; color: #ccc;">Refugio de animales</p>
-            </div>
-            <div>
-                <p style="font-size: 13px;"><i class="fa-solid fa-envelope"></i> hola@patitaseguras.org</p>
-                <p style="font-size: 13px; margin-top: 5px;"><i class="fa-solid fa-location-dot"></i> Merlo, Buenos Aires, Argentina</p>
-            </div>
-        </div>
-    </footer>
-
-<script>
-    window.APP_CONFIG = {
-        backendUrl: <?php echo json_encode(getenv('BACKEND_SERVICE_URL')); ?>
-    };
-</script>
-
-<script src="../assets/js/api.js"></script>
-<script src="../assets/js/app.js"></script>
-<script src="../assets/js/mascotas.js"></script>
-
-</body>
-</html>
+    <script src="config.php"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/mascotas.js"></script>
+<?php require __DIR__ . '/includes/footer.php'; ?>

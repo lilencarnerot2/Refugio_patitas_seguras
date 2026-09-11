@@ -1,4 +1,5 @@
 <?php
+$tituloPagina = 'Detalle de mascota - Patitas Seguras';
 require __DIR__ . '/includes/head.php';
 require __DIR__ . '/includes/header.php';
 ?>
@@ -49,4 +50,7 @@ require __DIR__ . '/includes/header.php';
         </article>
     </section>
 
+    <script src="config.php"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/mascotas.js"></script>
 <?php require __DIR__ . '/includes/footer.php'; ?>
