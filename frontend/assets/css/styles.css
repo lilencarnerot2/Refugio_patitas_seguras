@@ -26,6 +26,10 @@
         }
 
         /* Fondo crema y color de texto de todas las páginas */
+        [hidden] {
+            display: none !important;
+        }
+
         body {
             background-color: var(--bg-cream);
             color: var(--text-dark);
@@ -1012,6 +1016,14 @@
         .catalog-empty p {
             font-size: 13px;
             color: var(--text-soft);
+        }
+
+        .empty-back-link {
+            display: inline-block;
+            margin-top: 16px;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
         }
 
         .pet-detail {

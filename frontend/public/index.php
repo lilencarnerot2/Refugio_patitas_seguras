@@ -1,59 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patitas Seguras - Refugio de animales</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/styles.css">
-</head>
-<body>
-
-    <!-- HEADER -->
-    <header>
-        <a class="logo-container" href="#inicio">
-            <div style="background: var(--primary-color); border-radius: 50%; padding: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
-                <i class="fa-solid fa-paw"></i>
-            </div>
-            <div class="logo-text">
-                <h1>PATITAS SEGURAS</h1>
-                <span>Refugio de animales</span>
-            </div>
-        </a>
-        <input type="checkbox" id="nav-toggle" class="nav-toggle">
-        <nav>
-            <ul>
-                <li><a href="#inicio">INICIO</a></li>
-                <li><a href="#nosotros">NOSOTROS</a></li>
-                <li class="nav-dropdown">
-                    <a tabindex="0">SUMATE</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
-                        <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
-                        <li><a href="#modal-voluntariado">SE VOLUNTARIO</a></li>
-                    </ul>
-                </li>
-                <li class="nav-dropdown">
-                    <a tabindex="0">CÓMO AYUDAR</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#modal-castracion">CASTRACIÓN</a></li>
-                        <li><a href="#modal-maltrato">DENUNCIA MALTRATO</a></li>
-                    </ul>
-                </li>
-                <li><a href="#contacto">CONTACTO</a></li>
-            </ul>
-        </nav>
-        <div class="header-actions">
-            <a class="btn-donate" href="#modal-donaciones">
-                <i class="fa-solid fa-heart"></i> DONAR
-            </a>
-            <label for="nav-toggle" class="menu-toggle" aria-label="Menú">
-                <i class="fa-solid fa-bars menu-icon-bars"></i>
-                <i class="fa-solid fa-xmark menu-icon-close"></i>
-            </label>
-        </div>
-    </header>
+<?php
+$esInicio = true;
+require __DIR__ . '/includes/head.php';
+require __DIR__ . '/includes/header.php';
+?>
 
     <!-- INICIO / HERO -->
     <section id="inicio" class="hero">
@@ -160,23 +109,6 @@
     </section>
 
     <!-- FOOTER / CONTACTO -->
-    <footer id="contacto">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-            <div>
-                <h3>PATITAS SEGURAS</h3>
-                <p style="font-size: 12px; color: #ccc;">Refugio de animales</p>
-                <div class="social-icons">
-                    <a href="https://instagram.com" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>   
-                </div>
-            </div>
-            <div>
-                <p style="font-size: 13px;"><i class="fa-solid fa-phone"></i> 11 2345 6789</p>
-                <p style="font-size: 13px; margin-top: 5px;"><i class="fa-solid fa-envelope"></i> hola@patitaseguras.org</p>
-                <p style="font-size: 13px; margin-top: 5px;"><i class="fa-solid fa-location-dot"></i> Merlo, Buenos Aires, Argentina</p>
-                <p style="font-size: 12px; margin-top: 10px; color: #ccc;">Amor que se nota, huellas que quedan. 🐾</p>
-            </div>
-        </div>
-    </footer>
 
     <div id="modal-voluntariado" class="modal-overlay">
         <div class="modal-content">
@@ -228,6 +160,4 @@
         </div>
     </div>
 
-
-</body>
-</html>
+<?php require __DIR__ . '/includes/footer.php'; ?>

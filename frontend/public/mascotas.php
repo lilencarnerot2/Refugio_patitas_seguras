@@ -4,60 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mascotas - Patitas Seguras</title>
-    <script src="../assets/js/mascotas.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body class="page-mascotas has-mobile-nav">
 
-    <header>
-        <a class="logo-container" href="index.php">
-            <div class="logo-icon">
-                <i class="fa-solid fa-paw"></i>
-            </div>
-            <div class="logo-text">
-                <h1>PATITAS SEGURAS</h1>
-                <span>Refugio de animales</span>
-            </div>
-        </a>
-        <input type="checkbox" id="nav-toggle" class="nav-toggle">
-        <nav>
-            <ul>
-                <li><a href="index.php">INICIO</a></li>
-                <li><a href="index.php#nosotros">NOSOTROS</a></li>
-                <li class="nav-dropdown">
-                    <details>
-                        <summary>SUMATE</summary>
-                        <ul class="dropdown-menu">
-                            <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
-                            <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
-                            <li><a href="index.php#modal-voluntariado">SE VOLUNTARIO</a></li>
-                        </ul>
-                    </details>
-                </li>
-                <li class="nav-dropdown">
-                    <details>
-                        <summary>CÓMO AYUDAR</summary>
-                        <ul class="dropdown-menu">
-                            <li><a href="index.php#modal-castracion">CASTRACIÓN</a></li>
-                            <li><a href="index.php#modal-maltrato">DENUNCIA MALTRATO</a></li>
-                        </ul>
-                    </details>
-                </li>
-                <li><a href="index.php#contacto">CONTACTO</a></li>
-            </ul>
-        </nav>
-        <div class="header-actions">
-            <a class="btn-donate" href="index.php#modal-donaciones">
-                <i class="fa-solid fa-heart"></i> DONAR
-            </a>
-            <label for="nav-toggle" class="menu-toggle" aria-label="Menú">
-                <i class="fa-solid fa-bars menu-icon-bars"></i>
-                <i class="fa-solid fa-xmark menu-icon-close"></i>
-            </label>
-        </div>
-    </header>
+<?php require __DIR__ . '/includes/header.php'; ?>
 
     <section>
         <div class="page-intro">
@@ -141,7 +94,6 @@
 
 <script src="config.php"></script>
 <script src="../assets/js/api.js"></script>
-<script src="../assets/js/app.js"></script>
 <script src="../assets/js/mascotas.js"></script>
 
 </body>
