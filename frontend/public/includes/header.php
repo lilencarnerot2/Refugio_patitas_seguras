@@ -1,6 +1,9 @@
-    <header>
-        <a class="logo-container" href="index.php#inicio">
-            <div style="background: var(--primary-color); border-radius: 50%; padding: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
+﻿<?php
+$esInicio = !empty($esInicio);
+$inicio = $esInicio ? '' : 'index.php';
+?><header>
+        <a class="logo-container" href="<?php echo $esInicio ? '#inicio' : 'index.php'; ?>">
+            <div class="logo-icon">
                 <i class="fa-solid fa-paw"></i>
             </div>
             <div class="logo-text">
@@ -11,28 +14,39 @@
         <input type="checkbox" id="nav-toggle" class="nav-toggle">
         <nav>
             <ul>
-                <li><a href="index.php#inicio">INICIO</a></li>
-                <li><a href="index.php#nosotros">NOSOTROS</a></li>
+                <li><a href="<?php echo $esInicio ? '#inicio' : 'index.php'; ?>">INICIO</a></li>
+                <li><a href="<?php echo $inicio; ?>#nosotros">NOSOTROS</a></li>
                 <li class="nav-dropdown">
-                    <a tabindex="0">SUMATE</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
-                        <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
-                        <li><a href="index.php#modal-voluntariado">SE VOLUNTARIO</a></li>
-                    </ul>
+                    <details>
+                        <summary>SUMATE</summary>
+                        <ul class="dropdown-menu">
+                            <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
+                            <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
+                            <li><a href="<?php echo $inicio; ?>#modal-voluntariado">SE VOLUNTARIO</a></li>
+                        </ul>
+                    </details>
                 </li>
                 <li class="nav-dropdown">
-                    <a tabindex="0">CÓMO AYUDAR</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="index.php#modal-castracion">CASTRACIÓN</a></li>
-                        <li><a href="index.php#modal-maltrato">DENUNCIA MALTRATO</a></li>
-                    </ul>
+                    <details>
+                        <summary>CÓMO AYUDAR</summary>
+                        <ul class="dropdown-menu">
+                            <li><a href="<?php echo $inicio; ?>#modal-castracion">CASTRACIÓN</a></li>
+                            <li><a href="<?php echo $inicio; ?>#modal-maltrato">DENUNCIA MALTRATO</a></li>
+                        </ul>
+                    </details>
                 </li>
-                <li><a href="index.php#contacto">CONTACTO</a></li>
+                <li><a href="<?php echo $inicio; ?>#contacto">CONTACTO</a></li>
+                <li class="nav-actions">
+                    <a class="btn-outline" href="login.php">INGRESAR</a>
+                    <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : 'index.php#modal-donaciones'; ?>">
+                        <i class="fa-solid fa-heart"></i> DONAR
+                    </a>
+                </li>
             </ul>
         </nav>
         <div class="header-actions">
-            <a class="btn-donate" href="index.php#modal-donaciones">
+            <a class="btn-outline" href="login.php">INGRESAR</a>
+            <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : 'index.php#modal-donaciones'; ?>">
                 <i class="fa-solid fa-heart"></i> DONAR
             </a>
             <label for="nav-toggle" class="menu-toggle" aria-label="Menú">
