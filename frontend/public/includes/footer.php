@@ -1,4 +1,4 @@
-    <footer id="contacto">
+﻿    <footer id="contacto">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
             <div>
                 <h3>PATITAS SEGURAS</h3>
@@ -18,20 +18,17 @@
         </div>
     </footer>
 
+<?php if (!empty($scriptsPagina) && is_array($scriptsPagina)): ?>
     <script>
         window.APP_CONFIG = {
             backendUrl: <?php echo json_encode(getenv('BACKEND_SERVICE_URL') ?: ''); ?>
         };
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/api.js?t=<?php echo filemtime(__DIR__ . '/../../assets/js/api.js'); ?>"></script>
     <script src="../assets/js/app.js?t=<?php echo filemtime(__DIR__ . '/../../assets/js/app.js'); ?>"></script>
-    <script src="../assets/js/mascotas.js?t=<?php echo filemtime(__DIR__ . '/../../assets/js/mascotas.js'); ?>"></script>
-<?php if (!empty($scriptsPagina) && is_array($scriptsPagina)): ?>
 <?php foreach ($scriptsPagina as $script): ?>
-<?php if ($script === 'mascotas.js') { continue; } ?>
 <?php $rutaScript = __DIR__ . '/../../assets/js/' . $script; ?>
-    <script src="../assets/js/<?php echo $script; ?>?t=<?php echo is_file($rutaScript) ? filemtime($rutaScript) : time(); ?>"></script>
+    <script src="../assets/js/<?php echo htmlspecialchars($script, ENT_QUOTES, 'UTF-8'); ?>?t=<?php echo is_file($rutaScript) ? filemtime($rutaScript) : time(); ?>"></script>
 <?php endforeach; ?>
 <?php endif; ?>
 </body>
