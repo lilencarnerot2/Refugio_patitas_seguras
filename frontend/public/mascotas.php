@@ -47,7 +47,7 @@
         </div>
 
         <div class="catalog-filters">
-            <input type="radio" name="filtro-especie" id="filtro-todos" checked>
+            <input type="radio" name="filtro-especie" id="filtro-todos" value="" checked>
             <label for="filtro-todos">Todos</label>
         </div>
 
