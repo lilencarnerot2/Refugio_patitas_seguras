@@ -14,6 +14,7 @@
             --white: #ffffff;
             --header-pad-x: 5%;
             --header-pad-y: 15px;
+            --header-height: calc(var(--header-pad-y) * 2 + 2.5rem);
         }
 
        
@@ -25,30 +26,41 @@
             scroll-behavior: smooth;
         }
 
-        /* Fondo crema y color de texto de todas las páginas */
+        html {
+            margin: 0;
+            padding: 0;
+            overflow-x: clip;
+        }
+
         [hidden] {
             display: none !important;
         }
 
         body {
+            margin: 0;
+            padding: 0;
+            padding-top: var(--header-height);
             background-color: var(--bg-cream);
             color: var(--text-dark);
-            overflow-x: hidden;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* Barra superior fija (logo + menú + donar) */
+        /* Barra pegada al borde superior de la ventana */
         header {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
             align-items: center;
             padding: var(--header-pad-y) 0;
+            margin: 0;
             background-color: var(--white);
             border-bottom: 1px solid var(--border-light);
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
             z-index: 1000;
             container-type: inline-size;
             container-name: site-header;
@@ -73,6 +85,7 @@
             color: var(--primary-color);
             font-weight: 700;
             line-height: 1;
+            white-space: nowrap;
         }
 
         /* Subtítulo "Refugio de animales" */
@@ -128,6 +141,29 @@
 
         nav a:hover, nav a.active {
             color: var(--text-dark);
+        }
+
+        nav summary {
+            list-style: none;
+            cursor: pointer;
+            color: var(--text-dark);
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            line-height: 24px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        nav summary::-webkit-details-marker,
+        nav summary::marker {
+            display: none;
+            content: "";
+        }
+
+        .nav-actions {
+            display: none;
         }
 
         /* Ítem del menú que abre un submenú (Sumate, Cómo ayudar) */
@@ -204,10 +240,14 @@
             padding-right: var(--header-pad-x);
         }
 
-        /* Ícono hamburguesa (oculto en escritorio, visible en celular) */
+        /* Checkbox del menú: oculto a la vista, usable sin JavaScript */
         .nav-toggle,
         .nav-drop-toggle {
-            display: none;
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
         }
 
         .menu-toggle {
@@ -225,12 +265,21 @@
             display: none;
         }
 
-        /* Menú hamburguesa según el ancho real del header (no del viewport) */
-        @container site-header (max-width: 992px) {
+        /* Al achicar la ventana: hamburguesa, sin Ingresar/Donar arriba */
+        @media (max-width: 992px) {
+            header {
+                grid-template-columns: 1fr auto;
+            }
+
             .menu-toggle {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
+            }
+
+            .header-actions > .btn-outline,
+            .header-actions > .btn-donate {
+                display: none;
             }
 
             nav {
@@ -242,7 +291,7 @@
                 background: var(--white);
                 border-bottom: 1px solid var(--border-light);
                 box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
-                text-align: center;
+                text-align: left;
             }
 
             .logo-container,
@@ -266,29 +315,44 @@
                 display: flex;
                 flex-direction: column;
                 align-items: stretch;
-                justify-content: center;
+                justify-content: flex-start;
                 gap: 0;
                 width: 100%;
-                padding: 10px 0 16px;
+                padding: 8px 0 16px;
             }
 
-            nav > ul > li,
-            nav details,
+            nav > ul > li {
+                display: block;
+                width: 100%;
+                height: auto;
+                text-align: left;
+                border-bottom: 1px solid var(--border-light);
+            }
+
+            nav > ul > li.nav-actions {
+                border-bottom: none;
+            }
+
+            nav > ul > li > a,
             nav summary,
-            nav a,
+            nav details,
             .nav-dropdown > label,
             nav .dropdown-menu a {
                 display: block;
                 width: 100%;
                 height: auto;
-                text-align: center;
+                text-align: left;
             }
 
+            nav > ul > li > a,
             nav summary,
-            nav a,
-            .nav-dropdown > label,
+            .nav-dropdown > label {
+                padding: 14px 20px;
+                line-height: 1.4;
+            }
+
             nav .dropdown-menu a {
-                padding: 12px 16px;
+                padding: 12px 20px 12px 32px;
             }
 
             nav .dropdown-menu {
@@ -301,13 +365,31 @@
                 width: 100%;
                 padding: 0;
                 background: var(--icon-bg);
-                text-align: center;
+                text-align: left;
             }
 
-            .nav-dropdown:focus-within .dropdown-menu,
+            .nav-dropdown:hover .dropdown-menu,
+            .nav-dropdown:focus-within .dropdown-menu {
+                display: none;
+            }
+
             .nav-drop-toggle:checked ~ .dropdown-menu,
             details[open] .dropdown-menu {
                 display: block;
+            }
+
+            .nav-actions {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                padding: 16px 20px;
+            }
+
+            .nav-actions .btn-outline,
+            .nav-actions .btn-donate {
+                justify-content: center;
+                width: 100%;
             }
         }
 
@@ -400,6 +482,13 @@
             gap: 8px;
             background: transparent;
             cursor: pointer;
+        }
+
+        @media (max-width: 992px) {
+            .header-actions > .btn-outline,
+            .header-actions > .btn-donate {
+                display: none;
+            }
         }
 
         /* Foto del hero */
@@ -879,6 +968,12 @@
             background: var(--icon-bg);
         }
 
+        .pet-card-especie,
+        .pet-card-meta,
+        .pet-card-body > p {
+            display: none;
+        }
+
         .pet-card-body {
             padding: 16px 18px 20px;
         }
@@ -886,14 +981,8 @@
         .pet-card-body h4 {
             font-size: 18px;
             color: var(--text-dark);
-            margin-bottom: 6px;
-        }
-
-        .pet-card-especie {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-light);
             margin-bottom: 14px;
+            text-align: center;
         }
 
         .pet-card-actions {
@@ -1039,7 +1128,8 @@
         }
 
         /* Foto grande del detalle */
-        .pet-detail img {
+        .pet-detail img,
+        .pet-detail .pet-photo-empty {
             width: 100%;
             height: 100%;
             min-height: 320px;
