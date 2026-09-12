@@ -37,12 +37,6 @@ $inicio = $esInicio ? '' : 'index.php';
                 </details>
             </li>
             <li><a href="<?php echo $inicio; ?>#contacto">CONTACTO</a></li>
-            <li class="nav-actions">
-                <a class="btn-outline" href="login.php">INGRESAR</a>
-                <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : 'index.php#modal-donaciones'; ?>">
-                    <i class="fa-solid fa-heart"></i> DONAR
-                </a>
-            </li>
         </ul>
     </nav>
     <div class="header-actions">
