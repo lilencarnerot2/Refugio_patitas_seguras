@@ -70,11 +70,11 @@ require __DIR__ . '/includes/header.php';
             <p id="mensaje-formulario" class="mensaje-formulario"></p>
 
             <div class="acciones-formulario">
-                <button type="submit" class="btn admin-btn admin-btn-primary">
+                <button type="submit" class="btn-primary">
                     <i class="fa-solid fa-floppy-disk"></i>
                     Guardar mascota
                 </button>
-                <a class="btn admin-btn admin-btn-outline" href="../public/mascotas.php">Volver al catálogo</a>
+                <a class="btn-outline" href="../public/mascotas.php">Volver al catálogo</a>
             </div>
         </form>
     </section>

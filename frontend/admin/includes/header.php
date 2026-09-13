@@ -23,7 +23,7 @@ $esGestion = in_array($paginaAdmin, ['solicitudes', 'hogares_transito', 'donacio
             <li class="nav-dropdown">
                 <details>
                     <summary<?php echo $esMascotas ? ' class="active"' : ''; ?>>MASCOTAS</summary>
-                    <ul class="submenu">
+                    <ul class="dropdown-menu">
                         <li><a href="mascotas.php"<?php echo $paginaAdmin === 'mascotas' ? ' class="active"' : ''; ?>>Listado</a></li>
                         <li><a href="mascota_form.php"<?php echo $paginaAdmin === 'mascota_form' ? ' class="active"' : ''; ?>>Nueva mascota</a></li>
                         <li><a href="salud.php"<?php echo $paginaAdmin === 'salud' ? ' class="active"' : ''; ?>>Salud</a></li>
@@ -33,7 +33,7 @@ $esGestion = in_array($paginaAdmin, ['solicitudes', 'hogares_transito', 'donacio
             <li class="nav-dropdown">
                 <details>
                     <summary<?php echo $esGestion ? ' class="active"' : ''; ?>>GESTIÓN</summary>
-                    <ul class="submenu">
+                    <ul class="dropdown-menu">
                         <li><a href="solicitudes.php"<?php echo $paginaAdmin === 'solicitudes' ? ' class="active"' : ''; ?>>Solicitudes</a></li>
                         <li><a href="hogares_transito.php"<?php echo $paginaAdmin === 'hogares_transito' ? ' class="active"' : ''; ?>>Hogares de tránsito</a></li>
                         <li><a href="donaciones.php"<?php echo $paginaAdmin === 'donaciones' ? ' class="active"' : ''; ?>>Donaciones</a></li>
