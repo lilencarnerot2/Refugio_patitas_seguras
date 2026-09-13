@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mascotas - Patitas Seguras</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/styles.css">
-</head>
-<body class="page-mascotas">
-
-<?php require __DIR__ . '/includes/header.php'; ?>
+<?php
+$tituloPagina = 'Mascotas - Patitas Seguras';
+$cuerpoClase = 'page-adapt';
+require __DIR__ . '/includes/head.php';
+require __DIR__ . '/includes/header.php';
+?>
 
     <section>
         <div class="page-intro" id="adopcion">
@@ -18,10 +11,8 @@
             <p>Todos nuestros animales están vacunados, desparasitados y evaluados por nuestro veterinario. Encontrá tu compañero ideal.</p>
         </div>
 
-        <div class="catalog-filters">
-            <span class="filtro-btn is-activo"><i class="fa-solid fa-paw"></i> Todos</span>
-            <span class="filtro-btn"><i class="fa-solid fa-dog"></i> Perros</span>
-            <span class="filtro-btn"><i class="fa-solid fa-cat"></i> Gatos</span>
+        <div class="catalog-filters" id="filtros-especies">
+            <span class="filtro-btn is-activo" data-especie=""><i class="fa-solid fa-paw"></i> Todos</span>
         </div>
     </section>
 
@@ -54,21 +45,8 @@
         </details>
     </section>
 
-    <footer>
-        <div class="footer-inner">
-            <div>
-                <h3>PATITAS SEGURAS</h3>
-                <p class="footer-tagline">Refugio de animales</p>
-            </div>
-            <div class="footer-contact">
-                <p><i class="fa-solid fa-envelope"></i> hola@patitaseguras.org</p>
-                <p><i class="fa-solid fa-location-dot"></i> Merlo, Buenos Aires, Argentina</p>
-            </div>
-        </div>
-    </footer>
-
 <script src="config.php"></script>
-<script src="../assets/js/mascotas.js?t=<?php echo filemtime(__DIR__ . '/../assets/js/mascotas.js'); ?>"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/mascotas.js"></script>
 
-</body>
-</html>
+<?php require __DIR__ . '/includes/footer.php'; ?>

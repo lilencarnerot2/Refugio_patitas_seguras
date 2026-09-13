@@ -3,9 +3,7 @@ $esInicio = !empty($esInicio);
 $inicio = $esInicio ? '' : 'index.php';
 ?><header>
         <a class="logo-container" href="<?php echo $esInicio ? '#inicio' : 'index.php'; ?>">
-            <div class="logo-icon">
-                <i class="fa-solid fa-paw"></i>
-            </div>
+            <div class="logo-icon"><i class="fa-solid fa-paw"></i></div>
             <div class="logo-text">
                 <h1>PATITAS SEGURAS</h1>
                 <span>Refugio de animales</span>
@@ -36,6 +34,12 @@ $inicio = $esInicio ? '' : 'index.php';
                     </details>
                 </li>
                 <li><a href="<?php echo $inicio; ?>#contacto">CONTACTO</a></li>
+                <li class="nav-actions">
+                    <a class="btn-outline" href="login.php">INGRESAR</a>
+                    <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : 'index.php#modal-donaciones'; ?>">
+                        <i class="fa-solid fa-heart"></i> DONAR
+                    </a>
+                </li>
             </ul>
         </nav>
         <div class="header-actions">
