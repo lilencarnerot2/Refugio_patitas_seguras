@@ -29,7 +29,7 @@
         html {
             margin: 0;
             padding: 0;
-            overflow-x: clip;
+            overflow-x: hidden;
         }
 
         [hidden] {
@@ -42,7 +42,7 @@
             padding-top: var(--header-height);
             background-color: var(--bg-cream);
             color: var(--text-dark);
-            min-width: 1100px;
+            min-width: 0;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -234,6 +234,8 @@
             width: 0;
             height: 0;
             pointer-events: none;
+            grid-column: 1;
+            grid-row: 1;
         }
 
         .menu-toggle {
@@ -249,6 +251,14 @@
 
         .menu-toggle .menu-icon-close {
             display: none;
+        }
+
+        #nav-toggle:checked ~ .header-actions .menu-icon-bars {
+            display: none;
+        }
+
+        #nav-toggle:checked ~ .header-actions .menu-icon-close {
+            display: inline-block;
         }
 
         /* Botón naranja "DONAR" */
@@ -750,8 +760,8 @@
 
         .pet-card img {
             width: 100%;
-            height: 200px;
-            object-fit: cover;
+            height: 220px;
+            object-fit: contain;
             display: block;
             background: #eaf0e9;
         }
@@ -772,13 +782,12 @@
         .pet-card-body h4 {
             font-size: 18px;
             color: var(--primary-color);
-            margin-bottom: 6px;
+            margin-bottom: 16px;
+            text-align: center;
         }
 
         .pet-card-meta {
-            font-size: 12px;
-            color: #777;
-            margin-bottom: 10px;
+            display: none;
         }
 
         .pet-card-body p {
@@ -1030,6 +1039,7 @@
             padding: 30px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             max-width: 640px;
+            width: 100%;
             margin: 0 auto;
         }
 
@@ -1045,29 +1055,214 @@
             margin-bottom: 20px;
         }
 
-        .login-form .form-label {
+        .public-form .form-label {
             display: block;
             font-size: 14px;
             color: var(--text-dark);
             margin-bottom: 8px;
         }
 
-        .login-form .form-control {
+        .public-form .form-control {
             width: 100%;
-            border: none;
+            border: 1px solid #e6e6e6;
             border-radius: 8px;
-            background: var(--bg-cream);
+            background: var(--white);
             padding: 12px 14px;
             font-size: 15px;
             color: var(--text-dark);
             font-family: inherit;
         }
 
-        .login-form .mb-3 {
+        .clave-wrap {
+            position: relative;
+        }
+
+        .clave-wrap .clave-campo {
+            padding-right: 44px;
+            -webkit-text-security: disc;
+        }
+
+        .clave-toggle {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+
+        .clave-ojo {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .clave-ojo .fa-eye-slash {
+            display: none;
+        }
+
+        .clave-wrap:has(.clave-toggle:checked) .clave-campo {
+            -webkit-text-security: none;
+        }
+
+        .clave-wrap:has(.clave-toggle:checked) .fa-eye {
+            display: none;
+        }
+
+        .clave-wrap:has(.clave-toggle:checked) .fa-eye-slash {
+            display: inline;
+        }
+
+        .public-form .mb-3 {
             margin-bottom: 18px;
         }
 
-        .login-form .btn-primary {
+        .public-form .btn-primary {
             margin-top: 6px;
+        }
+
+        .form-alt-link {
+            margin-top: 18px;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .form-alt-link a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        @media (max-width: 1100px) {
+            header {
+                grid-template-columns: minmax(0, 1fr) auto;
+            }
+
+            .header-actions {
+                grid-column: 2;
+            }
+
+            .header-actions .btn-outline,
+            .header-actions .btn-donate {
+                display: none;
+            }
+
+            nav {
+                display: none;
+                grid-column: 1 / -1;
+                justify-self: stretch;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--white);
+                border-bottom: 1px solid var(--border-light);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+                z-index: 1100;
+            }
+
+            #nav-toggle:checked ~ nav {
+                display: block;
+            }
+
+            nav > ul {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                padding: 8px 0 16px;
+            }
+
+            nav > ul > li {
+                display: block;
+                width: 100%;
+                height: auto;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            nav > ul > li > a,
+            nav summary {
+                display: block;
+                padding: 14px 20px;
+            }
+
+            nav .dropdown-menu {
+                position: static;
+                transform: none;
+                min-width: 0;
+                padding: 0;
+                background: #f7f7f7;
+                box-shadow: none;
+                border: none;
+                border-radius: 0;
+            }
+
+            .nav-dropdown:hover .dropdown-menu,
+            .nav-dropdown:focus-within .dropdown-menu {
+                display: none;
+            }
+
+            .nav-dropdown details[open] .dropdown-menu {
+                display: block;
+            }
+
+            .nav-actions {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                padding: 16px 20px;
+            }
+
+            .menu-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .logo-text h1 {
+                font-size: 15px;
+            }
+
+            section {
+                padding: 24px 16px;
+            }
+
+            .page-intro h2 {
+                font-size: 26px;
+            }
+
+            .public-form {
+                padding: 22px 16px;
+                max-width: 100%;
+            }
+
+            .pet-catalog {
+                grid-template-columns: 1fr;
+            }
+
+            .requisitos-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .pet-detail {
+                grid-template-columns: 1fr;
+            }
+
+            .detalle-section {
+                padding: 24px 16px;
+            }
+
+            .hero {
+                flex-direction: column;
+            }
+
+            .action-cards,
+            .other-ways {
+                grid-template-columns: 1fr;
+            }
         }
  

@@ -1,5 +1,6 @@
 <?php
 $tituloPagina = 'Mascotas - Patitas Seguras';
+$cuerpoClase = 'page-adapt';
 require __DIR__ . '/includes/head.php';
 require __DIR__ . '/includes/header.php';
 ?>
