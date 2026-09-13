@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $tituloPagina = 'Mascotas - Patitas Seguras';
 $cuerpoClase = 'page-adapt';
 require __DIR__ . '/includes/head.php';
@@ -19,6 +19,22 @@ require __DIR__ . '/includes/header.php';
     <section id="catalogo">
         <div id="contenedor-mascotas" class="pet-catalog"></div>
     </section>
+
+    <template id="plantilla-tarjeta">
+        <article class="pet-card">
+            <img hidden alt="">
+            <div class="pet-photo-empty"></div>
+            <div class="pet-card-body">
+                <h4></h4>
+                <p class="pet-card-meta"></p>
+                <div class="pet-card-actions">
+                    <a class="btn-adopt" href="../user/solicitar_adopcion.php">Adoptar</a>
+                    <a class="btn-transito" href="../user/solicitar_transito.php">Hogar de tránsito</a>
+                    <a class="btn-detail" href="mascota-detalle.php">Ver detalle</a>
+                </div>
+            </div>
+        </article>
+    </template>
 
     <section class="requisitos-section" id="transito">
         <div class="page-intro">
