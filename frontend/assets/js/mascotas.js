@@ -1,79 +1,56 @@
-fetch(`${API_URL}/recurso=mascotas`)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Error HTTP: ${response.status}`);
-        }
+var mascotas = [];
+var filtros = document.getElementById('filtros-especies');
+var contenedor = document.getElementById('contenedor-mascotas');
 
-        return response.json();
+apiRequest('mascotas')
+    .then(function (respuesta) {
+        mascotas = Array.isArray(respuesta.data) ? respuesta.data : [];
+        crearFiltrosEspecies();
+        mostrarMascotas(mascotas);
     })
-    .then(data => {
-        console.log(data);
+    .catch(function () {
+        mostrarAviso('No se pudo cargar el catálogo', 'Intentá nuevamente más tarde.');
+    });
 
 if (filtros) {
     filtros.addEventListener('click', function (evento) {
         var boton = evento.target.closest('.filtro-btn');
-        var lista = [];
         var especie;
-        var i;
+        var lista;
 
         if (!boton) {
             return;
         }
 
         especie = boton.getAttribute('data-especie');
+        lista = especie ? mascotas.filter(function (mascota) {
+            return mascota.especie === especie;
+        }) : mascotas;
 
-        if (especie) {
-            for (i = 0; i < mascotas.length; i++) {
-                if (mascotas[i].especie === especie) {
-                    lista.push(mascotas[i]);
-                }
-            }
-        } else {
-            lista = mascotas;
-        }
-
-        marcarFiltro(boton);
+        filtros.querySelectorAll('.filtro-btn').forEach(function (filtro) {
+            filtro.classList.remove('is-activo');
+        });
+        boton.classList.add('is-activo');
         mostrarMascotas(lista);
     });
 }
 
-function mostrarEspecies(lista) {
-    var i;
-    var especie;
+function crearFiltrosEspecies() {
+    var especies = [];
 
-    for (i = 0; i < lista.length; i++) {
-        especie = lista[i];
-
-        if (selectEspecie) {
-            var opcion = document.createElement('option');
-            opcion.value = especie.id;
-            opcion.textContent = especie.nombre_especie;
-            selectEspecie.appendChild(opcion);
+    mascotas.forEach(function (mascota) {
+        if (mascota.especie && !especies.includes(mascota.especie)) {
+            especies.push(mascota.especie);
         }
+    });
 
-        if (filtros) {
-            var boton = document.createElement('span');
-            var icono = document.createElement('i');
-
-            boton.className = 'filtro-btn';
-            boton.setAttribute('data-especie', especie.nombre_especie);
-            icono.className = 'fa-solid fa-paw';
-            boton.appendChild(icono);
-            boton.appendChild(document.createTextNode(' ' + especie.nombre_especie));
-            filtros.appendChild(boton);
-        }
-    }
-}
-
-function marcarFiltro(activo) {
-    var botones = filtros.querySelectorAll('.filtro-btn');
-    var i;
-
-    for (i = 0; i < botones.length; i++) {
-        botones[i].classList.remove('is-activo');
-    }
-
-    activo.classList.add('is-activo');
+    especies.forEach(function (especie) {
+        var boton = document.createElement('span');
+        boton.className = 'filtro-btn';
+        boton.setAttribute('data-especie', especie);
+        boton.innerHTML = '<i class="fa-solid fa-paw"></i> ' + especie;
+        filtros.appendChild(boton);
+    });
 }
 
 function mostrarMascotas(lista) {
@@ -117,9 +94,9 @@ function armarTarjeta(mascota) {
         mascota.tamano || mascota['tama\u00f1o']
     ].filter(Boolean).join(' · ');
 
-    tarjeta.querySelector('.btn-adopt').href = '../user/solicitar_adopcion.php?id=' + mascota.id;
-    tarjeta.querySelector('.btn-transito').href = '../user/solicitar_transito.php?id=' + mascota.id;
-    tarjeta.querySelector('.btn-detail').href = 'mascota-detalle.php?id=' + mascota.id;
+    tarjeta.querySelector('.btn-adopt').href = '/user/solicitar_adopcion.php?id=' + mascota.id;
+    tarjeta.querySelector('.btn-transito').href = '/user/solicitar_transito.php?id=' + mascota.id;
+    tarjeta.querySelector('.btn-detail').href = '/public/mascota-detalle.php?id=' + mascota.id;
 
     return tarjeta;
 }

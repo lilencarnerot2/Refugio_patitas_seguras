@@ -28,7 +28,7 @@ formulario.addEventListener('submit', function (evento) {
         datos.foto_url = foto;
     }
 
-    fetch(`${API_URL}/public/index.php?recurso=mascotas`, {
+    fetch(`${API_URL}/?recurso=mascotas`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

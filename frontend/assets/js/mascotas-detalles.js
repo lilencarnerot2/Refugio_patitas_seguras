@@ -8,7 +8,7 @@ if (ficha) {
     if (!id) {
         mostrarVacio();
     } else {
-        fetch(API_URL + '/public/index.php?recurso=mascotas&id=' + encodeURIComponent(id))
+        fetch(API_URL + '/?recurso=mascotas&id=' + encodeURIComponent(id))
             .then(function (response) {
                 return response.json();
             })
