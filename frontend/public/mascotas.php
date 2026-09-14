@@ -61,8 +61,8 @@ require __DIR__ . '/includes/header.php';
         </details>
     </section>
 
-<script src="config.php"></script>
-<script src="../assets/js/api.js"></script>
-<script src="../assets/js/mascotas.js"></script>
+<script src="/public/config.php"></script>
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/mascotas.js"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

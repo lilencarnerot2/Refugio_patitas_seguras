@@ -98,6 +98,7 @@ function armarTarjeta(mascota) {
     tarjeta.querySelector('.btn-transito').href = '/user/solicitar_transito.php?id=' + mascota.id;
     tarjeta.querySelector('.btn-detail').href = '/public/mascota-detalle.php?id=' + mascota.id;
 
+
     return tarjeta;
 }
 
