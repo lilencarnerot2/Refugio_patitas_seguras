@@ -838,8 +838,30 @@
         /* Grilla de tarjetas de cada mascota en el listado */
         .pet-catalog {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 28px;
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 992px) {
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .pet-catalog {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .pet-catalog {
+                grid-template-columns: 1fr;
+            }
+
+            .requisitos-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Tarjeta de una mascota (foto + nombre + botones) */
@@ -866,11 +888,10 @@
             background: #eaf0e9;
         }
 
-        .pet-card-body {
-            padding: 18px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        .pet-card .pet-photo-empty {
+            width: 100%;
+            min-height: 180px;
+            background: var(--icon-bg);
         }
 
         .pet-card-body h4 {
