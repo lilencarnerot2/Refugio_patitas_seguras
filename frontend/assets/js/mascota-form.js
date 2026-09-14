@@ -1,30 +1,5 @@
 const formulario = document.getElementById('formulario-mascota');
 const mensaje = document.getElementById('mensaje-formulario');
-const selectEspecie = document.getElementById('id_especie');
-
-function cargarEspecies() {
-    fetch(`${API_URL}/public/index.php?recurso=especies`)
-        .then(function (respuesta) {
-            return respuesta.json();
-        })
-        .then(function (resultado) {
-            var lista = resultado.data || [];
-            var i;
-            var opcion;
-
-            for (i = 0; i < lista.length; i++) {
-                opcion = document.createElement('option');
-                opcion.value = lista[i].id;
-                opcion.textContent = lista[i].nombre_especie;
-                selectEspecie.appendChild(opcion);
-            }
-        })
-        .catch(function () {
-            mensaje.textContent = 'No se pudieron cargar las especies.';
-        });
-}
-
-cargarEspecies();
 
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
