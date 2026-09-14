@@ -1,9 +1,11 @@
-﻿<?php
+<?php
 $esInicio = !empty($esInicio);
 $inicio = $esInicio ? '' : 'index.php';
 ?><header>
         <a class="logo-container" href="<?php echo $esInicio ? '#inicio' : 'index.php'; ?>">
-            <div class="logo-icon"><i class="fa-solid fa-paw"></i></div>
+            <div style="background: var(--primary-color); border-radius: 50%; padding: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
+                <i class="fa-solid fa-paw"></i>
+            </div>
             <div class="logo-text">
                 <h1>PATITAS SEGURAS</h1>
                 <span>Refugio de animales</span>
