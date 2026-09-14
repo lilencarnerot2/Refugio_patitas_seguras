@@ -123,48 +123,6 @@ function crearMascota($datos)
     return $consulta->fetch(PDO::FETCH_ASSOC);
 }
 
-function existeEspecie($idEspecie)
-{
-    $conexion = conectarDB();
-
-    $sql = "
-        SELECT 1
-        FROM especies
-        WHERE id = :id
-          AND estado = TRUE
-    ";
-
-    $consulta = $conexion->prepare($sql);
-
-    $consulta->execute([
-        ':id' => $idEspecie
-    ]);
-
-    return (bool)$consulta->fetchColumn();
-}
-
-function existeRazaParaEspecie($idRaza, $idEspecie)
-{
-    $conexion = conectarDB();
-
-    $sql = "
-        SELECT 1
-        FROM razas
-        WHERE id = :id_raza
-          AND id_especie = :id_especie
-          AND estado = TRUE
-    ";
-
-    $consulta = $conexion->prepare($sql);
-
-    $consulta->execute([
-        ':id_raza' => $idRaza,
-        ':id_especie' => $idEspecie
-    ]);
-
-    return (bool)$consulta->fetchColumn();
-}
-
 //PUT para editar mascotas existentes
 function actualizarMascota($id, $datos){
     $conexion = conectarDB();
