@@ -1,62 +1,5 @@
 const formulario = document.getElementById('formulario-mascota');
 const mensaje = document.getElementById('mensaje-formulario');
-const selectEspecie = document.getElementById('id_especie');
-const selectRaza = document.getElementById('id_raza');
-
-function cargarEspecies() {
-    apiRequest('especies')
-        .then(function (resultado) {
-            var lista = resultado.data || [];
-            var i;
-            var opcion;
-
-            for (i = 0; i < lista.length; i++) {
-                opcion = document.createElement('option');
-                opcion.value = lista[i].id;
-                opcion.textContent = lista[i].nombre_especie;
-                selectEspecie.appendChild(opcion);
-            }
-        })
-        .catch(function () {
-            mensaje.textContent = 'No se pudieron cargar las especies.';
-        });
-}
-
-function vaciarRazas() {
-    selectRaza.options.length = 1;
-    selectRaza.selectedIndex = 0;
-}
-
-function cargarRazas(idEspecie) {
-    vaciarRazas();
-
-    if (!idEspecie) {
-        return;
-    }
-
-    apiRequest('razas', { parametros: { id_especie: idEspecie } })
-        .then(function (resultado) {
-            var lista = resultado.data || [];
-            var i;
-            var opcion;
-
-            for (i = 0; i < lista.length; i++) {
-                opcion = document.createElement('option');
-                opcion.value = lista[i].id;
-                opcion.textContent = lista[i].nombre_raza;
-                selectRaza.appendChild(opcion);
-            }
-        })
-        .catch(function (error) {
-            mensaje.textContent = error.message || 'No se pudieron cargar las razas.';
-        });
-}
-
-cargarEspecies();
-
-selectEspecie.addEventListener('change', function () {
-    cargarRazas(selectEspecie.value);
-});
 
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
@@ -100,7 +43,6 @@ formulario.addEventListener('submit', function (evento) {
 
             if (resultado.success) {
                 formulario.reset();
-                vaciarRazas();
             }
         })
         .catch(function () {

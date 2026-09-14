@@ -53,7 +53,7 @@ require __DIR__ . '/includes/header.php';
 
                 <div class="col-md-6">
                     <label class="form-label" for="fecha_nacimiento_estimada">Fecha de nacimiento estimada</label>
-                    <input class="form-control" type="date" id="fecha_nacimiento_estimada" name="fecha_nacimiento_estimada" max="<?php echo date('Y-m-d'); ?>">
+                    <input class="form-control" type="date" id="fecha_nacimiento_estimada" name="fecha_nacimiento_estimada">
                 </div>
 
                 <div class="col-md-6">
