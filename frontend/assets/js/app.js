@@ -27,3 +27,13 @@ function closeModal() {
         modal.style.display = 'none';
     }
 }
+
+function mostrarFeedback(elemento, mensaje, ok) {
+    if (!elemento) {
+        return;
+    }
+
+    elemento.hidden = false;
+    elemento.className = 'form-feedback ' + (ok ? 'is-ok' : 'is-error');
+    elemento.textContent = mensaje;
+}

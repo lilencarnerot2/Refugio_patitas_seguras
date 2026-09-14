@@ -26,26 +26,18 @@
             scroll-behavior: smooth;
         }
 
-        html {
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
-
-        [hidden] {
-            display: none !important;
-        }
-
+        html,
         body {
             margin: 0;
             padding: 0;
-            padding-top: var(--header-height);
-            background-color: var(--bg-cream);
+            background-color: var(--white);
+        }
+
+        body {
             color: var(--text-dark);
-            min-width: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            overflow-x: hidden;
+            padding-top: 72px;
+            background-color: var(--bg-cream);
         }
 
         /* Barra pegada al borde superior de la ventana */
@@ -53,10 +45,11 @@
             display: grid;
             grid-template-columns: 1fr auto 1fr;
             align-items: center;
-            padding: var(--header-pad-y) 0;
+            column-gap: 16px;
+            padding: 15px 5%;
             margin: 0;
             background-color: var(--white);
-            border-bottom: 1px solid var(--border-light);
+            border-bottom: 1px solid #eee;
             position: fixed;
             top: 0;
             left: 0;
@@ -74,9 +67,6 @@
             text-decoration: none;
             cursor: pointer;
             justify-self: start;
-            z-index: 2;
-            grid-column: 1;
-            padding-left: var(--header-pad-x);
         }
 
         /* Nombre "PATITAS SEGURAS" */
@@ -94,21 +84,27 @@
             color: var(--text-soft);
         }
 
-        .logo-icon {
-            background: var(--primary-color);
-            border-radius: 50%;
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--white);
-            font-size: 20px;
-        }
-
         /* Menú centrado en el header */
         nav {
             justify-self: center;
-            grid-column: 2;
+        }
+
+        nav summary {
+            list-style: none;
+            cursor: pointer;
+            color: var(--text-dark);
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            line-height: 24px;
+            text-transform: uppercase;
+        }
+
+        nav summary::-webkit-details-marker,
+        nav summary::marker {
+            display: none;
+            content: "";
         }
 
         /* Lista horizontal de links: Inicio, Mascotas, etc. */
@@ -197,6 +193,10 @@
             display: block;
         }
 
+        .nav-actions {
+            display: none;
+        }
+
         nav .dropdown-menu li {
             display: block;
             width: 100%;
@@ -219,6 +219,8 @@
         .header-actions {
             display: flex;
             align-items: center;
+            justify-content: flex-end;
+            justify-self: end;
             gap: 10px;
             justify-self: end;
             z-index: 2;
@@ -524,12 +526,6 @@
             font-size: 22px;
         }
 
-        .about-card p {
-            color: var(--text-muted);
-            line-height: 1.6;
-            font-size: 14px;
-        }
-
         /* Fondo oscuro que cubre la pantalla cuando se abre un modal */
         .modal-overlay {
             position: fixed;
@@ -642,6 +638,140 @@
             background: var(--accent-color);
         }
 
+        /* Ajustes para tablet y celular (hasta 992px) */
+        @media (max-width: 992px) {
+            /* Hero en columna: texto arriba, imagen abajo */
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            .hero-buttons {
+                justify-content: center;
+            }
+            /* Tarjetas de index en una sola columna */
+            .action-cards, .other-ways {
+                grid-template-columns: 1fr;
+            }
+            /* Estadísticas en 2 columnas */
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            header {
+                grid-template-columns: 1fr auto;
+            }
+
+            .header-actions .btn-outline,
+            .header-actions .btn-donate {
+                display: none;
+            }
+
+            nav {
+                display: none;
+                grid-column: 1 / -1;
+                justify-self: stretch;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--white);
+                border-bottom: 1px solid #eee;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+                z-index: 1100;
+            }
+
+            #nav-toggle:checked ~ nav {
+                display: block;
+            }
+
+            nav > ul {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                padding: 8px 0 16px;
+            }
+
+            nav > ul > li {
+                display: block;
+                width: 100%;
+                height: auto;
+                text-align: left;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            nav > ul > li > a,
+            nav summary {
+                display: block;
+                width: 100%;
+                padding: 14px 20px;
+                line-height: 1.4;
+                text-align: left;
+            }
+
+            nav a,
+            nav .dropdown-menu a {
+                display: block;
+                padding: 12px 20px;
+                font-size: 13px;
+                font-weight: 500;
+                letter-spacing: 0.4px;
+            }
+
+            nav .dropdown-menu a {
+                padding-left: 32px;
+            }
+
+            nav .dropdown-menu {
+                position: static;
+                transform: none;
+                display: none;
+                box-shadow: none;
+                border: none;
+                min-width: 0;
+                padding: 0;
+                background: #f7f7f7;
+                text-align: left;
+            }
+
+            .nav-dropdown:hover .dropdown-menu,
+            .nav-dropdown:focus-within .dropdown-menu {
+                display: none;
+            }
+
+            .nav-dropdown details[open] .dropdown-menu {
+                display: block;
+            }
+
+            .nav-actions {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                padding: 16px 20px;
+                border-bottom: none;
+            }
+
+            .nav-actions .btn-outline,
+            .nav-actions .btn-donate {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            /* Tarjetas de info y catálogo de mascotas en 1 columna */
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+            .pet-catalog {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* Título y texto intro de mascotas.php */
         .page-intro {
             text-align: center;
@@ -705,15 +835,6 @@
             min-height: 120px;
         }
 
-        .catalog-eyebrow {
-            display: block;
-            width: 88px;
-            height: 12px;
-            margin: 0 auto 18px;
-            border-radius: 20px;
-            background: #e4e0d4;
-        }
-
         .catalog-filters {
             display: flex;
             flex-wrap: wrap;
@@ -745,8 +866,30 @@
 
         .pet-catalog {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 28px;
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 992px) {
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .pet-catalog {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .pet-catalog {
+                grid-template-columns: 1fr;
+            }
+
+            .requisitos-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .pet-card {
@@ -760,7 +903,7 @@
 
         .pet-card img {
             width: 100%;
-            height: 200px;
+            height: 220px;
             object-fit: contain;
             display: block;
             background: #eaf0e9;
@@ -772,22 +915,17 @@
             background: #eaf0e9;
         }
 
-        .pet-card-body {
-            padding: 18px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        .pet-card .pet-photo-empty {
+            width: 100%;
+            min-height: 180px;
+            background: var(--icon-bg);
         }
 
         .pet-card-body h4 {
             font-size: 18px;
             color: var(--primary-color);
-            margin-bottom: 6px;
+            margin-bottom: 16px;
             text-align: center;
-        }
-
-        .pet-card-meta {
-            display: none;
         }
 
         .pet-card-body p {
@@ -1003,86 +1141,9 @@
         .pet-detail-historial {
             font-size: 15px;
             color: #666;
-            line-height: 1.6;
-            margin: 0 0 28px;
         }
 
-        .pet-detail-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: auto;
-        }
-
-        .pet-detail-actions .btn-adopt,
-        .pet-detail-actions .btn-transito {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 999px;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-        }
-
-        .pet-detail-actions .empty-back-link {
-            text-align: center;
-            margin-top: 8px;
-        }
-
-        .public-form {
-            background: var(--white);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            max-width: 640px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .public-form h3 {
-            color: var(--primary-color);
-            margin-bottom: 8px;
-            font-size: 22px;
-        }
-
-        .public-form > p {
-            font-size: 13px;
-            color: #777;
-            margin-bottom: 20px;
-        }
-
-        .public-form .form-label {
-            display: block;
-            font-size: 14px;
-            color: var(--text-dark);
-            margin-bottom: 8px;
-        }
-
-        .public-form .form-control {
-            width: 100%;
-            border: 1px solid #e6e6e6;
-            border-radius: 8px;
-            background: var(--white);
-            padding: 12px 14px;
-            font-size: 15px;
-            color: var(--text-dark);
-            font-family: inherit;
-        }
-
-        .clave-wrap {
-            position: relative;
-        }
-
-        .clave-wrap .clave-campo {
-            padding-right: 44px;
-            -webkit-text-security: disc;
-        }
-
-        .clave-toggle {
+        .nav-toggle {
             position: absolute;
             opacity: 0;
             width: 0;
@@ -1104,175 +1165,57 @@
             display: none;
         }
 
-        .clave-wrap:has(.clave-toggle:checked) .clave-campo {
-            -webkit-text-security: none;
-        }
-
-        .clave-wrap:has(.clave-toggle:checked) .fa-eye {
+        #nav-toggle:checked ~ .header-actions .menu-icon-bars {
             display: none;
         }
 
-        .clave-wrap:has(.clave-toggle:checked) .fa-eye-slash {
-            display: inline;
+        #nav-toggle:checked ~ .header-actions .menu-icon-close {
+            display: inline-block;
         }
 
-        .public-form .mb-3 {
+        .public-form {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .public-form h3 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-size: 22px;
+        }
+
+        .public-form > p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .login-form .form-label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .login-form .form-control {
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            background: var(--bg-cream);
+            padding: 12px 14px;
+            font-size: 15px;
+            color: var(--text-dark);
+            font-family: inherit;
+        }
+
+        .login-form .mb-3 {
             margin-bottom: 18px;
         }
 
-        .public-form .btn-primary {
+        .login-form .btn-primary {
             margin-top: 6px;
         }
-
-        .form-alt-link {
-            margin-top: 18px;
-            font-size: 13px;
-            color: #777;
-        }
-
-        .form-alt-link a {
-            color: var(--primary-color);
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        @media (max-width: 1100px) {
-            header {
-                grid-template-columns: minmax(0, 1fr) auto;
-            }
-
-            .header-actions {
-                grid-column: 2;
-            }
-
-            .header-actions .btn-outline,
-            .header-actions .btn-donate {
-                display: none;
-            }
-
-            nav {
-                display: none;
-                grid-column: 1 / -1;
-                justify-self: stretch;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: var(--white);
-                border-bottom: 1px solid var(--border-light);
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
-                z-index: 1100;
-            }
-
-            #nav-toggle:checked ~ nav {
-                display: block;
-            }
-
-            nav > ul {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0;
-                padding: 8px 0 16px;
-            }
-
-            nav > ul > li {
-                display: block;
-                width: 100%;
-                height: auto;
-                border-bottom: 1px solid #f0f0f0;
-            }
-
-            nav > ul > li > a,
-            nav summary {
-                display: block;
-                padding: 14px 20px;
-            }
-
-            nav .dropdown-menu {
-                position: static;
-                transform: none;
-                min-width: 0;
-                padding: 0;
-                background: #f7f7f7;
-                box-shadow: none;
-                border: none;
-                border-radius: 0;
-            }
-
-            .nav-dropdown:hover .dropdown-menu,
-            .nav-dropdown:focus-within .dropdown-menu {
-                display: none;
-            }
-
-            .nav-dropdown details[open] .dropdown-menu {
-                display: block;
-            }
-
-            .nav-actions {
-                display: flex;
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
-                padding: 16px 20px;
-            }
-
-            .menu-toggle {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .logo-text h1 {
-                font-size: 15px;
-            }
-
-            section {
-                padding: 24px 16px;
-            }
-
-            .page-intro h2 {
-                font-size: 26px;
-            }
-
-            .public-form {
-                padding: 22px 16px;
-                max-width: 100%;
-            }
-
-            .catalog-filters {
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-
-            .filtro-btn {
-                width: auto;
-            }
-
-            .pet-catalog {
-                grid-template-columns: 1fr;
-            }
-
-            .requisitos-grid {
-                grid-template-columns: 1fr;
-                gap: 14px;
-            }
-
-            .pet-detail {
-                grid-template-columns: 1fr;
-            }
-
-            .detalle-section {
-                padding: 24px 16px;
-            }
-
-            .hero {
-                flex-direction: column;
-            }
-
-            .action-cards,
-            .other-ways {
-                grid-template-columns: 1fr;
-            }
-        }
- 
