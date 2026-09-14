@@ -32,6 +32,8 @@ require __DIR__ . '/includes/header.php';
                 </div>
             </div>
 
+            <p class="form-alt-link"><a href="recuperar.php">Olvidé mi contraseña</a></p>
+
             <button class="btn-primary" type="button">Ingresar</button>
             <p class="form-alt-link">¿No tenés usuario? <a href="registro.php">Crear cuenta</a></p>
         </form>
