@@ -1,32 +1,13 @@
-var mascotas = [];
-var contenedor = document.getElementById('contenedor-mascotas');
-var filtros = document.getElementById('filtros-especies');
-var selectEspecie = document.getElementById('id_especie');
+fetch(`${API_URL}/recurso=mascotas`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
 
-if (contenedor) {
-    apiRequest('mascotas')
-        .then(function (respuesta) {
-            mascotas = respuesta.data || [];
-            mostrarMascotas(mascotas);
-        })
-        .catch(function () {
-            mostrarAviso('No se pudieron cargar las mascotas', 'Intentá de nuevo más tarde.');
-        });
-}
-
-if (filtros || selectEspecie) {
-    apiRequest('especies')
-        .then(function (respuesta) {
-            mostrarEspecies(respuesta.data || []);
-        })
-        .catch(function () {
-            if (selectEspecie) {
-                var aviso = document.createElement('option');
-                aviso.textContent = 'No se pudieron cargar las especies';
-                selectEspecie.appendChild(aviso);
-            }
-        });
-}
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
 
 if (filtros) {
     filtros.addEventListener('click', function (evento) {
