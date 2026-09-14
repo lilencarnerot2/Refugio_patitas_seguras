@@ -115,28 +115,20 @@ function mostrarMascotas(lista) {
 }
 
 function armarTarjeta(mascota) {
-    var tarjeta = document.createElement('article');
-    var cuerpo = document.createElement('div');
-    var nombre = document.createElement('h4');
-    var datos = document.createElement('p');
-    var acciones = document.createElement('div');
-
-    tarjeta.className = 'pet-card';
+    var plantilla = document.getElementById('plantilla-tarjeta');
+    var tarjeta = plantilla.content.firstElementChild.cloneNode(true);
+    var imagen = tarjeta.querySelector('img');
+    var vacia = tarjeta.querySelector('.pet-photo-empty');
+    var datos = tarjeta.querySelector('.pet-card-meta');
 
     if (mascota.foto_url) {
-        var imagen = document.createElement('img');
         imagen.src = mascota.foto_url;
         imagen.alt = 'Foto de ' + mascota.nombre;
-        tarjeta.appendChild(imagen);
-    } else {
-        var vacia = document.createElement('div');
-        vacia.className = 'pet-photo-empty';
-        tarjeta.appendChild(vacia);
+        imagen.hidden = false;
+        vacia.hidden = true;
     }
 
-    cuerpo.className = 'pet-card-body';
-    nombre.textContent = mascota.nombre;
-    datos.className = 'pet-card-meta';
+    tarjeta.querySelector('h4').textContent = mascota.nombre;
     datos.textContent = [
         mascota.especie,
         mascota.raza,
@@ -144,25 +136,11 @@ function armarTarjeta(mascota) {
         mascota.tamano || mascota['tama\u00f1o']
     ].filter(Boolean).join(' · ');
 
-    acciones.className = 'pet-card-actions';
-    acciones.appendChild(armarBoton('btn-adopt', 'Adoptar', '../user/solicitar_adopcion.php?id=' + mascota.id));
-    acciones.appendChild(armarBoton('btn-transito', 'Hogar de tránsito', '../user/solicitar_transito.php?id=' + mascota.id));
-    acciones.appendChild(armarBoton('btn-detail', 'Ver detalle', 'mascota-detalle.php?id=' + mascota.id));
-
-    cuerpo.appendChild(nombre);
-    cuerpo.appendChild(datos);
-    cuerpo.appendChild(acciones);
-    tarjeta.appendChild(cuerpo);
+    tarjeta.querySelector('.btn-adopt').href = '../user/solicitar_adopcion.php?id=' + mascota.id;
+    tarjeta.querySelector('.btn-transito').href = '../user/solicitar_transito.php?id=' + mascota.id;
+    tarjeta.querySelector('.btn-detail').href = 'mascota-detalle.php?id=' + mascota.id;
 
     return tarjeta;
-}
-
-function armarBoton(clase, texto, href) {
-    var link = document.createElement('a');
-    link.className = clase;
-    link.href = href;
-    link.textContent = texto;
-    return link;
 }
 
 function mostrarAviso(titulo, texto) {
