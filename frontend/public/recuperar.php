@@ -1,0 +1,41 @@
+<?php
+$tituloPagina = 'Nueva contraseña - Patitas Seguras';
+$cuerpoClase = 'page-adapt';
+require __DIR__ . '/includes/head.php';
+require __DIR__ . '/includes/header.php';
+?>
+
+    <section>
+        <div class="page-intro">
+            <h2>Nueva contraseña</h2>
+            <p>Se envia un correo que contiene un token, quedura 30 minutos.</p>
+           
+        </div>
+
+        <form id="form-recuperar" class="public-form">
+          
+           
+
+            <div class="mb-3">
+                <label class="form-label" for="token">Token</label>
+                <input class="form-control" id="token" name="token" type="text">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="password">Contraseña</label>
+                <div class="clave-wrap">
+                    <input class="form-control clave-campo" id="password" name="password" type="text" autocomplete="new-password">
+                    <input class="clave-toggle" id="ver-clave-recuperar" type="checkbox">
+                    <label class="clave-ojo" for="ver-clave-recuperar" title="Mostrar u ocultar contraseña">
+                        <i class="fa-regular fa-eye"></i>
+                        <i class="fa-regular fa-eye-slash"></i>
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn-primary" type="button">Guardar contraseña</button>
+            <p class="form-alt-link"><a href="login.php">Volver a iniciar sesión</a></p>
+        </form>
+    </section>
+
+<?php require __DIR__ . '/includes/footer.php'; ?>
