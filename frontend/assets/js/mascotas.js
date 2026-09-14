@@ -9,93 +9,130 @@ fetch(`${API_URL}/recurso=mascotas`)
     .then(data => {
         console.log(data);
 
-        const contenedor = document.getElementById('contenedor-mascotas');
-        const contador = document.getElementById('catalogo-count');
+if (filtros) {
+    filtros.addEventListener('click', function (evento) {
+        var boton = evento.target.closest('.filtro-btn');
+        var lista = [];
+        var especie;
+        var i;
 
-        if (!contenedor || !contador) {
+        if (!boton) {
             return;
         }
 
-        if (!data.success || !data.data || data.data.length === 0) {
-            contenedor.innerHTML = `
-                <div class="catalog-empty">
-                    <i class="fa-solid fa-paw"></i>
-                    <h4>Todavía no hay mascotas cargadas</h4>
-                    <p>No se encontraron mascotas disponibles.</p>
-                </div>
-            `;
+        especie = boton.getAttribute('data-especie');
 
-            contador.textContent = '0 mascotas disponibles';
-            return;
+        if (especie) {
+            for (i = 0; i < mascotas.length; i++) {
+                if (mascotas[i].especie === especie) {
+                    lista.push(mascotas[i]);
+                }
+            }
+        } else {
+            lista = mascotas;
         }
 
-        contenedor.innerHTML = '';
-
-        data.data.forEach(mascota => {
-            contenedor.innerHTML += `
-                <article class="pet-card">
-                    <img
-                        src="${mascota.foto_url}"
-                        alt="Foto de ${mascota.nombre}"
-                    >
-
-                    <div class="pet-card-body">
-                        <h4>${mascota.nombre}</h4>
-
-                        <p class="pet-card-meta">
-                            ${mascota.especie}
-                            · ${mascota.raza}
-                            · ${mascota.sexo}
-                            · ${mascota.tamaño}
-                        </p>
-
-                        <p>${mascota.historial ?? ''}</p>
-
-                        <div class="pet-card-actions">
-                            <a
-                                class="btn-adopt"
-                                href="../user/solicitar_adopcion.php?id=${mascota.id}"
-                            >
-                                <i class="fa-solid fa-heart"></i>
-                                Adoptar
-                            </a>
-
-                            <a
-                                class="btn-transito"
-                                href="../user/solicitar_transito.php?id=${mascota.id}"
-                            >
-                                <i class="fa-solid fa-house-chimney"></i>
-                                Hogar de tránsito
-                            </a>
-
-                            <a
-                                class="btn-detail"
-                                href="mascota-detalle.php?id=${mascota.id}"
-                            >
-                                <i class="fa-solid fa-circle-info"></i>
-                                Ver detalle
-                            </a>
-                        </div>
-                    </div>
-                </article>
-            `;
-        });
-
-        const total = data.data.length;
-
-        contador.textContent =
-            `${total} mascota${total === 1 ? '' : 's'} disponible${total === 1 ? '' : 's'}`;
-    })
-    .catch(error => {
-        console.error('Error al cargar mascotas:', error);
-
-        const contenedor = document.getElementById('contenedor-mascotas');
-
-        if (contenedor) {
-            contenedor.innerHTML = `
-                <div class="catalog-empty">
-                    <p>No se pudieron cargar las mascotas.</p>
-                </div>
-            `;
-        }
+        marcarFiltro(boton);
+        mostrarMascotas(lista);
     });
+}
+
+function mostrarEspecies(lista) {
+    var i;
+    var especie;
+
+    for (i = 0; i < lista.length; i++) {
+        especie = lista[i];
+
+        if (selectEspecie) {
+            var opcion = document.createElement('option');
+            opcion.value = especie.id;
+            opcion.textContent = especie.nombre_especie;
+            selectEspecie.appendChild(opcion);
+        }
+
+        if (filtros) {
+            var boton = document.createElement('span');
+            var icono = document.createElement('i');
+
+            boton.className = 'filtro-btn';
+            boton.setAttribute('data-especie', especie.nombre_especie);
+            icono.className = 'fa-solid fa-paw';
+            boton.appendChild(icono);
+            boton.appendChild(document.createTextNode(' ' + especie.nombre_especie));
+            filtros.appendChild(boton);
+        }
+    }
+}
+
+function marcarFiltro(activo) {
+    var botones = filtros.querySelectorAll('.filtro-btn');
+    var i;
+
+    for (i = 0; i < botones.length; i++) {
+        botones[i].classList.remove('is-activo');
+    }
+
+    activo.classList.add('is-activo');
+}
+
+function mostrarMascotas(lista) {
+    var i;
+
+    if (!contenedor) {
+        return;
+    }
+
+    contenedor.innerHTML = '';
+
+    if (lista.length === 0) {
+        mostrarAviso('Todavía no hay mascotas cargadas', 'No se encontraron mascotas disponibles.');
+        return;
+    }
+
+    for (i = 0; i < lista.length; i++) {
+        contenedor.appendChild(armarTarjeta(lista[i]));
+    }
+}
+
+function armarTarjeta(mascota) {
+    var plantilla = document.getElementById('plantilla-tarjeta');
+    var tarjeta = plantilla.content.firstElementChild.cloneNode(true);
+    var imagen = tarjeta.querySelector('img');
+    var vacia = tarjeta.querySelector('.pet-photo-empty');
+    var datos = tarjeta.querySelector('.pet-card-meta');
+
+    if (mascota.foto_url) {
+        imagen.src = mascota.foto_url;
+        imagen.alt = 'Foto de ' + mascota.nombre;
+        imagen.hidden = false;
+        vacia.hidden = true;
+    }
+
+    tarjeta.querySelector('h4').textContent = mascota.nombre;
+    datos.textContent = [
+        mascota.especie,
+        mascota.raza,
+        mascota.sexo,
+        mascota.tamano || mascota['tama\u00f1o']
+    ].filter(Boolean).join(' · ');
+
+    tarjeta.querySelector('.btn-adopt').href = '../user/solicitar_adopcion.php?id=' + mascota.id;
+    tarjeta.querySelector('.btn-transito').href = '../user/solicitar_transito.php?id=' + mascota.id;
+    tarjeta.querySelector('.btn-detail').href = 'mascota-detalle.php?id=' + mascota.id;
+
+    return tarjeta;
+}
+
+function mostrarAviso(titulo, texto) {
+    var aviso = document.createElement('div');
+    var h4 = document.createElement('h4');
+    var p = document.createElement('p');
+
+    aviso.className = 'catalog-empty';
+    h4.textContent = titulo;
+    p.textContent = texto;
+    aviso.appendChild(h4);
+    aviso.appendChild(p);
+    contenedor.appendChild(aviso);
+}
