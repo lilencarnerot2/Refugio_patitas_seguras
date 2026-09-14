@@ -1,4 +1,4 @@
-fetch(`${API_URL}/public/index.php?recurso=mascotas`)
+fetch(`${API_URL}/recurso=mascotas`)
     .then(response => {
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);

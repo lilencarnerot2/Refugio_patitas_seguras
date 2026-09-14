@@ -13,12 +13,12 @@ WORKDIR /var/www/html
 # Copia el backend al contenedor
 COPY . /var/www/html/
 
+COPY apache-vhost.conf /etc/apache2/sites-available/000-default.conf
+
+
 # Da permisos a Apache
-RUN sed -ri \
-    -e 's!/var/www/html!/var/www/html/public!g' \
-    /etc/apache2/sites-available/*.conf \
-    /etc/apache2/apache2.conf \
-    /etc/apache2/conf-available/*.conf
+RUN chown -R www-data:www-data /var/www/html
+
 
 # Expone el puerto 80
 EXPOSE 80
