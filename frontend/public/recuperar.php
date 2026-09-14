@@ -8,7 +8,7 @@ require __DIR__ . '/includes/header.php';
     <section>
         <div class="page-intro">
             <h2>Nueva contraseña</h2>
-            <p>Se envia un correo que contiene un token, que dura 30 minutos.</p>
+            <p>Se envia un correo que contiene un token, quedura 30 minutos.</p>
            
         </div>
 
