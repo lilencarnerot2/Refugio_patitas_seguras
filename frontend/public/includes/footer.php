@@ -17,19 +17,5 @@
             </div>
         </div>
     </footer>
-
-<?php if (!empty($scriptsPagina) && is_array($scriptsPagina)): ?>
-    <script>
-        window.APP_CONFIG = {
-            backendUrl: <?php echo json_encode(getenv('BACKEND_SERVICE_URL') ?: ''); ?>
-        };
-    </script>
-    <script src="../assets/js/api.js?t=<?php echo filemtime(__DIR__ . '/../../assets/js/api.js'); ?>"></script>
-    <script src="../assets/js/app.js?t=<?php echo filemtime(__DIR__ . '/../../assets/js/app.js'); ?>"></script>
-<?php foreach ($scriptsPagina as $script): ?>
-<?php $rutaScript = __DIR__ . '/../../assets/js/' . $script; ?>
-    <script src="../assets/js/<?php echo htmlspecialchars($script, ENT_QUOTES, 'UTF-8'); ?>?t=<?php echo is_file($rutaScript) ? filemtime($rutaScript) : time(); ?>"></script>
-<?php endforeach; ?>
-<?php endif; ?>
 </body>
 </html>

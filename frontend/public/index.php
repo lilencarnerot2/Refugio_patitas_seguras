@@ -47,19 +47,19 @@ require __DIR__ . '/includes/header.php';
     <section>
         <div class="stats-container">
             <div class="stat-item">
-                <h4><i class="fa-solid fa-paw" style="font-size: 16px;"></i> +1200</h4>
+                <h4><i class="fa-solid fa-paw"></i> +1200</h4>
                 <p>Rescates realizados</p>
             </div>
             <div class="stat-item">
-                <h4><i class="fa-solid fa-heart" style="font-size: 16px;"></i> +980</h4>
+                <h4><i class="fa-solid fa-heart"></i> +980</h4>
                 <p>Adopciones felices</p>
             </div>
             <div class="stat-item">
-                <h4><i class="fa-solid fa-house" style="font-size: 16px;"></i> +150</h4>
+                <h4><i class="fa-solid fa-house"></i> +150</h4>
                 <p>Hogares de tránsito</p>
             </div>
             <div class="stat-item">
-                <h4><i class="fa-solid fa-users" style="font-size: 16px;"></i> +200</h4>
+                <h4><i class="fa-solid fa-users"></i> +200</h4>
                 <p>Voluntarios activos</p>
             </div>
         </div>

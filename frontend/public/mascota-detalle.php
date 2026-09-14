@@ -1,54 +1,82 @@
-<?php
-$tituloPagina = 'Detalle de mascota - Patitas Seguras';
-require __DIR__ . '/includes/head.php';
-require __DIR__ . '/includes/header.php';
-?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mascota - Patitas Seguras</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/styles.css?v=menu7">
+</head>
+<body>
 
-    <section class="detalle-section">
-        <div id="detalle-carga" class="catalog-empty">
-            <i class="fa-solid fa-paw"></i>
-            <h4>Cargando mascota...</h4>
-            <p>Estamos consultando la información al refugio.</p>
+    <header>
+        <a class="logo-container" href="index.php">
+            <div style="background: var(--primary-color); border-radius: 50%; padding: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
+                <i class="fa-solid fa-paw"></i>
+            </div>
+            <div class="logo-text">
+                <h1>PATITAS SEGURAS</h1>
+                <span>Refugio de animales</span>
+            </div>
+        </a>
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
+        <nav>
+            <ul>
+                <li><a href="index.php">INICIO</a></li>
+                <li><a href="index.php#nosotros">NOSOTROS</a></li>
+                <li class="nav-dropdown">
+                    <input type="checkbox" id="drop-sumate" class="nav-drop-toggle">
+                    <label for="drop-sumate">SUMATE</label>
+                    <ul class="dropdown-menu">
+                        <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
+                        <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
+                        <li><a href="index.php#modal-voluntariado">SE VOLUNTARIO</a></li>
+                    </ul>
+                </li>
+                <li class="nav-dropdown">
+                    <input type="checkbox" id="drop-ayudar" class="nav-drop-toggle">
+                    <label for="drop-ayudar">CÓMO AYUDAR</label>
+                    <ul class="dropdown-menu">
+                        <li><a href="index.php#modal-castracion">CASTRACIÓN</a></li>
+                        <li><a href="index.php#modal-maltrato">DENUNCIA MALTRATO</a></li>
+                    </ul>
+                </li>
+                <li><a href="index.php#contacto">CONTACTO</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <a class="btn-donate" href="index.php#modal-donaciones">
+                <i class="fa-solid fa-heart"></i> DONAR
+            </a>
+            <label for="nav-toggle" class="menu-toggle" aria-label="Menú">
+                <i class="fa-solid fa-bars menu-icon-bars"></i>
+                <i class="fa-solid fa-xmark menu-icon-close"></i>
+            </label>
         </div>
+    </header>
 
-        <div id="detalle-vacio" class="catalog-empty" hidden>
+    <section>
+        <div class="catalog-empty">
             <i class="fa-solid fa-paw"></i>
             <h4>Mascota no encontrada</h4>
             <p>Volvé al listado para ver las mascotas disponibles.</p>
-            <a class="empty-back-link" href="mascotas.php">Volver a mascotas</a>
+            <a class="btn-detail" href="mascotas.php">Volver a mascotas</a>
         </div>
-
-        <article id="ficha-mascota" class="pet-detail" hidden>
-            <div class="pet-detail-photo">
-                <img id="detalle-foto" hidden alt="">
-                <div id="detalle-foto-vacia" class="pet-photo-empty"></div>
-            </div>
-            <div class="pet-detail-body">
-                <h2 id="detalle-nombre"></h2>
-                <ul class="pet-detail-meta">
-                    <li><span class="detalle-label">Especie</span><span id="detalle-especie"></span></li>
-                    <li><span class="detalle-label">Raza</span><span id="detalle-raza"></span></li>
-                    <li><span class="detalle-label">Sexo</span><span id="detalle-sexo"></span></li>
-                    <li><span class="detalle-label">Tamaño</span><span id="detalle-tamano"></span></li>
-                    <li><span class="detalle-label">Nacimiento estimado</span><span id="detalle-nacimiento"></span></li>
-                </ul>
-                <p id="detalle-historial" class="pet-detail-historial"></p>
-                <div class="pet-detail-actions">
-                    <a id="detalle-adoptar" class="btn-adopt" href="../user/solicitar_adopcion.php">
-                        <i class="fa-solid fa-heart"></i>
-                        Adoptar
-                    </a>
-                    <a id="detalle-transito" class="btn-transito" href="../user/solicitar_transito.php">
-                        <i class="fa-solid fa-house-chimney"></i>
-                        Hogar de tránsito
-                    </a>
-                    <a class="empty-back-link" href="mascotas.php">Volver al catálogo</a>
-                </div>
-            </div>
-        </article>
     </section>
 
-<script src="config.php"></script>
-<script src="../assets/js/api.js"></script>
-<script src="../assets/js/mascotas-detalles.js"></script>
-<?php require __DIR__ . '/includes/footer.php'; ?>
+    <footer>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <h3>PATITAS SEGURAS</h3>
+                <p style="font-size: 12px; color: #ccc;">Refugio de animales</p>
+            </div>
+            <div>
+                <p style="font-size: 13px;"><i class="fa-solid fa-envelope"></i> hola@patitaseguras.org</p>
+                <p style="font-size: 13px; margin-top: 5px;"><i class="fa-solid fa-location-dot"></i> Merlo, Buenos Aires, Argentina</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
