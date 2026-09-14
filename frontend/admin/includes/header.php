@@ -45,13 +45,13 @@ $esGestion = in_array($paginaAdmin, ['solicitudes', 'hogares_transito', 'donacio
                 <a href="configuracion.php"<?php echo $paginaAdmin === 'configuracion' ? ' class="active"' : ''; ?>>CONFIGURACIÓN</a>
             </li>
             <li class="nav-actions">
-                <a class="btn-outline" href="../public/index.php">SITIO</a>
+                <a class="btn-outline" href="/index.php">SITIO</a>
             </li>
         </ul>
     </nav>
 
     <div class="header-actions">
-        <a class="btn-outline" href="../public/index.php">SITIO</a>
+        <a class="btn-outline" href="/index.php">SITIO</a>
         <label for="nav-toggle" class="menu-toggle" aria-label="Menú">
             <i class="fa-solid fa-bars menu-icon-bars"></i>
             <i class="fa-solid fa-xmark menu-icon-close"></i>

@@ -1,7 +1,7 @@
 <?php
 $esInicio = true;
-require __DIR__ . '/includes/head.php';
-require __DIR__ . '/includes/header.php';
+require __DIR__ . '/public/includes/head.php';
+require __DIR__ . '/public/includes/header.php';
 ?>
 
     <!-- INICIO / HERO -->
@@ -17,7 +17,7 @@ require __DIR__ . '/includes/header.php';
 
     <!-- TARJETAS PRINCIPALES -->
     <section id="adopta" class="action-cards">
-        <a class="card" href="mascotas.php#adopcion">
+        <a class="card" href="/public/mascotas.php#adopcion">
             <div class="card-body">
                 <h3><i class="fa-solid fa-house"></i> ADOPTÁ</h3>
                 <p>Dale a un animalito una segunda oportunidad de ser feliz.</p>
@@ -33,7 +33,7 @@ require __DIR__ . '/includes/header.php';
             <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1" alt="Voluntariado">
             <span class="card-btn">SUMATE COMO VOLUNTARIO</span>
         </a>
-        <a class="card" href="mascotas.php#transito">
+        <a class="card" href="/public/mascotas.php#transito">
             <div class="card-body">
                 <h3><i class="fa-solid fa-house-chimney"></i> HOGAR DE TRÁNSITO</h3>
                 <p>Abri tu hogar por un tiempo y ayudanos a salvar más vidas.</p>
@@ -160,4 +160,4 @@ require __DIR__ . '/includes/header.php';
         </div>
     </div>
 
-<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php require __DIR__ . '/public/includes/footer.php'; ?>

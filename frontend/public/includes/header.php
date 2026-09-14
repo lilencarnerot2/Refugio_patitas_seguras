@@ -1,8 +1,10 @@
 <?php
 $esInicio = !empty($esInicio);
-$inicio = $esInicio ? '' : 'index.php';
+$inicio = $esInicio ? '' : '/index.php';
+$catalogo = '/public/mascotas.php';
+$login = '/public/login.php';
 ?><header>
-        <a class="logo-container" href="<?php echo $esInicio ? '#inicio' : 'index.php'; ?>">
+    <a class="logo-container" href="<?php echo $esInicio ? '#inicio' : $inicio; ?>">
             <div style="background: var(--primary-color); border-radius: 50%; padding: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
                 <i class="fa-solid fa-paw"></i>
             </div>
@@ -14,14 +16,14 @@ $inicio = $esInicio ? '' : 'index.php';
         <input type="checkbox" id="nav-toggle" class="nav-toggle">
         <nav>
             <ul>
-                <li><a href="<?php echo $esInicio ? '#inicio' : 'index.php'; ?>">INICIO</a></li>
+                <li><a href="<?php echo $esInicio ? '#inicio' : $inicio; ?>">INICIO</a></li>
                 <li><a href="<?php echo $inicio; ?>#nosotros">NOSOTROS</a></li>
                 <li class="nav-dropdown">
                     <details>
                         <summary>SUMATE</summary>
                         <ul class="dropdown-menu">
-                            <li><a href="mascotas.php#adopcion">ADOPTÁ</a></li>
-                            <li><a href="mascotas.php#transito">HOGAR DE TRÁNSITO</a></li>
+                            <li><a href="<?php echo $catalogo; ?>#adopcion">ADOPTÁ</a></li>
+                            <li><a href="<?php echo $catalogo; ?>#transito">HOGAR DE TRÁNSITO</a></li>
                             <li><a href="<?php echo $inicio; ?>#modal-voluntariado">SE VOLUNTARIO</a></li>
                         </ul>
                     </details>
@@ -37,16 +39,16 @@ $inicio = $esInicio ? '' : 'index.php';
                 </li>
                 <li><a href="<?php echo $inicio; ?>#contacto">CONTACTO</a></li>
                 <li class="nav-actions">
-                    <a class="btn-outline" href="login.php">INGRESAR</a>
-                    <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : 'index.php#modal-donaciones'; ?>">
+                    <a class="btn-outline" href="<?php echo $login; ?>">INGRESAR</a>
+                    <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : $inicio . '#modal-donaciones'; ?>">
                         <i class="fa-solid fa-heart"></i> DONAR
                     </a>
                 </li>
             </ul>
         </nav>
         <div class="header-actions">
-            <a class="btn-outline" href="login.php">INGRESAR</a>
-            <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : 'index.php#modal-donaciones'; ?>">
+            <a class="btn-outline" href="<?php echo $login; ?>">INGRESAR</a>
+            <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : $inicio . '#modal-donaciones'; ?>">
                 <i class="fa-solid fa-heart"></i> DONAR
             </a>
             <label for="nav-toggle" class="menu-toggle" aria-label="Menú">
