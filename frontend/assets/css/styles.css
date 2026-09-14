@@ -761,7 +761,7 @@
         .pet-card img {
             width: 100%;
             height: 200px;
-            object-fit: cover;
+            object-fit: contain;
             display: block;
             background: #eaf0e9;
         }
@@ -783,12 +783,11 @@
             font-size: 18px;
             color: var(--primary-color);
             margin-bottom: 6px;
+            text-align: center;
         }
 
         .pet-card-meta {
-            font-size: 12px;
-            color: #777;
-            margin-bottom: 10px;
+            display: none;
         }
 
         .pet-card-body p {
@@ -1238,6 +1237,16 @@
             .public-form {
                 padding: 22px 16px;
                 max-width: 100%;
+            }
+
+            .catalog-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filtro-btn {
+                justify-content: center;
+                width: 100%;
             }
 
             .pet-catalog {
