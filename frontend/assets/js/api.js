@@ -19,7 +19,8 @@ function apiRequest(recurso, opciones) {
 
     const config = {
         method: opciones.metodo || 'GET',
-        headers: {}
+        headers: {},
+        credentials: 'include'
     };
 
     if (opciones.cuerpo !== undefined) {
