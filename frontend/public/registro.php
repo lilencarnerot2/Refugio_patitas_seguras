@@ -47,4 +47,8 @@ require __DIR__ . '/includes/header.php';
         </form>
     </section>
 
+ <script src="config.php"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/registro.js"></script>
+
 <?php require __DIR__ . '/includes/footer.php'; ?>
