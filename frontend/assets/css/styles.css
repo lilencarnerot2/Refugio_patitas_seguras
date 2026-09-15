@@ -30,7 +30,11 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: var(--white);
+            min-height: 100%;
+        }
+
+        html {
+            background-color: var(--footer-bg);
         }
 
         body {
@@ -38,6 +42,9 @@
             overflow-x: hidden;
             padding-top: 72px;
             background-color: var(--bg-cream);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Barra pegada al borde superior de la ventana */
@@ -228,9 +235,10 @@
             padding-right: var(--header-pad-x);
         }
 
-        /* Checkbox del menú: oculto a la vista, usable sin JavaScript */
+        /* Checkbox del menú y del ojo de contraseña: oculto a la vista, usable sin JavaScript */
         .nav-toggle,
-        .nav-drop-toggle {
+        .nav-drop-toggle,
+        .clave-toggle {
             position: absolute;
             opacity: 0;
             width: 0;
@@ -1143,12 +1151,8 @@
             color: #666;
         }
 
-        .nav-toggle {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-            pointer-events: none;
+        .clave-wrap {
+            position: relative;
         }
 
         .clave-ojo {
@@ -1156,21 +1160,13 @@
             right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: #888;
+            color: var(--text-soft);
             cursor: pointer;
             line-height: 1;
         }
 
         .clave-ojo .fa-eye-slash {
             display: none;
-        }
-
-        #nav-toggle:checked ~ .header-actions .menu-icon-bars {
-            display: none;
-        }
-
-        #nav-toggle:checked ~ .header-actions .menu-icon-close {
-            display: inline-block;
         }
 
         .public-form {
@@ -1203,9 +1199,9 @@
 
         .login-form .form-control {
             width: 100%;
-            border: none;
+            border: 1px solid var(--border-light);
             border-radius: 8px;
-            background: var(--bg-cream);
+            background: var(--white);
             padding: 12px 14px;
             font-size: 15px;
             color: var(--text-dark);
@@ -1218,4 +1214,13 @@
 
         .login-form .btn-primary {
             margin-top: 6px;
+        }
+
+        .form-alt-link {
+            margin-top: 18px;
+            margin-bottom: 0;
+        }
+
+        .public-form a {
+            color: var(--primary-color);
         }
