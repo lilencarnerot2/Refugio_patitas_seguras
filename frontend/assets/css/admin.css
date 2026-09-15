@@ -1,7 +1,10 @@
-/* Solo lo de admin. El nav y el pie usan styles.css. */
-
-/* Bootstrap le pone padding al ul y margen al h1 */
 .admin-page nav > ul {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 6px;
+    width: 100%;
     padding: 0;
     margin: 0;
 }
@@ -10,9 +13,185 @@
     margin: 0;
 }
 
+.admin-page .logo-icon {
+    background: var(--bg-cream);
+    border-radius: 50%;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-size: 20px;
+}
+
 .admin-page .logo-icon i {
     font-family: "Font Awesome 6 Free";
     font-weight: 900;
+}
+
+.admin-page .logo-text h1,
+.admin-page .logo-text span,
+.admin-page header .menu-toggle,
+.admin-page nav a,
+.admin-page nav summary {
+    color: var(--white);
+}
+
+.admin-page .logo-text span {
+    color: var(--footer-muted);
+}
+
+.admin-page header .btn-outline {
+    border-color: var(--bg-cream);
+    color: var(--bg-cream);
+}
+
+.admin-page header .btn-primary {
+    background: var(--bg-cream);
+    color: var(--primary-color);
+}
+
+.admin-page {
+    --admin-nav-ancho: 240px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    padding-top: 0;
+}
+
+.admin-page:has(#nav-toggle:checked) {
+    grid-template-columns: var(--admin-nav-ancho) minmax(0, 1fr);
+}
+
+.admin-page > .nav-toggle {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.admin-page header {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: auto;
+    min-height: var(--header-height);
+    background: var(--primary-color);
+    border-bottom: none;
+    padding-left: 24px;
+    padding-right: 24px;
+    z-index: 1100;
+}
+
+.admin-page .header-actions {
+    padding-right: 0;
+}
+
+.admin-page .header-actions .btn-outline,
+.admin-page .header-actions .btn-primary,
+.admin-page .menu-toggle {
+    display: inline-flex;
+}
+
+.admin-page nav {
+    display: none;
+}
+
+.admin-page #nav-toggle:checked ~ nav {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    grid-column: 1;
+    grid-row: 2;
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: auto;
+    bottom: 0;
+    width: var(--admin-nav-ancho);
+    height: auto;
+    max-height: none;
+    overflow: auto;
+    background: color-mix(in srgb, var(--primary-color) 75%, var(--bg-cream));
+    padding: 18px 12px;
+    z-index: 1090;
+    box-shadow: none;
+    border-bottom: none;
+}
+
+.admin-page #nav-toggle:checked ~ header .menu-icon-bars {
+    display: none;
+}
+
+.admin-page #nav-toggle:checked ~ header .menu-icon-close {
+    display: inline-block;
+}
+
+.admin-page section {
+    grid-column: 1;
+    padding-top: 8px;
+}
+
+.admin-page #nav-toggle:checked ~ section {
+    grid-column: 2;
+    min-width: 0;
+}
+
+.admin-page #mensaje-panel {
+    margin-top: 0;
+}
+
+.admin-page #mensaje-panel:empty {
+    display: none;
+}
+
+.admin-page nav > ul > li {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-bottom: none;
+}
+
+.admin-page nav a,
+.admin-page nav summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    line-height: 1.4;
+    text-align: left;
+}
+
+.admin-page footer {
+    grid-column: 1 / -1;
+    position: relative;
+    z-index: 1200;
+}
+
+.admin-page nav a.active,
+.admin-page nav a:hover,
+.admin-page nav summary.active,
+.admin-page nav summary:hover {
+    background: var(--primary-color);
+    color: var(--bg-cream);
+}
+
+.admin-page nav details a {
+    padding-left: 42px;
+}
+
+.admin-page nav > ul > li.nav-sitio {
+    display: none;
 }
 
 .admin-page .formulario-mascota {
@@ -44,6 +223,220 @@
     margin-top: 22px;
 }
 
+.admin-page .dash-fila {
+    display: grid;
+    gap: 20px;
+    margin: 0 0 28px;
+}
+
+.admin-page .dash-fila-tres {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.admin-page .dash-kpi {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.admin-page .dash-kpi-numero {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.admin-page .dash-torta,
+.admin-page .dash-donut {
+    width: 120px;
+    height: 120px;
+    transform: rotate(-90deg);
+}
+
+.admin-page .dash-torta-vacia {
+    fill: var(--text-light);
+}
+
+.admin-page .dash-torta-resto,
+.admin-page .dash-torta-parte {
+    fill: none;
+    stroke-width: 32;
+}
+
+.admin-page .dash-torta-resto {
+    stroke: var(--accent-color);
+}
+
+.admin-page .dash-torta-parte {
+    stroke: var(--primary-color);
+}
+
+.admin-page .dash-donut-fondo,
+.admin-page .dash-donut-valor {
+    fill: none;
+    stroke-width: 6;
+}
+
+.admin-page .dash-donut-fondo {
+    stroke: var(--icon-bg);
+}
+
+.admin-page .dash-donut-valor {
+    stroke: var(--accent-color);
+}
+
+.admin-page .dash-leyenda {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-page .dash-leyenda li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-soft);
+    margin-bottom: 8px;
+}
+
+.admin-page .dash-leyenda li::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    background: var(--primary-color);
+}
+
+.admin-page .dash-leyenda li:nth-child(2)::before {
+    background: var(--accent-color);
+}
+
+.admin-page .dash-semanas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    align-items: end;
+    gap: 8px;
+}
+
+.admin-page .dash-semanas > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    height: 160px;
+}
+
+.admin-page .dash-semanas progress,
+.admin-page .dash-barra {
+    appearance: none;
+    border: none;
+    background: var(--icon-bg);
+    border-radius: 8px;
+}
+
+.admin-page .dash-semanas progress {
+    width: 18px;
+    height: 130px;
+    writing-mode: vertical-lr;
+    direction: rtl;
+}
+
+.admin-page .dash-barra {
+    width: 100%;
+    height: 8px;
+    margin: 6px 0 10px;
+}
+
+.admin-page .dash-semanas progress::-webkit-progress-bar,
+.admin-page .dash-barra::-webkit-progress-bar {
+    background: var(--icon-bg);
+    border-radius: 8px;
+}
+
+.admin-page .dash-semanas progress::-webkit-progress-value,
+.admin-page .dash-barra::-webkit-progress-value {
+    background: var(--primary-color);
+    border-radius: 8px;
+}
+
+.admin-page .dash-semanas span {
+    font-size: 11px;
+    color: var(--text-soft);
+}
+
+.admin-page .dash-card-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.admin-page .dash-card-cabecera h3 {
+    margin-bottom: 0;
+}
+
+.admin-page .dash-card-cabecera .empty-back-link {
+    margin-top: 0;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.admin-page .dash-card-recientes {
+    padding: 16px 18px;
+}
+
+.admin-page .dash-tabla {
+    width: auto;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.admin-page .dash-tabla th {
+    text-align: left;
+    color: var(--text-soft);
+    font-weight: 500;
+    padding: 0 16px 6px 0;
+    white-space: nowrap;
+}
+
+.admin-page .dash-tabla td {
+    padding: 6px 16px 6px 0;
+    color: var(--text-dark);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.admin-page .dash-tabla th:last-child,
+.admin-page .dash-tabla td:last-child {
+    padding-right: 0;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.admin-page .dash-foto {
+    display: block;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: var(--icon-bg);
+}
+
+.admin-page .dash-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.admin-page .dash-foto img:not([src]),
+.admin-page .dash-foto img[src=""] {
+    display: none;
+}
+
 @media (max-width: 1100px) {
     .admin-page .acciones-formulario {
         flex-direction: column;
@@ -53,5 +446,44 @@
     .admin-page .acciones-formulario .btn-outline {
         width: 100%;
         justify-content: center;
+    }
+}
+
+@media (max-width: 992px) {
+    .admin-page .dash-fila-tres,
+    .admin-page .dash-fila-dos {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-page:has(#nav-toggle:checked) {
+        --admin-nav-ancho: max(10.5rem, 36vw);
+        grid-template-columns: var(--admin-nav-ancho) minmax(0, 1fr);
+    }
+
+    .admin-page header {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .admin-page .logo-text span {
+        display: none;
+    }
+
+    .admin-page .header-actions .btn-outline {
+        display: none;
+    }
+
+    .admin-page nav > ul > li.nav-sitio {
+        display: block;
+    }
+
+    .admin-page .header-actions .btn-primary {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .admin-page #nav-toggle:checked ~ section {
+        grid-column: 2;
+        min-width: 0;
     }
 }
