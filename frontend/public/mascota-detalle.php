@@ -27,23 +27,16 @@ require __DIR__ . '/includes/header.php';
             <div class="pet-detail-body">
                 <h2 id="detalle-nombre"></h2>
                 <ul class="pet-detail-meta">
-                    <li><span class="detalle-label">Especie</span><span id="detalle-especie"></span></li>
                     <li><span class="detalle-label">Raza</span><span id="detalle-raza"></span></li>
                     <li><span class="detalle-label">Sexo</span><span id="detalle-sexo"></span></li>
                     <li><span class="detalle-label">Tamaño</span><span id="detalle-tamano"></span></li>
                     <li><span class="detalle-label">Nacimiento estimado</span><span id="detalle-nacimiento"></span></li>
                 </ul>
                 <p id="detalle-historial" class="pet-detail-historial"></p>
-                <div class="pet-detail-actions">
-                    <a id="detalle-adoptar" class="btn-adopt" href="../user/solicitar_adopcion.php">
-                        <i class="fa-solid fa-heart"></i>
-                        Adoptar
-                    </a>
-                    <a id="detalle-transito" class="btn-transito" href="../user/solicitar_transito.php">
-                        <i class="fa-solid fa-house-chimney"></i>
-                        Hogar de tránsito
-                    </a>
-                    <a class="empty-back-link" href="mascotas.php">Volver al catálogo</a>
+                <div class="pet-card-actions">
+                    <a id="detalle-adoptar" class="btn-adopt" href="../user/solicitar_adopcion.php">Adoptar</a>
+                    <a id="detalle-transito" class="btn-transito" href="../user/solicitar_transito.php">Hogar de tránsito</a>
+                    <a class="btn-detail" href="mascotas.php">Volver al catálogo</a>
                 </div>
             </div>
         </article>

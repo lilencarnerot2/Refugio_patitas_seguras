@@ -926,12 +926,8 @@
             text-align: center;
         }
 
-        .pet-card-body p {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            flex: 1;
+        .pet-card-meta {
+            display: none;
         }
 
         .pet-card-actions {
@@ -947,11 +943,24 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            transition: opacity 0.2s;
         }
 
-        .pet-card-actions a:hover {
-            opacity: 0.9;
+        .btn-adopt,
+        .btn-transito {
+            color: var(--white);
+        }
+
+        .btn-adopt {
+            background: var(--primary-color);
+        }
+
+        .btn-transito {
+            background: var(--accent-color);
+        }
+
+        .btn-detail {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
         }
 
         .requisitos-section {
@@ -1008,25 +1017,6 @@
             color: var(--text-muted);
             font-size: 14px;
             line-height: 1.7;
-        }
-
-        /* Botón verde Adoptar */
-        .btn-adopt {
-            background: var(--primary-color);
-            color: var(--white);
-        }
-
-        /* Botón naranja Hogar de tránsito */
-        .btn-transito {
-            background: var(--accent-color);
-            color: var(--white);
-        }
-
-        /* Botón con borde Ver detalle */
-        .btn-detail {
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            background: transparent;
         }
 
         /* Mensaje cuando no hay mascotas o no se encontró el detalle */
@@ -1143,6 +1133,10 @@
         .pet-detail-historial {
             font-size: 15px;
             color: #666;
+        }
+
+        .pet-detail-body .pet-card-actions {
+            margin-top: 22px;
         }
 
         .clave-wrap {
