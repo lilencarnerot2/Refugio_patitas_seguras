@@ -17,7 +17,7 @@ require __DIR__ . '/includes/header.php';
                         <circle id="torta-solicitudes-resto" class="dash-torta-resto" r="16" cx="16" cy="16" pathLength="100" stroke-dasharray="0 100"></circle>
                         <circle id="torta-solicitudes" class="dash-torta-parte" r="16" cx="16" cy="16" pathLength="100" stroke-dasharray="0 100"></circle>
                     </svg>
-                    <ul id="leyenda-solicitudes"></ul>
+                    <ul id="leyenda-solicitudes" class="dash-leyenda"></ul>
                 </div>
             </article>
 
@@ -49,8 +49,8 @@ require __DIR__ . '/includes/header.php';
             </article>
         </div>
 
-        <div class="dash-fila dash-fila-dos">
-            <article class="info-card">
+        <div class="dash-fila dash-fila-tres">
+            <article class="info-card dash-card-recientes">
                 <div class="dash-card-cabecera">
                     <h3>Mascotas recientes</h3>
                     <a class="empty-back-link" href="mascotas.php">Ver todas</a>
@@ -64,8 +64,38 @@ require __DIR__ . '/includes/header.php';
                             <th>Estado</th>
                         </tr>
                     </thead>
-                    <tbody id="mascotas-recientes-cuerpo"></tbody>
+                    <tbody id="mascotas-recientes-cuerpo">
+                        <tr>
+                            <td><span class="dash-foto"><img alt=""></span></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><span class="dash-foto"><img alt=""></span></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><span class="dash-foto"><img alt=""></span></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
                 </table>
+            </article>
+
+            <article class="info-card">
+                <h3>Donaciones</h3>
+                <p id="texto-donaciones-total" class="dash-kpi-numero">0</p>
+                <p>Donaciones</p>
+                <div id="donaciones-tipos" class="dash-semanas">
+                    <div><progress max="1" value="0"></progress><span>Insumos</span></div>
+                    <div><progress max="1" value="0"></progress><span>Medicamentos</span></div>
+                    <div><progress max="1" value="0"></progress><span>Monetarias</span></div>
+                </div>
             </article>
 
             <article class="info-card">

@@ -68,41 +68,6 @@ function nombreMovimiento(mascota, movimientos) {
     return movimiento ? movimiento.nombre_movimiento : '';
 }
 
-function edadTexto(fecha) {
-    var nacimiento;
-    var ahora;
-    var meses;
-    var dias;
-
-    if (!fecha) {
-        return '';
-    }
-
-    nacimiento = new Date(fecha);
-    ahora = new Date();
-    meses = (ahora.getFullYear() - nacimiento.getFullYear()) * 12;
-    meses += ahora.getMonth() - nacimiento.getMonth();
-
-    if (meses < 0) {
-        return '';
-    }
-
-    if (meses < 1) {
-        dias = Math.round((ahora - nacimiento) / 86400000);
-        if (dias < 1) {
-            dias = 1;
-        }
-        return dias + (dias === 1 ? ' día' : ' días');
-    }
-
-    if (meses < 12) {
-        return meses + (meses === 1 ? ' mes' : ' meses');
-    }
-
-    meses = Math.floor(meses / 12);
-    return meses + (meses === 1 ? ' año' : ' años');
-}
-
 function esTipoAdopcionOTransito(nombre) {
     return parece(nombre, 'adopcion') || parece(nombre, 'transito');
 }
@@ -185,16 +150,31 @@ function mostrarMascotasTransito(mascotas, movimientos) {
     document.getElementById('texto-disponibles').textContent = porcentaje(disponibles, total) + '% (' + disponibles + ')';
 }
 
+function pintarBarras(idContenedor, valores) {
+    var grupos = document.getElementById(idContenedor).children;
+    var maximo = 1;
+    var i;
+    var barra;
+
+    for (i = 0; i < valores.length; i++) {
+        if (valores[i] > maximo) {
+            maximo = valores[i];
+        }
+    }
+
+    for (i = 0; i < grupos.length; i++) {
+        barra = grupos[i].getElementsByTagName('progress')[0];
+        barra.max = maximo;
+        barra.value = valores[i] || 0;
+    }
+}
+
 function mostrarAdopcionesMes(movimientos) {
     var ahora = new Date();
     var semanas = [0, 0, 0, 0];
     var total = 0;
     var i;
     var fecha;
-    var contenedor = document.getElementById('adopciones-semanas');
-    var grupos = contenedor.children;
-    var barra;
-    var maximo = 1;
 
     for (i = 0; i < movimientos.length; i++) {
         if (!parece(movimientos[i].nombre_movimiento, 'adopcion')) {
@@ -212,70 +192,74 @@ function mostrarAdopcionesMes(movimientos) {
     }
 
     document.getElementById('texto-adopciones-total').textContent = String(total);
-
-    for (i = 0; i < semanas.length; i++) {
-        if (semanas[i] > maximo) {
-            maximo = semanas[i];
-        }
-    }
-
-    for (i = 0; i < grupos.length; i++) {
-        barra = grupos[i].getElementsByTagName('progress')[0];
-        barra.max = maximo;
-        barra.value = semanas[i] || 0;
-    }
+    pintarBarras('adopciones-semanas', semanas);
 }
 
 function mostrarMascotasRecientes(mascotas, movimientos) {
-    var cuerpo = document.getElementById('mascotas-recientes-cuerpo');
+    var filas = document.getElementById('mascotas-recientes-cuerpo').rows;
     var lista = mascotas.slice();
     var i;
-    var tope;
     var fila;
-    var celda;
+    var celdas;
     var imagen;
-    var vacia;
     var mascota;
 
     lista.sort(function (a, b) {
         return Number(b.id) - Number(a.id);
     });
 
-    vaciar(cuerpo);
-    tope = Math.min(3, lista.length);
-
-    for (i = 0; i < tope; i++) {
+    for (i = 0; i < filas.length; i++) {
+        fila = filas[i];
+        celdas = fila.cells;
+        imagen = celdas[0].getElementsByTagName('img')[0];
         mascota = lista[i];
-        fila = document.createElement('tr');
 
-        celda = document.createElement('td');
-        if (mascota.foto_url) {
-            imagen = document.createElement('img');
-            imagen.src = mascota.foto_url;
-            imagen.alt = mascota.nombre;
-            celda.appendChild(imagen);
-        } else {
-            vacia = document.createElement('div');
-            vacia.className = 'pet-photo-empty';
-            celda.appendChild(vacia);
+        if (!mascota) {
+            imagen.removeAttribute('src');
+            imagen.alt = '';
+            celdas[1].textContent = '';
+            celdas[2].textContent = '';
+            celdas[3].textContent = '';
+            continue;
         }
-        fila.appendChild(celda);
 
-        celda = document.createElement('td');
-        celda.textContent = mascota.nombre || '';
-        fila.appendChild(celda);
+        if (mascota.foto_url) {
+            imagen.src = mascota.foto_url;
+        } else {
+            imagen.removeAttribute('src');
+        }
 
-        celda = document.createElement('td');
-        celda.textContent = edadTexto(mascota.fecha_nacimiento_estimada);
-        fila.appendChild(celda);
-
-        celda = document.createElement('td');
-        celda.textContent = nombreMovimiento(mascota, movimientos);
-        celda.setAttribute('data-movimiento', normalizarTexto(celda.textContent));
-        fila.appendChild(celda);
-
-        cuerpo.appendChild(fila);
+        imagen.alt = mascota.nombre || '';
+        celdas[1].textContent = mascota.nombre || '';
+        celdas[2].textContent = mascota.fecha_nacimiento_estimada || '';
+        celdas[3].textContent = nombreMovimiento(mascota, movimientos);
     }
+}
+
+function tipoDeAporte(item) {
+    return item.tipo_aporte || item.tipo || item.tipo_donacion || '';
+}
+
+function contarAportesPorParte(donaciones, parte) {
+    var i;
+    var total = 0;
+
+    for (i = 0; i < donaciones.length; i++) {
+        if (parece(tipoDeAporte(donaciones[i]), parte)) {
+            total += 1;
+        }
+    }
+
+    return total;
+}
+
+function mostrarDonaciones(donaciones) {
+    var insumos = contarAportesPorParte(donaciones, 'insumo');
+    var medicamentos = contarAportesPorParte(donaciones, 'medicament');
+    var monetarias = contarAportesPorParte(donaciones, 'monetar');
+
+    document.getElementById('texto-donaciones-total').textContent = String(insumos + medicamentos + monetarias);
+    pintarBarras('donaciones-tipos', [insumos, medicamentos, monetarias]);
 }
 
 function mostrarHogares(solicitudes, mascotas, movimientos) {
@@ -333,6 +317,14 @@ function cargarPanel() {
         })
         .catch(function () {
             mensaje.textContent = 'No se pudo cargar el panel.';
+        });
+
+    apiRequest('donaciones')
+        .then(function (resultado) {
+            mostrarDonaciones(listaDe(resultado));
+        })
+        .catch(function () {
+            mostrarDonaciones([]);
         });
 }
 

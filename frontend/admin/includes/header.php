@@ -71,5 +71,10 @@ $paginaAdmin = $paginaAdmin ?? '';
                 <i class="fa-solid fa-gear"></i> Configuración
             </a>
         </li>
+        <li class="nav-sitio">
+            <a href="/index.php">
+                <i class="fa-solid fa-globe"></i> Sitio
+            </a>
+        </li>
     </ul>
 </nav>
