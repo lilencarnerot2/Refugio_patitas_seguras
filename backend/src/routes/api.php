@@ -30,6 +30,31 @@ function manejarRutas()
             manejarRazas();
             break;
 
+        case 'tipos_solicitudes':
+            require_once __DIR__ . '/../controllers/tipos_solicitudes.php';
+                manejarTiposSolicitudes();
+            break;
+
+        case 'estados_solicitudes':
+            require_once __DIR__ . '/../controllers/estados_solicitudes.php';
+                manejar_estados_solicitudes();
+            break;
+
+        case 'solicitudes':
+            require_once __DIR__ . '/../controllers/solicitudes.php';
+                manejar_solicitudes();
+            break;
+
+        case 'tipos_movimientos_mascotas':
+            require_once __DIR__ . '/../controllers/tipos_movimientos_mascotas.php';
+                manejar_tipos_movimientos_mascotas();
+            break;
+
+        case 'movimientos_mascotas':
+            require_once __DIR__ . '/../controllers/movimientos_mascotas.php';
+                manejar_movimientos_mascotas();
+            break;
+
         default:
             responderJson(
                 false,
