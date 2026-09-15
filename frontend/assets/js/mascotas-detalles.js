@@ -35,7 +35,6 @@ function mostrarFicha(mascota) {
     ficha.hidden = false;
 
     document.getElementById('detalle-nombre').textContent = mascota.nombre || '';
-    document.getElementById('detalle-especie').textContent = mascota.especie || '';
     document.getElementById('detalle-raza').textContent = mascota.raza || '';
     document.getElementById('detalle-sexo').textContent = mascota.sexo || '';
     document.getElementById('detalle-tamano').textContent = mascota.tamaño || '';
