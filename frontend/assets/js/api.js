@@ -7,7 +7,7 @@ function apiRequest(recurso, opciones) {
         return Promise.reject(new Error('No está configurada la URL del backend.'));
     }
 
-    const url = new URL(API_URL.replace(/\/$/, '') + '/public/index.php');
+    const url = new URL(API_URL.replace(/\/$/, '') + '/');
     url.searchParams.set('recurso', recurso);
 
     const parametros = opciones.parametros || {};
