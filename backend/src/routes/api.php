@@ -5,6 +5,7 @@ require_once __DIR__ . '/../utils/response.php';
 require_once __DIR__ . '/../controllers/especies.php';
 require_once __DIR__ . '/../controllers/razas.php';
 require_once __DIR__ . '/../controllers/login.php';  
+require_once __DIR__ . '/../controllers/registro.php';
 
 
 function manejarRutas()
@@ -20,6 +21,10 @@ function manejarRutas()
         case 'login':
             manejarLogin();
             break;
+
+        case 'registro':
+            manejarRegistro();
+            break;    
 
         case '':
             responderJson(
