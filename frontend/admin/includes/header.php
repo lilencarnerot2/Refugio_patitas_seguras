@@ -30,12 +30,13 @@ $paginaAdmin = $paginaAdmin ?? '';
         </li>
         <li>
             <details>
-                <summary<?php echo in_array($paginaAdmin, ['mascotas', 'mascota_form', 'mascota_editar'], true) ? ' class="active"' : ''; ?>>
+                <summary<?php echo in_array($paginaAdmin, ['mascotas', 'mascota_form', 'mascota_editar', 'mascota_baja'], true) ? ' class="active"' : ''; ?>>
                     <i class="fa-solid fa-paw"></i> Mascotas
                 </summary>
                 <a href="mascotas.php"<?php echo $paginaAdmin === 'mascotas' ? ' class="active"' : ''; ?>>Listado</a>
                 <a href="mascota_form.php"<?php echo $paginaAdmin === 'mascota_form' ? ' class="active"' : ''; ?>>Nueva mascota</a>
                 <a href="mascota_editar.php"<?php echo $paginaAdmin === 'mascota_editar' ? ' class="active"' : ''; ?>>Editar mascota</a>
+                <a href="mascota_baja.php"<?php echo $paginaAdmin === 'mascota_baja' ? ' class="active"' : ''; ?>>Dar de baja</a>
             </details>
         </li>
         <li>

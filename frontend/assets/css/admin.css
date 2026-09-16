@@ -227,6 +227,10 @@
     color: var(--primary-color);
 }
 
+.admin-page .btn-baja {
+    background-color: #a32b21;
+}
+
 .admin-page .acciones-formulario {
     display: flex;
     flex-wrap: wrap;
