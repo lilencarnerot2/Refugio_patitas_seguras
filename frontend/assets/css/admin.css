@@ -209,6 +209,17 @@
     border: 1px solid #d8d8d8;
 }
 
+.admin-page .formulario-mascota input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.admin-page .formulario-mascota input[type="number"]::-webkit-inner-spin-button,
+.admin-page .formulario-mascota input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 .admin-page .mensaje-formulario {
     margin-top: 18px;
     min-height: 1.4em;
