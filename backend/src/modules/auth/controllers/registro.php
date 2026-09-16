@@ -1,7 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../services/integracion_registro.php';
-require_once __DIR__ . '/../repositories/usuarios.php';
+require_once __DIR__ . '/../../usuarios/services/usuarios.php';
+require_once __DIR__ . '/../../usuarios/services/roles.php';
 require_once __DIR__ . '/../../../utils/response.php';
 
 function registroController($datos)
@@ -37,20 +38,30 @@ function registroController($datos)
     $usuarioPadron = $resultado['data'];
     $uid_pp2 = (string) $usuarioPadron['usuario_id'];
 
+    $rol_usuario = buscar_rol_por_nombre('Usuario');
+
+    if (!$rol_usuario) {
+        return responderJson(
+            false,
+            'No existe el rol Usuario en la base local.',
+            null,
+            500
+        );
+    }
+
     // 5. Buscar si ya existe el usuario local
-    $usuarioLocal = buscarUsuarioPorUidPP2($uid_pp2);
+    $usuarioLocal = buscar_usuario_por_uid_pp2($uid_pp2);
 
     if ($usuarioLocal === false) {
-        // No existe → crearlo con rol "Usuario" (id_rol = 1)
-        $usuarioLocal = crearUsuarioDesdePadron([
-            'id_rol' => 1,
+        $usuarioLocal = crear_usuario_local_desde_padron([
+            'id_rol' => (int) $rol_usuario['id'],
             'nombre' => $nombre,
             'apellido' => $apellido,
-            'uid_pp2' => $uid_pp2
+            'uid_pp2' => $uid_pp2,
+            'password' => $password
         ]);
     } else {
-        // Existe → actualizar nombre/apellido
-        $usuarioLocal = actualizarUsuarioDesdePadron($usuarioLocal['id'], [
+        $usuarioLocal = actualizar_usuario_local_desde_padron((int) $usuarioLocal['id'], [
             'nombre' => $nombre,
             'apellido' => $apellido
         ]);

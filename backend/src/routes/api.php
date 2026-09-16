@@ -13,6 +13,16 @@ function manejarRutas()
 
     switch ($recurso) {
 
+        case 'roles':
+            require_once __DIR__ . '/../modules/usuarios/controllers/roles.php';
+                manejar_roles();
+            break;
+
+        case 'usuarios':
+            require_once __DIR__ . '/../modules/usuarios/controllers/usuarios.php';
+                manejar_usuarios();
+            break;
+
         case 'mascotas':
             manejarMascotas();
             break;

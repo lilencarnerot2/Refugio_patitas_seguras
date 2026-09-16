@@ -1,7 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../services/integracion_registro.php';
-require_once __DIR__ . '/../repositories/usuarios.php';
+require_once __DIR__ . '/../../usuarios/services/usuarios.php';
+require_once __DIR__ . '/../../usuarios/services/roles.php';
 require_once __DIR__ . '/../../../utils/response.php';
 
 function loginController($datos)
@@ -43,25 +44,31 @@ function loginController($datos)
 
     $uid_pp2 = (string) $usuarioPadron['id'];
 
+    $rol_usuario = buscar_rol_por_nombre('Usuario');
+
+    if (!$rol_usuario) {
+        return responderJson(
+            false,
+            'No existe el rol Usuario en la base local.',
+            null,
+            500
+        );
+    }
+
     // 5. Buscar el usuario en nuestra base de datos
-    $usuarioLocal = buscarUsuarioPorUidPP2($uid_pp2);
+    $usuarioLocal = buscar_usuario_por_uid_pp2($uid_pp2);
 
     if ($usuarioLocal === false) {
-
-        // No existe → crear usuario local
-        // Rol 1 = Usuario
-        $usuarioLocal = crearUsuarioDesdePadron([
-            'id_rol' => 1,
+        $usuarioLocal = crear_usuario_local_desde_padron([
+            'id_rol' => (int) $rol_usuario['id'],
             'nombre' => $usuarioPadron['nombre'],
             'apellido' => $usuarioPadron['apellido'],
-            'uid_pp2' => $uid_pp2
+            'uid_pp2' => $uid_pp2,
+            'password' => $password
         ]);
-
     } else {
-
-        // Ya existe → actualizar nombre y apellido
-        $usuarioLocal = actualizarUsuarioDesdePadron(
-            $usuarioLocal['id'],
+        $usuarioLocal = actualizar_usuario_local_desde_padron(
+            (int) $usuarioLocal['id'],
             [
                 'nombre' => $usuarioPadron['nombre'],
                 'apellido' => $usuarioPadron['apellido']
@@ -80,7 +87,9 @@ function loginController($datos)
     }
 
     // 7. Crear sesión PHP
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
     $_SESSION['usuario_id'] = $usuarioLocal['id'];
     $_SESSION['usuario_uid_pp2'] = $usuarioLocal['uid_pp2'];
