@@ -1,6 +1,6 @@
 const formulario = document.getElementById('formulario-mascota');
 const mensaje = document.getElementById('mensaje-formulario');
-const selectMascota = document.getElementById('id_mascota');
+const opciones = document.getElementById('opciones-mascotas');
 const selectEspecie = document.getElementById('id_especie');
 const selectRaza = document.getElementById('id_raza');
 const idInicial = new URLSearchParams(window.location.search).get('id');
@@ -22,13 +22,19 @@ function cargarMascotas() {
         .then(function (resultado) {
             var lista = resultado.data || [];
             var i;
-            var opcion;
+            var etiqueta;
+            var radio;
 
             for (i = 0; i < lista.length; i++) {
-                opcion = document.createElement('option');
-                opcion.value = lista[i].id;
-                opcion.textContent = lista[i].nombre;
-                selectMascota.appendChild(opcion);
+                radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'id_mascota';
+                radio.value = lista[i].id;
+
+                etiqueta = document.createElement('label');
+                etiqueta.appendChild(radio);
+                etiqueta.appendChild(document.createTextNode(' ' + lista[i].nombre));
+                opciones.appendChild(etiqueta);
             }
         })
         .catch(function () {
@@ -36,19 +42,26 @@ function cargarMascotas() {
         });
 }
 
+function mascotaElegida() {
+    return opciones.querySelector('input[name="id_mascota"]:checked');
+}
+
+function agregarOpciones(select, lista, campo) {
+    var i;
+    var opcion;
+
+    for (i = 0; i < lista.length; i++) {
+        opcion = document.createElement('option');
+        opcion.value = lista[i].id;
+        opcion.textContent = lista[i][campo];
+        select.appendChild(opcion);
+    }
+}
+
 function cargarEspecies() {
     return apiRequest('especies')
         .then(function (resultado) {
-            var lista = resultado.data || [];
-            var i;
-            var opcion;
-
-            for (i = 0; i < lista.length; i++) {
-                opcion = document.createElement('option');
-                opcion.value = lista[i].id;
-                opcion.textContent = lista[i].nombre_especie;
-                selectEspecie.appendChild(opcion);
-            }
+            agregarOpciones(selectEspecie, resultado.data || [], 'nombre_especie');
         })
         .catch(function () {
             mensaje.textContent = 'No se pudieron cargar las especies.';
@@ -69,16 +82,7 @@ function cargarRazas(idEspecie, razaSeleccionada) {
 
     return apiRequest('razas', { parametros: { id_especie: idEspecie } })
         .then(function (resultado) {
-            var lista = resultado.data || [];
-            var i;
-            var opcion;
-
-            for (i = 0; i < lista.length; i++) {
-                opcion = document.createElement('option');
-                opcion.value = lista[i].id;
-                opcion.textContent = lista[i].nombre_raza;
-                selectRaza.appendChild(opcion);
-            }
+            agregarOpciones(selectRaza, resultado.data || [], 'nombre_raza');
 
             if (razaSeleccionada) {
                 selectRaza.value = valorPorTexto(selectRaza, razaSeleccionada);
@@ -93,15 +97,12 @@ function cargarMascota(id) {
     return apiRequest('mascotas', { parametros: { id: id } })
         .then(function (resultado) {
             var mascota = resultado.data || {};
-            var idEspecie = mascota.id_especie
-                ? String(mascota.id_especie)
-                : valorPorTexto(selectEspecie, mascota.especie);
-            var fecha = mascota.fecha_nacimiento_estimada || '';
+            var idEspecie = valorPorTexto(selectEspecie, mascota.especie);
 
             formulario.elements.nombre.value = mascota.nombre || '';
             formulario.elements.sexo.value = mascota.sexo || '';
-            formulario.elements['tamaño'].value = mascota.tamaño || mascota.tamano || '';
-            formulario.elements.fecha_nacimiento_estimada.value = fecha ? String(fecha).slice(0, 10) : '';
+            formulario.elements['tamaño'].value = mascota.tamaño || '';
+            formulario.elements.fecha_nacimiento_estimada.value = mascota.fecha_nacimiento_estimada || '';
             formulario.elements.historial.value = mascota.historial || '';
             formulario.elements.foto_url.value = mascota.foto_url || '';
             selectEspecie.value = idEspecie;
@@ -114,20 +115,28 @@ function cargarMascota(id) {
 }
 
 Promise.all([cargarMascotas(), cargarEspecies()]).then(function () {
+    var radio;
+
     if (!idInicial) {
         return;
     }
 
-    selectMascota.value = idInicial;
+    radio = opciones.querySelector('input[value="' + idInicial + '"]');
+
+    if (radio) {
+        radio.checked = true;
+    }
 
     return cargarMascota(idInicial);
 });
 
-selectMascota.addEventListener('change', function () {
+opciones.addEventListener('change', function () {
+    var elegida = mascotaElegida();
+
     mensaje.textContent = '';
 
-    if (selectMascota.value) {
-        cargarMascota(selectMascota.value);
+    if (elegida) {
+        cargarMascota(elegida.value);
     }
 });
 
@@ -137,6 +146,13 @@ selectEspecie.addEventListener('change', function () {
 
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
+
+    const elegida = mascotaElegida();
+
+    if (!elegida) {
+        mensaje.textContent = 'Seleccioná una mascota.';
+        return;
+    }
 
     const datos = {
         id_especie: Number(formulario.elements.id_especie.value),
@@ -164,12 +180,12 @@ formulario.addEventListener('submit', function (evento) {
 
     apiRequest('mascotas', {
         metodo: 'PUT',
-        parametros: { id: selectMascota.value },
+        parametros: { id: elegida.value },
         cuerpo: datos
     })
         .then(function (resultado) {
             mensaje.textContent = resultado.message || '';
-            selectMascota.options[selectMascota.selectedIndex].textContent = datos.nombre;
+            elegida.parentNode.lastChild.textContent = ' ' + datos.nombre;
         })
         .catch(function (error) {
             mensaje.textContent = error.message || 'No se pudo guardar la mascota.';

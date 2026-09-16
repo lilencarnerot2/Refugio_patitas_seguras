@@ -204,7 +204,8 @@
 }
 
 .admin-page .formulario-mascota .form-control,
-.admin-page .formulario-mascota .form-select {
+.admin-page .formulario-mascota .form-select,
+.admin-page .formulario-mascota .lista-mascotas {
     background: #fff;
     border: 1px solid #d8d8d8;
 }
@@ -229,6 +230,44 @@
 
 .admin-page .btn-baja {
     background-color: #a32b21;
+}
+
+/* Lista de mascotas: se abre al tocarla y tiene scroll propio */
+.admin-page .lista-mascotas {
+    border-radius: var(--bs-border-radius);
+}
+
+.admin-page .lista-mascotas summary {
+    padding: 8px 12px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.admin-page .lista-mascotas summary::after {
+    content: '\f078';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    float: right;
+    font-size: 12px;
+}
+
+.admin-page .lista-mascotas-opciones {
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 4px;
+    border-top: 1px solid var(--border-light);
+}
+
+.admin-page .lista-mascotas-opciones label {
+    display: block;
+    padding: 6px 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.admin-page .lista-mascotas-opciones label:hover {
+    background: var(--icon-bg);
 }
 
 .admin-page .acciones-formulario {
