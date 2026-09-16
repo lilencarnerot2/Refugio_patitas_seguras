@@ -5,12 +5,15 @@ const selectEspecie = document.getElementById('id_especie');
 const selectRaza = document.getElementById('id_raza');
 const idInicial = new URLSearchParams(window.location.search).get('id');
 
-function valorPorTexto(select, texto) {
+let especies = [];
+let razas = [];
+
+function idPorNombre(lista, campo, nombre) {
     var i;
 
-    for (i = 0; i < select.options.length; i++) {
-        if (select.options[i].textContent === texto) {
-            return select.options[i].value;
+    for (i = 0; i < lista.length; i++) {
+        if (lista[i][campo] === nombre) {
+            return lista[i].id;
         }
     }
 
@@ -42,7 +45,9 @@ function cargarMascotas() {
 function cargarEspecies() {
     return apiRequest('especies')
         .then(function (resultado) {
-            agregarOpciones(selectEspecie, resultado.data || [], 'nombre_especie');
+            especies = resultado.data || [];
+
+            agregarOpciones(selectEspecie, especies, 'nombre_especie');
         })
         .catch(function () {
             mensaje.textContent = 'No se pudieron cargar las especies.';
@@ -63,10 +68,12 @@ function cargarRazas(idEspecie, razaSeleccionada) {
 
     return apiRequest('razas', { parametros: { id_especie: idEspecie } })
         .then(function (resultado) {
-            agregarOpciones(selectRaza, resultado.data || [], 'nombre_raza');
+            razas = resultado.data || [];
+
+            agregarOpciones(selectRaza, razas, 'nombre_raza');
 
             if (razaSeleccionada) {
-                selectRaza.value = valorPorTexto(selectRaza, razaSeleccionada);
+                selectRaza.value = idPorNombre(razas, 'nombre_raza', razaSeleccionada);
             }
         })
         .catch(function (error) {
@@ -78,7 +85,7 @@ function cargarMascota(id) {
     return apiRequest('mascotas', { parametros: { id: id } })
         .then(function (resultado) {
             var mascota = resultado.data || {};
-            var idEspecie = valorPorTexto(selectEspecie, mascota.especie);
+            var idEspecie = idPorNombre(especies, 'nombre_especie', mascota.especie);
 
             formulario.elements.nombre.value = mascota.nombre || '';
             formulario.elements.sexo.value = mascota.sexo || '';
