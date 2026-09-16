@@ -1,25 +1,19 @@
 const formulario = document.getElementById('formulario-baja');
 const mensaje = document.getElementById('mensaje-formulario');
-const opciones = document.getElementById('opciones-mascotas');
+const selectMascota = document.getElementById('id_mascota');
 
 function cargarMascotas() {
-    return apiRequest('mascotas')
+    apiRequest('mascotas')
         .then(function (resultado) {
             var lista = resultado.data || [];
             var i;
-            var etiqueta;
-            var radio;
+            var opcion;
 
             for (i = 0; i < lista.length; i++) {
-                radio = document.createElement('input');
-                radio.type = 'radio';
-                radio.name = 'id_mascota';
-                radio.value = lista[i].id;
-
-                etiqueta = document.createElement('label');
-                etiqueta.appendChild(radio);
-                etiqueta.appendChild(document.createTextNode(' ' + lista[i].nombre));
-                opciones.appendChild(etiqueta);
+                opcion = document.createElement('option');
+                opcion.value = lista[i].id;
+                opcion.textContent = lista[i].nombre;
+                selectMascota.appendChild(opcion);
             }
         })
         .catch(function () {
@@ -27,33 +21,23 @@ function cargarMascotas() {
         });
 }
 
-function mascotaElegida() {
-    return opciones.querySelector('input[name="id_mascota"]:checked');
-}
-
 cargarMascotas();
 
-opciones.addEventListener('change', function () {
+selectMascota.addEventListener('change', function () {
     mensaje.textContent = '';
 });
 
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
 
-    const elegida = mascotaElegida();
-
-    if (!elegida) {
-        mensaje.textContent = 'Seleccioná una mascota.';
-        return;
-    }
-
     apiRequest('mascotas', {
         metodo: 'DELETE',
-        parametros: { id: elegida.value }
+        parametros: { id: selectMascota.value }
     })
         .then(function (resultado) {
             mensaje.textContent = resultado.message || '';
-            elegida.parentNode.remove();
+            selectMascota.options[selectMascota.selectedIndex].remove();
+            selectMascota.selectedIndex = 0;
         })
         .catch(function (error) {
             mensaje.textContent = error.message || 'No se pudo dar de baja la mascota.';
