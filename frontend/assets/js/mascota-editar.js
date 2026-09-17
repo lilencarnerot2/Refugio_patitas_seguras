@@ -140,6 +140,11 @@ selectEspecie.addEventListener('change', function () {
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
 
+    if (!formulario.checkValidity()) {
+        formulario.reportValidity();
+        return;
+    }
+
     const datos = {
         id_especie: Number(formulario.elements.id_especie.value),
         id_raza: Number(formulario.elements.id_raza.value),

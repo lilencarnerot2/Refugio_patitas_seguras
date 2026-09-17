@@ -55,7 +55,7 @@ $paginaAdmin = $paginaAdmin ?? '';
             </a>
         </li>
         <li>
-            <a href="salud.php"<?php echo $paginaAdmin === 'salud' ? ' class="active"' : ''; ?>>
+            <a href="salud.php"<?php echo in_array($paginaAdmin, ['salud', 'ficha_medica'], true) ? ' class="active"' : ''; ?>>
                 <i class="fa-solid fa-heart-pulse"></i> Control de salud
             </a>
         </li>
