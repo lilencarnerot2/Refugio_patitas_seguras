@@ -227,6 +227,14 @@
     color: var(--primary-color);
 }
 
+.admin-page .mensaje-formulario.is-ok {
+    color: var(--primary-color);
+}
+
+.admin-page .mensaje-formulario.is-error {
+    color: var(--bs-danger);
+}
+
 .admin-page .btn-baja {
     background-color: #a32b21;
 }

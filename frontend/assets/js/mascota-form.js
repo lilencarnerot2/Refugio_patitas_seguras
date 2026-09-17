@@ -3,6 +3,17 @@ const mensaje = document.getElementById('mensaje-formulario');
 const selectEspecie = document.getElementById('id_especie');
 const selectRaza = document.getElementById('id_raza');
 
+function mostrarMensaje(texto, ok) {
+    mensaje.textContent = texto || '';
+    mensaje.classList.remove('is-ok', 'is-error');
+
+    if (!texto) {
+        return;
+    }
+
+    mensaje.classList.add(ok ? 'is-ok' : 'is-error');
+}
+
 function agregarOpciones(select, lista, campo) {
     var i;
     var opcion;
@@ -20,8 +31,8 @@ function cargarEspecies() {
         .then(function (resultado) {
             agregarOpciones(selectEspecie, resultado.data || [], 'nombre_especie');
         })
-        .catch(function () {
-            mensaje.textContent = 'No se pudieron cargar las especies.';
+        .catch(function (error) {
+            mostrarMensaje(error.message, false);
         });
 }
 
@@ -42,7 +53,7 @@ function cargarRazas(idEspecie) {
             agregarOpciones(selectRaza, resultado.data || [], 'nombre_raza');
         })
         .catch(function (error) {
-            mensaje.textContent = error.message || 'No se pudieron cargar las razas.';
+            mostrarMensaje(error.message, false);
         });
 }
 
@@ -84,12 +95,12 @@ formulario.addEventListener('submit', function (evento) {
         cuerpo: datos
     })
         .then(function (resultado) {
-            mensaje.textContent = resultado.message || '';
+            mostrarMensaje(resultado.message, true);
 
             formulario.reset();
             vaciarRazas();
         })
         .catch(function (error) {
-            mensaje.textContent = error.message || 'No se pudo enviar el formulario.';
+            mostrarMensaje(error.message, false);
         });
 });

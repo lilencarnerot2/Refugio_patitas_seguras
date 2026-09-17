@@ -5,6 +5,17 @@ const selectEspecie = document.getElementById('id_especie');
 const selectRaza = document.getElementById('id_raza');
 const idInicial = new URLSearchParams(window.location.search).get('id');
 
+function mostrarMensaje(texto, ok) {
+    mensaje.textContent = texto || '';
+    mensaje.classList.remove('is-ok', 'is-error');
+
+    if (!texto) {
+        return;
+    }
+
+    mensaje.classList.add(ok ? 'is-ok' : 'is-error');
+}
+
 let especies = [];
 let razas = [];
 
@@ -37,8 +48,8 @@ function cargarMascotas() {
         .then(function (resultado) {
             agregarOpciones(selectMascota, resultado.data || [], 'nombre');
         })
-        .catch(function () {
-            mensaje.textContent = 'No se pudieron cargar las mascotas.';
+        .catch(function (error) {
+            mostrarMensaje(error.message, false);
         });
 }
 
@@ -49,8 +60,8 @@ function cargarEspecies() {
 
             agregarOpciones(selectEspecie, especies, 'nombre_especie');
         })
-        .catch(function () {
-            mensaje.textContent = 'No se pudieron cargar las especies.';
+        .catch(function (error) {
+            mostrarMensaje(error.message, false);
         });
 }
 
@@ -77,7 +88,7 @@ function cargarRazas(idEspecie, razaSeleccionada) {
             }
         })
         .catch(function (error) {
-            mensaje.textContent = error.message || 'No se pudieron cargar las razas.';
+            mostrarMensaje(error.message, false);
         });
 }
 
@@ -98,7 +109,7 @@ function cargarMascota(id) {
             return cargarRazas(idEspecie, mascota.raza);
         })
         .catch(function (error) {
-            mensaje.textContent = error.message || 'No se pudo cargar la mascota.';
+            mostrarMensaje(error.message, false);
         });
 }
 
@@ -117,7 +128,7 @@ Promise.all([cargarMascotas(), cargarEspecies()]).then(function () {
 });
 
 selectMascota.addEventListener('change', function () {
-    mensaje.textContent = '';
+    mostrarMensaje('');
 
     cargarMascota(selectMascota.value);
 });
@@ -162,11 +173,11 @@ formulario.addEventListener('submit', function (evento) {
             const mascota = resultado.data || {};
             const nombre = mascota.nombre || '';
 
-            mensaje.textContent = resultado.message || '';
+            mostrarMensaje(resultado.message, true);
             formulario.elements.nombre.value = nombre;
             selectMascota.options[selectMascota.selectedIndex].textContent = nombre;
         })
         .catch(function (error) {
-            mensaje.textContent = error.message || 'No se pudo guardar la mascota.';
+            mostrarMensaje(error.message, false);
         });
 });
