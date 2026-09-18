@@ -2,6 +2,17 @@ const formulario = document.getElementById('formulario-baja');
 const mensaje = document.getElementById('mensaje-formulario');
 const selectMascota = document.getElementById('id_mascota');
 
+function mostrarMensaje(texto, ok) {
+    mensaje.textContent = texto || '';
+    mensaje.classList.remove('is-ok', 'is-error');
+
+    if (!texto) {
+        return;
+    }
+
+    mensaje.classList.add(ok ? 'is-ok' : 'is-error');
+}
+
 function cargarMascotas() {
     apiRequest('mascotas')
         .then(function (resultado) {
@@ -16,15 +27,15 @@ function cargarMascotas() {
                 selectMascota.appendChild(opcion);
             }
         })
-        .catch(function () {
-            mensaje.textContent = 'No se pudieron cargar las mascotas.';
+        .catch(function (error) {
+            mostrarMensaje(error.message, false);
         });
 }
 
 cargarMascotas();
 
 selectMascota.addEventListener('change', function () {
-    mensaje.textContent = '';
+    mostrarMensaje('');
 });
 
 formulario.addEventListener('submit', function (evento) {
@@ -35,11 +46,11 @@ formulario.addEventListener('submit', function (evento) {
         parametros: { id: selectMascota.value }
     })
         .then(function (resultado) {
-            mensaje.textContent = resultado.message || '';
+            mostrarMensaje(resultado.message, true);
             selectMascota.options[selectMascota.selectedIndex].remove();
             selectMascota.selectedIndex = 0;
         })
         .catch(function (error) {
-            mensaje.textContent = error.message || 'No se pudo dar de baja la mascota.';
+            mostrarMensaje(error.message, false);
         });
 });
