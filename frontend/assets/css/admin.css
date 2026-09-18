@@ -209,29 +209,35 @@
     border: 1px solid #d8d8d8;
 }
 
-.admin-page .formulario-mascota input[type="number"] {
+.admin-page input[type="number"] {
     appearance: textfield;
     -moz-appearance: textfield;
 }
 
-.admin-page .formulario-mascota input[type="number"]::-webkit-inner-spin-button,
-.admin-page .formulario-mascota input[type="number"]::-webkit-outer-spin-button {
+.admin-page input[type="number"]::-webkit-inner-spin-button,
+.admin-page input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
 .admin-page .mensaje-formulario {
     margin-top: 18px;
-    min-height: 1.4em;
     font-size: 14px;
     color: var(--primary-color);
 }
 
-.admin-page .mensaje-formulario.is-ok {
+.admin-page .mensaje-formulario:empty {
+    display: none;
+}
+
+.admin-page .mensaje-formulario.is-ok,
+.admin-page #castracion-estado.is-ok {
     color: var(--primary-color);
 }
 
-.admin-page .mensaje-formulario.is-error {
+.admin-page .mensaje-formulario.is-error,
+.admin-page #castracion-estado.is-error,
+.admin-page #panel-salud .empty-back-link.is-error {
     color: var(--bs-danger);
 }
 
@@ -248,12 +254,17 @@
 
 .admin-page .dash-fila {
     display: grid;
+    align-items: stretch;
     gap: 20px;
     margin: 0 0 28px;
 }
 
 .admin-page .dash-fila-tres {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.admin-page .dash-fila > .info-card {
+    height: 100%;
 }
 
 .admin-page .dash-kpi {
@@ -460,6 +471,166 @@
     display: none;
 }
 
+.admin-page #panel-salud .dash-tabla {
+    width: 100%;
+}
+
+.admin-page #panel-salud .dash-tabla td:last-child .is-error {
+    color: var(--bs-danger);
+}
+
+.admin-page #panel-salud .dash-tabla td:last-child {
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+.admin-page .lista-scroll-mascotas {
+    max-height: 240px;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.admin-page #bloques-ficha > .row > [class*="col-"],
+.admin-page #editar > [class*="col-"] {
+    display: flex;
+}
+
+.admin-page #bloques-ficha .info-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 16px 18px;
+}
+
+.admin-page #bloques-ficha .info-card form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.admin-page #editar .form-label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.admin-page #editar .form-control,
+.admin-page #editar .form-select {
+    display: block;
+    width: 100%;
+}
+
+.admin-page #editar .row.g-3 {
+    flex: 1;
+}
+
+.admin-page #bloques-ficha .info-card p:empty,
+.admin-page #bloques-ficha .info-card ul:empty,
+.admin-page #bloques-ficha .info-card p:has(> span:empty) {
+    display: none;
+}
+
+.admin-page #datos-mascota {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    padding: 22px 28px;
+    margin-bottom: 24px;
+}
+
+.admin-page .ficha-perfil-datos {
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-page #datos-mascota .dash-card-cabecera {
+    margin-bottom: 14px;
+}
+
+.admin-page #datos-mascota .pet-detail-meta {
+    margin: 0;
+}
+
+.admin-page #datos-mascota .pet-detail-meta li {
+    display: grid;
+    grid-template-columns: 12.5em 1fr;
+    column-gap: 12px;
+    align-items: baseline;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.admin-page #datos-mascota .pet-detail-meta li span:last-child {
+    min-width: 0;
+    font-weight: 600;
+    color: var(--text-dark);
+    overflow-wrap: break-word;
+}
+
+.admin-page #datos-mascota .pet-detail-meta li:has(span:last-child:empty) {
+    display: none;
+}
+
+.admin-page #bloques-ficha {
+    margin-top: 8px;
+}
+
+.admin-page #editar {
+    margin-top: 24px;
+}
+
+.admin-page #editar > .col-md-6:has(#formulario-castracion[hidden]) {
+    display: none;
+}
+
+.admin-page #bloque-crear-ficha:not([hidden]) ~ .col-md-6 .acciones-formulario {
+    display: none;
+}
+
+.admin-page #editar:has(#formulario-castracion[hidden]) > .col-md-6:has(#formulario-desparasitacion) {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+}
+
+.admin-page .ficha-foto-perfil {
+    width: 152px;
+    height: 152px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.admin-page .ficha-foto-perfil img,
+.admin-page #ficha-foto-vacia {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.admin-page #ficha-foto-vacia {
+    background: var(--icon-bg);
+}
+
+.admin-page #datos-mascota h3 {
+    font-size: 22px;
+}
+
+.admin-page #bloques-ficha .info-card h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.admin-page #bloques-ficha .info-card p,
+.admin-page #bloques-ficha .info-card ul {
+    margin-bottom: 6px;
+}
+
+.admin-page #bloques-ficha .acciones-formulario {
+    margin-top: auto;
+    padding-top: 12px;
+}
+
 @media (max-width: 1100px) {
     .admin-page .acciones-formulario {
         flex-direction: column;
@@ -508,5 +679,83 @@
     .admin-page #nav-toggle:checked ~ section {
         grid-column: 2;
         min-width: 0;
+    }
+
+    .admin-page #datos-mascota {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 18px;
+    }
+
+    .admin-page .ficha-perfil-datos {
+        width: 100%;
+    }
+
+    .admin-page .ficha-foto-perfil {
+        width: 120px;
+        height: 120px;
+    }
+
+    .admin-page #datos-mascota .dash-card-cabecera {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .admin-page #datos-mascota .dash-card-cabecera h3 {
+        min-width: 0;
+        overflow-wrap: break-word;
+    }
+
+    .admin-page #datos-mascota .pet-detail-meta li {
+        grid-template-columns: minmax(7em, 38%) minmax(0, 1fr);
+        column-gap: 10px;
+    }
+
+    .admin-page #bloques-ficha .info-card {
+        height: auto;
+    }
+
+    .admin-page section {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .admin-page #panel-salud .dash-tabla th:nth-child(3),
+    .admin-page #panel-salud .dash-tabla td:nth-child(3),
+    .admin-page #panel-salud .dash-tabla th:nth-child(4),
+    .admin-page #panel-salud .dash-tabla td:nth-child(4) {
+        display: none;
+    }
+
+    .admin-page #panel-salud .dash-tabla td:last-child {
+        max-width: 12rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .admin-page #datos-mascota .pet-detail-meta li {
+        grid-template-columns: 1fr;
+        row-gap: 2px;
+        margin-bottom: 10px;
+    }
+
+    .admin-page #datos-mascota h3 {
+        font-size: 18px;
+    }
+
+    .admin-page #editar .form-control,
+    .admin-page #editar .form-select {
+        max-width: 100%;
+    }
+
+    .admin-page #panel-salud .dash-tabla th,
+    .admin-page #panel-salud .dash-tabla td {
+        white-space: normal;
+        padding-right: 10px;
+    }
+
+    .admin-page #panel-salud .dash-tabla td:last-child {
+        max-width: none;
     }
 }
