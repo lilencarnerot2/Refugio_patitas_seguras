@@ -1,0 +1,41 @@
+<?php
+$tituloPagina = 'Baja de mascota - Patitas Seguras';
+$paginaAdmin = 'mascota_baja';
+require __DIR__ . '/includes/head.php';
+require __DIR__ . '/includes/header.php';
+?>
+
+    <section>
+        <div class="page-intro">
+            <h2>Dar de baja una mascota</h2>
+            <p>La mascota queda desactivada y deja de mostrarse en el catálogo.</p>
+        </div>
+
+        <form id="formulario-baja" class="formulario-mascota">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <span class="form-label">Mascota</span>
+                    <details class="lista-mascotas">
+                        <summary>Seleccioná una mascota</summary>
+                        <div id="opciones-mascotas" class="lista-mascotas-opciones"></div>
+                    </details>
+                </div>
+            </div>
+
+            <p id="mensaje-formulario" class="mensaje-formulario"></p>
+
+            <div class="acciones-formulario">
+                <button type="submit" class="btn-primary btn-baja">
+                    <i class="fa-solid fa-ban"></i>
+                    Dar de baja
+                </button>
+                <a class="btn-outline" href="../public/mascotas.php">Volver al catálogo</a>
+            </div>
+        </form>
+    </section>
+
+<script src="config.php"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/mascota-baja.js"></script>
+
+<?php require __DIR__ . '/includes/footer.php'; ?>
