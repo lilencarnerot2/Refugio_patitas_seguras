@@ -1,49 +1,23 @@
 const formulario = document.getElementById('formulario-mascota');
 const mensaje = document.getElementById('mensaje-formulario');
-const opciones = document.getElementById('opciones-mascotas');
+const selectMascota = document.getElementById('id_mascota');
 const selectEspecie = document.getElementById('id_especie');
 const selectRaza = document.getElementById('id_raza');
 const idInicial = new URLSearchParams(window.location.search).get('id');
 
-function valorPorTexto(select, texto) {
+let especies = [];
+let razas = [];
+
+function idPorNombre(lista, campo, nombre) {
     var i;
 
-    for (i = 0; i < select.options.length; i++) {
-        if (select.options[i].textContent === texto) {
-            return select.options[i].value;
+    for (i = 0; i < lista.length; i++) {
+        if (lista[i][campo] === nombre) {
+            return lista[i].id;
         }
     }
 
     return '';
-}
-
-function cargarMascotas() {
-    return apiRequest('mascotas')
-        .then(function (resultado) {
-            var lista = resultado.data || [];
-            var i;
-            var etiqueta;
-            var radio;
-
-            for (i = 0; i < lista.length; i++) {
-                radio = document.createElement('input');
-                radio.type = 'radio';
-                radio.name = 'id_mascota';
-                radio.value = lista[i].id;
-
-                etiqueta = document.createElement('label');
-                etiqueta.appendChild(radio);
-                etiqueta.appendChild(document.createTextNode(' ' + lista[i].nombre));
-                opciones.appendChild(etiqueta);
-            }
-        })
-        .catch(function () {
-            mensaje.textContent = 'No se pudieron cargar las mascotas.';
-        });
-}
-
-function mascotaElegida() {
-    return opciones.querySelector('input[name="id_mascota"]:checked');
 }
 
 function agregarOpciones(select, lista, campo) {
@@ -58,10 +32,22 @@ function agregarOpciones(select, lista, campo) {
     }
 }
 
+function cargarMascotas() {
+    return apiRequest('mascotas')
+        .then(function (resultado) {
+            agregarOpciones(selectMascota, resultado.data || [], 'nombre');
+        })
+        .catch(function () {
+            mensaje.textContent = 'No se pudieron cargar las mascotas.';
+        });
+}
+
 function cargarEspecies() {
     return apiRequest('especies')
         .then(function (resultado) {
-            agregarOpciones(selectEspecie, resultado.data || [], 'nombre_especie');
+            especies = resultado.data || [];
+
+            agregarOpciones(selectEspecie, especies, 'nombre_especie');
         })
         .catch(function () {
             mensaje.textContent = 'No se pudieron cargar las especies.';
@@ -82,10 +68,12 @@ function cargarRazas(idEspecie, razaSeleccionada) {
 
     return apiRequest('razas', { parametros: { id_especie: idEspecie } })
         .then(function (resultado) {
-            agregarOpciones(selectRaza, resultado.data || [], 'nombre_raza');
+            razas = resultado.data || [];
+
+            agregarOpciones(selectRaza, razas, 'nombre_raza');
 
             if (razaSeleccionada) {
-                selectRaza.value = valorPorTexto(selectRaza, razaSeleccionada);
+                selectRaza.value = idPorNombre(razas, 'nombre_raza', razaSeleccionada);
             }
         })
         .catch(function (error) {
@@ -97,7 +85,7 @@ function cargarMascota(id) {
     return apiRequest('mascotas', { parametros: { id: id } })
         .then(function (resultado) {
             var mascota = resultado.data || {};
-            var idEspecie = valorPorTexto(selectEspecie, mascota.especie);
+            var idEspecie = idPorNombre(especies, 'nombre_especie', mascota.especie);
 
             formulario.elements.nombre.value = mascota.nombre || '';
             formulario.elements.sexo.value = mascota.sexo || '';
@@ -115,29 +103,23 @@ function cargarMascota(id) {
 }
 
 Promise.all([cargarMascotas(), cargarEspecies()]).then(function () {
-    var radio;
-
     if (!idInicial) {
         return;
     }
 
-    radio = opciones.querySelector('input[value="' + idInicial + '"]');
+    selectMascota.value = idInicial;
 
-    if (radio) {
-        radio.checked = true;
+    if (!selectMascota.value) {
+        return;
     }
 
     return cargarMascota(idInicial);
 });
 
-opciones.addEventListener('change', function () {
-    var elegida = mascotaElegida();
-
+selectMascota.addEventListener('change', function () {
     mensaje.textContent = '';
 
-    if (elegida) {
-        cargarMascota(elegida.value);
-    }
+    cargarMascota(selectMascota.value);
 });
 
 selectEspecie.addEventListener('change', function () {
@@ -146,13 +128,6 @@ selectEspecie.addEventListener('change', function () {
 
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
-
-    const elegida = mascotaElegida();
-
-    if (!elegida) {
-        mensaje.textContent = 'Seleccioná una mascota.';
-        return;
-    }
 
     const datos = {
         id_especie: Number(formulario.elements.id_especie.value),
@@ -180,12 +155,16 @@ formulario.addEventListener('submit', function (evento) {
 
     apiRequest('mascotas', {
         metodo: 'PUT',
-        parametros: { id: elegida.value },
+        parametros: { id: selectMascota.value },
         cuerpo: datos
     })
         .then(function (resultado) {
+            const mascota = resultado.data || {};
+            const nombre = mascota.nombre || '';
+
             mensaje.textContent = resultado.message || '';
-            elegida.parentNode.lastChild.textContent = ' ' + datos.nombre;
+            formulario.elements.nombre.value = nombre;
+            selectMascota.options[selectMascota.selectedIndex].textContent = nombre;
         })
         .catch(function (error) {
             mensaje.textContent = error.message || 'No se pudo guardar la mascota.';

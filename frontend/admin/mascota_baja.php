@@ -14,11 +14,10 @@ require __DIR__ . '/includes/header.php';
         <form id="formulario-baja" class="formulario-mascota">
             <div class="row g-3">
                 <div class="col-md-6">
-                    <span class="form-label">Mascota</span>
-                    <details class="lista-mascotas">
-                        <summary>Seleccioná una mascota</summary>
-                        <div id="opciones-mascotas" class="lista-mascotas-opciones"></div>
-                    </details>
+                    <label class="form-label" for="id_mascota">Mascota</label>
+                    <select class="form-select" id="id_mascota" name="id_mascota" required>
+                        <option value="" selected disabled hidden>Seleccioná una mascota</option>
+                    </select>
                 </div>
             </div>
 
