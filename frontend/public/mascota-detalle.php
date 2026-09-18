@@ -27,7 +27,6 @@ require __DIR__ . '/includes/header.php';
             <div class="pet-detail-body">
                 <h2 id="detalle-nombre"></h2>
                 <ul class="pet-detail-meta">
-                    <li><span class="detalle-label">Raza</span><span id="detalle-raza"></span></li>
                     <li><span class="detalle-label">Sexo</span><span id="detalle-sexo"></span></li>
                     <li><span class="detalle-label">Tamaño</span><span id="detalle-tamano"></span></li>
                     <li><span class="detalle-label">Nacimiento estimado</span><span id="detalle-nacimiento"></span></li>

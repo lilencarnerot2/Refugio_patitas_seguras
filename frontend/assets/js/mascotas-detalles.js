@@ -35,7 +35,6 @@ function mostrarFicha(mascota) {
     ficha.hidden = false;
 
     document.getElementById('detalle-nombre').textContent = mascota.nombre || '';
-    document.getElementById('detalle-raza').textContent = mascota.raza || '';
     document.getElementById('detalle-sexo').textContent = mascota.sexo || '';
     document.getElementById('detalle-tamano').textContent = mascota.tamaño || '';
     document.getElementById('detalle-nacimiento').textContent = mascota.fecha_nacimiento_estimada || 'No informado';

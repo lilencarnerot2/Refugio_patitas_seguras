@@ -16,14 +16,14 @@ require __DIR__ . '/includes/header.php';
                 <div class="col-md-6">
                     <label class="form-label" for="id_especie">Especie</label>
                     <select class="form-select" id="id_especie" name="id_especie" required>
-                        <option value="">Seleccioná una especie</option>
+                        <option value="" selected disabled>Seleccioná una especie</option>
                     </select>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label" for="id_raza">Raza</label>
                     <select class="form-select" id="id_raza" name="id_raza" required>
-                        <option value="">Seleccioná una raza</option>
+                        <option value="" selected disabled>Seleccioná una raza</option>
                     </select>
                 </div>
 
