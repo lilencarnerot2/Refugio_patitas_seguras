@@ -3,19 +3,22 @@ const mensaje = document.getElementById('mensaje-formulario');
 const selectEspecie = document.getElementById('id_especie');
 const selectRaza = document.getElementById('id_raza');
 
+function agregarOpciones(select, lista, campo) {
+    var i;
+    var opcion;
+
+    for (i = 0; i < lista.length; i++) {
+        opcion = document.createElement('option');
+        opcion.value = lista[i].id;
+        opcion.textContent = lista[i][campo];
+        select.appendChild(opcion);
+    }
+}
+
 function cargarEspecies() {
     apiRequest('especies')
         .then(function (resultado) {
-            var lista = resultado.data || [];
-            var i;
-            var opcion;
-
-            for (i = 0; i < lista.length; i++) {
-                opcion = document.createElement('option');
-                opcion.value = lista[i].id;
-                opcion.textContent = lista[i].nombre_especie;
-                selectEspecie.appendChild(opcion);
-            }
+            agregarOpciones(selectEspecie, resultado.data || [], 'nombre_especie');
         })
         .catch(function () {
             mensaje.textContent = 'No se pudieron cargar las especies.';
@@ -36,16 +39,7 @@ function cargarRazas(idEspecie) {
 
     apiRequest('razas', { parametros: { id_especie: idEspecie } })
         .then(function (resultado) {
-            var lista = resultado.data || [];
-            var i;
-            var opcion;
-
-            for (i = 0; i < lista.length; i++) {
-                opcion = document.createElement('option');
-                opcion.value = lista[i].id;
-                opcion.textContent = lista[i].nombre_raza;
-                selectRaza.appendChild(opcion);
-            }
+            agregarOpciones(selectRaza, resultado.data || [], 'nombre_raza');
         })
         .catch(function (error) {
             mensaje.textContent = error.message || 'No se pudieron cargar las razas.';
@@ -92,10 +86,8 @@ formulario.addEventListener('submit', function (evento) {
         .then(function (resultado) {
             mensaje.textContent = resultado.message || '';
 
-            if (resultado.success) {
-                formulario.reset();
-                vaciarRazas();
-            }
+            formulario.reset();
+            vaciarRazas();
         })
         .catch(function (error) {
             mensaje.textContent = error.message || 'No se pudo enviar el formulario.';
