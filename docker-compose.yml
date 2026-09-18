@@ -38,6 +38,8 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       PP2_API_URL: ${PP2_API_URL}
       PP2_API_KEY: ${PP2_API_KEY}
+      MAIL_API_URL: ${MAIL_API_URL}
+      MAIL_API_KEY: ${MAIL_API_KEY}
 
     networks:
       - patitas_network
