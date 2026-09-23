@@ -48,6 +48,21 @@ function manejarRutas()
                 manejar_barrios_zonas();
             break;
 
+        case 'domicilios':
+            require_once __DIR__ . '/../modules/usuarios/controllers/domicilios.php';
+                manejar_domicilios();
+            break;
+
+        case 'tipos_contacto':
+            require_once __DIR__ . '/../modules/usuarios/controllers/tipos_contacto.php';
+                manejar_tipos_contacto();
+            break;
+
+        case 'contactos':
+            require_once __DIR__ . '/../modules/usuarios/controllers/contactos.php';
+            manejar_contactos();
+            break;
+
         case 'mascotas':
             manejarMascotas();
             break;
