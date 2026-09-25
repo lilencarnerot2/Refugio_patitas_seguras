@@ -1,5 +1,7 @@
 <?php
 $paginaAdmin = $paginaAdmin ?? '';
+$salir = '/public/login.php?salir=1';
+$esSuperadministrador = esRol('Superadministrador');
 ?>
 <input type="checkbox" id="nav-toggle" class="nav-toggle">
 <header>
@@ -18,6 +20,7 @@ $paginaAdmin = $paginaAdmin ?? '';
 
     <div class="header-actions">
         <a class="btn-outline" href="/index.php">SITIO</a>
+        <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>
     </div>
 </header>
 
@@ -59,6 +62,7 @@ $paginaAdmin = $paginaAdmin ?? '';
                 <i class="fa-solid fa-heart-pulse"></i> Control de salud
             </a>
         </li>
+        <?php if ($esSuperadministrador) { ?>
         <li>
             <a href="usuarios.php"<?php echo $paginaAdmin === 'usuarios' ? ' class="active"' : ''; ?>>
                 <i class="fa-solid fa-users"></i> Usuarios
@@ -69,6 +73,7 @@ $paginaAdmin = $paginaAdmin ?? '';
                 <i class="fa-solid fa-gear"></i> Configuración
             </a>
         </li>
+        <?php } ?>
         <li class="nav-sitio">
             <a href="/index.php">
                 <i class="fa-solid fa-globe"></i> Sitio
