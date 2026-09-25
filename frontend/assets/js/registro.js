@@ -1,3 +1,34 @@
+function guardarCookie(nombre, valor) {
+    document.cookie = nombre + '=' + encodeURIComponent(valor || '') + '; path=/; SameSite=Lax';
+}
+
+function guardarSesion(usuario, usuarioLocal) {
+    guardarCookie('usuario_id', usuario.id);
+    guardarCookie('usuario_nombre', usuario.nombre);
+    guardarCookie('usuario_apellido', usuario.apellido);
+    guardarCookie('usuario_email', usuario.email);
+    guardarCookie('usuario_rol', usuario.id_rol);
+    guardarCookie('usuario_nombre_rol', usuarioLocal.nombre_rol);
+}
+
+function mensajeDeApi(origen) {
+    if (origen && origen.data && origen.data.success === false && origen.data.message) {
+        return origen.data.message;
+    }
+
+    return '';
+}
+
+function avisoFormulario(formulario, mensaje) {
+    var aviso = formulario.querySelector('.campo-obligatorio');
+
+    if (!aviso) {
+        return;
+    }
+
+    aviso.textContent = mensaje || '';
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const formulario = document.getElementById('form-registro');
 
@@ -5,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    const boton = formulario.querySelector('button[type="button"]');
+    const boton = formulario.querySelector('.btn-primary');
 
     if (!boton) {
         return;
@@ -17,17 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const correo = document.getElementById('correo').value.trim();
         const clave = document.getElementById('clave').value;
 
-        // Validar campos vacíos
-        if (!nombre || !apellido || !correo || !clave) {
-            alert('Completá todos los campos.');
-            return;
-        }
-
-        // Validar largo de contraseña (según el contrato del Padrón: mínimo 8 caracteres)
-        if (clave.length < 8) {
-            alert('La contraseña debe tener al menos 8 caracteres.');
-            return;
-        }
+        avisoFormulario(formulario, '');
 
         boton.disabled = true;
 
@@ -41,11 +62,17 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .then(function (respuesta) {
-            alert(respuesta.message || 'Usuario registrado correctamente.');
-            window.location.href = '/index.php';
+            var usuario = (respuesta.data && respuesta.data.usuario) || {};
+
+            return apiRequest('usuarios', {
+                parametros: { id: usuario.id }
+            }).then(function (usuarioRespuesta) {
+                guardarSesion(usuario, usuarioRespuesta.data || {});
+                window.location.href = '/index.php';
+            });
         })
         .catch(function (error) {
-            alert(error.message || 'No se pudo registrar el usuario.');
+            avisoFormulario(formulario, mensajeDeApi(error));
         })
         .finally(function () {
             boton.disabled = false;
