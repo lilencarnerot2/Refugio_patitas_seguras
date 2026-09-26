@@ -1144,6 +1144,12 @@
             position: relative;
         }
 
+        .clave-campo {
+            padding-right: 42px;
+            -webkit-text-security: disc;
+            text-security: disc;
+        }
+
         .clave-ojo {
             position: absolute;
             right: 12px;
@@ -1152,10 +1158,24 @@
             color: var(--text-soft);
             cursor: pointer;
             line-height: 1;
+            z-index: 1;
         }
 
         .clave-ojo .fa-eye-slash {
             display: none;
+        }
+
+        .clave-wrap:has(.clave-toggle:checked) .clave-campo {
+            -webkit-text-security: none;
+            text-security: none;
+        }
+
+        .clave-wrap:has(.clave-toggle:checked) .clave-ojo .fa-eye {
+            display: none;
+        }
+
+        .clave-wrap:has(.clave-toggle:checked) .clave-ojo .fa-eye-slash {
+            display: inline-block;
         }
 
         .public-form {
