@@ -530,7 +530,8 @@
     display: none;
 }
 
-.admin-page #datos-mascota {
+.admin-page #datos-mascota,
+.admin-page #ficha-usuario {
     display: flex;
     align-items: center;
     gap: 36px;
@@ -543,15 +544,18 @@
     min-width: 0;
 }
 
-.admin-page #datos-mascota .dash-card-cabecera {
+.admin-page #datos-mascota .dash-card-cabecera,
+.admin-page #ficha-usuario .dash-card-cabecera {
     margin-bottom: 14px;
 }
 
-.admin-page #datos-mascota .pet-detail-meta {
+.admin-page #datos-mascota .pet-detail-meta,
+.admin-page #ficha-usuario .pet-detail-meta {
     margin: 0;
 }
 
-.admin-page #datos-mascota .pet-detail-meta li {
+.admin-page #datos-mascota .pet-detail-meta li,
+.admin-page #ficha-usuario .pet-detail-meta li {
     display: grid;
     grid-template-columns: 12.5em 1fr;
     column-gap: 12px;
@@ -560,15 +564,21 @@
     line-height: 1.7;
 }
 
-.admin-page #datos-mascota .pet-detail-meta li span:last-child {
+.admin-page #datos-mascota .pet-detail-meta li span:last-child,
+.admin-page #ficha-usuario .pet-detail-meta li span:last-child {
     min-width: 0;
     font-weight: 600;
     color: var(--text-dark);
     overflow-wrap: break-word;
 }
 
-.admin-page #datos-mascota .pet-detail-meta li:has(span:last-child:empty) {
+.admin-page #datos-mascota .pet-detail-meta li:has(span:last-child:empty),
+.admin-page #ficha-usuario .pet-detail-meta li:has(span:last-child:empty) {
     display: none;
+}
+
+.admin-page #ficha-usuario .pet-detail-meta li:has(#detalle-estado[data-estado]) {
+    display: grid;
 }
 
 .admin-page #bloques-ficha {
@@ -602,17 +612,20 @@
 }
 
 .admin-page .ficha-foto-perfil img,
-.admin-page #ficha-foto-vacia {
+.admin-page #ficha-foto-vacia,
+.admin-page #usuario-foto-vacia {
     width: 100%;
     height: 100%;
     border-radius: 50%;
 }
 
-.admin-page #ficha-foto-vacia {
+.admin-page #ficha-foto-vacia,
+.admin-page #usuario-foto-vacia {
     background: var(--icon-bg);
 }
 
-.admin-page #datos-mascota h3 {
+.admin-page #datos-mascota h3,
+.admin-page #ficha-usuario h3 {
     font-size: 22px;
 }
 
@@ -681,7 +694,12 @@
         min-width: 0;
     }
 
-    .admin-page #datos-mascota {
+    .admin-page .formulario-mascota {
+        padding: 20px 16px;
+    }
+
+    .admin-page #datos-mascota,
+    .admin-page #ficha-usuario {
         flex-direction: column;
         align-items: center;
         gap: 16px;
@@ -697,17 +715,20 @@
         height: 120px;
     }
 
-    .admin-page #datos-mascota .dash-card-cabecera {
+    .admin-page #datos-mascota .dash-card-cabecera,
+    .admin-page #ficha-usuario .dash-card-cabecera {
         flex-wrap: wrap;
         gap: 10px;
     }
 
-    .admin-page #datos-mascota .dash-card-cabecera h3 {
+    .admin-page #datos-mascota .dash-card-cabecera h3,
+    .admin-page #ficha-usuario .dash-card-cabecera h3 {
         min-width: 0;
         overflow-wrap: break-word;
     }
 
-    .admin-page #datos-mascota .pet-detail-meta li {
+    .admin-page #datos-mascota .pet-detail-meta li,
+    .admin-page #ficha-usuario .pet-detail-meta li {
         grid-template-columns: minmax(7em, 38%) minmax(0, 1fr);
         column-gap: 10px;
     }
@@ -734,13 +755,27 @@
 }
 
 @media (max-width: 576px) {
-    .admin-page #datos-mascota .pet-detail-meta li {
+    .admin-page .logo-text h1 {
+        font-size: 14px;
+    }
+
+    .admin-page .formulario-mascota {
+        padding: 16px 12px;
+    }
+
+    .admin-page .page-intro h2 {
+        font-size: 22px;
+    }
+
+    .admin-page #datos-mascota .pet-detail-meta li,
+    .admin-page #ficha-usuario .pet-detail-meta li {
         grid-template-columns: 1fr;
         row-gap: 2px;
         margin-bottom: 10px;
     }
 
-    .admin-page #datos-mascota h3 {
+    .admin-page #datos-mascota h3,
+    .admin-page #ficha-usuario h3 {
         font-size: 18px;
     }
 
@@ -757,5 +792,535 @@
 
     .admin-page #panel-salud .dash-tabla td:last-child {
         max-width: none;
+    }
+}
+
+.admin-page #panel-usuarios .info-card,
+.admin-page #panel-usuario-detalle .info-card {
+    padding: 28px 30px;
+}
+
+.admin-page #panel-usuarios .dash-card-cabecera,
+.admin-page #panel-usuario-detalle .dash-card-cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 16px;
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.admin-page #panel-usuarios .dash-card-cabecera h3,
+.admin-page #panel-usuario-detalle .dash-card-cabecera h3 {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+}
+
+.admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary {
+    margin-left: auto;
+}
+
+.admin-page .ficha-usuario-icono {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--icon-bg);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.admin-page #panel-usuarios .lista-scroll-mascotas {
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+.admin-page #panel-usuarios .dash-tabla {
+    width: max-content;
+    min-width: 100%;
+    table-layout: auto;
+}
+
+.admin-page #panel-usuarios .dash-tabla th {
+    padding: 12px 16px;
+    background: var(--icon-bg);
+    color: var(--primary-color);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
+.admin-page #panel-usuarios .dash-tabla th:first-child {
+    border-radius: 12px 0 0 12px;
+}
+
+.admin-page #panel-usuarios .dash-tabla th:last-child {
+    border-radius: 0 12px 12px 0;
+    color: var(--primary-color);
+}
+
+.admin-page #panel-usuarios .dash-tabla td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-dark);
+    white-space: nowrap;
+}
+
+.admin-page #columna-nro::before {
+    content: "Nro";
+}
+
+.admin-page #panel-usuarios .dash-tabla td:first-child a {
+    color: var(--text-dark);
+    text-decoration: none;
+    font-weight: 400;
+}
+
+.admin-page #panel-usuarios .dash-tabla td[data-estado]::after,
+.admin-page #detalle-estado::after {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-light);
+    font-size: 12px;
+    font-weight: 500;
+    pointer-events: none;
+}
+
+.admin-page #panel-usuarios .dash-tabla td[data-estado="true"]::after,
+.admin-page #panel-usuarios .dash-tabla td[data-estado="t"]::after,
+.admin-page #panel-usuarios .dash-tabla td[data-estado="1"]::after,
+.admin-page #detalle-estado[data-estado="true"]::after,
+.admin-page #detalle-estado[data-estado="t"]::after,
+.admin-page #detalle-estado[data-estado="1"]::after {
+    content: "Activo";
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    background: transparent;
+}
+
+.admin-page #panel-usuarios .dash-tabla td[data-estado="false"]::after,
+.admin-page #panel-usuarios .dash-tabla td[data-estado="f"]::after,
+.admin-page #panel-usuarios .dash-tabla td[data-estado="0"]::after,
+.admin-page #detalle-estado[data-estado="false"]::after,
+.admin-page #detalle-estado[data-estado="f"]::after,
+.admin-page #detalle-estado[data-estado="0"]::after {
+    content: "Inactivo";
+    color: #a32b21;
+    border-color: #a32b21;
+    background: transparent;
+}
+
+.admin-page #etiqueta-nro::before {
+    content: "Nro";
+}
+
+.admin-page #panel-usuarios .dash-tabla tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-page #panel-usuarios .dash-tabla tbody tr {
+    position: relative;
+}
+
+.admin-page #panel-usuarios .dash-tabla td:first-child a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+.admin-page #panel-usuarios .dash-tabla td a[href*="usuario_editar.php"],
+.admin-page #panel-usuarios .dash-tabla td button {
+    position: relative;
+    z-index: 1;
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 10px 22px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    appearance: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.admin-page #panel-usuarios .dash-tabla tbody tr:hover td,
+.admin-page #panel-usuarios .dash-tabla tbody tr:focus-within td {
+    background: var(--icon-bg);
+    color: var(--primary-color);
+}
+
+.admin-page #panel-usuarios .dash-tabla tbody tr:hover td:first-child a,
+.admin-page #panel-usuarios .dash-tabla tbody tr:focus-within td:first-child a {
+    color: var(--primary-color);
+}
+
+.admin-page #panel-usuarios .dash-tabla tbody tr:hover td[data-estado="true"]::after,
+.admin-page #panel-usuarios .dash-tabla tbody tr:focus-within td[data-estado="true"]::after,
+.admin-page #panel-usuarios .dash-tabla tbody tr:hover td[data-estado="t"]::after,
+.admin-page #panel-usuarios .dash-tabla tbody tr:focus-within td[data-estado="t"]::after,
+.admin-page #panel-usuarios .dash-tabla tbody tr:hover td[data-estado="1"]::after,
+.admin-page #panel-usuarios .dash-tabla tbody tr:focus-within td[data-estado="1"]::after {
+    color: var(--primary-color);
+}
+
+.admin-page #panel-usuarios .dash-tabla tbody tr:hover td[data-estado="false"]::after,
+.admin-page #panel-usuarios .dash-tabla tbody tr:focus-within td[data-estado="false"]::after,
+.admin-page #panel-usuarios .dash-tabla tbody tr:hover td[data-estado="f"]::after,
+.admin-page #panel-usuarios .dash-tabla tbody tr:focus-within td[data-estado="f"]::after,
+.admin-page #panel-usuarios .dash-tabla tbody tr:hover td[data-estado="0"]::after,
+.admin-page #panel-usuarios .dash-tabla tbody tr:focus-within td[data-estado="0"]::after {
+    color: #a32b21;
+}
+
+.admin-page #panel-usuarios .dash-tabla tbody tr:hover td a[href*="usuario_editar.php"],
+.admin-page #panel-usuarios .dash-tabla tbody tr:focus-within td a[href*="usuario_editar.php"],
+.admin-page #panel-usuarios .dash-tabla tbody tr:hover td button,
+.admin-page #panel-usuarios .dash-tabla tbody tr:focus-within td button {
+    color: var(--white);
+}
+
+.admin-page #panel-usuarios .dash-tabla tbody tr:active td {
+    background: color-mix(in srgb, var(--primary-color) 16%, var(--white));
+}
+
+.admin-page #panel-usuario-detalle #ficha-usuario {
+    align-items: flex-start;
+    gap: 28px 32px;
+    padding: 32px;
+}
+
+.admin-page #panel-usuario-detalle .ficha-foto-perfil {
+    width: 168px;
+    height: 168px;
+    border: 4px solid var(--icon-bg);
+    box-shadow: 0 0 0 3px var(--primary-color);
+}
+
+.admin-page #panel-usuario-detalle #usuario-foto-vacia {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-size: 56px;
+}
+
+.admin-page #panel-usuario-detalle #ficha-nombre {
+    color: var(--primary-color);
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 14px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li,
+.admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li:has(#detalle-estado[data-estado]) {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px;
+    background: var(--icon-bg);
+    border-radius: 12px;
+}
+
+.admin-page #panel-usuario-detalle .detalle-label {
+    color: var(--text-soft);
+    font-size: 12px;
+}
+
+.admin-page #panel-usuario-detalle .detalle-label::after {
+    content: ":";
+}
+
+.admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li span:last-child {
+    font-size: 15px;
+}
+
+.admin-page #bloque-solicitudes {
+    padding: 28px 30px;
+}
+
+.admin-page #bloque-solicitudes > h3 {
+    margin: 0 0 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--primary-color);
+    font-size: 18px;
+}
+
+.admin-page #bloque-solicitudes .dash-tabla {
+    width: 100%;
+}
+
+.admin-page #bloque-solicitudes .dash-tabla th {
+    padding: 12px 16px;
+    background: var(--icon-bg);
+    color: var(--primary-color);
+    font-size: 12px;
+}
+
+.admin-page #bloque-solicitudes .dash-tabla th:first-child {
+    border-radius: 12px 0 0 12px;
+}
+
+.admin-page #bloque-solicitudes .dash-tabla th:last-child {
+    border-radius: 0 12px 12px 0;
+}
+
+.admin-page #bloque-solicitudes .dash-tabla td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-dark);
+}
+
+.admin-page #bloque-solicitudes .dash-tabla tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-page #bloque-solicitudes .dash-tabla tbody:empty::after {
+    content: "Sin solicitudes";
+    display: block;
+    padding: 20px 16px;
+    color: var(--text-soft);
+}
+
+.admin-page #panel-usuarios .mensaje-formulario:empty,
+.admin-page #panel-usuario-detalle .mensaje-formulario:empty {
+    display: none;
+}
+
+@media (max-width: 960px) {
+    .admin-page #panel-usuarios .info-card,
+    .admin-page #panel-usuario-detalle .info-card {
+        padding: 20px 16px;
+    }
+
+    .admin-page #panel-usuarios .info-card {
+        padding: 18px 12px 12px;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .admin-page #panel-usuarios .dash-card-cabecera {
+        justify-content: center;
+        text-align: center;
+        border-bottom: none;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla thead {
+        display: none;
+    }
+
+    .admin-page #panel-usuarios .lista-scroll-mascotas {
+        overflow: visible;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla,
+    .admin-page #panel-usuarios .dash-tabla tbody,
+    .admin-page #panel-usuarios .dash-tabla tr,
+    .admin-page #panel-usuarios .dash-tabla td {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        height: auto;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla tbody tr {
+        max-width: 420px;
+        margin: 0 auto 16px;
+        padding: 20px 18px 16px;
+        text-align: left;
+        background: var(--white);
+        border-radius: 18px;
+        box-shadow: 0 4px 18px rgba(46, 80, 46, 0.08);
+    }
+
+    .admin-page #panel-usuarios .dash-tabla tbody tr:last-child {
+        margin-bottom: 0;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla tbody tr:hover,
+    .admin-page #panel-usuarios .dash-tabla tbody tr:focus-within {
+        background: var(--white);
+        box-shadow: 0 6px 22px rgba(46, 80, 46, 0.12);
+    }
+
+    .admin-page #panel-usuarios .dash-tabla tbody tr:hover td,
+    .admin-page #panel-usuarios .dash-tabla tbody tr:focus-within td,
+    .admin-page #panel-usuarios .dash-tabla tbody tr:active td {
+        background: transparent;
+        color: var(--text-dark);
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td {
+        display: grid;
+        grid-template-columns: minmax(7.5em, 44%) minmax(0, 1fr);
+        align-items: baseline;
+        gap: 6px 12px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border-light);
+        text-align: left;
+        white-space: normal;
+        overflow-wrap: break-word;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td:last-child {
+        border-bottom: none;
+        padding-right: 0;
+        color: var(--text-dark);
+        font-weight: 400;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td:empty {
+        display: none;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td[data-estado] {
+        display: grid;
+        align-items: center;
+        padding: 10px 0 14px;
+        margin-bottom: 0;
+        border-bottom: 1px solid var(--border-light);
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td[data-estado]::after {
+        width: max-content;
+        justify-self: start;
+        padding: 4px 12px;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td::before {
+        color: var(--text-soft);
+        font-size: 12px;
+        font-weight: 500;
+        text-align: left;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td:nth-child(1)::before { content: "Nro"; }
+    .admin-page #panel-usuarios .dash-tabla td:nth-child(2)::before { content: "Nombre"; }
+    .admin-page #panel-usuarios .dash-tabla td:nth-child(3)::before { content: "Apellido"; }
+    .admin-page #panel-usuarios .dash-tabla td:nth-child(4)::before { content: "Fecha de nacimiento"; }
+    .admin-page #panel-usuarios .dash-tabla td:nth-child(5)::before { content: "Fecha de alta"; }
+    .admin-page #panel-usuarios .dash-tabla td:nth-child(6)::before { content: "Estado"; }
+    .admin-page #panel-usuarios:has(#columna-uid) .dash-tabla td:nth-child(2)::before { content: "Uid"; }
+    .admin-page #panel-usuarios:has(#columna-uid) .dash-tabla td:nth-child(3)::before { content: "Id de rol"; }
+    .admin-page #panel-usuarios:has(#columna-uid) .dash-tabla td:nth-child(4)::before { content: "Id de domicilio"; }
+    .admin-page #panel-usuarios:has(#columna-uid) .dash-tabla td:nth-child(5)::before { content: "Nombre"; }
+    .admin-page #panel-usuarios:has(#columna-uid) .dash-tabla td:nth-child(6)::before { content: "Apellido"; }
+    .admin-page #panel-usuarios:has(#columna-uid) .dash-tabla td:nth-child(7)::before { content: "Fecha de nacimiento"; }
+    .admin-page #panel-usuarios:has(#columna-uid) .dash-tabla td:nth-child(8)::before { content: "Fecha de alta"; }
+    .admin-page #panel-usuarios:has(#columna-uid) .dash-tabla td:nth-child(9)::before { content: "Estado"; }
+
+    .admin-page #panel-usuarios:not(:has(#columna-uid)) .dash-tabla td:nth-child(2),
+    .admin-page #panel-usuarios:not(:has(#columna-uid)) .dash-tabla td:nth-child(3),
+    .admin-page #panel-usuarios:has(#columna-uid) .dash-tabla td:nth-child(5),
+    .admin-page #panel-usuarios:has(#columna-uid) .dash-tabla td:nth-child(6) {
+        font-weight: 500;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td:has(> a[href*="usuario_editar.php"]),
+    .admin-page #panel-usuarios .dash-tabla td:has(> button) {
+        display: inline-block;
+        width: 32%;
+        vertical-align: top;
+        border-bottom: none;
+        padding: 12px 4px 0;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td:has(> a[href*="usuario_editar.php"]) {
+        padding-top: 16px;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td:has(> a[href*="usuario_editar.php"])::before,
+    .admin-page #panel-usuarios .dash-tabla td:has(> button)::before {
+        content: none;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td a[href*="usuario_editar.php"],
+    .admin-page #panel-usuarios .dash-tabla td button {
+        width: 100%;
+        justify-content: center;
+        padding: 8px 6px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 720px) {
+    .admin-page #panel-usuarios .info-card,
+    .admin-page #panel-usuario-detalle .info-card {
+        padding: 20px 16px;
+    }
+
+    .admin-page #panel-usuario-detalle #ficha-usuario {
+        padding: 22px 16px;
+    }
+
+    .admin-page #panel-usuario-detalle .ficha-foto-perfil {
+        width: 128px;
+        height: 128px;
+    }
+
+    .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary {
+        width: 100%;
+        margin-left: 0;
+        text-align: center;
+    }
+
+    .admin-page #bloque-solicitudes .dash-tabla thead {
+        display: none;
+    }
+
+    .admin-page #bloque-solicitudes .dash-tabla,
+    .admin-page #bloque-solicitudes .dash-tabla tbody,
+    .admin-page #bloque-solicitudes .dash-tabla tr,
+    .admin-page #bloque-solicitudes .dash-tabla td {
+        display: block;
+        width: 100%;
+    }
+
+    .admin-page #bloque-solicitudes .dash-tabla td {
+        display: grid;
+        grid-template-columns: 8em 1fr;
+        padding: 8px 0;
+    }
+
+    .admin-page #bloque-solicitudes .dash-tabla td:nth-child(1)::before { content: "Id"; }
+    .admin-page #bloque-solicitudes .dash-tabla td:nth-child(2)::before { content: "Tipo"; }
+    .admin-page #bloque-solicitudes .dash-tabla td:nth-child(3)::before { content: "Mascota"; }
+    .admin-page #bloque-solicitudes .dash-tabla td:nth-child(4)::before { content: "Estado"; }
+    .admin-page #bloque-solicitudes .dash-tabla td:nth-child(5)::before { content: "Fecha"; }
+
+    .admin-page #bloque-solicitudes .dash-tabla td::before {
+        color: var(--text-soft);
+        font-size: 12px;
     }
 }
