@@ -1,6 +1,7 @@
 <?php
 $tituloPagina = $tituloPagina ?? 'Patitas Seguras - Administración';
 $cuerpoClase = trim('admin-page ' . ($cuerpoClase ?? ''));
+$esSuperadmin = !empty($_COOKIE['usuario_acceso_superadmin']);
 ?>
 <!DOCTYPE html>
 <html lang="es">
