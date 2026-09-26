@@ -1,6 +1,20 @@
 <?php
 $tituloPagina = $tituloPagina ?? 'Patitas Seguras - Administración';
 $cuerpoClase = trim('admin-page ' . ($cuerpoClase ?? ''));
+$autenticado = !empty($_COOKIE['usuario_id']) && !empty($_COOKIE['usuario_nombre_rol']);
+$esPersonal = $autenticado && !empty($_COOKIE['usuario_acceso_admin']);
+
+if (empty($sinGuardiaAdmin)) {
+    if (!$esPersonal) {
+        if ($autenticado) {
+            header('Location: /index.php');
+            exit;
+        }
+
+        header('Location: /public/login.php');
+        exit;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
