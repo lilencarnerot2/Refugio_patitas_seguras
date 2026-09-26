@@ -17,16 +17,22 @@ require __DIR__ . '/includes/header.php';
                 <table class="dash-tabla">
                     <thead>
                         <tr>
-                            <th>Id</th>
-                            <th>Uid</th>
-                            <th>Id de rol</th>
-                            <th>Rol</th>
-                            <th>Id de domicilio</th>
+                            <th id="columna-nro"></th>
+                            <?php if (!empty($esSuperadmin)) { ?>
+                            <th id="columna-uid">Uid</th>
+                            <th id="columna-id-rol">Id de rol</th>
+                            <th id="columna-id-domicilio">Id de domicilio</th>
+                            <?php } ?>
                             <th>Nombre</th>
                             <th>Apellido</th>
                             <th>Fecha de nacimiento</th>
                             <th>Fecha de alta</th>
                             <th>Estado</th>
+                            <?php if (!empty($esSuperadmin)) { ?>
+                            <th id="columna-editar">Editar</th>
+                            <th id="columna-alta">Alta</th>
+                            <th id="columna-baja">Baja</th>
+                            <?php } ?>
                         </tr>
                     </thead>
                     <tbody id="cuerpo-usuarios"></tbody>

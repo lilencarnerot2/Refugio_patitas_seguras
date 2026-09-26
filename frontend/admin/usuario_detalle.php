@@ -9,23 +9,49 @@ require __DIR__ . '/includes/header.php';
         <p id="mensaje-formulario" class="mensaje-formulario"></p>
 
         <article id="ficha-usuario" class="info-card">
-            <div class="dash-card-cabecera">
-                <span class="ficha-usuario-icono"><i class="fa-solid fa-user"></i></span>
-                <h3>Usuario</h3>
-                <a class="btn-primary" href="usuarios.php">Usuarios</a>
+            <div class="ficha-foto-perfil dash-foto">
+                <div id="usuario-foto-vacia" class="pet-photo-empty">
+                    <i class="fa-solid fa-user"></i>
+                </div>
             </div>
-            <ul class="pet-detail-meta">
-                <li><span class="detalle-label">Id</span><span id="detalle-id"></span></li>
-                <li><span class="detalle-label">Uid</span><span id="detalle-uid"></span></li>
-                <li><span class="detalle-label">Id de rol</span><span id="detalle-id-rol"></span></li>
-                <li><span class="detalle-label">Rol</span><span id="detalle-nombre-rol"></span></li>
-                <li><span class="detalle-label">Id de domicilio</span><span id="detalle-domicilio"></span></li>
-                <li><span class="detalle-label">Nombre</span><span id="detalle-nombre"></span></li>
-                <li><span class="detalle-label">Apellido</span><span id="detalle-apellido"></span></li>
-                <li><span class="detalle-label">Fecha de nacimiento</span><span id="detalle-nacimiento"></span></li>
-                <li><span class="detalle-label">Fecha de alta</span><span id="detalle-alta"></span></li>
-                <li><span class="detalle-label">Estado</span><span id="detalle-estado"></span></li>
-            </ul>
+            <div class="ficha-perfil-datos">
+                <div class="dash-card-cabecera">
+                    <h3 id="ficha-nombre"></h3>
+                    <a class="btn-primary" href="usuarios.php">Usuarios</a>
+                </div>
+                <ul class="pet-detail-meta">
+                    <li><span class="detalle-label" id="etiqueta-nro"></span><span id="detalle-id"></span></li>
+                    <?php if (!empty($esSuperadmin)) { ?>
+                    <li><span class="detalle-label">Uid</span><span id="detalle-uid"></span></li>
+                    <li><span class="detalle-label">Id de rol</span><span id="detalle-id-rol"></span></li>
+                    <li><span class="detalle-label">Id de domicilio</span><span id="detalle-domicilio"></span></li>
+                    <?php } ?>
+                    <li><span class="detalle-label">Nombre</span><span id="detalle-nombre"></span></li>
+                    <li><span class="detalle-label">Apellido</span><span id="detalle-apellido"></span></li>
+                    <li><span class="detalle-label">Fecha de nacimiento</span><span id="detalle-nacimiento"></span></li>
+                    <li><span class="detalle-label">Fecha de alta</span><span id="detalle-alta"></span></li>
+                    <li><span class="detalle-label">Rol</span><span id="detalle-nombre-rol"></span></li>
+                    <li><span class="detalle-label">Estado</span><span id="detalle-estado"></span></li>
+                </ul>
+            </div>
+        </article>
+
+        <article id="bloque-solicitudes" class="info-card">
+            <h3>Solicitudes</h3>
+            <div class="lista-scroll-mascotas">
+                <table class="dash-tabla">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Tipo</th>
+                            <th>Mascota</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpo-solicitudes"></tbody>
+                </table>
+            </div>
         </article>
     </section>
 
