@@ -1,5 +1,6 @@
 <?php
 $paginaAdmin = $paginaAdmin ?? '';
+$salir = '/public/login.php?salir=1';
 ?>
 <input type="checkbox" id="nav-toggle" class="nav-toggle">
 <header>
@@ -18,6 +19,7 @@ $paginaAdmin = $paginaAdmin ?? '';
 
     <div class="header-actions">
         <a class="btn-outline" href="/index.php">SITIO</a>
+        <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>
     </div>
 </header>
 
