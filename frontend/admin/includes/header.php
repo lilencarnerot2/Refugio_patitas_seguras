@@ -60,15 +60,27 @@ $paginaAdmin = $paginaAdmin ?? '';
             </a>
         </li>
         <li>
-            <a href="usuarios.php"<?php echo $paginaAdmin === 'usuarios' ? ' class="active"' : ''; ?>>
+            <?php if (!empty($esSuperadmin)) { ?>
+            <details>
+                <summary<?php echo in_array($paginaAdmin, ['usuarios', 'usuario_detalle', 'usuario_editar'], true) ? ' class="active"' : ''; ?>>
+                    <i class="fa-solid fa-users"></i> Usuarios
+                </summary>
+                <a href="usuarios.php"<?php echo $paginaAdmin === 'usuarios' ? ' class="active"' : ''; ?>>Listado</a>
+                <a href="usuario_editar.php"<?php echo $paginaAdmin === 'usuario_editar' ? ' class="active"' : ''; ?>>Editar usuario</a>
+            </details>
+            <?php } else { ?>
+            <a href="usuarios.php"<?php echo in_array($paginaAdmin, ['usuarios', 'usuario_detalle'], true) ? ' class="active"' : ''; ?>>
                 <i class="fa-solid fa-users"></i> Usuarios
             </a>
+            <?php } ?>
         </li>
+        <?php if (!empty($esSuperadmin)) { ?>
         <li>
             <a href="configuracion.php"<?php echo $paginaAdmin === 'configuracion' ? ' class="active"' : ''; ?>>
                 <i class="fa-solid fa-gear"></i> Configuración
             </a>
         </li>
+        <?php } ?>
         <li class="nav-sitio">
             <a href="/index.php">
                 <i class="fa-solid fa-globe"></i> Sitio
