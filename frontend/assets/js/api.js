@@ -138,6 +138,7 @@ function limpiarFilaDeApi(fila) {
     fila.removeAttribute('data-id-rol');
     fila.removeAttribute('data-estado');
     fila.removeAttribute('data-rol-pos');
+    fila.removeAttribute('data-estado-pos');
 
     for (i = 0; i < celdas.length; i++) {
         celdas[i].removeAttribute('data-texto');
@@ -199,7 +200,7 @@ function asignarCeldasDeApi(fila, cabecera, item, clave) {
     }
 }
 
-function pintarFilasDeApi(cuerpo, lista, asignar) {
+function asignarFilasDeApi(cuerpo, lista, asignar) {
     var filas = cuerpo.querySelectorAll('tr');
     var i;
 
@@ -210,6 +211,39 @@ function pintarFilasDeApi(cuerpo, lista, asignar) {
     for (i = 0; i < lista.length && i < filas.length; i++) {
         asignar(filas[i], lista[i]);
     }
+}
+
+function porcentajeDeApi(parte, total) {
+    if (!total) {
+        return 0;
+    }
+
+    return Math.round((parte * 100) / total);
+}
+
+function asignarArcoDeApi(circulo, valor) {
+    if (!circulo) {
+        return;
+    }
+
+    circulo.setAttribute('stroke-dasharray', textoApi(valor) + ' 100');
+}
+
+function contarSiDeApi(lista, coincide) {
+    var i;
+    var total = 0;
+
+    if (!Array.isArray(lista)) {
+        return 0;
+    }
+
+    for (i = 0; i < lista.length; i++) {
+        if (coincide(lista[i])) {
+            total += 1;
+        }
+    }
+
+    return total;
 }
 
 function mensajeDeApi(origen) {
@@ -228,4 +262,140 @@ function vaciar(nodo) {
     while (nodo.firstChild) {
         nodo.removeChild(nodo.firstChild);
     }
+}
+
+function campoDe(item, campo) {
+    return textoApi(item && item[campo]);
+}
+
+function claveDeApi(contenedor, selector) {
+    var nodo = contenedor && contenedor.querySelector(selector || '[data-campo]');
+
+    return nodo ? nodo.getAttribute('data-campo') : '';
+}
+
+function resumenFiltroDeApi(contenedor) {
+    return contenedor && contenedor.parentNode && contenedor.parentNode.querySelector('.listado-filtro-resumen');
+}
+
+function asignarCamposDeApi(contenedor, item) {
+    var nodos = contenedor.querySelectorAll('[data-campo]');
+    var i;
+    var nodo;
+    var texto;
+
+    for (i = 0; i < nodos.length; i++) {
+        nodo = nodos[i];
+        texto = textoApi(item[nodo.getAttribute('data-campo')]);
+
+        if (nodo.hasAttribute('data-badge')) {
+            nodo.setAttribute('data-estado', texto.toLowerCase());
+            continue;
+        }
+
+        nodo.setAttribute('data-texto', texto);
+    }
+}
+
+function posicionDeApi(contenedor, valor) {
+    var opciones = contenedor.querySelectorAll('input[value]');
+    var i;
+
+    for (i = 0; i < opciones.length; i++) {
+        if (textoApi(opciones[i].value) === textoApi(valor)) {
+            return String(i + 1);
+        }
+    }
+
+    return '';
+}
+
+function limpiarOpcionesDeApi(contenedor) {
+    var entradas = contenedor.querySelectorAll('input');
+    var i;
+
+    for (i = 0; i < entradas.length; i++) {
+        entradas[i].removeAttribute('value');
+        entradas[i].removeAttribute('data-estado');
+
+        if (entradas[i].parentNode) {
+            entradas[i].parentNode.removeAttribute('data-nombre');
+        }
+    }
+}
+
+function asignarOpcionDeApi(entrada, valor, texto, usarEstado) {
+    var etiqueta = entrada.parentNode;
+
+    entrada.setAttribute('value', valor);
+
+    if (usarEstado) {
+        entrada.setAttribute('data-estado', textoApi(valor).toLowerCase());
+        return;
+    }
+
+    if (etiqueta) {
+        etiqueta.setAttribute('data-nombre', texto);
+    }
+}
+
+function listaUnicaDeApi(valores, valorDe, textoDe, parDe) {
+    var i;
+    var valor;
+    var texto;
+    var par;
+    var vistos = {};
+    var lista = [];
+
+    for (i = 0; i < valores.length; i++) {
+        valor = valorDe(valores[i]);
+        texto = textoDe(valores[i]);
+
+        if (valor === '' || vistos[valor]) {
+            continue;
+        }
+
+        vistos[valor] = true;
+        lista.push({ valor: valor, texto: texto });
+
+        if (!parDe) {
+            continue;
+        }
+
+        par = parDe(valor);
+
+        if (par && !vistos[par]) {
+            vistos[par] = true;
+            lista.push({ valor: par, texto: par });
+        }
+    }
+
+    return lista;
+}
+
+function asignarOpcionesDeApi(contenedor, lista, resumen, usarEstado) {
+    var entradas = contenedor.querySelectorAll('input');
+    var i;
+    var n = 0;
+
+    limpiarOpcionesDeApi(contenedor);
+
+    if (resumen) {
+        resumen.removeAttribute('data-nombre-1');
+        resumen.removeAttribute('data-nombre-2');
+    }
+
+    for (i = 0; i < lista.length && n < entradas.length; i++) {
+        asignarOpcionDeApi(entradas[n], lista[i].valor, lista[i].texto, usarEstado);
+
+        if (resumen) {
+            resumen.setAttribute('data-nombre-' + (n + 1), lista[i].texto);
+        }
+
+        n += 1;
+    }
+}
+
+function cargarOpcionesDeApi(contenedor, valores, valorDe, textoDe, parDe, resumen, usarEstado) {
+    asignarOpcionesDeApi(contenedor, listaUnicaDeApi(valores, valorDe, textoDe, parDe), resumen, usarEstado);
 }
