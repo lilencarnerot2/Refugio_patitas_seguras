@@ -13,7 +13,7 @@ $opcionesRol = $paginas;
 $opcionesEstado = $paginas;
 ?>
 
-    <section id="panel-usuarios" data-por-pagina="<?php echo $porPagina; ?>"<?php echo $busquedaListado !== '' ? ' data-q="' . htmlspecialchars($busquedaListado, ENT_QUOTES, 'UTF-8') . '"' : ''; ?>>
+    <section id="panel-usuarios" class="panel-listado" data-por-pagina="<?php echo $porPagina; ?>"<?php echo $busquedaListado !== '' ? ' data-q="' . htmlspecialchars($busquedaListado, ENT_QUOTES, 'UTF-8') . '"' : ''; ?>>
         <?php for ($pagina = 1; $pagina <= $paginas; $pagina++) { ?>
         <input class="pagina-radio" type="radio" name="pagina-listado" id="pagina-<?php echo $pagina; ?>"<?php echo $pagina === 1 ? ' checked' : ''; ?>>
         <?php } ?>
@@ -104,22 +104,6 @@ $opcionesEstado = $paginas;
         </article>
     </section>
 <style>
-<?php for ($n = 1; $n <= $opcionesRol; $n++) { ?>
-.admin-page #panel-usuarios .listado-filtro-rol:has(#opciones-rol label:nth-child(<?php echo $n; ?>) input:checked):not(:has(#opciones-rol label:not(:nth-child(<?php echo $n; ?>)) input:checked)) .listado-filtro-resumen::after {
-    display: inline;
-    position: static;
-    border: 0;
-    padding: 0;
-    background: transparent;
-    color: var(--text-dark);
-    font-size: inherit;
-    font-weight: 400;
-    content: attr(data-nombre-<?php echo $n; ?>);
-}
-.admin-page #panel-usuarios:has(#opciones-rol label:nth-child(<?php echo $n; ?>) input:checked):not(:has(#opciones-rol label:not(:nth-child(<?php echo $n; ?>)) input:checked)) tbody tr:not([data-rol-pos="<?php echo $n; ?>"]) {
-    display: none;
-}
-<?php } ?>
 <?php if ($busquedaListado !== '') { ?>
 .admin-page #panel-usuarios[data-q] tbody tr:not(:has([data-campo="nombre"][data-valor*="<?php echo htmlspecialchars($busquedaCss, ENT_QUOTES, 'UTF-8'); ?>"])):not(:has([data-campo="apellido"][data-valor*="<?php echo htmlspecialchars($busquedaCss, ENT_QUOTES, 'UTF-8'); ?>"])) {
     display: none;
