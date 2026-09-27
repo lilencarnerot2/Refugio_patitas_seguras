@@ -25,7 +25,7 @@ require __DIR__ . '/includes/header.php';
 
             <div class="acciones-formulario">
                 <button type="submit" class="btn-primary btn-baja">
-                    <i class="fa-solid fa-ban"></i>
+                    <i class="bi bi-slash-circle"></i>
                     Dar de baja
                 </button>
                 <a class="btn-outline" href="../public/mascotas.php">Volver al catálogo</a>
