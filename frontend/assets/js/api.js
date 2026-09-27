@@ -64,6 +64,154 @@ function rolesOrdenadosDeApi(lista) {
     });
 }
 
+function rolesListadoDeApi(lista) {
+    return rolesOrdenadosDeApi(lista).slice(0, 2);
+}
+
+function mapaValoresDeApi(lista, campo) {
+    var mapa = {};
+    var clave = campo || 'id';
+    var i;
+
+    if (!Array.isArray(lista)) {
+        return mapa;
+    }
+
+    for (i = 0; i < lista.length; i++) {
+        if (lista[i]) {
+            mapa[textoApi(lista[i][clave])] = true;
+        }
+    }
+
+    return mapa;
+}
+
+function listaDeApi(origen) {
+    var lista = origen && origen.data;
+
+    if (Array.isArray(lista)) {
+        return lista;
+    }
+
+    if (lista && typeof lista === 'object') {
+        return [lista];
+    }
+
+    return [];
+}
+
+function hrefBase(href) {
+    var texto = href || '';
+    var corte = texto.indexOf('?');
+
+    if (corte === -1) {
+        return texto;
+    }
+
+    return texto.slice(0, corte);
+}
+
+function hrefDeApi(href, clave, valor) {
+    var base = hrefBase(href);
+
+    if (!clave || !valor) {
+        return base;
+    }
+
+    return base + '?' + clave + '=' + encodeURIComponent(valor);
+}
+
+function limpiarEnlace(enlace) {
+    if (!enlace) {
+        return;
+    }
+
+    enlace.removeAttribute('data-texto');
+    enlace.setAttribute('href', hrefBase(enlace.getAttribute('href')));
+}
+
+function limpiarFilaDeApi(fila) {
+    var celdas = fila.children;
+    var i;
+
+    fila.removeAttribute('data-id');
+    fila.removeAttribute('data-id-rol');
+    fila.removeAttribute('data-estado');
+    fila.removeAttribute('data-rol-pos');
+
+    for (i = 0; i < celdas.length; i++) {
+        celdas[i].removeAttribute('data-texto');
+        celdas[i].removeAttribute('data-valor');
+        celdas[i].removeAttribute('data-estado');
+        limpiarEnlace(celdas[i].querySelector('a'));
+    }
+}
+
+function asignarEnlacesFila(fila, href, clave, valor) {
+    var enlaces = fila.querySelectorAll('a');
+    var destino = hrefDeApi(href, clave, valor);
+    var i;
+
+    for (i = 0; i < enlaces.length; i++) {
+        enlaces[i].setAttribute('href', destino);
+    }
+}
+
+function asignarCeldasDeApi(fila, cabecera, item, clave) {
+    var ths = cabecera.children;
+    var id = textoApi(item[clave]);
+    var i;
+    var th;
+    var td;
+    var campo;
+    var href;
+    var texto;
+
+    fila.setAttribute('data-id', id);
+
+    for (i = 0; i < ths.length; i++) {
+        th = ths[i];
+        td = fila.children[i];
+        campo = th.getAttribute('data-campo');
+        href = th.getAttribute('data-href');
+        texto = campo ? textoApi(item[campo]) : id;
+
+        if (!td) {
+            continue;
+        }
+
+        if (th.hasAttribute('data-buscar')) {
+            td.setAttribute('data-valor', texto.toLowerCase());
+        }
+
+        if (th.hasAttribute('data-badge')) {
+            td.setAttribute('data-estado', texto.toLowerCase());
+            continue;
+        }
+
+        if (href) {
+            asignarEnlacesFila(fila, href, clave, texto);
+        }
+
+        if (campo) {
+            td.setAttribute('data-texto', texto);
+        }
+    }
+}
+
+function pintarFilasDeApi(cuerpo, lista, asignar) {
+    var filas = cuerpo.querySelectorAll('tr');
+    var i;
+
+    for (i = 0; i < filas.length; i++) {
+        limpiarFilaDeApi(filas[i]);
+    }
+
+    for (i = 0; i < lista.length && i < filas.length; i++) {
+        asignar(filas[i], lista[i]);
+    }
+}
+
 function mensajeDeApi(origen) {
     if (origen && origen.message) {
         return origen.message;
