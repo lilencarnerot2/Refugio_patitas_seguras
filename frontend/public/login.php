@@ -13,6 +13,7 @@ require __DIR__ . '/includes/header.php';
         <form id="form-login" class="public-form login-form">
             <h3>Accedé a tu cuenta</h3>
             <p>Completá tus datos para ingresar.</p>
+            <p class="mensaje-formulario campo-obligatorio"></p>
 
             <div class="mb-3">
                 <label class="form-label" for="correo">Correo electrónico</label>
