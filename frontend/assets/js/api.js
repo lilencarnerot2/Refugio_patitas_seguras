@@ -43,3 +43,62 @@ function apiRequest(recurso, opciones) {
         });
     });
 }
+
+function textoApi(valor) {
+    if (valor === undefined || valor === null || valor === '') {
+        return '';
+    }
+
+    return String(valor);
+}
+
+function rolesOrdenadosDeApi(lista) {
+    if (!Array.isArray(lista)) {
+        return [];
+    }
+
+    return lista.slice().filter(function (rol) {
+        return rol && rol.id !== undefined && rol.id !== null;
+    }).sort(function (a, b) {
+        return Number(a.id) - Number(b.id);
+    });
+}
+
+function rolesListadoDeApi(lista) {
+    return rolesOrdenadosDeApi(lista).slice(0, 2);
+}
+
+function mapaValoresDeApi(lista, campo) {
+    var mapa = {};
+    var i;
+
+    campo = campo || 'id';
+
+    if (!Array.isArray(lista)) {
+        return mapa;
+    }
+
+    for (i = 0; i < lista.length; i++) {
+        mapa[textoApi(lista[i] && lista[i][campo])] = true;
+    }
+
+    return mapa;
+}
+
+function mensajeDeApi(origen) {
+    if (origen && origen.message) {
+        return origen.message;
+    }
+
+    if (origen && origen.data && origen.data.message) {
+        return origen.data.message;
+    }
+
+    return '';
+}
+
+function vaciar(nodo) {
+    while (nodo.firstChild) {
+        nodo.removeChild(nodo.firstChild);
+    }
+}
