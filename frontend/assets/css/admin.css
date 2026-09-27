@@ -24,9 +24,10 @@
     font-size: 20px;
 }
 
-.admin-page .logo-icon i {
-    font-family: "Font Awesome 6 Free";
-    font-weight: 900;
+.admin-page .icono-pata::before {
+    content: "🐾";
+    font-style: normal;
+    line-height: 1;
 }
 
 .admin-page .logo-text h1,
@@ -573,7 +574,7 @@
 }
 
 .admin-page #datos-mascota .pet-detail-meta li:has(span:last-child:empty),
-.admin-page #ficha-usuario .pet-detail-meta li:has(span:last-child:empty) {
+.admin-page #ficha-usuario .pet-detail-meta li:has(span:last-child:empty):not(:has([data-texto])):not(:has([data-estado])) {
     display: none;
 }
 
@@ -818,8 +819,16 @@
     margin: 0;
 }
 
+.admin-page #panel-usuarios .dash-card-cabecera h3::before {
+    content: "Usuarios";
+}
+
 .admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary {
     margin-left: auto;
+}
+
+.admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary::after {
+    content: "Usuarios";
 }
 
 .admin-page .ficha-usuario-icono {
@@ -877,8 +886,17 @@
     color: var(--text-dark);
 }
 
+.admin-page #panel-usuarios .dash-tabla td[data-texto]::after {
+    content: attr(data-texto);
+}
+
+.admin-page #panel-usuarios tbody tr:not([data-id]) {
+    display: none;
+}
+
 .admin-page #columna-nro::before,
-.admin-page #panel-usuarios .dash-tabla td[data-campo="id"]::before {
+.admin-page #panel-usuarios .dash-tabla td[data-campo="id"]::before,
+.admin-page #etiqueta-nro::before {
     content: "Nro";
 }
 
@@ -926,9 +944,7 @@
     content: "Siguiente";
 }
 
-.admin-page #panel-usuarios .dash-tabla td:first-child a {
-    color: var(--text-dark);
-    text-decoration: none;
+.admin-page #panel-usuarios .dash-tabla td:first-child {
     font-weight: 600;
 }
 
@@ -1049,6 +1065,26 @@
     height: 44px;
 }
 
+.admin-page #panel-usuarios .filtro-interruptor {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.admin-page #panel-usuarios .filtro-fondo {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+}
+
+.admin-page #panel-usuarios .listado-filtro-rol:has(.filtro-interruptor:checked) .filtro-fondo,
+.admin-page #panel-usuarios .listado-filtro-estado:has(.filtro-interruptor:checked) .filtro-fondo {
+    display: block;
+}
+
 .admin-page #panel-usuarios .listado-filtro-rol .listado-filtro-resumen::before {
     content: "Rol";
 }
@@ -1064,13 +1100,6 @@
     min-height: 44px;
     overflow: visible;
     cursor: pointer;
-}
-
-.admin-page #panel-usuarios .listado-filtro-estado:focus,
-.admin-page #panel-usuarios .listado-filtro-rol:focus,
-.admin-page #panel-usuarios .listado-filtro-estado:focus-within,
-.admin-page #panel-usuarios .listado-filtro-rol:focus-within {
-    outline: none;
 }
 
 .admin-page #panel-usuarios .listado-filtro-resumen {
@@ -1099,8 +1128,8 @@
     pointer-events: none;
 }
 
-.admin-page #panel-usuarios .listado-filtro-rol:focus-within:not(:has(#opciones-rol input:checked:focus)) .listado-filtro-flecha,
-.admin-page #panel-usuarios .listado-filtro-estado:focus-within:not(:has(#opciones-estado input:checked:focus)) .listado-filtro-flecha {
+.admin-page #panel-usuarios .listado-filtro-rol:has(.filtro-interruptor:checked) .listado-filtro-flecha,
+.admin-page #panel-usuarios .listado-filtro-estado:has(.filtro-interruptor:checked) .listado-filtro-flecha {
     margin-top: -2px;
     transform: rotate(-135deg);
 }
@@ -1109,8 +1138,8 @@
     color: color-mix(in srgb, var(--text-soft) 65%, transparent);
 }
 
-.admin-page #panel-usuarios .listado-filtro-estado:has(#opciones-estado input:checked) .listado-filtro-resumen::before,
-.admin-page #panel-usuarios .listado-filtro-rol:has(#opciones-rol input:checked) .listado-filtro-resumen::before {
+.admin-page #panel-usuarios .listado-filtro-estado:has(#opciones-estado input[data-estado]:checked) .listado-filtro-resumen::before,
+.admin-page #panel-usuarios .listado-filtro-rol:has(#opciones-rol input[value]:not([value=""]):checked) .listado-filtro-resumen::before {
     content: none;
 }
 
@@ -1124,24 +1153,28 @@
     position: static;
 }
 
-.admin-page #panel-usuarios .listado-filtro-rol:has(label:nth-child(1) input:checked) .listado-filtro-resumen::after,
-.admin-page #panel-usuarios .listado-filtro-rol:has(label:nth-child(2) input:checked) .listado-filtro-resumen::after {
-    display: inline;
-    position: static;
-    border: 0;
+.admin-page #panel-usuarios .filtro-abrir {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+.admin-page #panel-usuarios .filtro-limpiar {
+    display: none;
+    position: absolute;
+    inset: 0 2.2em 0 0;
+    z-index: 2;
+    margin: 0;
     padding: 0;
+    border: 0;
     background: transparent;
-    color: var(--text-dark);
-    font-size: inherit;
-    font-weight: 400;
+    cursor: pointer;
 }
 
-.admin-page #panel-usuarios .listado-filtro-rol:has(label:nth-child(1) input:checked) .listado-filtro-resumen::after {
-    content: attr(data-nombre-1);
-}
-
-.admin-page #panel-usuarios .listado-filtro-rol:has(label:nth-child(2) input:checked) .listado-filtro-resumen::after {
-    content: attr(data-nombre-2);
+.admin-page #panel-usuarios .listado-filtro-rol:has(#opciones-rol input[value]:not([value=""]):checked) .filtro-limpiar,
+.admin-page #panel-usuarios .listado-filtro-estado:has(#opciones-estado input[data-estado]:checked) .filtro-limpiar {
+    display: block;
 }
 
 .admin-page #opciones-estado,
@@ -1158,14 +1191,9 @@
     background: var(--white);
 }
 
-.admin-page #panel-usuarios .listado-filtro-rol:focus-within #opciones-rol,
-.admin-page #panel-usuarios .listado-filtro-estado:focus-within #opciones-estado {
+.admin-page #panel-usuarios .listado-filtro-rol:has(.filtro-interruptor:checked) #opciones-rol,
+.admin-page #panel-usuarios .listado-filtro-estado:has(.filtro-interruptor:checked) #opciones-estado {
     display: block;
-}
-
-.admin-page #panel-usuarios .listado-filtro-rol:has(#opciones-rol input:checked:focus) #opciones-rol,
-.admin-page #panel-usuarios .listado-filtro-estado:has(#opciones-estado input:checked:focus) #opciones-estado {
-    display: none;
 }
 
 .admin-page #opciones-estado label,
@@ -1281,23 +1309,23 @@
     display: inline-flex;
 }
 
-.admin-page #panel-usuarios:has(#pagina-1:checked):has(tbody tr:nth-child(6)) #pagina-siguiente label[for="pagina-2"],
-.admin-page #panel-usuarios:has(#pagina-2:checked):has(tbody tr:nth-child(11)) #pagina-siguiente label[for="pagina-3"],
-.admin-page #panel-usuarios:has(#pagina-3:checked):has(tbody tr:nth-child(16)) #pagina-siguiente label[for="pagina-4"],
-.admin-page #panel-usuarios:has(#pagina-4:checked):has(tbody tr:nth-child(21)) #pagina-siguiente label[for="pagina-5"],
-.admin-page #panel-usuarios:has(#pagina-5:checked):has(tbody tr:nth-child(26)) #pagina-siguiente label[for="pagina-6"],
-.admin-page #panel-usuarios:has(#pagina-6:checked):has(tbody tr:nth-child(31)) #pagina-siguiente label[for="pagina-7"],
-.admin-page #panel-usuarios:has(#pagina-7:checked):has(tbody tr:nth-child(36)) #pagina-siguiente label[for="pagina-8"] {
+.admin-page #panel-usuarios:has(#pagina-1:checked):has(tbody tr:nth-child(6)[data-id]) #pagina-siguiente label[for="pagina-2"],
+.admin-page #panel-usuarios:has(#pagina-2:checked):has(tbody tr:nth-child(11)[data-id]) #pagina-siguiente label[for="pagina-3"],
+.admin-page #panel-usuarios:has(#pagina-3:checked):has(tbody tr:nth-child(16)[data-id]) #pagina-siguiente label[for="pagina-4"],
+.admin-page #panel-usuarios:has(#pagina-4:checked):has(tbody tr:nth-child(21)[data-id]) #pagina-siguiente label[for="pagina-5"],
+.admin-page #panel-usuarios:has(#pagina-5:checked):has(tbody tr:nth-child(26)[data-id]) #pagina-siguiente label[for="pagina-6"],
+.admin-page #panel-usuarios:has(#pagina-6:checked):has(tbody tr:nth-child(31)[data-id]) #pagina-siguiente label[for="pagina-7"],
+.admin-page #panel-usuarios:has(#pagina-7:checked):has(tbody tr:nth-child(36)[data-id]) #pagina-siguiente label[for="pagina-8"] {
     display: inline-flex;
 }
 
-.admin-page #panel-usuarios:has(#pagina-1:checked):not(:has(tbody tr:nth-child(6))) #pagina-anterior,
-.admin-page #panel-usuarios:has(#pagina-1:checked):not(:has(tbody tr:nth-child(6))) #pagina-siguiente {
+.admin-page #panel-usuarios:has(#pagina-1:checked):not(:has(tbody tr:nth-child(6)[data-id])) #pagina-anterior,
+.admin-page #panel-usuarios:has(#pagina-1:checked):not(:has(tbody tr:nth-child(6)[data-id])) #pagina-siguiente {
     pointer-events: none;
 }
 
-.admin-page #panel-usuarios:has(#pagina-1:checked):not(:has(tbody tr:nth-child(6))) #pagina-anterior label,
-.admin-page #panel-usuarios:has(#pagina-1:checked):not(:has(tbody tr:nth-child(6))) #pagina-siguiente label {
+.admin-page #panel-usuarios:has(#pagina-1:checked):not(:has(tbody tr:nth-child(6)[data-id])) #pagina-anterior label,
+.admin-page #panel-usuarios:has(#pagina-1:checked):not(:has(tbody tr:nth-child(6)[data-id])) #pagina-siguiente label {
     color: var(--text-soft);
 }
 
@@ -1324,13 +1352,13 @@
 .admin-page #panel-usuarios:has(#pagina-7:checked) { --pagina: "7"; }
 .admin-page #panel-usuarios:has(#pagina-8:checked) { --pagina: "8"; }
 
-.admin-page #panel-usuarios:has(tbody tr:nth-child(6)) { --total: "2"; }
-.admin-page #panel-usuarios:has(tbody tr:nth-child(11)) { --total: "3"; }
-.admin-page #panel-usuarios:has(tbody tr:nth-child(16)) { --total: "4"; }
-.admin-page #panel-usuarios:has(tbody tr:nth-child(21)) { --total: "5"; }
-.admin-page #panel-usuarios:has(tbody tr:nth-child(26)) { --total: "6"; }
-.admin-page #panel-usuarios:has(tbody tr:nth-child(31)) { --total: "7"; }
-.admin-page #panel-usuarios:has(tbody tr:nth-child(36)) { --total: "8"; }
+.admin-page #panel-usuarios:has(tbody tr:nth-child(6)[data-id]) { --total: "2"; }
+.admin-page #panel-usuarios:has(tbody tr:nth-child(11)[data-id]) { --total: "3"; }
+.admin-page #panel-usuarios:has(tbody tr:nth-child(16)[data-id]) { --total: "4"; }
+.admin-page #panel-usuarios:has(tbody tr:nth-child(21)[data-id]) { --total: "5"; }
+.admin-page #panel-usuarios:has(tbody tr:nth-child(26)[data-id]) { --total: "6"; }
+.admin-page #panel-usuarios:has(tbody tr:nth-child(31)[data-id]) { --total: "7"; }
+.admin-page #panel-usuarios:has(tbody tr:nth-child(36)[data-id]) { --total: "8"; }
 
 .admin-page #pagina-indicador::after {
     content: var(--pagina) " / " var(--total);
@@ -1353,14 +1381,12 @@
     display: none;
 }
 
-.admin-page #panel-usuarios:has(#opciones-rol input:checked) tbody tr,
-.admin-page #panel-usuarios:has(#opciones-estado input:checked) tbody tr,
-.admin-page #panel-usuarios[data-q] tbody tr {
+.admin-page #panel-usuarios:has(#opciones-rol input[value]:not([value=""]):checked) tbody tr[data-id],
+.admin-page #panel-usuarios:has(#opciones-estado input[data-estado]:checked) tbody tr[data-id],
+.admin-page #panel-usuarios[data-q] tbody tr[data-id] {
     display: table-row;
 }
 
-.admin-page #panel-usuarios:has(#opciones-rol label:nth-child(1) input:checked) tbody tr:not([data-rol-pos="1"]),
-.admin-page #panel-usuarios:has(#opciones-rol label:nth-child(2) input:checked) tbody tr:not([data-rol-pos="2"]),
 .admin-page #panel-usuarios:has(#opciones-estado [data-estado="true"]:checked) tbody tr:not([data-estado="true"]),
 .admin-page #panel-usuarios:has(#opciones-estado [data-estado="t"]:checked) tbody tr:not([data-estado="t"]),
 .admin-page #panel-usuarios:has(#opciones-estado [data-estado="1"]:checked) tbody tr:not([data-estado="1"]),
@@ -1370,14 +1396,10 @@
     display: none;
 }
 
-.admin-page #panel-usuarios:has(#opciones-rol input:checked) .listado-paginacion,
-.admin-page #panel-usuarios:has(#opciones-estado input:checked) .listado-paginacion,
+.admin-page #panel-usuarios:has(#opciones-rol input[value]:not([value=""]):checked) .listado-paginacion,
+.admin-page #panel-usuarios:has(#opciones-estado input[data-estado]:checked) .listado-paginacion,
 .admin-page #panel-usuarios[data-q] .listado-paginacion {
     display: none;
-}
-
-.admin-page #etiqueta-nro::before {
-    content: "Nro";
 }
 
 .admin-page #etiqueta-uid::before {
@@ -1426,21 +1448,19 @@
     border-bottom: none;
 }
 
-.admin-page #panel-usuarios .dash-tabla tbody tr {
+.admin-page #panel-usuarios .dash-tabla tbody tr[data-id] {
+    cursor: pointer;
+}
+
+.admin-page #panel-usuarios .dash-tabla tbody td {
     position: relative;
 }
 
-.admin-page #panel-usuarios .dash-tabla td:first-child a::after {
-    content: "";
+.admin-page #panel-usuarios .dash-tabla tbody td > a[href*="usuario_detalle.php"] {
     position: absolute;
     inset: 0;
     z-index: 1;
-}
-
-.admin-page #panel-usuarios .dash-tabla td a[href*="usuario_detalle.php"] {
-    position: relative;
-    z-index: 1;
-    color: var(--text-dark);
+    color: inherit;
     text-decoration: none;
 }
 .admin-page #panel-usuarios .dash-tabla td button {
@@ -1471,8 +1491,8 @@
     color: var(--primary-color);
 }
 
-.admin-page #panel-usuarios .dash-tabla tbody tr:hover td:first-child a,
-.admin-page #panel-usuarios .dash-tabla tbody tr:focus-within td:first-child a {
+.admin-page #panel-usuarios .dash-tabla tbody tr:hover td:first-child,
+.admin-page #panel-usuarios .dash-tabla tbody tr:focus-within td:first-child {
     color: var(--primary-color);
 }
 
@@ -1532,6 +1552,16 @@
     font-weight: 600;
 }
 
+.admin-page #panel-usuario-detalle #ficha-nombre[data-texto]::after,
+.admin-page #panel-usuario-detalle .pet-detail-meta [data-campo][data-texto]::after,
+.admin-page #bloque-solicitudes .dash-tabla td[data-texto]::after {
+    content: attr(data-texto);
+}
+
+.admin-page #bloque-solicitudes tbody tr:not([data-id]) {
+    display: none;
+}
+
 .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1551,13 +1581,13 @@
     border-radius: 12px;
 }
 
+.admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li:not(:has([data-texto])):not(:has([data-estado])) {
+    display: none;
+}
+
 .admin-page #panel-usuario-detalle .detalle-label {
     color: var(--text-soft);
     font-size: 12px;
-}
-
-.admin-page #panel-usuario-detalle .detalle-label::after {
-    content: ":";
 }
 
 .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li span:last-child {
@@ -1574,6 +1604,10 @@
     border-bottom: 1px solid var(--border-light);
     color: var(--primary-color);
     font-size: 18px;
+}
+
+.admin-page #bloque-solicitudes > h3::before {
+    content: "Solicitudes";
 }
 
 .admin-page #bloque-solicitudes .dash-tabla {
@@ -1596,16 +1630,23 @@
 }
 
 .admin-page #bloque-solicitudes .dash-tabla td {
+    position: relative;
     padding: 14px 16px;
     border-bottom: 1px solid var(--border-light);
     color: var(--text-dark);
+}
+
+.admin-page #bloque-solicitudes .dash-tabla tbody td > a {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
 }
 
 .admin-page #bloque-solicitudes .dash-tabla tr:last-child td {
     border-bottom: none;
 }
 
-.admin-page #bloque-solicitudes .dash-tabla tbody:empty::after {
+.admin-page #bloque-solicitudes:not(:has(tbody tr[data-id])) .lista-scroll-mascotas::after {
     content: "Sin solicitudes";
     display: block;
     padding: 20px 16px;
@@ -1690,14 +1731,16 @@
         box-shadow: 0 4px 18px rgba(46, 80, 46, 0.08);
     }
 
-    .admin-page #panel-usuarios:has(#opciones-rol input:checked) tbody tr,
-    .admin-page #panel-usuarios:has(#opciones-estado input:checked) tbody tr,
-    .admin-page #panel-usuarios[data-q] tbody tr {
+    .admin-page #panel-usuarios .dash-tabla tbody tr:not([data-id]) {
+        display: none;
+    }
+
+    .admin-page #panel-usuarios:has(#opciones-rol input[value]:not([value=""]):checked) tbody tr[data-id],
+    .admin-page #panel-usuarios:has(#opciones-estado input[data-estado]:checked) tbody tr[data-id],
+    .admin-page #panel-usuarios[data-q] tbody tr[data-id] {
         display: block;
     }
 
-    .admin-page #panel-usuarios:has(#opciones-rol label:nth-child(1) input:checked) tbody tr:not([data-rol-pos="1"]),
-    .admin-page #panel-usuarios:has(#opciones-rol label:nth-child(2) input:checked) tbody tr:not([data-rol-pos="2"]),
     .admin-page #panel-usuarios:has(#opciones-estado [data-estado="true"]:checked) tbody tr:not([data-estado="true"]),
     .admin-page #panel-usuarios:has(#opciones-estado [data-estado="t"]:checked) tbody tr:not([data-estado="t"]),
     .admin-page #panel-usuarios:has(#opciones-estado [data-estado="1"]:checked) tbody tr:not([data-estado="1"]),
@@ -1758,6 +1801,10 @@
         text-align: left;
     }
 
+    .admin-page #panel-usuarios .dash-tabla td:empty:not([data-texto]):not([data-estado]) {
+        display: none;
+    }
+
     .admin-page #panel-usuarios .dash-tabla td[data-estado]::after {
         width: max-content;
         justify-self: start;
@@ -1788,10 +1835,7 @@
         content: none;
     }
 
-    .admin-page #panel-usuarios .dash-tabla td a[href*="usuario_detalle.php"] {
-        padding: 0;
-        border: 0;
-        background: transparent;
+    .admin-page #panel-usuarios .dash-tabla td:first-child {
         font-size: 15px;
         font-weight: 600;
     }
@@ -1841,6 +1885,10 @@
     .admin-page #bloque-solicitudes .dash-tabla td {
         display: block;
         width: 100%;
+    }
+
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr:not([data-id]) {
+        display: none;
     }
 
     .admin-page #bloque-solicitudes .dash-tabla td {
