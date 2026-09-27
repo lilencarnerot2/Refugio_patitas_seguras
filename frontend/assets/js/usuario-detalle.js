@@ -1,120 +1,83 @@
-var mensaje = document.getElementById('mensaje-formulario');
+var panel = document.getElementById('panel-usuario-detalle');
 var ficha = document.getElementById('ficha-usuario');
+var mensaje = document.getElementById('mensaje-formulario');
+var cabeceraSolicitudes = document.getElementById('cabecera-solicitudes');
 var cuerpoSolicitudes = document.getElementById('cuerpo-solicitudes');
-var campos = {
-    'detalle-id': 'id',
-    'detalle-uid': 'uid_pp2',
-    'detalle-id-rol': 'id_rol',
-    'detalle-domicilio': 'id_domicilio',
-    'detalle-nombre': 'nombre',
-    'detalle-apellido': 'apellido',
-    'detalle-nacimiento': 'fecha_nacimiento',
-    'detalle-alta': 'fecha_alta',
-    'detalle-nombre-rol': 'nombre_rol',
-    'detalle-estado': 'estado'
-};
 
-function mostrarFicha(usuario) {
-    var id;
-    var nodo;
-    var nombre = document.getElementById('ficha-nombre');
+function claveId() {
+    var nodo = ficha.querySelector('.pet-detail-meta [data-campo]');
 
-    for (id in campos) {
-        if (!Object.prototype.hasOwnProperty.call(campos, id)) {
-            continue;
-        }
-
-        nodo = document.getElementById(id);
-
-        if (!nodo) {
-            continue;
-        }
-
-        if (id === 'detalle-estado') {
-            nodo.setAttribute('data-estado', textoApi(usuario[campos[id]]).toLowerCase());
-        } else {
-            nodo.textContent = textoApi(usuario[campos[id]]);
-        }
-    }
-
-    if (nombre) {
-        nombre.textContent = textoApi(usuario.nombre);
-    }
+    return nodo ? nodo.getAttribute('data-campo') : '';
 }
 
-function celdaSolicitud(clave, valor) {
-    var celda = document.createElement('td');
-
-    celda.setAttribute('data-campo', clave);
-    celda.textContent = textoApi(valor);
-
-    return celda;
-}
-
-function mostrarSolicitudes(lista, idUsuario) {
+function asignarUsuario(usuario) {
+    var nodos = ficha.querySelectorAll('[data-campo]');
     var i;
-    var fila;
-    var enlace;
-    var celdaId;
-    var textoId;
+    var nodo;
+    var campo;
+    var texto;
 
-    if (!cuerpoSolicitudes) {
-        return;
-    }
+    for (i = 0; i < nodos.length; i++) {
+        nodo = nodos[i];
+        campo = nodo.getAttribute('data-campo');
+        texto = textoApi(usuario[campo]);
 
-    vaciar(cuerpoSolicitudes);
-
-    for (i = 0; i < lista.length; i++) {
-        if (textoApi(lista[i].id_usuario) !== textoApi(idUsuario)) {
+        if (nodo.hasAttribute('data-badge')) {
+            nodo.setAttribute('data-estado', texto.toLowerCase());
             continue;
         }
 
-        fila = document.createElement('tr');
-        textoId = textoApi(lista[i].id);
-        celdaId = document.createElement('td');
-        celdaId.setAttribute('data-campo', 'id');
-
-        if (textoId) {
-            enlace = document.createElement('a');
-            enlace.href = 'solicitudes_detalle.php?id=' + encodeURIComponent(textoId);
-            enlace.textContent = textoId;
-            celdaId.appendChild(enlace);
-        }
-
-        fila.appendChild(celdaId);
-        fila.appendChild(celdaSolicitud('tipo_solicitud', lista[i].tipo_solicitud));
-        fila.appendChild(celdaSolicitud('nombre_mascota', lista[i].nombre_mascota));
-        fila.appendChild(celdaSolicitud('estado_solicitud', lista[i].estado_solicitud));
-        fila.appendChild(celdaSolicitud('fecha_solicitud', lista[i].fecha_solicitud));
-        cuerpoSolicitudes.appendChild(fila);
+        nodo.setAttribute('data-texto', texto);
     }
 }
 
-if (ficha) {
-    var id = new URLSearchParams(window.location.search).get('id');
+function asignarSolicitud(fila, solicitud) {
+    var th = cabeceraSolicitudes.querySelector('[data-campo]');
+    var clave = th ? th.getAttribute('data-campo') : '';
+
+    asignarCeldasDeApi(fila, cabeceraSolicitudes, solicitud, clave);
+}
+
+if (panel && ficha) {
+    var clave = claveId();
+    var id = clave ? new URLSearchParams(window.location.search).get(clave) : '';
+    var listado = panel.getAttribute('data-listado') || '';
 
     if (id) {
-        apiRequest('usuarios', {
-            parametros: { id: id }
-        })
-            .then(function (respuesta) {
-                if (!respuesta.data) {
-                    if (mensaje) {
-                        mensaje.textContent = mensajeDeApi(respuesta);
-                    }
-                    return;
-                }
+        apiRequest('roles')
+            .then(function (rolesRespuesta) {
+                var idsVisibles = mapaValoresDeApi(rolesListadoDeApi(listaDeApi(rolesRespuesta)));
 
-                mostrarFicha(respuesta.data);
+                return apiRequest('usuarios', {
+                    parametros: { id: id }
+                }).then(function (respuesta) {
+                    var usuario = respuesta.data;
 
-                return apiRequest('solicitudes').then(function (solicitudesRespuesta) {
-                    var lista = solicitudesRespuesta.data || [];
-
-                    if (!Array.isArray(lista)) {
-                        lista = [];
+                    if (!usuario) {
+                        if (mensaje) {
+                            mensaje.textContent = mensajeDeApi(respuesta);
+                        }
+                        return;
                     }
 
-                    mostrarSolicitudes(lista, respuesta.data.id);
+                    if (!idsVisibles[textoApi(usuario.id_rol)]) {
+                        if (listado) {
+                            window.location.href = listado;
+                        }
+                        return;
+                    }
+
+                    asignarUsuario(usuario);
+
+                    if (!cuerpoSolicitudes || !cabeceraSolicitudes) {
+                        return;
+                    }
+
+                    return apiRequest('solicitudes').then(function (solicitudesRespuesta) {
+                        pintarFilasDeApi(cuerpoSolicitudes, listaDeApi(solicitudesRespuesta).filter(function (solicitud) {
+                            return textoApi(solicitud.id_usuario) === textoApi(usuario.id);
+                        }), asignarSolicitud);
+                    });
                 });
             })
             .catch(function (error) {
