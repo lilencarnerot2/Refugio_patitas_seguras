@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../repositories/solicitudes.php';
+require_once __DIR__ . '/../../mail/services/mail.php';
 
 function listar_solicitudes(): array
 {
@@ -53,5 +54,32 @@ function cambiar_estado_solicitud(
         );
     }
 
-    return $solicitud_actualizada;
+        // Recargamos la solicitud con TODOS los datos (nombres, mascota, etc.)
+    $solicitudCompleta = obtener_solicitud_por_id($id_solicitud);
+
+    // Buscar el email del adoptante en el Padrón
+    require_once __DIR__ . '/../../auth/services/integracion_registro.php';
+    require_once __DIR__ . '/../../usuarios/services/usuarios.php';
+
+    $usuarioLocal = buscar_usuario_por_id((int) $solicitudCompleta['id_usuario']);
+
+    if ($usuarioLocal && !empty($usuarioLocal['uid_pp2'])) {
+        $emailAdoptante = buscarEmailEnPadron((string) $usuarioLocal['uid_pp2']);
+
+        if ($emailAdoptante) {
+            $nombreAdoptante = $solicitudCompleta['nombre_usuario'] ?? 'adoptante';
+            $nombreMascota   = $solicitudCompleta['nombre_mascota'] ?? 'la mascota';
+            $estadoNuevo     = $solicitudCompleta['estado_solicitud'] ?? 'actualizado';
+
+            enviarMail(
+                $emailAdoptante,
+                "Tu solicitud para $nombreMascota cambió de estado",
+                "Hola $nombreAdoptante, tu solicitud para adoptar a $nombreMascota pasó al estado: $estadoNuevo.",
+                null,
+                'solicitud-' . $id_solicitud . '-estado-' . $id_estado_solicitud
+            );
+        }
+    }
+
+    return $solicitudCompleta;
 }

@@ -6,6 +6,7 @@ require_once __DIR__ . '/../modules/mascotas/controllers/razas.php';
 require_once __DIR__ . '/../modules/auth/controllers/login.php';
 require_once __DIR__ . '/../modules/auth/controllers/registro.php';
 require_once __DIR__ . '/../utils/response.php';
+require_once __DIR__ . '/../middleware/autorizacion.php';
 
 function manejarRutas()
 {
@@ -14,16 +15,75 @@ function manejarRutas()
     switch ($recurso) {
 
         case 'roles':
+            if (!requerir_roles([
+                'Super Administrador'
+            ])) {
+            break;
+            }
             require_once __DIR__ . '/../modules/usuarios/controllers/roles.php';
-                manejar_roles();
+            manejar_roles();
             break;
 
         case 'usuarios':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
             require_once __DIR__ . '/../modules/usuarios/controllers/usuarios.php';
-                manejar_usuarios();
+            manejar_usuarios();
+            break;
+
+        case 'tipos_vivienda':
+            require_once __DIR__ . '/../modules/usuarios/controllers/tipos_vivienda.php';
+                manejar_tipos_vivienda();
+            break;
+
+        case 'provincias':
+            require_once __DIR__ . '/../modules/usuarios/controllers/ubicaciones.php';
+                manejar_provincias();
+            break;
+
+        case 'comunas_municipios':
+            require_once __DIR__ . '/../modules/usuarios/controllers/ubicaciones.php';
+                manejar_comunas_municipios();
+            break;
+
+        case 'localidades':
+            require_once __DIR__ . '/../modules/usuarios/controllers/ubicaciones.php';
+                manejar_localidades();
+            break;
+
+        case 'barrios_zonas':
+            require_once __DIR__ . '/../modules/usuarios/controllers/ubicaciones.php';
+                manejar_barrios_zonas();
+            break;
+
+        case 'domicilios':
+            require_once __DIR__ . '/../modules/usuarios/controllers/domicilios.php';
+                manejar_domicilios();
+            break;
+
+        case 'tipos_contacto':
+            require_once __DIR__ . '/../modules/usuarios/controllers/tipos_contacto.php';
+                manejar_tipos_contacto();
+            break;
+
+        case 'contactos':
+            require_once __DIR__ . '/../modules/usuarios/controllers/contactos.php';
+            manejar_contactos();
             break;
 
         case 'mascotas':
+            if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+                if (!requerir_roles([
+                    'Administrador',
+                    'Super Administrador'
+                ])) {
+                break;
+                }
+            }
             manejarMascotas();
             break;
 
@@ -35,12 +95,6 @@ function manejarRutas()
             manejarRegistro();
             break;
 
-        case '':
-            responderJson(
-                true,
-                'API Patitas Seguras funcionando.'
-            );
-            break;
 
         case 'especies':
             manejarEspecies();
@@ -51,38 +105,101 @@ function manejarRutas()
             break;
 
         case 'fichas_medicas':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
             require_once __DIR__ . '/../modules/salud/controllers/fichas_medicas.php';
             manejar_fichas_medicas();
             break;
 
+
         case 'controles_medicos':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
             require_once __DIR__ . '/../modules/salud/controllers/controles_medicos.php';
             manejar_controles_medicos();
             break;
 
-        case 'tipos_vacunas':
-            require_once __DIR__ . '/../modules/salud/controllers/tipos_vacunas.php';
-            manejar_tipos_vacunas();
-            break;
 
         case 'vacunas':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
             require_once __DIR__ . '/../modules/salud/controllers/vacunas.php';
             manejar_vacunas();
             break;
 
+        case 'tipos_vacunas':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
+            require_once __DIR__ . '/../modules/salud/controllers/tipos_vacunas.php';
+            manejar_tipos_vacunas();
+            break;
+
         case 'castraciones':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
             require_once __DIR__ . '/../modules/salud/controllers/castraciones.php';
             manejar_castraciones();
             break;
 
+
+        case 'desparasitaciones':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
+            require_once __DIR__ . '/../modules/salud/controllers/desparasitaciones.php';
+            manejar_desparasitaciones();
+            break;
+
         case 'tipos_productos':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
             require_once __DIR__ . '/../modules/salud/controllers/tipos_productos.php';
             manejar_tipos_productos();
             break;
 
-        case 'desparasitaciones':
-            require_once __DIR__ . '/../modules/salud/controllers/desparasitaciones.php';
-            manejar_desparasitaciones();
+        case 'solicitudes':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                if (!requerir_autenticacion()) {
+                break;
+                }
+            } else {
+                if (!requerir_roles([
+                    'Administrador',
+                    'Super Administrador'
+                ])) {
+                break;
+                }
+            }
+
+            require_once __DIR__ . '/../modules/solicitudes/controllers/solicitudes.php';
+            manejar_solicitudes();
             break;
 
         case 'tipos_solicitudes':
@@ -91,21 +208,33 @@ function manejarRutas()
             break;
 
         case 'estados_solicitudes':
-            require_once __DIR__ . '/../modules/solicitudes/controllers/estados_solicitudes.php';
-            manejar_estados_solicitudes();
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
             break;
+            }
 
-        case 'solicitudes':
-            require_once __DIR__ . '/../modules/solicitudes/controllers/solicitudes.php';
-            manejar_solicitudes();
-            break;
 
         case 'tipos_movimientos_mascotas':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
             require_once __DIR__ . '/../modules/movimientos/controllers/tipos_movimientos_mascotas.php';
             manejar_tipos_movimientos_mascotas();
             break;
 
+
         case 'movimientos_mascotas':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
             require_once __DIR__ . '/../modules/movimientos/controllers/movimientos_mascotas.php';
             manejar_movimientos_mascotas();
             break;

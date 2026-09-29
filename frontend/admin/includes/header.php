@@ -1,6 +1,7 @@
 <?php
 $paginaAdmin = $paginaAdmin ?? '';
 $salir = '/public/login.php?salir=1';
+$esSuperadministrador = esRol('Superadministrador');
 ?>
 <input type="checkbox" id="nav-toggle" class="nav-toggle">
 <header>
@@ -43,12 +44,11 @@ $salir = '/public/login.php?salir=1';
         </li>
         <li>
             <details>
-                <summary<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle', 'tipos_estados', 'evaluacion'], true) ? ' class="active"' : ''; ?>>
+                <summary<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle', 'tipos_estados'], true) ? ' class="active"' : ''; ?>>
                     <i class="bi bi-file-earmark-text"></i> Solicitudes
                 </summary>
                 <a href="solicitudes.php"<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle'], true) ? ' class="active"' : ''; ?>>Listado</a>
                 <a href="tipos_estados.php"<?php echo $paginaAdmin === 'tipos_estados' ? ' class="active"' : ''; ?>>Tipos y estados</a>
-                <a href="evaluacion.php"<?php echo $paginaAdmin === 'evaluacion' ? ' class="active"' : ''; ?>>Evaluación y gestión</a>
             </details>
         </li>
         <li>
@@ -66,11 +66,29 @@ $salir = '/public/login.php?salir=1';
                 <i class="bi bi-heart-pulse"></i> Control de salud
             </a>
         </li>
+        <?php if ($esSuperadministrador) { ?>
+        <li>
+            <?php if (!empty($esSuperadmin)) { ?>
+            <details>
+                <summary<?php echo in_array($paginaAdmin, ['usuarios', 'usuario_detalle', 'usuario_editar'], true) ? ' class="active"' : ''; ?>>
+                    <i class="bi bi-people-fill"></i> Usuarios
+                </summary>
+                <a href="usuarios.php"<?php echo $paginaAdmin === 'usuarios' ? ' class="active"' : ''; ?>>Listado</a>
+                <a href="usuario_editar.php"<?php echo $paginaAdmin === 'usuario_editar' ? ' class="active"' : ''; ?>>Editar usuario</a>
+            </details>
+            <?php } else { ?>
+            <a href="usuarios.php"<?php echo in_array($paginaAdmin, ['usuarios', 'usuario_detalle'], true) ? ' class="active"' : ''; ?>>
+                <i class="bi bi-people-fill"></i> Usuarios
+            </a>
+            <?php } ?>
+        </li>
+        <?php if (!empty($esSuperadmin)) { ?>
         <li>
             <a href="usuarios.php"<?php echo in_array($paginaAdmin, ['usuarios', 'usuario_detalle'], true) ? ' class="active"' : ''; ?>>
                 <i class="bi bi-people-fill"></i> Usuarios
             </a>
         </li>
+        <?php } ?>
         <li class="nav-sitio">
             <a href="/index.php">
                 <i class="bi bi-globe"></i> Sitio
