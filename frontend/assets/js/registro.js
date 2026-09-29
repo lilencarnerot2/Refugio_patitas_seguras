@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    const boton = formulario.querySelector('button[type="button"]');
+    const boton = formulario.querySelector('.btn-primary');
 
     if (!boton) {
         return;
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         })
         .catch(function (error) {
-            alert(error.message || 'No se pudo registrar el usuario.');
+            avisoFormulario(formulario, mensajeDeApi(error));
         })
         .finally(function () {
             boton.disabled = false;
