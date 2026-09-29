@@ -1,60 +1,23 @@
-const panel = document.getElementById('panel-dashboard');
-const mensaje = document.getElementById('mensaje-panel');
+var mensaje = document.getElementById('mensaje-formulario');
+var panel = document.getElementById('panel-dashboard');
+var cabeceraSolicitudes = document.getElementById('cabecera-dashboard-solicitudes');
+var cabeceraMascotas = document.getElementById('cabecera-dashboard-mascotas');
+var cuerpoSolicitudes = document.getElementById('cuerpo-dashboard-solicitudes');
+var cuerpoMascotas = document.getElementById('cuerpo-dashboard-mascotas');
 
-function normalizarTexto(texto) {
-    return String(texto || '')
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
+function asignarFilaDe(cabecera) {
+    return function (fila, item) {
+        if (cabecera) {
+            asignarCeldasDeApi(fila, cabecera, item, claveDeApi(cabecera));
+        }
+    };
 }
 
-function parece(texto, parte) {
-    return normalizarTexto(texto).indexOf(normalizarTexto(parte)) !== -1;
-}
-
-function listaDe(resultado) {
-    var lista = resultado.data || [];
-
-    if (!Array.isArray(lista)) {
-        lista = [];
-    }
-
-    return lista;
-}
-
-function vaciar(nodo) {
-    while (nodo.firstChild) {
-        nodo.removeChild(nodo.firstChild);
-    }
-}
-
-function porcentaje(parte, total) {
-    if (!total) {
-        return 0;
-    }
-
-    return Math.round((parte * 100) / total);
-}
-
-function pintarArco(id, valor, desplazamiento) {
-    var circulo = document.getElementById(id);
-
-    if (!circulo) {
-        return;
-    }
-
-    circulo.setAttribute('stroke-dasharray', valor + ' 100');
-
-    if (desplazamiento !== undefined) {
-        circulo.setAttribute('stroke-dashoffset', String(desplazamiento));
-    }
-}
-
-function ultimoMovimiento(idMascota, movimientos) {
+function movimientoDe(idMascota, movimientos) {
     var i;
 
     for (i = 0; i < movimientos.length; i++) {
-        if (Number(movimientos[i].id_mascota) === Number(idMascota)) {
+        if (mismoValorDeApi(movimientos[i].id_mascota, idMascota)) {
             return movimientos[i];
         }
     }
@@ -62,270 +25,138 @@ function ultimoMovimiento(idMascota, movimientos) {
     return null;
 }
 
-function nombreMovimiento(mascota, movimientos) {
-    var movimiento = ultimoMovimiento(mascota.id, movimientos);
-
-    return movimiento ? movimiento.nombre_movimiento : '';
+function partesDe(catalogo, campoNombre, cantidadDe) {
+    return catalogo.map(function (item) {
+        return {
+            nombre: campoDe(item, campoNombre),
+            cantidad: cantidadDe(item)
+        };
+    });
 }
 
-function esTipoAdopcionOTransito(nombre) {
-    return parece(nombre, 'adopcion') || parece(nombre, 'transito');
+function limpiarMarca(nodo) {
+    nodo.removeAttribute('data-texto');
+    nodo.removeAttribute('data-cantidad');
 }
 
-function contarPorTipo(solicitudes, nombreTipo) {
-    var i;
-    var total = 0;
-
-    for (i = 0; i < solicitudes.length; i++) {
-        if (solicitudes[i].tipo_solicitud === nombreTipo) {
-            total += 1;
-        }
-    }
-
-    return total;
+function mostrarTorta(idTorta, idLeyenda, partes, total) {
+    asignarTortaDeApi(document.getElementById(idTorta), partes, total);
+    asignarHijosDeApi(document.getElementById(idLeyenda), partes, function (nodo, parte) {
+        asignarTextoDeApi(nodo, [parte.nombre, porcentajeDeApi(parte.cantidad, total) + '%', '(' + parte.cantidad + ')'].join(' '));
+        asignarCantidadDeApi(nodo, parte.cantidad);
+    }, limpiarMarca);
 }
 
-function mostrarTortaSolicitudes(tipos, solicitudes) {
-    var leyenda = document.getElementById('leyenda-solicitudes');
-    var partes = [];
-    var total = 0;
-    var i;
-    var item;
-    var cantidad;
-    var pctPrimera;
-    var pctSegunda;
-
-    vaciar(leyenda);
-
-    for (i = 0; i < tipos.length; i++) {
-        if (!esTipoAdopcionOTransito(tipos[i].nombre_tipo)) {
-            continue;
-        }
-
-        cantidad = contarPorTipo(solicitudes, tipos[i].nombre_tipo);
-        partes.push({
-            nombre: tipos[i].nombre_tipo,
-            cantidad: cantidad
-        });
-        total += cantidad;
-    }
-
-    pctPrimera = porcentaje(partes[0] ? partes[0].cantidad : 0, total);
-    pctSegunda = porcentaje(partes[1] ? partes[1].cantidad : 0, total);
-
-    pintarArco('torta-solicitudes', pctPrimera);
-    pintarArco('torta-solicitudes-resto', pctSegunda, -pctPrimera);
-
-    for (i = 0; i < partes.length; i++) {
-        item = document.createElement('li');
-        item.textContent = partes[i].nombre + ' ' + porcentaje(partes[i].cantidad, total) + '% (' + partes[i].cantidad + ')';
-        leyenda.appendChild(item);
-    }
-}
-
-function mostrarMascotasTransito(mascotas, movimientos) {
-    var enTransito = 0;
-    var disponibles = 0;
-    var i;
-    var nombre;
-    var total;
-    var pct;
-
-    for (i = 0; i < mascotas.length; i++) {
-        nombre = nombreMovimiento(mascotas[i], movimientos);
-
-        if (parece(nombre, 'transito')) {
-            enTransito += 1;
-        } else if (!parece(nombre, 'adopcion') && !parece(nombre, 'fallec')) {
-            disponibles += 1;
-        }
-    }
-
-    total = enTransito + disponibles;
-    pct = porcentaje(enTransito, total);
-
-    pintarArco('donut-transito', pct);
-    document.getElementById('texto-transito-pct').textContent = pct + '%';
-    document.getElementById('texto-en-transito').textContent = pct + '% (' + enTransito + ')';
-    document.getElementById('texto-disponibles').textContent = porcentaje(disponibles, total) + '% (' + disponibles + ')';
-}
-
-function pintarBarras(idContenedor, valores) {
-    var grupos = document.getElementById(idContenedor).children;
+function asignarBarras(contenedor, items, valorDe, textoDe) {
     var maximo = 1;
     var i;
-    var barra;
+    var valor;
 
-    for (i = 0; i < valores.length; i++) {
-        if (valores[i] > maximo) {
-            maximo = valores[i];
+    for (i = 0; i < items.length; i++) {
+        valor = valorDe(items[i]);
+
+        if (valor > maximo) {
+            maximo = valor;
         }
     }
 
-    for (i = 0; i < grupos.length; i++) {
-        barra = grupos[i].getElementsByTagName('progress')[0];
-        barra.max = maximo;
-        barra.value = valores[i] || 0;
-    }
-}
+    asignarHijosDeApi(contenedor, items, function (grupo, item) {
+        var barra = grupo.querySelector('progress');
+        var etiqueta = grupo.querySelector('span');
 
-function mostrarAdopcionesMes(movimientos) {
-    var ahora = new Date();
-    var semanas = [0, 0, 0, 0];
-    var total = 0;
-    var i;
-    var fecha;
+        valor = valorDe(item);
 
-    for (i = 0; i < movimientos.length; i++) {
-        if (!parece(movimientos[i].nombre_movimiento, 'adopcion')) {
-            continue;
+        if (barra) {
+            barra.max = maximo;
+            barra.value = valor;
         }
 
-        fecha = new Date(movimientos[i].fecha_movimiento);
+        asignarTextoDeApi(etiqueta, textoDe(item));
+    }, function (grupo) {
+        var barra = grupo.querySelector('progress');
+        var etiqueta = grupo.querySelector('span');
 
-        if (fecha.getFullYear() !== ahora.getFullYear() || fecha.getMonth() !== ahora.getMonth()) {
-            continue;
+        if (barra) {
+            barra.max = 1;
+            barra.value = 0;
         }
 
-        semanas[Math.min(3, Math.ceil(fecha.getDate() / 7) - 1)] += 1;
-        total += 1;
-    }
-
-    document.getElementById('texto-adopciones-total').textContent = String(total);
-    pintarBarras('adopciones-semanas', semanas);
-}
-
-function mostrarMascotasRecientes(mascotas, movimientos) {
-    var filas = document.getElementById('mascotas-recientes-cuerpo').rows;
-    var lista = mascotas.slice();
-    var i;
-    var fila;
-    var celdas;
-    var imagen;
-    var mascota;
-
-    lista.sort(function (a, b) {
-        return Number(b.id) - Number(a.id);
+        asignarTextoDeApi(etiqueta, '');
     });
-
-    for (i = 0; i < filas.length; i++) {
-        fila = filas[i];
-        celdas = fila.cells;
-        imagen = celdas[0].getElementsByTagName('img')[0];
-        mascota = lista[i];
-
-        if (!mascota) {
-            imagen.removeAttribute('src');
-            imagen.alt = '';
-            celdas[1].textContent = '';
-            celdas[2].textContent = '';
-            celdas[3].textContent = '';
-            continue;
-        }
-
-        if (mascota.foto_url) {
-            imagen.src = mascota.foto_url;
-        } else {
-            imagen.removeAttribute('src');
-        }
-
-        imagen.alt = mascota.nombre || '';
-        celdas[1].textContent = mascota.nombre || '';
-        celdas[2].textContent = mascota.fecha_nacimiento_estimada || '';
-        celdas[3].textContent = nombreMovimiento(mascota, movimientos);
-    }
 }
 
-function tipoDeAporte(item) {
-    return item.tipo_aporte || item.tipo || item.tipo_donacion || '';
+function mostrarSolicitudes(tipos, solicitudes) {
+    var total = solicitudes.length;
+
+    mostrarTorta('torta-solicitudes', 'leyenda-tipos', partesDe(tipos, 'nombre_tipo', function (tipo) {
+        return contarCampoDeApi(solicitudes, 'id_tipo_solicitud', tipo.id);
+    }), total);
 }
 
-function contarAportesPorParte(donaciones, parte) {
-    var i;
-    var total = 0;
+function mostrarPendientes(estados, solicitudes) {
+    var total = solicitudes.length;
 
-    for (i = 0; i < donaciones.length; i++) {
-        if (parece(tipoDeAporte(donaciones[i]), parte)) {
-            total += 1;
-        }
-    }
+    asignarTextoDeApi(document.getElementById('numero-pendientes'), total);
+    mostrarTorta('torta-pendientes', 'leyenda-estados', partesDe(estados, 'nombre_estado', function (estado) {
+        return contarCampoDeApi(solicitudes, 'id_estado_solicitud', estado.id);
+    }), total);
+}
 
-    return total;
+function mostrarMascotas(mascotas, tiposMovimiento, movimientos) {
+    var total = mascotas.length;
+
+    asignarTextoDeApi(document.getElementById('numero-mascotas'), total);
+    mostrarTorta('torta-mascotas', 'leyenda-movimientos', partesDe(tiposMovimiento, 'nombre_movimiento', function (tipo) {
+        return contarSiDeApi(mascotas, function (mascota) {
+            var movimiento = movimientoDe(mascota.id, movimientos);
+
+            return movimiento && mismoValorDeApi(movimiento.id_tipo_movimiento, tipo.id);
+        });
+    }), total);
+    asignarFilasDeApi(cuerpoMascotas, mascotas, asignarFilaDe(cabeceraMascotas));
 }
 
 function mostrarDonaciones(donaciones) {
-    var insumos = contarAportesPorParte(donaciones, 'insumo');
-    var medicamentos = contarAportesPorParte(donaciones, 'medicament');
-    var monetarias = contarAportesPorParte(donaciones, 'monetar');
+    var barras = document.getElementById('barras-donaciones');
+    var campo = claveDeApi(barras);
+    var tipos = listaUnicaDeApi(donaciones, function (item) {
+        return campoDe(item, campo);
+    }, function (item) {
+        return campoDe(item, campo);
+    });
 
-    document.getElementById('texto-donaciones-total').textContent = String(insumos + medicamentos + monetarias);
-    pintarBarras('donaciones-tipos', [insumos, medicamentos, monetarias]);
-}
-
-function mostrarHogares(solicitudes, mascotas, movimientos) {
-    var hogares = 0;
-    var ocupados = 0;
-    var i;
-    var disponibles;
-    var pctDisponibles;
-    var pctOcupados;
-
-    for (i = 0; i < solicitudes.length; i++) {
-        if (parece(solicitudes[i].tipo_solicitud, 'transito') && parece(solicitudes[i].estado_solicitud, 'aprobad')) {
-            hogares += 1;
-        }
-    }
-
-    for (i = 0; i < mascotas.length; i++) {
-        if (parece(nombreMovimiento(mascotas[i], movimientos), 'transito')) {
-            ocupados += 1;
-        }
-    }
-
-    if (!hogares) {
-        hogares = ocupados;
-    }
-
-    disponibles = Math.max(hogares - ocupados, 0);
-    pctDisponibles = porcentaje(disponibles, hogares);
-    pctOcupados = porcentaje(ocupados, hogares);
-
-    document.getElementById('texto-hogares-disponibles').textContent = String(pctDisponibles);
-    document.getElementById('texto-hogares-ocupados').textContent = String(pctOcupados);
-    document.getElementById('barra-hogares-disponibles').value = pctDisponibles;
-    document.getElementById('barra-hogares-ocupados').value = pctOcupados;
+    asignarTextoDeApi(document.getElementById('numero-donaciones'), donaciones.length);
+    asignarBarras(barras, tipos, function (tipo) {
+        return contarCampoDeApi(donaciones, campo, tipo.valor);
+    }, function (tipo) {
+        return tipo.texto;
+    });
 }
 
 function cargarPanel() {
+    if (mensaje) {
+        mensaje.textContent = '';
+    }
+
     Promise.all([
-        apiRequest('mascotas'),
-        apiRequest('solicitudes'),
-        apiRequest('movimientos_mascotas'),
-        apiRequest('tipos_solicitudes')
-    ])
-        .then(function (respuestas) {
-            var mascotas = listaDe(respuestas[0]);
-            var solicitudes = listaDe(respuestas[1]);
-            var movimientos = listaDe(respuestas[2]);
-            var tipos = listaDe(respuestas[3]);
-
-            mostrarTortaSolicitudes(tipos, solicitudes);
-            mostrarMascotasTransito(mascotas, movimientos);
-            mostrarAdopcionesMes(movimientos);
-            mostrarMascotasRecientes(mascotas, movimientos);
-            mostrarHogares(solicitudes, mascotas, movimientos);
-        })
-        .catch(function () {
-            mensaje.textContent = 'No se pudo cargar el panel.';
-        });
-
-    apiRequest('donaciones')
-        .then(function (resultado) {
-            mostrarDonaciones(listaDe(resultado));
-        })
-        .catch(function () {
-            mostrarDonaciones([]);
-        });
+        listaPedidoDeApi('tipos_solicitudes'),
+        listaPedidoDeApi('estados_solicitudes'),
+        listaPedidoDeApi('solicitudes'),
+        listaPedidoDeApi('mascotas'),
+        listaPedidoDeApi('tipos_movimientos_mascotas'),
+        listaPedidoDeApi('movimientos_mascotas'),
+        listaPedidoDeApi('donaciones')
+    ]).then(function (respuestas) {
+        mostrarSolicitudes(respuestas[0], respuestas[2]);
+        mostrarPendientes(respuestas[1], respuestas[2]);
+        mostrarMascotas(respuestas[3], respuestas[4], respuestas[5]);
+        asignarFilasDeApi(cuerpoSolicitudes, respuestas[2], asignarFilaDe(cabeceraSolicitudes));
+        mostrarDonaciones(respuestas[6]);
+    }).catch(function (error) {
+        if (mensaje) {
+            mensaje.textContent = mensajeDeApi(error);
+        }
+    });
 }
 
 if (panel) {
