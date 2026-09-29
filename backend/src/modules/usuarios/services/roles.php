@@ -31,3 +31,91 @@ function buscar_rol_por_nombre(string $nombre_rol): array|false
 
     return obtener_rol_por_nombre($nombre_rol);
 }
+
+function registrar_rol(array $datos): array
+{
+    $nombre_rol =
+        trim($datos['nombre_rol'] ?? '');
+
+    $descripcion =
+        trim($datos['descripcion'] ?? '');
+
+    if ($nombre_rol === '') {
+        throw new InvalidArgumentException(
+            'El nombre del rol es obligatorio.'
+        );
+    }
+
+    if (existe_rol_por_nombre($nombre_rol)) {
+        throw new InvalidArgumentException(
+            'Ya existe un rol con ese nombre.'
+        );
+    }
+
+    return crear_rol([
+        'nombre_rol' => $nombre_rol,
+        'descripcion' =>
+            $descripcion !== ''
+                ? $descripcion
+                : null
+    ]);
+}
+
+
+function modificar_rol(
+    int $id,
+    array $datos
+): array|false {
+
+    if ($id <= 0) {
+        throw new InvalidArgumentException(
+            'El id del rol no es válido.'
+        );
+    }
+
+    $nombre_rol =
+        trim($datos['nombre_rol'] ?? '');
+
+    $descripcion =
+        trim($datos['descripcion'] ?? '');
+
+    if ($nombre_rol === '') {
+        throw new InvalidArgumentException(
+            'El nombre del rol es obligatorio.'
+        );
+    }
+
+    if (
+        existe_rol_por_nombre(
+            $nombre_rol,
+            $id
+        )
+    ) {
+        throw new InvalidArgumentException(
+            'Ya existe otro rol con ese nombre.'
+        );
+    }
+
+    return actualizar_rol(
+        $id,
+        [
+            'nombre_rol' => $nombre_rol,
+            'descripcion' =>
+                $descripcion !== ''
+                    ? $descripcion
+                    : null
+        ]
+    );
+}
+
+
+function eliminar_rol(int $id): bool
+{
+    if ($id <= 0) {
+        throw new InvalidArgumentException(
+            'El id del rol no es válido.'
+        );
+    }
+
+    return desactivar_rol($id);
+}

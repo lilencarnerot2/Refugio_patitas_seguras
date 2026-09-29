@@ -6,7 +6,7 @@
             </div>
             <div class="footer-contact">
                 <p><i class="bi bi-envelope"></i> hola@patitaseguras.org</p>
-                <p><i class="bi bi-geo-alt-fill"></i> Merlo, Buenos Aires, Argentina</p>
+                <p><i class="bi bi-geo-alt"></i> Merlo, Buenos Aires, Argentina</p>
             </div>
         </div>
     </footer>

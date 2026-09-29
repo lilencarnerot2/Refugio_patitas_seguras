@@ -1,7 +1,7 @@
 <?php
 $paginaAdmin = $paginaAdmin ?? '';
-$enlaceSitio = '/index.php';
-$enlaceSalir = '/public/login.php?salir';
+$salir = '/public/login.php?salir=1';
+$esSuperadministrador = esRol('Superadministrador');
 ?>
 <input type="checkbox" id="nav-toggle" class="nav-toggle">
 <header>
@@ -19,8 +19,8 @@ $enlaceSalir = '/public/login.php?salir';
     </a>
 
     <div class="header-actions">
-        <a class="btn-outline" href="<?php echo htmlspecialchars($enlaceSitio, ENT_QUOTES, 'UTF-8'); ?>">SITIO</a>
-        <a class="btn-primary" href="<?php echo htmlspecialchars($enlaceSalir, ENT_QUOTES, 'UTF-8'); ?>">SALIR</a>
+        <a class="btn-outline" href="/index.php">SITIO</a>
+        <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>
     </div>
 </header>
 
@@ -43,9 +43,13 @@ $enlaceSalir = '/public/login.php?salir';
             </details>
         </li>
         <li>
-            <a href="solicitudes.php"<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle'], true) ? ' class="active"' : ''; ?>>
-                <i class="bi bi-file-earmark-text"></i> Solicitudes
-            </a>
+            <details>
+                <summary<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle', 'tipos_estados'], true) ? ' class="active"' : ''; ?>>
+                    <i class="bi bi-file-earmark-text"></i> Solicitudes
+                </summary>
+                <a href="solicitudes.php"<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle'], true) ? ' class="active"' : ''; ?>>Listado</a>
+                <a href="tipos_estados.php"<?php echo $paginaAdmin === 'tipos_estados' ? ' class="active"' : ''; ?>>Tipos y estados</a>
+            </details>
         </li>
         <li>
             <a href="hogares_transito.php"<?php echo $paginaAdmin === 'hogares_transito' ? ' class="active"' : ''; ?>>
@@ -62,6 +66,7 @@ $enlaceSalir = '/public/login.php?salir';
                 <i class="bi bi-heart-pulse"></i> Control de salud
             </a>
         </li>
+        <?php if ($esSuperadministrador) { ?>
         <li>
             <?php if (!empty($esSuperadmin)) { ?>
             <details>
@@ -79,19 +84,14 @@ $enlaceSalir = '/public/login.php?salir';
         </li>
         <?php if (!empty($esSuperadmin)) { ?>
         <li>
-            <a href="configuracion.php"<?php echo $paginaAdmin === 'configuracion' ? ' class="active"' : ''; ?>>
-                <i class="bi bi-gear-fill"></i> Configuración
+            <a href="usuarios.php"<?php echo in_array($paginaAdmin, ['usuarios', 'usuario_detalle'], true) ? ' class="active"' : ''; ?>>
+                <i class="bi bi-people-fill"></i> Usuarios
             </a>
         </li>
         <?php } ?>
         <li class="nav-sitio">
-            <a href="<?php echo htmlspecialchars($enlaceSitio, ENT_QUOTES, 'UTF-8'); ?>">
+            <a href="/index.php">
                 <i class="bi bi-globe"></i> Sitio
-            </a>
-        </li>
-        <li class="nav-salir">
-            <a href="<?php echo htmlspecialchars($enlaceSalir, ENT_QUOTES, 'UTF-8'); ?>">
-                <i class="bi bi-box-arrow-right"></i> Salir
             </a>
         </li>
     </ul>

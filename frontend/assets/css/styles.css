@@ -223,6 +223,7 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
+            flex-wrap: wrap;
             justify-self: end;
             gap: 10px;
             justify-self: end;
@@ -1143,6 +1144,12 @@
             position: relative;
         }
 
+        .clave-campo {
+            padding-right: 42px;
+            -webkit-text-security: disc;
+            text-security: disc;
+        }
+
         .clave-ojo {
             position: absolute;
             right: 12px;
@@ -1151,10 +1158,24 @@
             color: var(--text-soft);
             cursor: pointer;
             line-height: 1;
+            z-index: 1;
         }
 
         .clave-ojo .fa-eye-slash {
             display: none;
+        }
+
+        .clave-wrap:has(.clave-toggle:checked) .clave-campo {
+            -webkit-text-security: none;
+            text-security: none;
+        }
+
+        .clave-wrap:has(.clave-toggle:checked) .clave-ojo .fa-eye {
+            display: none;
+        }
+
+        .clave-wrap:has(.clave-toggle:checked) .clave-ojo .fa-eye-slash {
+            display: inline-block;
         }
 
         .public-form {
@@ -1200,8 +1221,42 @@
             margin-bottom: 18px;
         }
 
+        .login-form .form-intento {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .login-form .campo-obligatorio:empty {
+            display: none;
+        }
+
+        .login-form .campo-obligatorio:not(:empty) {
+            display: block;
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #a32b21;
+        }
+
+        .login-form:has(.form-intento:checked) .form-control:invalid {
+            border-color: #a32b21;
+        }
+
         .login-form .btn-primary {
             margin-top: 6px;
+        }
+
+        .login-form .mensaje-formulario:empty {
+            display: none;
+        }
+
+        .login-form .mensaje-formulario {
+            color: #a32b21;
+            font-size: 13px;
+            margin: 0 0 16px;
         }
 
         .form-alt-link {
