@@ -1,6 +1,7 @@
 <?php
 $paginaAdmin = $paginaAdmin ?? '';
 $salir = '/public/login.php?salir=1';
+$esSuperadministrador = esRol('Superadministrador');
 ?>
 <input type="checkbox" id="nav-toggle" class="nav-toggle">
 <header>
@@ -62,7 +63,13 @@ $salir = '/public/login.php?salir=1';
         </li>
         <li>
             <a href="salud.php"<?php echo in_array($paginaAdmin, ['salud', 'ficha_medica'], true) ? ' class="active"' : ''; ?>>
-                <i class="bi bi-heart-pulse"></i> Control de salud
+                <i class="fa-solid fa-heart-pulse"></i> Control de salud
+            </a>
+        </li>
+        <?php if ($esSuperadministrador) { ?>
+        <li>
+            <a href="usuarios.php"<?php echo $paginaAdmin === 'usuarios' ? ' class="active"' : ''; ?>>
+                <i class="fa-solid fa-users"></i> Usuarios
             </a>
         </li>
         <li>
@@ -70,6 +77,7 @@ $salir = '/public/login.php?salir=1';
                 <i class="bi bi-people-fill"></i> Usuarios
             </a>
         </li>
+        <?php } ?>
         <li class="nav-sitio">
             <a href="/index.php">
                 <i class="bi bi-globe"></i> Sitio
