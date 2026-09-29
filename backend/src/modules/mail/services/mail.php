@@ -1,5 +1,4 @@
-psql "postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME" -c "\dt"<?php
-
+<?php
 /**
  * Cliente HTTP para el servicio externo "Servicio de Mail PP2".
  * Este service se encarga de la comunicación con el servicio de mail
@@ -20,6 +19,7 @@ psql "postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME" -c "\dt"<?p
  *
  * @return array ['ok' => bool, 'status' => int, 'data' => array|null, 'error' => string|null]
  */
+
 function enviarMail($destinatario, $asunto, $texto, $html = null, $idempotencyKey = null)
 {
     $url = getenv('MAIL_API_URL');
