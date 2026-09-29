@@ -1,4 +1,45 @@
+function guardarCookie(nombre, valor) {
+    document.cookie = nombre + '=' + encodeURIComponent(valor || '') + '; path=/; SameSite=Lax';
+}
+
+function borrarCookie(nombre) {
+    document.cookie = nombre + '=; path=/; SameSite=Lax; max-age=0';
+}
+
+function guardarSesion(usuario, usuarioLocal) {
+    guardarCookie('usuario_id', usuario.id);
+    guardarCookie('usuario_nombre', usuario.nombre);
+    guardarCookie('usuario_apellido', usuario.apellido);
+    guardarCookie('usuario_email', usuario.email);
+    guardarCookie('usuario_rol', usuario.id_rol);
+    guardarCookie('usuario_nombre_rol', usuarioLocal.nombre_rol);
+}
+
+function borrarSesion() {
+    borrarCookie('usuario');
+    borrarCookie('usuario_id');
+    borrarCookie('usuario_nombre');
+    borrarCookie('usuario_apellido');
+    borrarCookie('usuario_email');
+    borrarCookie('usuario_rol');
+    borrarCookie('usuario_nombre_rol');
+}
+
+function destinoSegunRol(nombreRol) {
+    if (nombreRol === 'Administrador' || nombreRol === 'Superadministrador') {
+        return '/admin/dashboard.php';
+    }
+
+    return '../index.php';
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+    if (new URLSearchParams(window.location.search).get('salir') !== null) {
+        borrarSesion();
+        window.location.href = '/index.php';
+        return;
+    }
+
     const formulario = document.getElementById('form-login');
 
     if (!formulario) {
@@ -30,9 +71,17 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .then(function (respuesta) {
-            alert(respuesta.message || 'Inicio de sesión exitoso.');
+            var usuario = (respuesta.data && respuesta.data.usuario) || {};
 
-            window.location.href = '../index.php';
+            return apiRequest('usuarios', {
+                parametros: { id: usuario.id }
+            }).then(function (usuarioRespuesta) {
+                var usuarioLocal = usuarioRespuesta.data || {};
+
+                guardarSesion(usuario, usuarioLocal);
+                alert(respuesta.message || 'Inicio de sesión exitoso.');
+                window.location.href = destinoSegunRol(usuarioLocal.nombre_rol);
+            });
         })
         .catch(function (error) {
             alert(error.message || 'No se pudo iniciar sesión.');

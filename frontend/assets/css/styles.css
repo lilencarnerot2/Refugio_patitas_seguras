@@ -223,6 +223,7 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
+            flex-wrap: wrap;
             justify-self: end;
             gap: 10px;
             justify-self: end;
