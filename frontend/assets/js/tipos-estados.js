@@ -1,113 +1,14 @@
 var mensaje = document.getElementById('mensaje-formulario');
 var panelTipos = document.getElementById('listado-tipos');
 var panelEstados = document.getElementById('listado-estados');
-var cuerpoSeguimiento = document.getElementById('cuerpo-seguimiento');
-var cuerpoCambio = document.getElementById('cuerpo-cambio');
-var claveVistaSolicitudes = 'solicitudes';
-var claveCambiosSolicitudes = 'solicitudes_cambios';
-
-function cabeceraDe(fila) {
-    var tabla = fila.parentNode && fila.parentNode.parentNode;
-
-    return tabla ? tabla.querySelector('thead tr') : null;
-}
 
 function asignarFilaSolicitud(fila, solicitud) {
-    var cabecera = cabeceraDe(fila);
+    var tabla = fila.parentNode && fila.parentNode.parentNode;
+    var cabecera = tabla ? tabla.querySelector('thead tr') : null;
 
     if (cabecera) {
         asignarCeldasDeApi(fila, cabecera, solicitud, 'id');
     }
-}
-
-function leerLista(clave) {
-    try {
-        var valor = sessionStorage.getItem(clave);
-        var lista = valor ? JSON.parse(valor) : null;
-
-        return lista && typeof lista === 'object' ? lista : null;
-    } catch (error) {
-        return null;
-    }
-}
-
-function mapaSolicitudes(solicitudes) {
-    var mapa = {};
-    var i;
-    var id;
-
-    for (i = 0; i < solicitudes.length; i++) {
-        id = campoDe(solicitudes[i], 'id');
-
-        if (id) {
-            mapa[id] = solicitudes[i];
-        }
-    }
-
-    return mapa;
-}
-
-function asignarFilaCambio(fila, cambio) {
-    var cabecera = cabeceraDe(fila);
-    var ths = cabecera ? cabecera.children : [];
-    var i;
-    var th;
-    var td;
-    var campo;
-
-    if (!cabecera) {
-        return;
-    }
-
-    asignarCeldasDeApi(fila, cabecera, cambio.actual, 'id');
-
-    for (i = 0; i < ths.length; i++) {
-        th = ths[i];
-        td = fila.children[i];
-        campo = th.getAttribute('data-campo');
-
-        if (td && campo && th.hasAttribute('data-previo')) {
-            td.setAttribute('data-texto', campoDe(cambio.previo, campo));
-        }
-    }
-}
-
-function registrarCambios(solicitudes) {
-    var actual = mapaSolicitudes(solicitudes);
-    var previo = leerLista(claveVistaSolicitudes) || {};
-    var cambios = leerLista(claveCambiosSolicitudes);
-    var id;
-    var vista;
-    var anterior;
-
-    if (!Array.isArray(cambios)) {
-        cambios = [];
-    }
-
-    for (id in actual) {
-        if (!Object.prototype.hasOwnProperty.call(actual, id)) {
-            continue;
-        }
-
-        vista = actual[id];
-        anterior = previo[id];
-
-        if (
-            anterior &&
-            (campoDe(anterior, 'tipo_solicitud') !== campoDe(vista, 'tipo_solicitud') ||
-                campoDe(anterior, 'estado_solicitud') !== campoDe(vista, 'estado_solicitud'))
-        ) {
-            cambios.push({
-                previo: anterior,
-                actual: vista
-            });
-        }
-    }
-
-    sessionStorage.setItem(claveVistaSolicitudes, JSON.stringify(actual));
-    sessionStorage.setItem(claveCambiosSolicitudes, JSON.stringify(cambios));
-
-    return cambios;
 }
 
 function asignarPersonas(select, items) {
@@ -196,16 +97,6 @@ function cargarBloques(contenedor, selector, items, solicitudes, campoId, campoN
     }
 }
 
-function asignarEvaluacion(solicitudes, cambios) {
-    if (cuerpoSeguimiento) {
-        asignarFilasDeApi(cuerpoSeguimiento, solicitudes, asignarFilaSolicitud);
-    }
-
-    if (cuerpoCambio) {
-        asignarFilasDeApi(cuerpoCambio, cambios, asignarFilaCambio);
-    }
-}
-
 function cargarListado() {
     return Promise.all([
         apiRequest('tipos_solicitudes'),
@@ -215,11 +106,9 @@ function cargarListado() {
         var estados = listaDeApi(respuestas[1]);
         var solicitudes = listaDeApi(respuestas[2]);
 
-        asignarEvaluacion(solicitudes, registrarCambios(solicitudes));
         cargarBloques(panelTipos, '.bloque-tipo', listaDeApi(respuestas[0]), solicitudes, 'id_tipo_solicitud', 'nombre_tipo');
         cargarBloques(panelEstados, '.bloque-estado', estados, solicitudes, 'id_estado_solicitud', 'nombre_estado', estados);
     }).catch(function (error) {
-        asignarEvaluacion([], []);
         cargarBloques(panelTipos, '.bloque-tipo', [], [], 'id_tipo_solicitud', 'nombre_tipo');
         cargarBloques(panelEstados, '.bloque-estado', [], [], 'id_estado_solicitud', 'nombre_estado');
 
@@ -259,19 +148,17 @@ function enviarEstado(formulario) {
     });
 }
 
-if (panelTipos || panelEstados || cuerpoSeguimiento || cuerpoCambio) {
+if (panelTipos && panelEstados) {
     cargarListado();
 
-    if (panelEstados) {
-        panelEstados.addEventListener('submit', function (evento) {
-            var formulario = evento.target;
+    panelEstados.addEventListener('submit', function (evento) {
+        var formulario = evento.target;
 
-            if (!formulario.getAttribute || !formulario.getAttribute('data-recurso')) {
-                return;
-            }
+        if (!formulario.getAttribute || !formulario.getAttribute('data-recurso')) {
+            return;
+        }
 
-            evento.preventDefault();
-            enviarEstado(formulario);
-        });
-    }
+        evento.preventDefault();
+        enviarEstado(formulario);
+    });
 }

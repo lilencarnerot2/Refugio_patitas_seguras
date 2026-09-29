@@ -88,6 +88,9 @@
 }
 
 .admin-page .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     padding-right: 0;
 }
 
@@ -191,7 +194,8 @@
     padding-left: 42px;
 }
 
-.admin-page nav > ul > li.nav-sitio {
+.admin-page nav > ul > li.nav-sitio,
+.admin-page nav > ul > li.nav-salir {
     display: none;
 }
 
@@ -393,186 +397,36 @@
     stroke: var(--accent-color);
 }
 
-.admin-page #resumen-solicitudes .info-card:not(:has(h3[data-texto])):nth-child(n+4),
-.admin-page #resumen-estados .info-card:not(:has(h3[data-texto])):nth-child(n+4),
-.admin-page #resumen-movimientos .info-card:not(:has(h3[data-texto])):nth-child(n+4),
-.admin-page #resumen-donaciones .info-card:not(:has(h3[data-texto])) {
+.admin-page #resumen-solicitudes .info-card:not(:has(h3[data-texto])):nth-child(n+4) {
     display: none;
 }
 
-.admin-page #resumen-solicitudes .info-card h3,
-.admin-page #resumen-estados .info-card h3,
-.admin-page #resumen-movimientos .info-card h3,
-.admin-page #resumen-donaciones .info-card h3 {
+.admin-page #resumen-solicitudes .info-card h3 {
     margin: 0 0 16px;
 }
 
-.admin-page #resumen-solicitudes .info-card h3[data-texto]::before,
-.admin-page #resumen-estados .info-card h3[data-texto]::before,
-.admin-page #resumen-movimientos .info-card h3[data-texto]::before,
-.admin-page #resumen-donaciones .info-card h3[data-texto]::before {
+.admin-page #resumen-solicitudes .info-card h3[data-texto]::before {
     content: attr(data-texto);
 }
 
-.admin-page #resumen-solicitudes .dash-kpi-numero[data-texto]::after,
-.admin-page #resumen-estados .dash-kpi-numero[data-texto]::after,
-.admin-page #resumen-movimientos .dash-kpi-numero[data-texto]::after,
-.admin-page #resumen-donaciones .dash-kpi-numero[data-texto]::after {
+.admin-page #resumen-solicitudes .dash-kpi-numero[data-texto]::after {
     content: attr(data-texto) "%";
 }
 
-.admin-page #resumen-solicitudes,
-.admin-page #resumen-estados,
-.admin-page #resumen-movimientos,
-.admin-page #resumen-donaciones {
+.admin-page #resumen-solicitudes {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
-.admin-page #resumen-solicitudes .info-card:nth-child(3n+1) .dash-donut-valor,
-.admin-page #resumen-estados .info-card:nth-child(3n+1) .dash-donut-valor,
-.admin-page #resumen-movimientos .info-card:nth-child(3n+1) .dash-donut-valor,
-.admin-page #resumen-donaciones .info-card:nth-child(3n+1) .dash-donut-valor {
+.admin-page #resumen-solicitudes .info-card:nth-child(3n+1) .dash-donut-valor {
     stroke: var(--primary-color);
 }
 
-.admin-page #resumen-solicitudes .info-card:nth-child(3n+2) .dash-donut-valor,
-.admin-page #resumen-estados .info-card:nth-child(3n+2) .dash-donut-valor,
-.admin-page #resumen-movimientos .info-card:nth-child(3n+2) .dash-donut-valor,
-.admin-page #resumen-donaciones .info-card:nth-child(3n+2) .dash-donut-valor {
+.admin-page #resumen-solicitudes .info-card:nth-child(3n+2) .dash-donut-valor {
     stroke: var(--accent-color);
 }
 
-.admin-page #resumen-solicitudes .info-card:nth-child(3n+3) .dash-donut-valor,
-.admin-page #resumen-estados .info-card:nth-child(3n+3) .dash-donut-valor,
-.admin-page #resumen-movimientos .info-card:nth-child(3n+3) .dash-donut-valor,
-.admin-page #resumen-donaciones .info-card:nth-child(3n+3) .dash-donut-valor {
+.admin-page #resumen-solicitudes .info-card:nth-child(3n+3) .dash-donut-valor {
     stroke: color-mix(in srgb, var(--primary-color) 40%, var(--accent-color));
-}
-
-.admin-page #card-solicitudes .dash-card-cabecera h3::before,
-.admin-page #bloque-solicitudes .dash-card-cabecera h3::before {
-    content: "Solicitudes";
-}
-
-.admin-page #card-pendientes .dash-card-cabecera h3::before,
-.admin-page #card-solicitudes-lista .dash-card-cabecera h3::before {
-    content: "Solicitudes pendientes";
-}
-
-.admin-page #card-mascotas .dash-card-cabecera h3::before,
-.admin-page #card-mascotas-lista .dash-card-cabecera h3::before,
-.admin-page #bloque-mascotas .dash-card-cabecera h3::before {
-    content: "Mascotas";
-}
-
-.admin-page #card-donaciones .dash-card-cabecera h3::before,
-.admin-page #bloque-donaciones .dash-card-cabecera h3::before {
-    content: "Donaciones";
-}
-
-.admin-page #card-mascotas-lista .empty-back-link::before {
-    content: "Ver todas";
-}
-
-.admin-page #card-donaciones .empty-back-link::before {
-    content: "Ver todas";
-}
-
-.admin-page #card-solicitudes-lista .empty-back-link::before {
-    content: "Ver todas";
-}
-
-.admin-page #panel-dashboard .dash-leyenda li:not([data-texto]),
-.admin-page #barras-donaciones > div:not(:has(span[data-texto])) {
-    display: none;
-}
-
-.admin-page #panel-dashboard .dash-leyenda li[data-texto],
-.admin-page #barras-donaciones span[data-texto] {
-    display: flex;
-}
-
-.admin-page #panel-dashboard .dash-leyenda li[data-texto]::after,
-.admin-page #panel-dashboard .dash-kpi-numero[data-texto]::after,
-.admin-page #barras-donaciones span[data-texto]::after {
-    content: attr(data-texto);
-}
-
-.admin-page #card-mascotas-lista thead th[data-campo="nombre"]::before,
-.admin-page #bloque-mascotas thead th[data-campo="nombre"]::before {
-    content: "Nombre";
-}
-
-.admin-page #card-mascotas-lista thead th[data-campo="especie"]::before,
-.admin-page #bloque-mascotas thead th[data-campo="especie"]::before {
-    content: "Especie";
-}
-
-.admin-page #card-mascotas-lista thead th[data-campo="raza"]::before,
-.admin-page #bloque-mascotas thead th[data-campo="raza"]::before {
-    content: "Raza";
-}
-
-.admin-page #card-mascotas-lista thead th[data-campo="fecha_nacimiento_estimada"]::before,
-.admin-page #bloque-mascotas thead th[data-campo="fecha_nacimiento_estimada"]::before {
-    content: "Nacimiento";
-}
-
-.admin-page #card-solicitudes-lista thead th[data-campo="nombre_usuario"]::before {
-    content: "Nombre";
-}
-
-.admin-page #card-solicitudes-lista thead th[data-campo="apellido_usuario"]::before {
-    content: "Apellido";
-}
-
-.admin-page #card-solicitudes-lista thead th[data-campo="nombre_mascota"]::before {
-    content: "Mascota";
-}
-
-.admin-page #card-solicitudes-lista thead th[data-campo="tipo_solicitud"]::before {
-    content: "Tipo";
-}
-
-.admin-page #card-solicitudes-lista thead th[data-campo="estado_solicitud"]::before {
-    content: "Estado";
-}
-
-.admin-page #card-solicitudes-lista thead th[data-campo="fecha_solicitud"]::before {
-    content: "Fecha";
-}
-
-.admin-page #panel-dashboard [data-campo="id"] {
-    display: none;
-}
-
-.admin-page #panel-dashboard {
-    min-width: 0;
-}
-
-.admin-page #panel-dashboard .dash-fila {
-    align-items: stretch;
-}
-
-.admin-page #panel-dashboard .info-card {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
-
-.admin-page #panel-dashboard.panel-listado .lista-scroll-mascotas,
-.admin-page #panel-dashboard .lista-scroll-mascotas {
-    flex: 1 1 auto;
-    min-height: 160px;
-    max-height: 280px;
-    overflow-x: auto;
-    overflow-y: auto;
-}
-
-.admin-page #panel-dashboard .lista-scroll-mascotas thead th {
-    position: sticky;
-    top: 0;
-    z-index: 1;
 }
 
 .admin-page .dash-leyenda {
@@ -941,17 +795,14 @@
         display: none;
     }
 
-    .admin-page .header-actions .btn-outline {
+    .admin-page .header-actions .btn-outline,
+    .admin-page .header-actions .btn-primary {
         display: none;
     }
 
-    .admin-page nav > ul > li.nav-sitio {
+    .admin-page nav > ul > li.nav-sitio,
+    .admin-page nav > ul > li.nav-salir {
         display: block;
-    }
-
-    .admin-page .header-actions .btn-primary {
-        padding: 8px 12px;
-        font-size: 13px;
     }
 
     .admin-page #nav-toggle:checked ~ section {
@@ -1406,18 +1257,6 @@
 .admin-page .panel-listado .dash-tabla td {
     white-space: normal;
     overflow-wrap: anywhere;
-}
-
-.admin-page #panel-dashboard.panel-listado .dash-tabla {
-    width: max-content;
-    min-width: 100%;
-}
-
-.admin-page #panel-dashboard.panel-listado .dash-tabla th,
-.admin-page #panel-dashboard.panel-listado .dash-tabla td {
-    white-space: nowrap;
-    overflow-wrap: normal;
-    word-break: normal;
 }
 
 .admin-page .panel-listado .dash-tabla td {
@@ -2596,69 +2435,6 @@
         padding: 8px 6px;
         font-size: 13px;
         white-space: nowrap;
-    }
-
-    .admin-page #panel-dashboard.panel-listado .dash-tabla thead {
-        display: table-header-group;
-    }
-
-    .admin-page #panel-dashboard.panel-listado .lista-scroll-mascotas {
-        overflow-x: auto;
-        overflow-y: auto;
-    }
-
-    .admin-page #panel-dashboard.panel-listado .dash-tabla,
-    .admin-page #panel-dashboard.panel-listado .dash-tabla tbody,
-    .admin-page #panel-dashboard.panel-listado .dash-tabla tr,
-    .admin-page #panel-dashboard.panel-listado .dash-tabla td {
-        display: revert;
-        width: auto;
-        min-width: 0;
-        height: auto;
-    }
-
-    .admin-page #panel-dashboard.panel-listado .dash-tabla {
-        display: table;
-        width: max-content;
-        min-width: 100%;
-    }
-
-    .admin-page #panel-dashboard.panel-listado .dash-tabla tbody {
-        display: table-row-group;
-    }
-
-    .admin-page #panel-dashboard.panel-listado .dash-tabla tr {
-        display: table-row;
-        margin: 0;
-        padding: 0;
-        background: transparent;
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    .admin-page #panel-dashboard.panel-listado .dash-tabla tbody tr:not([data-id]) {
-        display: none;
-    }
-
-    .admin-page #panel-dashboard.panel-listado .dash-tabla td,
-    .admin-page #panel-dashboard.panel-listado .dash-tabla td[data-estado],
-    .admin-page #panel-dashboard.panel-listado .dash-tabla td[data-estado]:empty,
-    .admin-page #panel-dashboard.panel-listado .dash-tabla td:empty,
-    .admin-page #panel-dashboard.panel-listado .dash-tabla td:has(> a) {
-        display: table-cell;
-        width: auto;
-        margin: 0;
-        padding: 14px 16px;
-        background: transparent;
-        border-bottom: 1px solid var(--border-light);
-        border-radius: 0;
-        white-space: nowrap;
-        overflow-wrap: normal;
-        word-break: normal;
-    }
-
-    .admin-page #panel-dashboard.panel-listado .dash-tabla td::before {
-        display: none;
     }
 
 }
