@@ -63,7 +63,7 @@ $esSuperadministrador = esRol('Superadministrador');
         </li>
         <li>
             <a href="salud.php"<?php echo in_array($paginaAdmin, ['salud', 'ficha_medica'], true) ? ' class="active"' : ''; ?>>
-                <i class="fa-solid fa-heart-pulse"></i> Control de salud
+                <i class="bi bi-heart-pulse"></i> Control de salud
             </a>
         </li>
         <?php if ($esSuperadministrador) { ?>
