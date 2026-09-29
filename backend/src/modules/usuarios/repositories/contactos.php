@@ -113,19 +113,21 @@ function crear_contacto_usuario(
          */
         if ($datos['es_principal'] === true) {
 
-            $sql_principal = "
-                UPDATE contactos
-                SET es_principal = FALSE
-                WHERE id_usuario = :id_usuario
-                  AND estado = TRUE
+        $sql_principal = "
+            UPDATE contactos
+            SET es_principal = FALSE
+            WHERE id_usuario = :id_usuario
+            AND id_tipo_contacto = :id_tipo_contacto
+            AND estado = TRUE
             ";
 
-            $consulta_principal =
-                $conexion->prepare($sql_principal);
+        $consulta_principal =
+        $conexion->prepare($sql_principal);
 
-            $consulta_principal->execute([
-                ':id_usuario' => $id_usuario
-            ]);
+        $consulta_principal->execute([
+            ':id_usuario' => $id_usuario,
+            ':id_tipo_contacto' => $datos['id_tipo_contacto']
+        ]);
         }
 
         $sql = "
@@ -261,15 +263,17 @@ function actualizar_contacto_usuario(
                 UPDATE contactos
                 SET es_principal = FALSE
                 WHERE id_usuario = :id_usuario
-                  AND id <> :id_contacto
-                  AND estado = TRUE
+                AND id_tipo_contacto = :id_tipo_contacto
+                AND id <> :id_contacto
+                AND estado = TRUE
             ";
 
             $consulta_principal =
-                $conexion->prepare($sql_principal);
+            $conexion->prepare($sql_principal);
 
             $consulta_principal->execute([
                 ':id_usuario' => $id_usuario,
+                ':id_tipo_contacto' => $datos['id_tipo_contacto'],
                 ':id_contacto' => $id_contacto
             ]);
         }
