@@ -4,8 +4,8 @@ $inicio = $esInicio ? '' : '/index.php';
 $catalogo = '/public/mascotas.php';
 $login = '/public/login.php';
 $salir = '/public/login.php?salir=1';
-$autenticado = !empty($_COOKIE['usuario_id']) && !empty($_COOKIE['usuario_nombre_rol']);
-$esPersonal = $autenticado && !empty($_COOKIE['usuario_acceso_admin']);
+$autenticado = usuarioAutenticado();
+$esPersonal = esPersonalAdmin();
 ?><header>
     <a class="logo-container" href="<?php echo $esInicio ? '#inicio' : $inicio; ?>">
             <div style="background: var(--primary-color); border-radius: 50%; padding: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
@@ -48,9 +48,6 @@ $esPersonal = $autenticado && !empty($_COOKIE['usuario_acceso_admin']);
                     <?php if ($esPersonal) { ?>
                     <a class="btn-outline" href="/admin/dashboard.php">PANEL</a>
                     <?php } ?>
-                    <?php if ($autenticado && !$esPersonal) { ?>
-                    <a class="btn-outline" href="/user/mi_perfil.php">PERFIL</a>
-                    <?php } ?>
                     <?php if ($autenticado) { ?>
                     <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>
                     <?php } ?>
@@ -66,9 +63,6 @@ $esPersonal = $autenticado && !empty($_COOKIE['usuario_acceso_admin']);
             <?php } ?>
             <?php if ($esPersonal) { ?>
             <a class="btn-outline" href="/admin/dashboard.php">PANEL</a>
-            <?php } ?>
-            <?php if ($autenticado && !$esPersonal) { ?>
-            <a class="btn-outline" href="/user/mi_perfil.php">PERFIL</a>
             <?php } ?>
             <?php if ($autenticado) { ?>
             <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>

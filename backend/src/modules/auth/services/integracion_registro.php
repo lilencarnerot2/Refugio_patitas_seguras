@@ -124,3 +124,46 @@ function registrarEnPadron($datos)
         'error' => $datosRespuesta['detail'] ?? 'Error desconocido del Padrón'
     ];
 }
+
+/**
+ * Busca el email de un usuario en el Padrón PP2 por su uid_pp2.
+ * Devuelve el email (string) o null si no lo encuentra.
+ */
+function buscarEmailEnPadron(string $uid_pp2): ?string
+{
+    $url = getenv('PP2_API_URL');
+    $token = getenv('PP2_API_KEY');
+
+    if (!$url || !$token) {
+        return null;
+    }
+
+    $ch = curl_init($url . '/usuarios');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . $token
+    ]);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+    $respuesta = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode !== 200) {
+        return null;
+    }
+
+    $usuarios = json_decode($respuesta, true);
+
+    if (!is_array($usuarios)) {
+        return null;
+    }
+
+    foreach ($usuarios as $usuario) {
+        if (isset($usuario['id']) && (string) $usuario['id'] === $uid_pp2) {
+            return $usuario['email'] ?? null;
+        }
+    }
+
+    return null;
+}

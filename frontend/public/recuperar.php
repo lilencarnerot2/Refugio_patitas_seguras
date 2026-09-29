@@ -21,7 +21,7 @@ require __DIR__ . '/includes/header.php';
             <div class="mb-3">
                 <label class="form-label" for="password">Contraseña</label>
                 <div class="clave-wrap">
-                    <input class="form-control clave-campo" id="password" name="password" type="password" autocomplete="new-password" required>
+                    <input class="form-control clave-campo" id="password" name="password" type="text" autocomplete="new-password" required>
                     <input class="clave-toggle" id="ver-clave-recuperar" type="checkbox">
                     <label class="clave-ojo" for="ver-clave-recuperar" title="Mostrar u ocultar contraseña">
                         <i class="fa-regular fa-eye"></i>

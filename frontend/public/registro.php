@@ -33,7 +33,7 @@ require __DIR__ . '/includes/header.php';
             <div class="mb-3">
                 <label class="form-label" for="clave">Contraseña</label>
                 <div class="clave-wrap">
-                    <input class="form-control clave-campo" id="clave" name="clave" type="password" autocomplete="new-password" required>
+                    <input class="form-control clave-campo" id="clave" name="clave" type="text" autocomplete="new-password" required>
                     <input class="clave-toggle" id="ver-clave-registro" type="checkbox">
                     <label class="clave-ojo" for="ver-clave-registro" title="Mostrar u ocultar contraseña">
                         <i class="fa-regular fa-eye"></i>
