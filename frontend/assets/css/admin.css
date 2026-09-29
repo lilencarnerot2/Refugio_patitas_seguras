@@ -88,6 +88,9 @@
 }
 
 .admin-page .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     padding-right: 0;
 }
 
@@ -191,7 +194,8 @@
     padding-left: 42px;
 }
 
-.admin-page nav > ul > li.nav-sitio {
+.admin-page nav > ul > li.nav-sitio,
+.admin-page nav > ul > li.nav-salir {
     display: none;
 }
 
@@ -727,17 +731,14 @@
         display: none;
     }
 
-    .admin-page .header-actions .btn-outline {
+    .admin-page .header-actions .btn-outline,
+    .admin-page .header-actions .btn-primary {
         display: none;
     }
 
-    .admin-page nav > ul > li.nav-sitio {
+    .admin-page nav > ul > li.nav-sitio,
+    .admin-page nav > ul > li.nav-salir {
         display: block;
-    }
-
-    .admin-page .header-actions .btn-primary {
-        padding: 8px 12px;
-        font-size: 13px;
     }
 
     .admin-page #nav-toggle:checked ~ section {

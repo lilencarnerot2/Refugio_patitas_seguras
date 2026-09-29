@@ -68,10 +68,21 @@ $esSuperadministrador = esRol('Superadministrador');
         </li>
         <?php if ($esSuperadministrador) { ?>
         <li>
-            <a href="usuarios.php"<?php echo $paginaAdmin === 'usuarios' ? ' class="active"' : ''; ?>>
-                <i class="fa-solid fa-users"></i> Usuarios
+            <?php if (!empty($esSuperadmin)) { ?>
+            <details>
+                <summary<?php echo in_array($paginaAdmin, ['usuarios', 'usuario_detalle', 'usuario_editar'], true) ? ' class="active"' : ''; ?>>
+                    <i class="bi bi-people-fill"></i> Usuarios
+                </summary>
+                <a href="usuarios.php"<?php echo $paginaAdmin === 'usuarios' ? ' class="active"' : ''; ?>>Listado</a>
+                <a href="usuario_editar.php"<?php echo $paginaAdmin === 'usuario_editar' ? ' class="active"' : ''; ?>>Editar usuario</a>
+            </details>
+            <?php } else { ?>
+            <a href="usuarios.php"<?php echo in_array($paginaAdmin, ['usuarios', 'usuario_detalle'], true) ? ' class="active"' : ''; ?>>
+                <i class="bi bi-people-fill"></i> Usuarios
             </a>
+            <?php } ?>
         </li>
+        <?php if (!empty($esSuperadmin)) { ?>
         <li>
             <a href="usuarios.php"<?php echo in_array($paginaAdmin, ['usuarios', 'usuario_detalle'], true) ? ' class="active"' : ''; ?>>
                 <i class="bi bi-people-fill"></i> Usuarios
