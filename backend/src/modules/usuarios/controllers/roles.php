@@ -3,73 +3,188 @@
 require_once __DIR__ . '/../services/roles.php';
 require_once __DIR__ . '/../../../utils/response.php';
 
-function manejar_roles(): void
+function manejar_roles()
 {
-    $metodo = $_SERVER['REQUEST_METHOD'];
-
-    if ($metodo !== 'GET') {
-        responderJson(
-            false,
-            'Método no permitido.',
-            null,
-            405
-        );
-        return;
-    }
-
     try {
 
-        if (isset($_GET['id'])) {
+        /*
+         * GET
+         */
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
-            $id = filter_var(
-                $_GET['id'],
-                FILTER_VALIDATE_INT
+            $id = isset($_GET['id'])
+                ? (int) $_GET['id']
+                : null;
+
+            if ($id !== null) {
+
+                $rol = buscar_rol_por_id($id);
+
+                if (!$rol) {
+                    return responderJson(
+                        false,
+                        'Rol no encontrado.',
+                        null,
+                        404
+                    );
+                }
+
+                return responderJson(
+                    true,
+                    null,
+                    $rol,
+                    200
+                );
+            }
+
+            return responderJson(
+                true,
+                null,
+                listar_roles(),
+                200
+            );
+        }
+
+
+        /*
+         * POST
+         */
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $datos = json_decode(
+                file_get_contents('php://input'),
+                true
             );
 
-            if ($id === false || $id <= 0) {
-                responderJson(
+            if (!is_array($datos)) {
+                return responderJson(
                     false,
-                    'El id del rol no es válido.',
+                    'JSON inválido',
                     null,
                     400
                 );
-                return;
             }
 
-            $rol = buscar_rol_por_id($id);
+            $rol = registrar_rol($datos);
+
+            return responderJson(
+                true,
+                'Rol creado correctamente.',
+                $rol,
+                201
+            );
+        }
+
+
+        /*
+         * PUT
+         */
+        if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+
+            $id = (int) ($_GET['id'] ?? 0);
+
+            if ($id <= 0) {
+                throw new InvalidArgumentException(
+                    'El id del rol es obligatorio.'
+                );
+            }
+
+            $datos = json_decode(
+                file_get_contents('php://input'),
+                true
+            );
+
+            if (!is_array($datos)) {
+                return responderJson(
+                    false,
+                    'JSON inválido',
+                    null,
+                    400
+                );
+            }
+
+            $rol = modificar_rol(
+                $id,
+                $datos
+            );
 
             if (!$rol) {
-                responderJson(
+                return responderJson(
                     false,
                     'Rol no encontrado.',
                     null,
                     404
                 );
-                return;
             }
 
-            responderJson(
+            return responderJson(
                 true,
-                null,
+                'Rol actualizado correctamente.',
                 $rol,
                 200
             );
-
-            return;
         }
 
-        responderJson(
-            true,
+
+        /*
+         * DELETE lógico
+         */
+        if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+
+            $id = (int) ($_GET['id'] ?? 0);
+
+            if ($id <= 0) {
+                throw new InvalidArgumentException(
+                    'El id del rol es obligatorio.'
+                );
+            }
+
+            $eliminado = eliminar_rol($id);
+
+            if (!$eliminado) {
+                return responderJson(
+                    false,
+                    'Rol no encontrado.',
+                    null,
+                    404
+                );
+            }
+
+            return responderJson(
+                true,
+                'Rol deshabilitado correctamente.',
+                null,
+                200
+            );
+        }
+
+
+        return responderJson(
+            false,
+            'Método no permitido',
             null,
-            listar_roles(),
-            200
+            405
+        );
+
+    } catch (InvalidArgumentException $e) {
+
+        return responderJson(
+            false,
+            $e->getMessage(),
+            null,
+            400
         );
 
     } catch (Throwable $e) {
 
-        responderJson(
+        error_log(
+            'ERROR ROLES: ' .
+            $e->getMessage()
+        );
+
+        return responderJson(
             false,
-            'Error al obtener los roles.',
+            'Error interno',
             null,
             500
         );
