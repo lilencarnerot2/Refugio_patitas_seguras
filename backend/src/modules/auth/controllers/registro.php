@@ -4,6 +4,7 @@ require_once __DIR__ . '/../services/integracion_registro.php';
 require_once __DIR__ . '/../../usuarios/services/usuarios.php';
 require_once __DIR__ . '/../../usuarios/services/roles.php';
 require_once __DIR__ . '/../../../utils/response.php';
+require_once __DIR__ . '/../../mail/services/mail.php';
 
 function registroController($datos)
 {
@@ -82,6 +83,18 @@ function registroController($datos)
     $_SESSION['usuario_apellido'] = $usuarioLocal['apellido'];
     $_SESSION['usuario_rol'] = $usuarioLocal['id_rol'];
 
+    // 7.5. Enviar mail de bienvenida (no bloqueante: si falla, el registro igual queda OK)
+    $mailResultado = enviarMail(
+        $email,
+        '¡Bienvenido/a a Patitas Seguras!',
+        'Hola ' . $usuarioLocal['nombre'] . ', tu cuenta se creó correctamente. ¡Gracias por sumarte!',
+        null,
+        'registro-' . $usuarioLocal['uid_pp2']
+    );
+
+
+    
+
     // 8. Devolver OK
     return responderJson(true, 'Usuario registrado correctamente', [
         'usuario' => [
@@ -90,7 +103,8 @@ function registroController($datos)
             'apellido' => $usuarioLocal['apellido'],
             'email' => $email,
             'id_rol' => $usuarioLocal['id_rol']
-        ]
+        ] ,
+       'mail_enviado' => $mailResultado['ok']
     ], 201);
 }
 
