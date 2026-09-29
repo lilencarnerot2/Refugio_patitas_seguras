@@ -145,6 +145,16 @@ function limpiarFilaDeApi(fila) {
         celdas[i].removeAttribute('data-valor');
         celdas[i].removeAttribute('data-estado');
         limpiarEnlace(celdas[i].querySelector('a'));
+        limpiarEntradasDeApi(celdas[i]);
+    }
+}
+
+function limpiarEntradasDeApi(nodo) {
+    var entradas = nodo.querySelectorAll('input, textarea, select');
+    var i;
+
+    for (i = 0; i < entradas.length; i++) {
+        entradas[i].value = '';
     }
 }
 
@@ -201,7 +211,7 @@ function asignarCeldasDeApi(fila, cabecera, item, clave) {
 }
 
 function asignarFilasDeApi(cuerpo, lista, asignar) {
-    var filas = cuerpo.querySelectorAll('tr');
+    var filas = cuerpo.children;
     var i;
 
     for (i = 0; i < filas.length; i++) {
@@ -291,6 +301,10 @@ function asignarCamposDeApi(contenedor, item) {
         if (nodo.hasAttribute('data-badge')) {
             nodo.setAttribute('data-estado', texto.toLowerCase());
             continue;
+        }
+
+        if ('value' in nodo) {
+            nodo.value = texto;
         }
 
         nodo.setAttribute('data-texto', texto);

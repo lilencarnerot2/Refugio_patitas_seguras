@@ -3,6 +3,9 @@ $esInicio = !empty($esInicio);
 $inicio = $esInicio ? '' : '/index.php';
 $catalogo = '/public/mascotas.php';
 $login = '/public/login.php';
+$salir = '/public/login.php?salir=1';
+$autenticado = usuarioAutenticado();
+$esPersonal = esPersonalAdmin();
 ?><header>
     <a class="logo-container" href="<?php echo $esInicio ? '#inicio' : $inicio; ?>">
             <div style="background: var(--primary-color); border-radius: 50%; padding: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
@@ -39,7 +42,15 @@ $login = '/public/login.php';
                 </li>
                 <li><a href="<?php echo $inicio; ?>#contacto">CONTACTO</a></li>
                 <li class="nav-actions">
+                    <?php if (!$autenticado) { ?>
                     <a class="btn-outline" href="<?php echo $login; ?>">INGRESAR</a>
+                    <?php } ?>
+                    <?php if ($esPersonal) { ?>
+                    <a class="btn-outline" href="/admin/dashboard.php">PANEL</a>
+                    <?php } ?>
+                    <?php if ($autenticado) { ?>
+                    <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>
+                    <?php } ?>
                     <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : $inicio . '#modal-donaciones'; ?>">
                         <i class="fa-solid fa-heart"></i> DONAR
                     </a>
@@ -47,7 +58,15 @@ $login = '/public/login.php';
             </ul>
         </nav>
         <div class="header-actions">
+            <?php if (!$autenticado) { ?>
             <a class="btn-outline" href="<?php echo $login; ?>">INGRESAR</a>
+            <?php } ?>
+            <?php if ($esPersonal) { ?>
+            <a class="btn-outline" href="/admin/dashboard.php">PANEL</a>
+            <?php } ?>
+            <?php if ($autenticado) { ?>
+            <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>
+            <?php } ?>
             <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : $inicio . '#modal-donaciones'; ?>">
                 <i class="fa-solid fa-heart"></i> DONAR
             </a>

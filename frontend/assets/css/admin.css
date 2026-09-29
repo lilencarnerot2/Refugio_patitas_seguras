@@ -231,6 +231,20 @@
     display: none;
 }
 
+.admin-page #panel-tipos-estados #mensaje-formulario:not(:empty) {
+    animation: mensaje-desaparece 5s ease forwards;
+}
+
+@keyframes mensaje-desaparece {
+    0%, 70% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
 .admin-page .mensaje-formulario.is-ok,
 .admin-page #castracion-estado.is-ok {
     color: var(--primary-color);
@@ -262,6 +276,10 @@
 
 .admin-page .dash-fila-tres {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.admin-page .dash-fila-dos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .admin-page .dash-fila > .info-card {
@@ -321,7 +339,7 @@
     stroke: var(--accent-color);
 }
 
-.admin-page #resumen-solicitudes .info-card:not(:has(h3[data-texto])) {
+.admin-page #resumen-solicitudes .info-card:not(:has(h3[data-texto])):nth-child(n+4) {
     display: none;
 }
 
@@ -337,15 +355,19 @@
     content: attr(data-texto) "%";
 }
 
-.admin-page #resumen-solicitudes .info-card:nth-child(1) .dash-donut-valor {
+.admin-page #resumen-solicitudes {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.admin-page #resumen-solicitudes .info-card:nth-child(3n+1) .dash-donut-valor {
     stroke: var(--primary-color);
 }
 
-.admin-page #resumen-solicitudes .info-card:nth-child(2) .dash-donut-valor {
+.admin-page #resumen-solicitudes .info-card:nth-child(3n+2) .dash-donut-valor {
     stroke: var(--accent-color);
 }
 
-.admin-page #resumen-solicitudes .info-card:nth-child(3) .dash-donut-valor {
+.admin-page #resumen-solicitudes .info-card:nth-child(3n+3) .dash-donut-valor {
     stroke: color-mix(in srgb, var(--primary-color) 40%, var(--accent-color));
 }
 
@@ -858,6 +880,258 @@
     content: "Solicitudes";
 }
 
+.admin-page #listado-tipos .cuadros-catalogo,
+.admin-page #listado-estados .cuadros-catalogo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    align-items: stretch;
+}
+
+.admin-page #listado-tipos .bloque-tipo,
+.admin-page #listado-estados .bloque-estado {
+    margin: 0;
+    padding: 16px;
+}
+
+.admin-page #listado-tipos .bloque-tipo .ficha-usuario-icono,
+.admin-page #listado-estados .bloque-estado .ficha-usuario-icono {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+}
+
+.admin-page #listado-tipos .bloque-tipo .dash-card-cabecera,
+.admin-page #listado-estados .bloque-estado .dash-card-cabecera {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+}
+
+.admin-page #listado-tipos .bloque-tipo .dash-card-cabecera h3[data-texto]::before,
+.admin-page #listado-estados .bloque-estado .dash-card-cabecera h3[data-texto]::before {
+    content: attr(data-texto);
+}
+
+.admin-page #listado-tipos .bloque-tipo:not(:has(h3[data-texto])),
+.admin-page #listado-estados .bloque-estado:not(:has(h3[data-texto])) {
+    display: none;
+}
+
+.admin-page #panel-tipos-estados #listado-tipos .bloque-tipo .lista-scroll-mascotas,
+.admin-page #panel-tipos-estados #listado-estados .bloque-estado .lista-scroll-mascotas {
+    min-height: 0;
+    max-height: 148px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.admin-page #panel-tipos-estados .lista-scroll-mascotas thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.admin-page #listado-tipos .bloque-tipo .dash-tabla th,
+.admin-page #listado-tipos .bloque-tipo .dash-tabla td,
+.admin-page #listado-estados .bloque-estado .dash-tabla th,
+.admin-page #listado-estados .bloque-estado .dash-tabla td {
+    padding: 8px 10px;
+    font-size: 13px;
+}
+
+.admin-page #panel-tipos-estados [data-campo="id_usuario"] {
+    display: none;
+}
+
+.admin-page #listado-tipos thead th[data-campo="nombre_usuario"]::before,
+.admin-page #listado-estados thead th[data-campo="nombre_usuario"]::before {
+    content: "Nombre";
+}
+
+.admin-page #listado-tipos thead th[data-campo="apellido_usuario"]::before,
+.admin-page #listado-estados thead th[data-campo="apellido_usuario"]::before {
+    content: "Apellido";
+}
+
+.admin-page #listado-tipos thead th[data-campo="estado_solicitud"]::before {
+    content: "Estado";
+}
+
+.admin-page #listado-estados thead th[data-campo="tipo_solicitud"]::before {
+    content: "Tipo";
+}
+
+.admin-page #listado-estados {
+    margin-top: 24px;
+}
+
+.admin-page #listado-tipos .bloque-tipo tbody td:has(> a),
+.admin-page #listado-estados .bloque-estado tbody td:has(> a) {
+    position: relative;
+}
+
+.admin-page #listado-tipos .acciones-tipo,
+.admin-page #listado-estados .acciones-estado {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.admin-page #listado-tipos .acciones-tipo .form-select,
+.admin-page #listado-estados .acciones-estado .form-select {
+    flex: 1 1 140px;
+    min-width: 0;
+    height: 40px;
+    background-color: var(--white);
+    color: var(--text-dark);
+}
+
+.admin-page #listado-tipos .acciones-tipo option:not([disabled]):not([value]),
+.admin-page #listado-tipos .acciones-tipo option:not([disabled])[value=""],
+.admin-page #listado-estados .acciones-estado option:not([disabled]):not([value]),
+.admin-page #listado-estados .acciones-estado option:not([disabled])[value=""] {
+    display: none;
+}
+
+.admin-page #listado-estados .opciones-cambio {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-page #listado-tipos .acciones-tipo .btn-primary,
+.admin-page #listado-tipos .acciones-tipo .abm-baja,
+.admin-page #listado-estados .acciones-estado .btn-primary {
+    padding: 8px 16px;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+}
+
+.admin-page #listado-estados .opciones-cambio label.btn-primary {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+}
+
+.admin-page #listado-estados .opciones-cambio input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.admin-page #listado-estados .opciones-cambio label:has(input:not([value])),
+.admin-page #listado-estados .opciones-cambio label:has(input[value=""]) {
+    display: none;
+}
+
+.admin-page #listado-estados .opciones-cambio label[data-nombre]::after {
+    content: attr(data-nombre);
+}
+
+.admin-page #listado-tipos .acciones-tipo .btn-primary:hover,
+.admin-page #listado-tipos .acciones-tipo .abm-baja:hover,
+.admin-page #listado-estados .acciones-estado .btn-primary:hover {
+    filter: brightness(1.08);
+}
+
+.admin-page #listado-tipos .acciones-tipo .btn-primary:active,
+.admin-page #listado-tipos .acciones-tipo .abm-baja:active,
+.admin-page #listado-estados .acciones-estado .btn-primary:active {
+    transform: scale(0.96);
+    filter: brightness(0.86);
+}
+
+.admin-page #listado-estados .opciones-cambio label:has(input:checked) {
+    box-shadow: inset 0 0 0 2px var(--white);
+    filter: brightness(0.82);
+}
+
+.admin-page #listado-estados .acciones-estado .btn-primary:focus-visible,
+.admin-page #listado-tipos .acciones-tipo .btn-primary:focus-visible,
+.admin-page #listado-tipos .acciones-tipo .abm-baja:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.admin-page #listado-tipos .acciones-tipo [data-alta]::after {
+    content: "Alta";
+}
+
+.admin-page #listado-tipos .acciones-tipo [data-baja]::after {
+    content: "Baja";
+}
+
+.admin-page #listado-tipos .acciones-tipo [data-editar]::after,
+.admin-page #listado-estados .acciones-estado [data-editar]::after {
+    content: "Editar";
+}
+
+.admin-page #listado-tipos .formulario-abm,
+.admin-page #listado-estados .formulario-abm {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    flex: 1 1 220px;
+    margin: 0;
+}
+
+.admin-page #listado-tipos .formulario-abm .form-control,
+.admin-page #listado-estados .formulario-abm .form-control {
+    flex: 1 1 160px;
+    min-width: 0;
+    height: 44px;
+}
+
+.admin-page #listado-tipos .formulario-abm .btn-primary::after,
+.admin-page #listado-estados .formulario-abm .btn-primary::after {
+    content: "Alta";
+}
+
+.admin-page #listado-tipos .formulario-abm:has([name="id"]:not([value=""])) .btn-primary::after,
+.admin-page #listado-estados .formulario-abm:has([name="id"]:not([value=""])) .btn-primary::after {
+    content: "Editar";
+}
+
+.admin-page #listado-tipos .abm-limpiar,
+.admin-page #listado-estados .abm-limpiar {
+    display: none;
+}
+
+.admin-page #listado-tipos .formulario-abm:has([name="id"]:not([value=""])) .abm-limpiar,
+.admin-page #listado-estados .formulario-abm:has([name="id"]:not([value=""])) .abm-limpiar {
+    display: inline-flex;
+}
+
+.admin-page #columna-tipo-editar::before,
+.admin-page #columna-estado-editar::before {
+    content: "Editar";
+}
+
+.admin-page #listado-tipos .abm-baja,
+.admin-page #listado-estados .abm-baja {
+    background-color: #a32b21;
+    color: var(--white);
+}
+
+.admin-page #listado-tipos tbody tr:not([data-id]) button,
+.admin-page #listado-estados tbody tr:not([data-id]) button {
+    display: none;
+}
+
+.admin-page #listado-tipos .dash-tabla tbody tr[data-id],
+.admin-page #listado-estados .dash-tabla tbody tr[data-id] {
+    cursor: default;
+}
+
 .admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary,
 .admin-page #panel-solicitud-detalle .dash-card-cabecera .btn-primary {
     margin-left: auto;
@@ -933,6 +1207,7 @@
 .admin-page .panel-listado tbody tr:not([data-id]) {
     display: none;
 }
+
 
 .admin-page #columna-nro::before,
 .admin-page .panel-listado .dash-tabla td[data-campo="id"]::before,
@@ -1362,6 +1637,9 @@
     left: 0;
     right: 0;
     z-index: 5;
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
     padding: 6px 0;
     border: 1px solid var(--border-light);
     border-radius: 12px;
@@ -1591,9 +1869,26 @@
 }
 
 .admin-page #columna-solicitud-id::before,
+.admin-page #columna-tipo-id::before,
+.admin-page #columna-estado-id::before,
 .admin-page #bloque-solicitudes .dash-tabla td[data-campo="id"]::before,
 .admin-page .panel-listado .dash-tabla td[data-campo="id"]::before {
     content: "Id";
+}
+
+.admin-page #columna-tipo-nombre::before,
+.admin-page #panel-tipos .dash-tabla td[data-campo="nombre_tipo"]::before {
+    content: "Nombre";
+}
+
+.admin-page #columna-tipo-baja::before,
+.admin-page #columna-estado-baja::before {
+    content: "Baja";
+}
+
+.admin-page #columna-estado-nombre::before,
+.admin-page #panel-estados .dash-tabla td[data-campo="nombre_estado"]::before {
+    content: "Nombre";
 }
 
 .admin-page #columna-solicitud-nombre::before,
@@ -1902,12 +2197,37 @@
         padding-bottom: 8px;
     }
 
+    .admin-page #listado-tipos .cuadros-catalogo,
+    .admin-page #listado-estados .cuadros-catalogo {
+        grid-template-columns: minmax(0, 360px);
+        justify-content: center;
+        justify-items: stretch;
+    }
+
+    .admin-page #listado-tipos .acciones-tipo,
+    .admin-page #listado-estados .acciones-estado {
+        justify-content: flex-start;
+        text-align: center;
+    }
+
+    .admin-page #listado-tipos .dash-tabla,
+    .admin-page #listado-estados .dash-tabla {
+        text-align: center;
+    }
+
     .admin-page .panel-listado .dash-tabla thead {
         display: none;
     }
 
     .admin-page .panel-listado .lista-scroll-mascotas {
         overflow: visible;
+    }
+
+    .admin-page #panel-tipos-estados #listado-tipos .bloque-tipo .lista-scroll-mascotas,
+    .admin-page #panel-tipos-estados #listado-estados .bloque-estado .lista-scroll-mascotas {
+        max-height: 220px;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 
     .admin-page .panel-listado .dash-tabla,
@@ -1933,6 +2253,7 @@
     .admin-page .panel-listado .dash-tabla tbody tr:not([data-id]) {
         display: none;
     }
+
 
     .admin-page .panel-listado:has(#opciones-rol input[value]:not([value=""]):checked) tbody tr[data-id],
     .admin-page .panel-listado:has(#opciones-estado input[value]:not([value=""]):checked) tbody tr[data-id],
@@ -2017,7 +2338,8 @@
     }
 
     .admin-page .panel-listado .dash-tabla td:has(> a[href*="usuario_editar.php"]),
-    .admin-page .panel-listado .dash-tabla td:has(> button) {
+    .admin-page .panel-listado .dash-tabla td:has(> button),
+    .admin-page .panel-listado .dash-tabla td:has(> form) {
         display: inline-block;
         width: 32%;
         vertical-align: top;
@@ -2031,7 +2353,8 @@
     }
 
     .admin-page .panel-listado .dash-tabla td:has(> a[href*="usuario_editar.php"])::before,
-    .admin-page .panel-listado .dash-tabla td:has(> button)::before {
+    .admin-page .panel-listado .dash-tabla td:has(> button)::before,
+    .admin-page .panel-listado .dash-tabla td:has(> form)::before {
         content: none;
     }
 
@@ -2048,6 +2371,7 @@
         font-size: 13px;
         white-space: nowrap;
     }
+
 }
 
 @media (max-width: 720px) {
