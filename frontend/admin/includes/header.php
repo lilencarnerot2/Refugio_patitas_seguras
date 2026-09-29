@@ -1,6 +1,7 @@
 <?php
 $paginaAdmin = $paginaAdmin ?? '';
 $salir = '/public/login.php?salir=1';
+$esSuperadministrador = esRol('Superadministrador');
 ?>
 <input type="checkbox" id="nav-toggle" class="nav-toggle">
 <header>
@@ -42,9 +43,13 @@ $salir = '/public/login.php?salir=1';
             </details>
         </li>
         <li>
-            <a href="solicitudes.php"<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle'], true) ? ' class="active"' : ''; ?>>
-                <i class="bi bi-file-earmark-text"></i> Solicitudes
-            </a>
+            <details>
+                <summary<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle', 'tipos_estados'], true) ? ' class="active"' : ''; ?>>
+                    <i class="bi bi-file-earmark-text"></i> Solicitudes
+                </summary>
+                <a href="solicitudes.php"<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle'], true) ? ' class="active"' : ''; ?>>Listado</a>
+                <a href="tipos_estados.php"<?php echo $paginaAdmin === 'tipos_estados' ? ' class="active"' : ''; ?>>Tipos y estados</a>
+            </details>
         </li>
         <li>
             <a href="hogares_transito.php"<?php echo $paginaAdmin === 'hogares_transito' ? ' class="active"' : ''; ?>>
@@ -61,11 +66,18 @@ $salir = '/public/login.php?salir=1';
                 <i class="bi bi-heart-pulse"></i> Control de salud
             </a>
         </li>
+        <?php if ($esSuperadministrador) { ?>
+        <li>
+            <a href="usuarios.php"<?php echo $paginaAdmin === 'usuarios' ? ' class="active"' : ''; ?>>
+                <i class="fa-solid fa-users"></i> Usuarios
+            </a>
+        </li>
         <li>
             <a href="usuarios.php"<?php echo in_array($paginaAdmin, ['usuarios', 'usuario_detalle'], true) ? ' class="active"' : ''; ?>>
                 <i class="bi bi-people-fill"></i> Usuarios
             </a>
         </li>
+        <?php } ?>
         <li class="nav-sitio">
             <a href="/index.php">
                 <i class="bi bi-globe"></i> Sitio

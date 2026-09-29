@@ -1,6 +1,16 @@
 <?php
+require_once __DIR__ . '/../../public/includes/sesion.php';
+
 $tituloPagina = $tituloPagina ?? 'Patitas Seguras - Administración';
 $cuerpoClase = trim('admin-page ' . ($cuerpoClase ?? ''));
+
+if (empty($sinGuardiaAdmin)) {
+    exigirPersonalAdmin();
+}
+
+if (!empty($requiereSuperadministrador)) {
+    exigirSuperadministrador();
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
