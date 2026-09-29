@@ -11,24 +11,6 @@ function guardarSesion(usuario, usuarioLocal) {
     guardarCookie('usuario_nombre_rol', usuarioLocal.nombre_rol);
 }
 
-function mensajeDeApi(origen) {
-    if (origen && origen.data && origen.data.success === false && origen.data.message) {
-        return origen.data.message;
-    }
-
-    return '';
-}
-
-function avisoFormulario(formulario, mensaje) {
-    var aviso = formulario.querySelector('.campo-obligatorio');
-
-    if (!aviso) {
-        return;
-    }
-
-    aviso.textContent = mensaje || '';
-}
-
 document.addEventListener('DOMContentLoaded', function () {
     const formulario = document.getElementById('form-registro');
 
@@ -48,7 +30,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const correo = document.getElementById('correo').value.trim();
         const clave = document.getElementById('clave').value;
 
-        avisoFormulario(formulario, '');
+        if (!nombre || !apellido || !correo || !clave) {
+            alert('Completá todos los campos.');
+            return;
+        }
+
+        if (clave.length < 8) {
+            alert('La contraseña debe tener al menos 8 caracteres.');
+            return;
+        }
 
         boton.disabled = true;
 
@@ -68,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 parametros: { id: usuario.id }
             }).then(function (usuarioRespuesta) {
                 guardarSesion(usuario, usuarioRespuesta.data || {});
+                alert(respuesta.message || 'Usuario registrado correctamente.');
                 window.location.href = '/index.php';
             });
         })

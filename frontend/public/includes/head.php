@@ -1,4 +1,6 @@
 ﻿<?php
+require_once __DIR__ . '/sesion.php';
+
 $tituloPagina = $tituloPagina ?? 'Patitas Seguras - Refugio de animales';
 ?>
 <!DOCTYPE html>

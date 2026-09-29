@@ -1,19 +1,15 @@
 <?php
+require_once __DIR__ . '/../../public/includes/sesion.php';
+
 $tituloPagina = $tituloPagina ?? 'Patitas Seguras - Administración';
 $cuerpoClase = trim('admin-page ' . ($cuerpoClase ?? ''));
-$autenticado = !empty($_COOKIE['usuario_id']) && !empty($_COOKIE['usuario_nombre_rol']);
-$esPersonal = $autenticado && !empty($_COOKIE['usuario_acceso_admin']);
 
 if (empty($sinGuardiaAdmin)) {
-    if (!$esPersonal) {
-        if ($autenticado) {
-            header('Location: /index.php');
-            exit;
-        }
+    exigirPersonalAdmin();
+}
 
-        header('Location: /public/login.php');
-        exit;
-    }
+if (!empty($requiereSuperadministrador)) {
+    exigirSuperadministrador();
 }
 ?>
 <!DOCTYPE html>
@@ -24,7 +20,7 @@ if (empty($sinGuardiaAdmin)) {
     <title><?php echo $tituloPagina; ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/assets/css/styles.css?t=<?php echo filemtime(__DIR__ . '/../../assets/css/styles.css'); ?>">
     <link rel="stylesheet" href="/assets/css/admin.css?t=<?php echo filemtime(__DIR__ . '/../../assets/css/admin.css'); ?>">
 </head>
