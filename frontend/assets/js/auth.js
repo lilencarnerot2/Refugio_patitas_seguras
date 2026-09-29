@@ -1,52 +1,11 @@
-function guardarCookie(nombre, valor) {
-    document.cookie = nombre + '=' + encodeURIComponent(valor || '') + '; path=/; SameSite=Lax';
-}
-
-function borrarCookie(nombre) {
-    document.cookie = nombre + '=; path=/; SameSite=Lax; max-age=0';
-}
-
-function guardarSesion(usuario, usuarioLocal) {
-    guardarCookie('usuario_id', usuario.id);
-    guardarCookie('usuario_nombre', usuario.nombre);
-    guardarCookie('usuario_apellido', usuario.apellido);
-    guardarCookie('usuario_email', usuario.email);
-    guardarCookie('usuario_rol', usuario.id_rol);
-    guardarCookie('usuario_nombre_rol', usuarioLocal.nombre_rol);
-}
-
-function borrarSesion() {
-    borrarCookie('usuario');
-    borrarCookie('usuario_id');
-    borrarCookie('usuario_nombre');
-    borrarCookie('usuario_apellido');
-    borrarCookie('usuario_email');
-    borrarCookie('usuario_rol');
-    borrarCookie('usuario_nombre_rol');
-}
-
-function destinoSegunRol(nombreRol) {
-    if (nombreRol === 'Administrador' || nombreRol === 'Superadministrador') {
-        return '/admin/dashboard.php';
-    }
-
-    return '../index.php';
-}
-
 document.addEventListener('DOMContentLoaded', function () {
-    if (new URLSearchParams(window.location.search).get('salir') !== null) {
-        borrarSesion();
-        window.location.href = '/index.php';
-        return;
-    }
-
     const formulario = document.getElementById('form-login');
 
     if (!formulario) {
         return;
     }
 
-    const boton = formulario.querySelector('.btn-primary');
+    const boton = formulario.querySelector('button[type="button"]');
 
     if (!boton) {
         return;
@@ -56,7 +15,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const correo = document.getElementById('correo').value.trim();
         const clave = document.getElementById('clave').value;
 
-        avisoFormulario(formulario, '');
+        if (!correo || !clave) {
+            alert('Completá el correo y la contraseña.');
+            return;
+        }
+
+        boton.disabled = true;
 
         apiRequest('login', {
             metodo: 'POST',
@@ -66,20 +30,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .then(function (respuesta) {
-            var usuario = (respuesta.data && respuesta.data.usuario) || {};
+            alert(respuesta.message || 'Inicio de sesión exitoso.');
 
-            return apiRequest('usuarios', {
-                parametros: { id: usuario.id }
-            }).then(function (usuarioRespuesta) {
-                var usuarioLocal = usuarioRespuesta.data || {};
-
-                guardarSesion(usuario, usuarioLocal);
-                alert(respuesta.message || 'Inicio de sesión exitoso.');
-                window.location.href = destinoSegunRol(usuarioLocal.nombre_rol);
-            });
+            window.location.href = '../index.php';
         })
         .catch(function (error) {
-            avisoFormulario(formulario, mensajeDeApi(error));
+            alert(error.message || 'No se pudo iniciar sesión.');
+        })
+        .finally(function () {
+            boton.disabled = false;
         });
     });
 });
