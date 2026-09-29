@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    const boton = formulario.querySelector('button[type="button"]');
+    const boton = formulario.querySelector('.btn-primary');
 
     if (!boton) {
         return;
@@ -56,12 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const correo = document.getElementById('correo').value.trim();
         const clave = document.getElementById('clave').value;
 
-        if (!correo || !clave) {
-            alert('Completá el correo y la contraseña.');
-            return;
-        }
-
-        boton.disabled = true;
+        avisoFormulario(formulario, '');
 
         apiRequest('login', {
             metodo: 'POST',
@@ -84,10 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         })
         .catch(function (error) {
-            alert(error.message || 'No se pudo iniciar sesión.');
-        })
-        .finally(function () {
-            boton.disabled = false;
+            avisoFormulario(formulario, mensajeDeApi(error));
         });
     });
 });

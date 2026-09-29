@@ -78,7 +78,7 @@ require __DIR__ . '/includes/header.php';
 
             <div class="acciones-formulario">
                 <button type="submit" class="btn-primary">
-                    <i class="fa-solid fa-pen-to-square"></i>
+                    <i class="bi bi-pencil-square"></i>
                     Editar mascota
                 </button>
                 <a class="btn-outline" href="../public/mascotas.php">Volver al catálogo</a>
