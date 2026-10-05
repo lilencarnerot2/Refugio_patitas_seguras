@@ -197,7 +197,6 @@ function manejarRutas()
                 break;
                 }
             }
-
             require_once __DIR__ . '/../modules/solicitudes/controllers/solicitudes.php';
             manejar_solicitudes();
             break;
@@ -214,6 +213,9 @@ function manejarRutas()
             ])) {
             break;
             }
+            require_once __DIR__ . '/../modules/solicitudes/controllers/estados_solicitudes.php';
+            manejar_estados_solicitudes();
+            break;
 
 
         case 'tipos_movimientos_mascotas':
