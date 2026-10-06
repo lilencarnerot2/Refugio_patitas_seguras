@@ -83,3 +83,109 @@ function cambiar_estado_solicitud(
 
     return $solicitudCompleta;
 }
+
+function registrar_solicitud(
+    int $id_usuario,
+    array $datos
+): array
+{
+    if ($id_usuario <= 0) {
+        throw new InvalidArgumentException(
+            'El usuario autenticado no es válido.'
+        );
+    }
+
+    $id_mascota = filter_var(
+        $datos['id_mascota'] ?? null,
+        FILTER_VALIDATE_INT
+    );
+
+    if ($id_mascota === false || $id_mascota <= 0) {
+        throw new InvalidArgumentException(
+            'La mascota seleccionada no es válida.'
+        );
+    }
+
+    $id_tipo_solicitud = filter_var(
+        $datos['id_tipo_solicitud'] ?? null,
+        FILTER_VALIDATE_INT
+    );
+
+    if (
+        $id_tipo_solicitud === false ||
+        $id_tipo_solicitud <= 0
+    ) {
+        throw new InvalidArgumentException(
+            'El tipo de solicitud no es válido.'
+        );
+    }
+
+    if (!existe_mascota_solicitud($id_mascota)) {
+        throw new InvalidArgumentException(
+            'La mascota seleccionada no existe.'
+        );
+    }
+
+    if (!existe_tipo_solicitud($id_tipo_solicitud)) {
+        throw new InvalidArgumentException(
+            'El tipo de solicitud no existe o está deshabilitado.'
+        );
+    }
+
+    $estado_pendiente =
+        obtener_estado_solicitud_por_nombre(
+            'Pendiente'
+        );
+
+    if (!$estado_pendiente) {
+        throw new RuntimeException(
+            'No se encuentra configurado el estado Pendiente.'
+        );
+    }
+
+    $id_estado_pendiente =
+        (int) $estado_pendiente['id'];
+
+    if (
+        existe_solicitud_pendiente(
+            $id_usuario,
+            $id_mascota,
+            $id_tipo_solicitud,
+            $id_estado_pendiente
+        )
+    ) {
+        throw new InvalidArgumentException(
+            'Ya tenés una solicitud pendiente de este tipo para esta mascota.'
+        );
+    }
+
+    $observaciones = null;
+
+    if (isset($datos['observaciones'])) {
+        $observaciones = trim(
+            (string) $datos['observaciones']
+        );
+
+        if ($observaciones === '') {
+            $observaciones = null;
+        }
+    }
+
+    $solicitud = crear_solicitud(
+        $id_usuario,
+        $id_mascota,
+        $id_tipo_solicitud,
+        $id_estado_pendiente,
+        $observaciones
+    );
+
+    if (!$solicitud) {
+        throw new RuntimeException(
+            'No se pudo crear la solicitud.'
+        );
+    }
+
+    return obtener_solicitud_por_id(
+        (int) $solicitud['id']
+    );
+}

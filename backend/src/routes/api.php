@@ -35,6 +35,16 @@ function manejarRutas()
             manejar_usuarios();
             break;
 
+        case 'usuarios_rol':
+            if (!requerir_roles([
+                'Super Administrador'
+            ])) {
+            break;
+            }
+            require_once __DIR__ . '/../modules/usuarios/controllers/usuarios.php';
+            manejar_rol_usuario();
+            break;
+
         case 'tipos_vivienda':
             require_once __DIR__ . '/../modules/usuarios/controllers/tipos_vivienda.php';
                 manejar_tipos_vivienda();
@@ -202,8 +212,20 @@ function manejarRutas()
             break;
 
         case 'tipos_solicitudes':
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                if (!requerir_autenticacion()) {
+                    break;
+                }
+            } else {
+                if (!requerir_roles([
+                    'Administrador',
+                    'Super Administrador'
+                ])) {
+                    break;
+                }
+            }
             require_once __DIR__ . '/../modules/solicitudes/controllers/tipos_solicitudes.php';
-            manejarTiposSolicitudes();
+            manejar_tipos_solicitudes();
             break;
 
         case 'estados_solicitudes':
