@@ -2,8 +2,7 @@
 
 require_once __DIR__ . '/../../../config/database.php';
 
-function obtener_usuarios(): array
-{
+function obtener_usuarios(): array{
     $conexion = conectarDB();
 
     $sql = "
@@ -31,8 +30,7 @@ function obtener_usuarios(): array
 }
 
 
-function obtener_usuario_por_id(int $id): array|false
-{
+function obtener_usuario_por_id(int $id): array|false{
     $conexion = conectarDB();
 
     $sql = "
@@ -63,8 +61,7 @@ function obtener_usuario_por_id(int $id): array|false
 }
 
 
-function obtener_usuario_por_uid_pp2(string $uid_pp2): array|false
-{
+function obtener_usuario_por_uid_pp2(string $uid_pp2): array|false{
     $conexion = conectarDB();
 
     $sql = "
@@ -96,8 +93,7 @@ function obtener_usuario_por_uid_pp2(string $uid_pp2): array|false
 }
 
 
-function crear_usuario_desde_padron(array $datos): array|false
-{
+function crear_usuario_desde_padron(array $datos): array|false{
     $conexion = conectarDB();
 
     $password_local = null;
@@ -134,8 +130,7 @@ function crear_usuario_desde_padron(array $datos): array|false
             fecha_nacimiento,
             fecha_alta,
             estado,
-            uid_pp2,
-            password
+            uid_pp2
     ";
 
     $consulta = $conexion->prepare($sql);
@@ -151,8 +146,7 @@ function crear_usuario_desde_padron(array $datos): array|false
     return $consulta->fetch(PDO::FETCH_ASSOC);
 }
 
-function actualizar_usuario_desde_padron(int $id, array $datos): array|false
-{
+function actualizar_usuario_desde_padron(int $id, array $datos): array|false{
     $conexion = conectarDB();
 
     $sql = "
@@ -170,8 +164,7 @@ function actualizar_usuario_desde_padron(int $id, array $datos): array|false
             fecha_nacimiento,
             fecha_alta,
             estado,
-            uid_pp2,
-            password
+            uid_pp2
     ";
 
     $consulta = $conexion->prepare($sql);
@@ -183,4 +176,85 @@ function actualizar_usuario_desde_padron(int $id, array $datos): array|false
     ]);
 
     return $consulta->fetch(PDO::FETCH_ASSOC);
+}
+
+function actualizar_usuario(
+    int $id,
+    array $datos
+): array|false{
+    $conexion = conectarDB();
+
+    $sql = "
+        UPDATE usuarios
+        SET
+            nombre = :nombre,
+            apellido = :apellido,
+            fecha_nacimiento = :fecha_nacimiento
+        WHERE id = :id
+          AND estado = TRUE
+        RETURNING
+            id,
+            uid_pp2,
+            id_rol,
+            id_domicilio,
+            nombre,
+            apellido,
+            fecha_nacimiento,
+            fecha_alta,
+            estado
+    ";
+
+    $consulta = $conexion->prepare($sql);
+
+    $consulta->execute([
+        ':id' => $id,
+        ':nombre' => $datos['nombre'],
+        ':apellido' => $datos['apellido'],
+        ':fecha_nacimiento' => $datos['fecha_nacimiento']
+    ]);
+
+    return $consulta->fetch(PDO::FETCH_ASSOC);
+}
+
+
+function actualizar_rol_usuario(
+    int $id_usuario,
+    int $id_rol): bool{
+    $conexion = conectarDB();
+
+    $sql = "
+        UPDATE usuarios
+        SET id_rol = :id_rol
+        WHERE id = :id_usuario
+          AND estado = TRUE
+    ";
+
+    $consulta = $conexion->prepare($sql);
+
+    $consulta->execute([
+        ':id_usuario' => $id_usuario,
+        ':id_rol' => $id_rol
+    ]);
+
+    return $consulta->rowCount() > 0;
+}
+
+
+function desactivar_usuario(int $id): bool{
+    $conexion = conectarDB();
+
+    $sql = "
+        UPDATE usuarios
+        SET estado = FALSE
+        WHERE id = :id
+          AND estado = TRUE
+    ";
+
+    $consulta = $conexion->prepare($sql);
+
+    $consulta->execute([
+        ':id' => $id
+    ]);
+
+    return $consulta->rowCount() > 0;
 }

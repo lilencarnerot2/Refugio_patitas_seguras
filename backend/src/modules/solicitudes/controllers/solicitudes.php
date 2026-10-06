@@ -52,12 +52,52 @@ function manejar_solicitudes(): void
             }
 
             $solicitudes = listar_solicitudes();
-
             responderJson(
                 true,
                 null,
                 $solicitudes,
                 200
+            );
+
+            return;
+        }
+
+        // POST
+        if ($metodo === 'POST') {
+
+            if (!isset($_SESSION['usuario_id']) || (int) $_SESSION['usuario_id'] <= 0) {
+                responderJson(
+                    false,
+                    'Debés iniciar sesión para crear una solicitud.',
+                    null,
+                    401
+                );
+                return;
+            }
+
+            $datos = json_decode(file_get_contents('php://input'),
+                true
+            );
+
+            if (!is_array($datos)) {
+                responderJson(
+                false,
+                'JSON inválido.',
+                null,
+                400
+                );
+            return;
+            }
+
+            $solicitud = registrar_solicitud((int) $_SESSION['usuario_id'],
+            $datos
+            );
+
+            responderJson(
+                true,
+                'Solicitud creada correctamente.',
+                $solicitud,
+                201
             );
 
             return;
