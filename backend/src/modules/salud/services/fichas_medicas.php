@@ -1,9 +1,9 @@
 <?php
 
 require_once __DIR__ . '/../repositories/fichas_medicas.php';
+require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
-function buscar_ficha_medica_por_mascota(int $id_mascota): array|false
-{
+function buscar_ficha_medica_por_mascota(int $id_mascota): array|false{
     if ($id_mascota <= 0) {
         throw new InvalidArgumentException(
             'El id de la mascota no es válido.'
@@ -14,8 +14,7 @@ function buscar_ficha_medica_por_mascota(int $id_mascota): array|false
 }
 
 
-function buscar_ficha_medica_por_id(int $id): array|false
-{
+function buscar_ficha_medica_por_id(int $id): array|false{
     if ($id <= 0) {
         throw new InvalidArgumentException(
             'El id de la ficha médica no es válido.'
@@ -25,8 +24,7 @@ function buscar_ficha_medica_por_id(int $id): array|false
     return obtener_ficha_medica_por_id($id);
 }
 
-function registrar_ficha_medica(array $datos): array
-{
+function registrar_ficha_medica(array $datos): array{
     if (empty($datos['id_mascota'])) {
         throw new InvalidArgumentException(
             'Debe indicar el id de la mascota.'
@@ -50,9 +48,18 @@ function registrar_ficha_medica(array $datos): array
         );
     }
 
-    return crear_ficha_medica([
+    $ficha_creada = crear_ficha_medica([
         'id_mascota' => $id_mascota,
         'observaciones' => $datos['observaciones'] ?? null,
         'fecha_actualizacion' => date('Y-m-d')
     ]);
+
+    registrar_auditoria(
+        'fichas_medicas',
+        'INSERT',
+        null,
+        $ficha_creada
+    );
+
+    return $ficha_creada;
 }

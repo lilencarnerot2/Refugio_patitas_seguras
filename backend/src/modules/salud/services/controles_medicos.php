@@ -2,9 +2,9 @@
 
 require_once __DIR__ . '/../repositories/controles_medicos.php';
 require_once __DIR__ . '/../repositories/fichas_medicas.php';
+require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
-function listar_controles_por_ficha(int $id_ficha_medica): array
-{
+function listar_controles_por_ficha(int $id_ficha_medica): array{
     if ($id_ficha_medica <= 0) {
         throw new InvalidArgumentException(
             'El id de la ficha médica no es válido.'
@@ -23,8 +23,7 @@ function listar_controles_por_ficha(int $id_ficha_medica): array
 }
 
 
-function registrar_control_medico(array $datos): array
-{
+function registrar_control_medico(array $datos): array{
     if (
         empty($datos['id_ficha_medica']) ||
         empty($datos['fecha_control'])
@@ -84,10 +83,19 @@ function registrar_control_medico(array $datos): array
         }
     }
 
-    return crear_control_medico([
+    $control_creado = crear_control_medico([
         'id_ficha_medica' => $id_ficha_medica,
         'fecha_control' => $fecha_control,
         'peso' => $datos['peso'] ?? null,
         'observaciones' => $datos['observaciones'] ?? null
     ]);
+
+    registrar_auditoria(
+        'controles_medicos',
+        'INSERT',
+        null,
+        $control_creado
+    );
+
+    return $control_creado;
 }

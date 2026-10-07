@@ -1,15 +1,14 @@
 <?php
 
 require_once __DIR__ . '/../repositories/roles.php';
+require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
-function listar_roles(): array
-{
+function listar_roles(): array{
     return obtener_roles();
 }
 
 
-function buscar_rol_por_id(int $id): array|false
-{
+function buscar_rol_por_id(int $id): array|false{
     if ($id <= 0) {
         throw new InvalidArgumentException(
             'El id del rol no es válido.'
@@ -19,8 +18,7 @@ function buscar_rol_por_id(int $id): array|false
     return obtener_rol_por_id($id);
 }
 
-function buscar_rol_por_nombre(string $nombre_rol): array|false
-{
+function buscar_rol_por_nombre(string $nombre_rol): array|false{
     $nombre_rol = trim($nombre_rol);
 
     if ($nombre_rol === '') {
@@ -32,8 +30,7 @@ function buscar_rol_por_nombre(string $nombre_rol): array|false
     return obtener_rol_por_nombre($nombre_rol);
 }
 
-function registrar_rol(array $datos): array
-{
+function registrar_rol(array $datos): array{
     $nombre_rol =
         trim($datos['nombre_rol'] ?? '');
 
@@ -52,20 +49,28 @@ function registrar_rol(array $datos): array
         );
     }
 
-    return crear_rol([
-        'nombre_rol' => $nombre_rol,
-        'descripcion' =>
-            $descripcion !== ''
-                ? $descripcion
-                : null
+    $rol_creado = crear_rol([
+    'nombre_rol' => $nombre_rol,
+    'descripcion' =>
+        $descripcion !== ''
+            ? $descripcion
+            : null
     ]);
+
+    registrar_auditoria(
+        'roles',
+        'INSERT',
+        null,
+        $rol_creado
+    );
+
+    return $rol_creado;
 }
 
 
 function modificar_rol(
     int $id,
-    array $datos
-): array|false {
+    array $datos): array|false {
 
     if ($id <= 0) {
         throw new InvalidArgumentException(
@@ -96,7 +101,13 @@ function modificar_rol(
         );
     }
 
-    return actualizar_rol(
+    $rol_anterior = obtener_rol_por_id($id);
+
+    if (!$rol_anterior) {
+        return false;
+    }
+
+    $rol_actualizado = actualizar_rol(
         $id,
         [
             'nombre_rol' => $nombre_rol,
@@ -106,16 +117,50 @@ function modificar_rol(
                     : null
         ]
     );
+
+    if (!$rol_actualizado) {
+        return false;
+    }
+
+    registrar_auditoria(
+        'roles',
+        'UPDATE',
+        $rol_anterior,
+        $rol_actualizado
+    );
+
+    return $rol_actualizado;
 }
 
 
-function eliminar_rol(int $id): bool
-{
+function eliminar_rol(int $id): bool{
     if ($id <= 0) {
         throw new InvalidArgumentException(
             'El id del rol no es válido.'
         );
     }
 
-    return desactivar_rol($id);
+    $rol_anterior = obtener_rol_por_id($id);
+
+    if (!$rol_anterior) {
+        return false;
+    }
+
+    $eliminado = desactivar_rol($id);
+
+    if (!$eliminado) {
+        return false;
+    }
+
+    $rol_desactivado = $rol_anterior;
+    $rol_desactivado['estado'] = false;
+
+    registrar_auditoria(
+        'roles',
+        'DELETE',
+        $rol_anterior,
+        $rol_desactivado
+    );
+
+    return true;
 }

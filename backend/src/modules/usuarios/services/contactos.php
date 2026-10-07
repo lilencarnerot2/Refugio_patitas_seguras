@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../repositories/contactos.php';
-
+require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
 function listar_contactos_usuario(
     int $id_usuario
@@ -60,10 +60,19 @@ function registrar_contacto_usuario(
             FILTER_VALIDATE_BOOLEAN
         );
 
-    return crear_contacto_usuario(
+    $contacto_creado = crear_contacto_usuario(
         $id_usuario,
         $datos
     );
+
+    registrar_auditoria(
+        'contactos',
+        'INSERT',
+        null,
+        $contacto_creado
+    );
+
+    return $contacto_creado;
 }
 
 
@@ -115,11 +124,33 @@ function modificar_contacto_usuario(
             FILTER_VALIDATE_BOOLEAN
         );
 
-    return actualizar_contacto_usuario(
+    $contacto_anterior = obtener_contacto_por_id_y_usuario(
+        $id_contacto,
+        $id_usuario
+    );
+
+    if (!$contacto_anterior) {
+        return false;
+    }
+
+    $contacto_actualizado = actualizar_contacto_usuario(
         $id_contacto,
         $id_usuario,
         $datos
     );
+
+    if (!$contacto_actualizado) {
+        return false;
+    }
+
+    registrar_auditoria(
+        'contactos',
+        'UPDATE',
+        $contacto_anterior,
+        $contacto_actualizado
+    );
+
+    return $contacto_actualizado;
 }
 
 
@@ -134,8 +165,34 @@ function eliminar_contacto_usuario(
         );
     }
 
-    return desactivar_contacto_usuario(
+    $contacto_anterior = obtener_contacto_por_id_y_usuario(
         $id_contacto,
         $id_usuario
     );
+
+    if (!$contacto_anterior) {
+        return false;
+    }
+
+    $eliminado = desactivar_contacto_usuario(
+        $id_contacto,
+        $id_usuario
+    );
+
+    if (!$eliminado) {
+        return false;
+    }   
+
+    $contacto_desactivado = $contacto_anterior;
+    $contacto_desactivado['estado'] = false;
+    $contacto_desactivado['es_principal'] = false;
+
+    registrar_auditoria(
+        'contactos',
+        'DELETE',
+        $contacto_anterior,
+        $contacto_desactivado
+    );
+
+    return true;
 }

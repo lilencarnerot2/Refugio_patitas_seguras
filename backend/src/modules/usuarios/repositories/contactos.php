@@ -169,7 +169,7 @@ function crear_contacto_usuario(
                 $datos['valor'],
 
             ':es_principal' =>
-                $datos['es_principal'],
+                $datos['es_principal'] ? 'true' : 'false',
 
             ':observaciones' =>
                 $datos['observaciones'] ?? null
@@ -306,7 +306,7 @@ function actualizar_contacto_usuario(
                 $datos['valor'],
 
             ':es_principal' =>
-                $datos['es_principal'],
+                $datos['es_principal'] ? 'true' : 'false',
 
             ':observaciones' =>
                 $datos['observaciones'] ?? null,

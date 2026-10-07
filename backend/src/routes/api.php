@@ -247,7 +247,7 @@ function manejarRutas()
             ])) {
             break;
             }
-            require_once __DIR__ . '/../modules/movimientos/controllers/tipos_movimientos_mascotas.php';
+            require_once __DIR__ . '/../modules/movimientos_mascotas/controllers/tipos_movimientos_mascotas.php';
             manejar_tipos_movimientos_mascotas();
             break;
 
@@ -259,7 +259,7 @@ function manejarRutas()
             ])) {
             break;
             }
-            require_once __DIR__ . '/../modules/movimientos/controllers/movimientos_mascotas.php';
+            require_once __DIR__ . '/../modules/movimientos_mascotas/controllers/movimientos_mascotas.php';
             manejar_movimientos_mascotas();
             break;
 

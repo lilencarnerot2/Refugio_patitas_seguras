@@ -3,9 +3,9 @@
 require_once __DIR__ . '/../repositories/desparasitaciones.php';
 require_once __DIR__ . '/../repositories/tipos_productos.php';
 require_once __DIR__ . '/../repositories/fichas_medicas.php';
+require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
-function listar_desparasitaciones_por_ficha(int $id_ficha_medica): array
-{
+function listar_desparasitaciones_por_ficha(int $id_ficha_medica): array{
     if ($id_ficha_medica <= 0) {
         throw new InvalidArgumentException(
             'El id de la ficha médica no es válido.'
@@ -24,8 +24,7 @@ function listar_desparasitaciones_por_ficha(int $id_ficha_medica): array
 }
 
 
-function registrar_desparasitacion(array $datos): array
-{
+function registrar_desparasitacion(array $datos): array{
     if (
         empty($datos['id_ficha_medica']) ||
         empty($datos['id_tipo_producto']) ||
@@ -137,7 +136,7 @@ function registrar_desparasitacion(array $datos): array
         $proxima_dosis = null;
     }
 
-    return crear_desparasitacion([
+    $desparasitacion_creada = crear_desparasitacion([
         'id_ficha_medica' => $id_ficha_medica,
         'id_tipo_producto' => $id_tipo_producto,
         'tipo_parasito' => $datos['tipo_parasito'],
@@ -145,4 +144,13 @@ function registrar_desparasitacion(array $datos): array
         'proxima_dosis' => $proxima_dosis,
         'observaciones' => $datos['observaciones'] ?? null
     ]);
+
+    registrar_auditoria(
+        'desparasitaciones',
+        'INSERT',
+        null,
+        $desparasitacion_creada
+    );
+
+    return $desparasitacion_creada;
 }
