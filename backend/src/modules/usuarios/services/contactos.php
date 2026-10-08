@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/../repositories/contactos.php';
-require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
 function listar_contactos_usuario(
     int $id_usuario
@@ -63,13 +62,6 @@ function registrar_contacto_usuario(
     $contacto_creado = crear_contacto_usuario(
         $id_usuario,
         $datos
-    );
-
-    registrar_auditoria(
-        'contactos',
-        'INSERT',
-        null,
-        $contacto_creado
     );
 
     return $contacto_creado;
@@ -143,13 +135,6 @@ function modificar_contacto_usuario(
         return false;
     }
 
-    registrar_auditoria(
-        'contactos',
-        'UPDATE',
-        $contacto_anterior,
-        $contacto_actualizado
-    );
-
     return $contacto_actualizado;
 }
 
@@ -186,13 +171,6 @@ function eliminar_contacto_usuario(
     $contacto_desactivado = $contacto_anterior;
     $contacto_desactivado['estado'] = false;
     $contacto_desactivado['es_principal'] = false;
-
-    registrar_auditoria(
-        'contactos',
-        'DELETE',
-        $contacto_anterior,
-        $contacto_desactivado
-    );
 
     return true;
 }

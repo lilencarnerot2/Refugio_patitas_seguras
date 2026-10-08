@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../repositories/vacunas.php';
 require_once __DIR__ . '/../repositories/tipos_vacunas.php';
 require_once __DIR__ . '/../repositories/fichas_medicas.php';
-require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
 function listar_vacunas_por_ficha(int $id_ficha_medica): array{
     if ($id_ficha_medica <= 0) {
@@ -135,13 +134,6 @@ function registrar_vacuna(array $datos): array{
         'proxima_dosis' => $proxima_dosis,
         'observaciones' => $datos['observaciones'] ?? null
     ]);
-
-    registrar_auditoria(
-        'vacunas',
-        'INSERT',
-        null,
-        $vacuna_creada
-    );
 
     return $vacuna_creada;
 }

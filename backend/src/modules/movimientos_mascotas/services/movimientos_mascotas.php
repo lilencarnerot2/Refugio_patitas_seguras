@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/../repositories/movimientos_mascotas.php';
-require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
 function listar_movimientos_mascotas(): array{
     return obtener_movimientos_mascotas();
@@ -108,13 +107,6 @@ function registrar_movimiento_mascota(array $datos): array{
             'No se pudo registrar el movimiento de la mascota.'
         );
     }
-
-    registrar_auditoria(
-        'movimientos_mascotas',
-        'INSERT',
-        null,
-        $movimiento_creado
-    );
 
     return $movimiento_creado;
 }

@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../repositories/mascotas.php';
 require_once __DIR__ . '/../repositories/especies.php';
 require_once __DIR__ . '/../repositories/razas.php';
-require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
 function listarMascotas(){
     return obtenerMascotas();
@@ -35,13 +34,6 @@ function registrarMascota($datos){
     if (!$mascotaCreada) {
         return false;
     }
-
-    registrar_auditoria(
-        'mascotas',
-        'INSERT',
-        null,
-        $mascotaCreada
-    );
 
     return $mascotaCreada;
 }
@@ -175,13 +167,6 @@ function modificarMascota($id, $datos){
         return false;
     }
 
-    registrar_auditoria(
-        'mascotas',
-        'UPDATE',
-        $mascotaExistente,
-        $mascotaActualizada
-    );
-
     return $mascotaActualizada;
 }
 
@@ -201,13 +186,7 @@ function eliminarMascota($id){
     $mascotaDesactivada = $mascota;
     $mascotaDesactivada['estado'] = false;
 
-    registrar_auditoria(
-        'mascotas',
-        'DELETE',
-        $mascota,
-        $mascotaDesactivada
-    );
-
+    
     return true;
 }
 

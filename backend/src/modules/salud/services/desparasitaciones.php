@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../repositories/desparasitaciones.php';
 require_once __DIR__ . '/../repositories/tipos_productos.php';
 require_once __DIR__ . '/../repositories/fichas_medicas.php';
-require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
 function listar_desparasitaciones_por_ficha(int $id_ficha_medica): array{
     if ($id_ficha_medica <= 0) {
@@ -144,13 +143,6 @@ function registrar_desparasitacion(array $datos): array{
         'proxima_dosis' => $proxima_dosis,
         'observaciones' => $datos['observaciones'] ?? null
     ]);
-
-    registrar_auditoria(
-        'desparasitaciones',
-        'INSERT',
-        null,
-        $desparasitacion_creada
-    );
 
     return $desparasitacion_creada;
 }

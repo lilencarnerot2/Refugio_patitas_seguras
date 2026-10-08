@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/../repositories/fichas_medicas.php';
-require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
 function buscar_ficha_medica_por_mascota(int $id_mascota): array|false{
     if ($id_mascota <= 0) {
@@ -53,13 +52,6 @@ function registrar_ficha_medica(array $datos): array{
         'observaciones' => $datos['observaciones'] ?? null,
         'fecha_actualizacion' => date('Y-m-d')
     ]);
-
-    registrar_auditoria(
-        'fichas_medicas',
-        'INSERT',
-        null,
-        $ficha_creada
-    );
 
     return $ficha_creada;
 }

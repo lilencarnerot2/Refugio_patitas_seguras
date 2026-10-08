@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../repositories/solicitudes.php';
 require_once __DIR__ . '/../../mail/services/mail.php';
-require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
 function listar_solicitudes(): array{
     return obtener_solicitudes();
@@ -54,13 +53,7 @@ function cambiar_estado_solicitud(
         // Recargamos la solicitud con TODOS los datos (nombres, mascota, etc.)
     $solicitudCompleta = obtener_solicitud_por_id($id_solicitud);
 
-    registrar_auditoria(
-        'solicitudes',
-        'UPDATE',
-        $solicitud,
-        $solicitudCompleta
-    );
-
+    
     // Buscar el email del adoptante en el Padrón
     require_once __DIR__ . '/../../auth/services/integracion_registro.php';
     require_once __DIR__ . '/../../usuarios/services/usuarios.php';
@@ -196,13 +189,6 @@ function registrar_solicitud(
             'No se pudo recuperar la solicitud creada.'
         );
     }
-
-    registrar_auditoria(
-        'solicitudes',
-        'INSERT',
-        null,
-        $solicitud_completa
-    );
 
     return $solicitud_completa;
 }

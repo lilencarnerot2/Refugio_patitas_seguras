@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/../repositories/roles.php';
-require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
 function listar_roles(): array{
     return obtener_roles();
@@ -56,13 +55,6 @@ function registrar_rol(array $datos): array{
             ? $descripcion
             : null
     ]);
-
-    registrar_auditoria(
-        'roles',
-        'INSERT',
-        null,
-        $rol_creado
-    );
 
     return $rol_creado;
 }
@@ -122,13 +114,6 @@ function modificar_rol(
         return false;
     }
 
-    registrar_auditoria(
-        'roles',
-        'UPDATE',
-        $rol_anterior,
-        $rol_actualizado
-    );
-
     return $rol_actualizado;
 }
 
@@ -154,13 +139,6 @@ function eliminar_rol(int $id): bool{
 
     $rol_desactivado = $rol_anterior;
     $rol_desactivado['estado'] = false;
-
-    registrar_auditoria(
-        'roles',
-        'DELETE',
-        $rol_anterior,
-        $rol_desactivado
-    );
 
     return true;
 }

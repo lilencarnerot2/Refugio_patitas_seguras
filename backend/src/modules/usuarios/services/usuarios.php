@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../repositories/roles.php';
 require_once __DIR__ . '/../repositories/usuarios.php';
-require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
 function listar_usuarios(): array{
     return obtener_usuarios();
@@ -119,13 +118,6 @@ function modificar_usuario(
         return false;
     }
 
-    registrar_auditoria(
-        'usuarios',
-        'UPDATE',
-        $usuario,
-        $usuario_actualizado
-    );
-
     return $usuario_actualizado;
 }
 
@@ -171,14 +163,8 @@ function eliminar_usuario(
     $usuario_desactivado = $usuario;
     $usuario_desactivado['estado'] = false;
 
-    registrar_auditoria(
-        'usuarios',
-        'DELETE',
-        $usuario,
-        $usuario_desactivado
-    );
-
-return true;
+    
+    return true;
 }
 
 
@@ -239,13 +225,6 @@ function cambiar_rol_usuario(
 
     $usuario_actualizado = obtener_usuario_por_id(
         $id_usuario
-    );
-
-    registrar_auditoria(
-        'usuarios',
-        'UPDATE',
-        $usuario,
-        $usuario_actualizado ?: null
     );
 
     return true;

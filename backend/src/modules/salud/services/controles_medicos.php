@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../repositories/controles_medicos.php';
 require_once __DIR__ . '/../repositories/fichas_medicas.php';
-require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
 function listar_controles_por_ficha(int $id_ficha_medica): array{
     if ($id_ficha_medica <= 0) {
@@ -89,13 +88,6 @@ function registrar_control_medico(array $datos): array{
         'peso' => $datos['peso'] ?? null,
         'observaciones' => $datos['observaciones'] ?? null
     ]);
-
-    registrar_auditoria(
-        'controles_medicos',
-        'INSERT',
-        null,
-        $control_creado
-    );
 
     return $control_creado;
 }

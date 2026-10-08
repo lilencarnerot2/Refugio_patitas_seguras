@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/../repositories/domicilios.php';
-require_once __DIR__ . '/../../auditoria/services/auditorias.php';
 
 
 function registrar_domicilio_usuario(
@@ -60,14 +59,8 @@ function registrar_domicilio_usuario(
         $id_usuario
     );
 
-    registrar_auditoria(
-        'usuarios_domicilios',
-        'INSERT',
-        null,
-        $domicilio_completo ?: $domicilio_creado
-    );
 
-return $domicilio_creado;
+    return $domicilio_creado;
 }
 
 function buscar_domicilio_usuario(
@@ -148,13 +141,6 @@ function modificar_domicilio_usuario(
     if (!$domicilio_actualizado) {
         return false;
     }
-
-    registrar_auditoria(
-        'usuarios_domicilios',
-        'UPDATE',
-        $domicilio_anterior,
-        $domicilio_actualizado
-    );
 
     return $domicilio_actualizado;
 }
