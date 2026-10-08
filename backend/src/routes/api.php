@@ -263,6 +263,17 @@ function manejarRutas()
             manejar_movimientos_mascotas();
             break;
 
+        case 'auditorias':
+            if (!requerir_roles([
+                'Super Administrador'
+            ])) {
+            break;
+            }
+            require_once __DIR__ .
+            '/../modules/auditoria/controllers/auditorias.php';
+            manejar_auditorias();
+            break;
+
         default:
             responderJson(
                 false,
