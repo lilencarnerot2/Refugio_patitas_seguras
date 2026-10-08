@@ -104,6 +104,16 @@ function manejarRutas()
         case 'registro':
             manejarRegistro();
             break;
+          
+        case 'password-reset-solicitar':
+            require_once __DIR__ . '/../modules/auth/controllers/recuperar.php';
+            manejar_solicitar_reset();
+            break;
+
+        case 'password-reset-confirmar':
+            require_once __DIR__ . '/../modules/auth/controllers/reset.php';
+            manejar_confirmar_reset();
+            break;    
 
 
         case 'especies':
@@ -271,5 +281,7 @@ function manejarRutas()
                 404
             );
             break;
+
+            
     }
 }

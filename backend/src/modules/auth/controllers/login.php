@@ -26,6 +26,9 @@ function loginController($datos)
     // 3. Validar credenciales contra el Padrón PP2
     $resultado = loginEnPadron($email, $password);
 
+    // TEMPORAL: para debug
+    error_log('DEBUG loginEnPadron: ' . print_r($resultado, true));
+    
     if (!$resultado['ok']) {
         $status = ($resultado['status'] === 401)
             ? 401
