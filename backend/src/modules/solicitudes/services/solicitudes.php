@@ -17,8 +17,7 @@ function buscar_solicitud_por_id(int $id): array|false
 
     return obtener_solicitud_por_id($id);
 }
-
-function cambiar_estado_solicitud(
+  function cambiar_estado_solicitud(
     int $id_solicitud,
     int $id_estado_solicitud
 ): array
@@ -37,9 +36,21 @@ function cambiar_estado_solicitud(
         );
     }
 
-    if (!existe_estado_solicitud($id_estado_solicitud)) {
+    $estado_destino = obtener_estado_solicitud_por_id(
+        $id_estado_solicitud
+    );
+
+    if (!$estado_destino) {
         throw new InvalidArgumentException(
             'El estado de solicitud no es válido.'
+        );
+    }
+
+    $estado_actual_id = (int) $solicitud['id_estado_solicitud'];
+
+    if ($estado_actual_id === $id_estado_solicitud) {
+        throw new InvalidArgumentException(
+            'La solicitud ya tiene ese estado.'
         );
     }
 
@@ -54,22 +65,29 @@ function cambiar_estado_solicitud(
         );
     }
 
-        // Recargamos la solicitud con TODOS los datos (nombres, mascota, etc.)
+    // Recargamos la solicitud con TODOS los datos
     $solicitudCompleta = obtener_solicitud_por_id($id_solicitud);
 
     // Buscar el email del adoptante en el Padrón
     require_once __DIR__ . '/../../auth/services/integracion_registro.php';
     require_once __DIR__ . '/../../usuarios/services/usuarios.php';
 
-    $usuarioLocal = buscar_usuario_por_id((int) $solicitudCompleta['id_usuario']);
+    $usuarioLocal = buscar_usuario_por_id(
+        (int) $solicitudCompleta['id_usuario']
+    );
 
     if ($usuarioLocal && !empty($usuarioLocal['uid_pp2'])) {
-        $emailAdoptante = buscarEmailEnPadron((string) $usuarioLocal['uid_pp2']);
+        $emailAdoptante = buscarEmailEnPadron(
+            (string) $usuarioLocal['uid_pp2']
+        );
 
         if ($emailAdoptante) {
-            $nombreAdoptante = $solicitudCompleta['nombre_usuario'] ?? 'adoptante';
-            $nombreMascota   = $solicitudCompleta['nombre_mascota'] ?? 'la mascota';
-            $estadoNuevo     = $solicitudCompleta['estado_solicitud'] ?? 'actualizado';
+            $nombreAdoptante =
+                $solicitudCompleta['nombre_usuario'] ?? 'adoptante';
+            $nombreMascota =
+                $solicitudCompleta['nombre_mascota'] ?? 'la mascota';
+            $estadoNuevo =
+                $solicitudCompleta['estado_solicitud'] ?? 'actualizado';
 
             enviarMail(
                 $emailAdoptante,
