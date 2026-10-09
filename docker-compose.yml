@@ -1,0 +1,52 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    container_name: patitas_frontend
+    restart: unless-stopped
+
+    ports:
+      - "${FRONTEND_PORT}:80"
+
+    volumes:
+      - ./frontend:/var/www/html
+
+    environment:
+      BACKEND_SERVICE_URL: ${BACKEND_SERVICE_URL}
+      
+    networks:
+      - patitas_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: patitas_backend
+    restart: unless-stopped
+
+    ports:
+      - "${BACKEND_PORT}:80"
+
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      PP2_API_URL: ${PP2_API_URL}
+      PP2_API_KEY: ${PP2_API_KEY}
+      MAIL_API_URL: ${MAIL_API_URL}
+      MAIL_API_KEY: ${MAIL_API_KEY}
+
+    networks:
+      - patitas_network
+
+networks:
+  patitas_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
