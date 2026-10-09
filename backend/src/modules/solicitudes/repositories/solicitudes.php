@@ -278,3 +278,26 @@ function crear_solicitud(
 
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
+  function obtener_estado_solicitud_por_id(int $id): array|false
+  {
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT
+            id,
+            nombre_estado,
+            estado
+        FROM estados_solicitudes
+        WHERE id = :id
+          AND estado = TRUE
+        LIMIT 1
+    ";
+
+    $stmt = $conexion->prepare($sql);
+
+    $stmt->execute([
+        ':id' => $id
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
