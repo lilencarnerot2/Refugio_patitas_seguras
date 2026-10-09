@@ -105,7 +105,7 @@ function modificar_usuario(
         );
     }
 
-    return actualizar_usuario(
+    $usuario_actualizado = actualizar_usuario(
         $id,
         [
             'nombre' => $nombre,
@@ -113,6 +113,12 @@ function modificar_usuario(
             'fecha_nacimiento' => $fecha_nacimiento
         ]
     );
+
+    if (!$usuario_actualizado) {
+        return false;
+    }
+
+    return $usuario_actualizado;
 }
 
 
@@ -148,7 +154,17 @@ function eliminar_usuario(
         );
     }
 
-    return desactivar_usuario($id);
+    $eliminado = desactivar_usuario($id);
+
+    if (!$eliminado) {
+        return false;
+    }
+
+    $usuario_desactivado = $usuario;
+    $usuario_desactivado['estado'] = false;
+
+    
+    return true;
 }
 
 
@@ -198,8 +214,18 @@ function cambiar_rol_usuario(
         );
     }
 
-    return actualizar_rol_usuario(
+    $actualizado = actualizar_rol_usuario(
         $id_usuario,
         $id_rol
     );
+
+    if (!$actualizado) {
+    return false;
+    }
+
+    $usuario_actualizado = obtener_usuario_por_id(
+        $id_usuario
+    );
+
+    return true;
 }

@@ -12,8 +12,7 @@ function buscarMascotaPorId($id){
     return obtenerMascotaPorId($id);
 }
 
-function registrarMascota($datos)
-{
+function registrarMascota($datos){
     validarDatosMascota($datos);
 
     $datosMascota = [
@@ -30,11 +29,16 @@ function registrarMascota($datos)
             $datos['foto_url'] ?? null
     ];
 
-    return crearMascota($datosMascota);
+    $mascotaCreada = crearMascota($datosMascota);
+
+    if (!$mascotaCreada) {
+        return false;
+    }
+
+    return $mascotaCreada;
 }
 
-function validarDatosMascota($datos)
-{
+function validarDatosMascota($datos){
     $camposObligatorios = [
         'id_especie',
         'id_raza',
@@ -131,8 +135,7 @@ function validarDatosMascota($datos)
     }
 }
 
-function modificarMascota($id, $datos)
-{
+function modificarMascota($id, $datos){
     $mascotaExistente = obtenerMascotaPorId($id);
 
     if (!$mascotaExistente) {
@@ -155,25 +158,39 @@ function modificarMascota($id, $datos)
             $datos['foto_url'] ?? null
     ];
 
-    return actualizarMascota(
-        $id,
-        $datosMascota
+    $mascotaActualizada = actualizarMascota(
+    $id,
+    $datosMascota
     );
+
+    if (!$mascotaActualizada) {
+        return false;
+    }
+
+    return $mascotaActualizada;
 }
 
-function eliminarMascota($id)
-{
+function eliminarMascota($id){
     $mascota = obtenerMascotaPorId($id);
 
     if (!$mascota) {
         throw new Exception('Mascota no encontrada.');
     }
 
-    return desactivarMascota($id);
+    $eliminada = desactivarMascota($id);
+
+    if (!$eliminada) {
+        return false;
+    }
+
+    $mascotaDesactivada = $mascota;
+    $mascotaDesactivada['estado'] = false;
+
+    
+    return true;
 }
 
-function validarFechaMascota($fecha)
-{
+function validarFechaMascota($fecha){
     $fechaIngresada = DateTime::createFromFormat('Y-m-d', $fecha);
 
     if (

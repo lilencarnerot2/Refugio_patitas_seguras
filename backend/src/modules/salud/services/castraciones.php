@@ -84,9 +84,11 @@ function registrar_castracion(array $datos): array
         $fecha_castracion = null;
     }
 
-    return crear_castracion([
+    $castracion_creada = crear_castracion([
         'id_ficha_medica' => $id_ficha_medica,
         'fecha_castracion' => $fecha_castracion,
         'observaciones' => $datos['observaciones'] ?? null
     ]);
+
+    return $castracion_creada;
 }

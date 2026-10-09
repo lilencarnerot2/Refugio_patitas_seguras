@@ -50,10 +50,17 @@ function registrar_domicilio_usuario(
     $datos['nombre_barrio'] =
         $nombre_barrio;
 
-    return crear_domicilio_usuario(
+   $domicilio_creado = crear_domicilio_usuario(
         $id_usuario,
         $datos
     );
+
+    $domicilio_completo = obtener_domicilio_por_usuario(
+        $id_usuario
+    );
+
+
+    return $domicilio_creado;
 }
 
 function buscar_domicilio_usuario(
@@ -118,8 +125,22 @@ function modificar_domicilio_usuario(
     $datos['nombre_barrio'] =
         $nombre_barrio;
 
-    return actualizar_domicilio_usuario(
+    $domicilio_anterior = obtener_domicilio_por_usuario(
+        $id_usuario
+    );
+
+    if (!$domicilio_anterior) {
+        return false;
+    }
+
+    $domicilio_actualizado = actualizar_domicilio_usuario(
         $id_usuario,
         $datos
     );
+
+    if (!$domicilio_actualizado) {
+        return false;
+    }
+
+    return $domicilio_actualizado;
 }

@@ -4,8 +4,7 @@ require_once __DIR__ . '/../repositories/vacunas.php';
 require_once __DIR__ . '/../repositories/tipos_vacunas.php';
 require_once __DIR__ . '/../repositories/fichas_medicas.php';
 
-function listar_vacunas_por_ficha(int $id_ficha_medica): array
-{
+function listar_vacunas_por_ficha(int $id_ficha_medica): array{
     if ($id_ficha_medica <= 0) {
         throw new InvalidArgumentException(
             'El id de la ficha médica no es válido.'
@@ -24,8 +23,7 @@ function listar_vacunas_por_ficha(int $id_ficha_medica): array
 }
 
 
-function registrar_vacuna(array $datos): array
-{
+function registrar_vacuna(array $datos): array{
     if (
         empty($datos['id_ficha_medica']) ||
         empty($datos['id_tipo_vacuna']) ||
@@ -128,7 +126,7 @@ function registrar_vacuna(array $datos): array
         $proxima_dosis = null;
     }
 
-    return crear_vacuna([
+    $vacuna_creada = crear_vacuna([
         'id_ficha_medica' => $id_ficha_medica,
         'id_tipo_vacuna' => $id_tipo_vacuna,
         'numero_dosis' => $numero_dosis,
@@ -136,4 +134,6 @@ function registrar_vacuna(array $datos): array
         'proxima_dosis' => $proxima_dosis,
         'observaciones' => $datos['observaciones'] ?? null
     ]);
+
+    return $vacuna_creada;
 }

@@ -2,14 +2,12 @@
 
 require_once __DIR__ . '/../repositories/movimientos_mascotas.php';
 
-function listar_movimientos_mascotas(): array
-{
+function listar_movimientos_mascotas(): array{
     return obtener_movimientos_mascotas();
 }
 
 
-function listar_movimientos_por_mascota(int $id_mascota): array
-{
+function listar_movimientos_por_mascota(int $id_mascota): array{
     if ($id_mascota <= 0) {
         throw new InvalidArgumentException(
             'El id de la mascota no es válido.'
@@ -19,8 +17,7 @@ function listar_movimientos_por_mascota(int $id_mascota): array
     return obtener_movimientos_por_mascota($id_mascota);
 }
 
-function registrar_movimiento_mascota(array $datos): array
-{
+function registrar_movimiento_mascota(array $datos): array{
     if (
         empty($datos['id_mascota']) ||
         empty($datos['id_tipo_movimiento'])
@@ -98,10 +95,18 @@ function registrar_movimiento_mascota(array $datos): array
         }
     }
 
-    return crear_movimiento_mascota(
-        $id_mascota,
-        $id_tipo_movimiento,
-        $id_solicitud,
-        $observaciones
+    $movimiento_creado = crear_movimiento_mascota(
+    $id_mascota,
+    $id_tipo_movimiento,
+    $id_solicitud,
+    $observaciones
     );
+
+    if (!$movimiento_creado) {
+        throw new RuntimeException(
+            'No se pudo registrar el movimiento de la mascota.'
+        );
+    }
+
+    return $movimiento_creado;
 }

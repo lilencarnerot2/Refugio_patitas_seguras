@@ -3,14 +3,12 @@
 require_once __DIR__ . '/../repositories/solicitudes.php';
 require_once __DIR__ . '/../../mail/services/mail.php';
 
-function listar_solicitudes(): array
-{
+function listar_solicitudes(): array{
     return obtener_solicitudes();
 }
 
 
-function buscar_solicitud_por_id(int $id): array|false
-{
+function buscar_solicitud_por_id(int $id): array|false{
     if ($id <= 0) {
         return false;
     }
@@ -20,9 +18,7 @@ function buscar_solicitud_por_id(int $id): array|false
 
 function cambiar_estado_solicitud(
     int $id_solicitud,
-    int $id_estado_solicitud
-): array
-{
+    int $id_estado_solicitud): array{
     if ($id_solicitud <= 0 || $id_estado_solicitud <= 0) {
         throw new InvalidArgumentException(
             'Los identificadores no son válidos.'
@@ -57,6 +53,7 @@ function cambiar_estado_solicitud(
         // Recargamos la solicitud con TODOS los datos (nombres, mascota, etc.)
     $solicitudCompleta = obtener_solicitud_por_id($id_solicitud);
 
+    
     // Buscar el email del adoptante en el Padrón
     require_once __DIR__ . '/../../auth/services/integracion_registro.php';
     require_once __DIR__ . '/../../usuarios/services/usuarios.php';
@@ -86,9 +83,7 @@ function cambiar_estado_solicitud(
 
 function registrar_solicitud(
     int $id_usuario,
-    array $datos
-): array
-{
+    array $datos): array{
     if ($id_usuario <= 0) {
         throw new InvalidArgumentException(
             'El usuario autenticado no es válido.'
@@ -185,7 +180,15 @@ function registrar_solicitud(
         );
     }
 
-    return obtener_solicitud_por_id(
-        (int) $solicitud['id']
+    $solicitud_completa = obtener_solicitud_por_id(
+    (int) $solicitud['id']
     );
+
+    if (!$solicitud_completa) {
+        throw new RuntimeException(
+            'No se pudo recuperar la solicitud creada.'
+        );
+    }
+
+    return $solicitud_completa;
 }
