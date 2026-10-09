@@ -8,8 +8,7 @@ require_once __DIR__ . '/../modules/auth/controllers/registro.php';
 require_once __DIR__ . '/../utils/response.php';
 require_once __DIR__ . '/../middleware/autorizacion.php';
 
-function manejarRutas()
-{
+function manejarRutas() {
     $recurso = $_GET['recurso'] ?? '';
 
     switch ($recurso) {
@@ -239,6 +238,28 @@ function manejarRutas()
             manejar_estados_solicitudes();
             break;
 
+        case 'seguimientos_adopcion':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
+            require_once __DIR__ . '/../modules/seguimientos/controllers/seguimientos_adopcion.php';
+            manejar_seguimientos_adopcion();
+            break;
+        
+        case 'seguimientos_transito':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
+            require_once __DIR__ . '/../modules/seguimientos/controllers/seguimientos_transito.php';
+            manejar_seguimientos_transito();
+            break;    
+            
 
         case 'tipos_movimientos_mascotas':
             if (!requerir_roles([
