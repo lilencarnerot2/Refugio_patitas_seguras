@@ -167,3 +167,65 @@ function buscarEmailEnPadron(string $uid_pp2): ?string
 
     return null;
 }
+/**
+ * Canjea el token de reset por una contraseña nueva en el Padrón.
+ * El Padrón responde 200 si la contraseña se actualizó,
+ * 400 si el token no sirve o venció, 422 si la contraseña está fuera de largo.
+ */
+function confirmarResetEnPadron(string $token, string $password): array
+{
+    $url = getenv('PP2_API_URL');
+    $apiKey = getenv('PP2_API_KEY');
+
+    if (!$url || !$apiKey) {
+        return [
+            'ok' => false,
+            'status' => 500,
+            'error' => 'Faltan PP2_API_URL o PP2_API_KEY en el .env'
+        ];
+    }
+
+    $payload = json_encode([
+        'token' => $token,
+        'password' => $password
+    ]);
+
+    $ch = curl_init($url . '/password');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $apiKey
+    ]);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+    $respuesta = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $errorCurl = curl_error($ch);
+    curl_close($ch);
+
+    if ($errorCurl) {
+        return [
+            'ok' => false,
+            'status' => 500,
+            'error' => 'Error de conexión con el Padrón: ' . $errorCurl
+        ];
+    }
+
+    $datos = json_decode($respuesta, true);
+
+    if ($httpCode >= 200 && $httpCode < 300) {
+        return [
+            'ok' => true,
+            'status' => $httpCode,
+            'data' => $datos
+        ];
+    }
+
+    return [
+        'ok' => false,
+        'status' => $httpCode,
+        'error' => $datos['detail'] ?? 'Error desconocido del Padrón'
+    ];
+}
