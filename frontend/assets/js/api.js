@@ -27,7 +27,7 @@ function apiRequest(recurso, opciones) {
   var config = {
     method: opts.metodo || 'GET',
     headers: {},
-    credentials: 'include'
+    credentials: opts.credenciales === false ? 'omit' : 'include'
   };
 
   if (opts.cuerpo !== undefined) {
@@ -54,6 +54,23 @@ function apiRequest(recurso, opciones) {
 
 function guardarCookie(nombre, valor) {
   document.cookie = nombre + '=' + encodeURIComponent(valor || '') + '; path=/; SameSite=Lax';
+}
+
+function leerCookie(nombre) {
+  var prefijo = nombre + '=';
+  var partes = document.cookie.split(';');
+  var i;
+  var parte;
+
+  for (i = 0; i < partes.length; i++) {
+    parte = partes[i].trim();
+
+    if (parte.indexOf(prefijo) === 0) {
+      return decodeURIComponent(parte.slice(prefijo.length));
+    }
+  }
+
+  return '';
 }
 
 function borrarCookie(nombre) {
@@ -130,3 +147,47 @@ function mensajeDeApi(origen) {
     (origen.data && (origen.data.message || origen.data.error || origen.data.mensaje || origen.data.detalle)) ||
     '';
 }
+
+function avisoDeApi(caja, origen) {
+  var codigo;
+
+  if (!caja) {
+    return;
+  }
+
+  caja.textContent = mensajeDeApi(origen);
+  codigo = origen && origen.status;
+
+  if (codigo) {
+    caja.setAttribute('data-codigo', codigo);
+  } else {
+    caja.removeAttribute('data-codigo');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  var acceso = document.getElementById('acceso-solicitud');
+  var bloque = document.getElementById('bloque-solicitud');
+  var mensaje = document.getElementById('mensaje-solicitud');
+  var conSesion = !!leerCookie('usuario_id');
+
+  if (!acceso) {
+    return;
+  }
+
+  apiRequest('tipos_solicitudes', {
+    credenciales: conSesion
+  }).then(function (respuesta) {
+    avisoDeApi(mensaje, respuesta);
+
+    if (bloque && conSesion) {
+      bloque.hidden = false;
+    }
+  }).catch(function (error) {
+    if (bloque) {
+      bloque.hidden = true;
+    }
+
+    avisoDeApi(mensaje, error);
+  });
+});
