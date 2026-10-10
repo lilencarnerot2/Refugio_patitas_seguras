@@ -2,7 +2,7 @@
 
 function usuarioSesion(): ?array
 {
-    if (empty($_COOKIE['usuario_id']) || empty($_COOKIE['usuario_nombre_rol'])) {
+    if (empty($_COOKIE['usuario_id'])) {
         return null;
     }
 
@@ -11,8 +11,7 @@ function usuarioSesion(): ?array
         'nombre' => $_COOKIE['usuario_nombre'] ?? '',
         'apellido' => $_COOKIE['usuario_apellido'] ?? '',
         'email' => $_COOKIE['usuario_email'] ?? '',
-        'id_rol' => $_COOKIE['usuario_rol'] ?? '',
-        'nombre_rol' => $_COOKIE['usuario_nombre_rol']
+        'id_rol' => $_COOKIE['usuario_rol'] ?? ''
     ];
 }
 
@@ -21,21 +20,14 @@ function usuarioAutenticado(): bool
     return usuarioSesion() !== null;
 }
 
-function nombreRolSesion(): string
-{
-    $usuario = usuarioSesion();
-
-    return $usuario['nombre_rol'] ?? '';
-}
-
-function esRol(string $nombreRol): bool
-{
-    return nombreRolSesion() === $nombreRol;
-}
-
 function esPersonalAdmin(): bool
 {
-    return esRol('Administrador') || esRol('Superadministrador');
+    return !empty($_COOKIE['usuario_acceso_admin']);
+}
+
+function esSuperadministrador(): bool
+{
+    return !empty($_COOKIE['usuario_acceso_superadmin']);
 }
 
 function exigirPersonalAdmin(): void
@@ -55,7 +47,7 @@ function exigirPersonalAdmin(): void
 
 function exigirSuperadministrador(): void
 {
-    if (esRol('Superadministrador')) {
+    if (esSuperadministrador()) {
         return;
     }
 

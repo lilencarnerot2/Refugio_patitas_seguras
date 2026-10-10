@@ -31,6 +31,9 @@
             margin: 0;
             padding: 0;
             min-height: 100%;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: clip;
         }
 
         html {
@@ -39,12 +42,20 @@
 
         body {
             color: var(--text-dark);
-            overflow-x: hidden;
             padding-top: 72px;
             background-color: var(--bg-cream);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+
+        img,
+        svg,
+        video,
+        iframe,
+        canvas {
+            max-width: 100%;
+            height: auto;
         }
 
         /* Barra pegada al borde superior de la ventana */
@@ -71,24 +82,52 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            min-width: 0;
+            max-width: 100%;
             text-decoration: none;
             cursor: pointer;
             justify-self: start;
         }
 
+        .logo-text {
+            min-width: 0;
+        }
+
+        /* Pata igual que en el panel admin: el dibujo vive en CSS */
+        .icono-pata::before {
+            content: "🐾";
+            font-style: normal;
+            line-height: 1;
+        }
+
+        /* Ícono redondo de pata del logo: mismo criterio que el panel admin */
+        .logo-icon {
+            background: var(--bg-cream);
+            border-radius: 50%;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+
         /* Nombre "PATITAS SEGURAS" */
         .logo-text h1 {
-            font-size: 18px;
+            font-size: clamp(13px, 4.2vw, 18px);
             color: var(--primary-color);
             font-weight: 700;
-            line-height: 1;
-            white-space: nowrap;
+            line-height: 1.15;
+            white-space: normal;
+            overflow-wrap: anywhere;
         }
 
         /* Subtítulo "Refugio de animales" */
         .logo-text span {
+            display: block;
             font-size: 10px;
             color: var(--text-soft);
+            overflow-wrap: anywhere;
         }
 
         /* Menú centrado en el header */
@@ -229,7 +268,8 @@
             justify-self: end;
             z-index: 2;
             grid-column: 3;
-            padding-right: var(--header-pad-x);
+            flex-shrink: 0;
+            padding-right: 0;
         }
 
         /* Checkbox del menú y del ojo de contraseña: oculto a la vista, usable sin JavaScript */
@@ -288,6 +328,8 @@
         section {
             padding: 40px 5%;
             scroll-margin-top: 80px;
+            min-width: 0;
+            max-width: 100%;
         }
 
         /* Portada de index.php: texto a la izquierda, foto a la derecha */
@@ -300,14 +342,16 @@
 
         .hero-content {
             flex: 1;
+            min-width: 0;
         }
 
         /* Título grande del hero */
         .hero-content h2 {
-            font-size: 42px;
+            font-size: clamp(1.5rem, 7vw, 42px);
             color: var(--text-dark);
             line-height: 1.1;
             margin-bottom: 20px;
+            overflow-wrap: anywhere;
         }
 
         /* Palabra resaltada en verde dentro del título */
@@ -325,6 +369,7 @@
         /* Botones debajo del texto del hero */
         .hero-buttons {
             display: flex;
+            flex-wrap: wrap;
             gap: 15px;
             align-items: center;
         }
@@ -362,6 +407,7 @@
         /* Foto del hero */
         .hero-images {
             flex: 1;
+            min-width: 0;
             display: flex;
             gap: 10px;
         }
@@ -584,6 +630,34 @@
             display: inline-block;
         }
 
+        /* Tarjeta "sobre nosotros" en index */
+        .nosotros-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .nosotros-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .nosotros-card p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Título "otras formas de ayudar" en index */
+        .ayudar-titulo {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 22px;
+        }
+
         /* Pie de página verde oscuro */
         footer {
             background-color: var(--footer-bg);
@@ -663,7 +737,15 @@
                 gap: 20px;
             }
             header {
-                grid-template-columns: 1fr auto;
+                grid-template-columns: minmax(0, 1fr) auto;
+                padding: 12px 16px;
+                column-gap: 8px;
+            }
+
+            .logo-icon {
+                flex-shrink: 0;
+                padding: 6px;
+                font-size: 16px;
             }
 
             .header-actions .btn-outline,
@@ -768,13 +850,6 @@
                 align-items: center;
                 justify-content: center;
             }
-            /* Tarjetas de info y catálogo de mascotas en 1 columna */
-            .info-cards {
-                grid-template-columns: 1fr;
-            }
-            .pet-catalog {
-                grid-template-columns: 1fr;
-            }
         }
 
         /* Título y texto intro de mascotas.php */
@@ -786,9 +861,10 @@
         }
 
         .page-intro h2 {
-            font-size: 32px;
+            font-size: clamp(1.4rem, 6vw, 32px);
             color: var(--primary-color);
             margin-bottom: 10px;
+            overflow-wrap: anywhere;
         }
 
         .page-intro p {
@@ -863,7 +939,8 @@
             text-decoration: none;
         }
 
-        .filtro-btn.is-activo {
+        .filtro-btn.is-activo,
+        .filtro-btn[data-activa="true"] {
             background: var(--text-dark);
             color: var(--white);
             border-color: var(--text-dark);
@@ -964,6 +1041,13 @@
             color: var(--primary-color);
         }
 
+        .requisitos-titulo {
+            text-align: center;
+            max-width: none;
+            margin: 0 auto 16px;
+            padding-top: 36px;
+        }
+
         .requisitos-section {
             padding-top: 40px;
             padding-bottom: 40px;
@@ -993,14 +1077,41 @@
             flex-shrink: 0;
         }
 
-        .proceso-adopcion {
+        /* Requisitos en dos columnas (adopción y tránsito lado a lado), solo CSS */
+        .requisitos-dos-columnas {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 64px;
+            max-width: 1080px;
+            width: 100%;
+            margin: 0 auto;
+            padding-left: 5%;
+            padding-right: 5%;
+            align-items: start;
+            box-sizing: border-box;
+        }
+
+        .requisitos-dos-columnas .requisitos-grid {
+            grid-template-columns: 1fr;
+        }
+
+        @media (max-width: 992px) {
+            .requisitos-dos-columnas {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+
+        .proceso-adopcion,
+        .proceso-transito {
             max-width: 720px;
             margin: 0 auto;
             background: #eceae3;
             border-radius: 6px;
         }
 
-        .proceso-adopcion summary {
+        .proceso-adopcion summary,
+        .proceso-transito summary {
             padding: 12px 18px;
             cursor: pointer;
             list-style: none;
@@ -1008,11 +1119,13 @@
             font-weight: 500;
         }
 
-        .proceso-adopcion summary::-webkit-details-marker {
+        .proceso-adopcion summary::-webkit-details-marker,
+        .proceso-transito summary::-webkit-details-marker {
             display: none;
         }
 
-        .proceso-adopcion ol {
+        .proceso-adopcion ol,
+        .proceso-transito ol {
             margin: 0;
             padding: 0 18px 16px 36px;
             color: var(--text-muted);
@@ -1047,6 +1160,15 @@
             color: var(--text-soft);
         }
 
+        /* Estados de feedback y modal: el JS solo pone data-estado/hidden, el CSS pinta */
+        .form-feedback[data-estado="ok"] {
+            color: var(--primary-color);
+        }
+
+        .form-feedback[data-estado="error"] {
+            color: var(--bs-danger, #a32b21);
+        }
+
         .empty-back-link {
             display: inline-block;
             margin-top: 16px;
@@ -1061,13 +1183,14 @@
 
         .pet-detail {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             align-items: center;
             background: var(--white);
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             max-width: 860px;
+            width: 100%;
             margin: 0 auto;
         }
 
@@ -1104,9 +1227,10 @@
         }
 
         .pet-detail-body h2 {
-            font-size: 32px;
+            font-size: clamp(1.4rem, 6vw, 32px);
             color: var(--primary-color);
             margin-bottom: 22px;
+            overflow-wrap: anywhere;
         }
 
         .pet-detail-meta {
@@ -1266,4 +1390,66 @@
 
         .public-form a {
             color: var(--primary-color);
+        }
+
+        .public-form,
+        .info-card,
+        .pet-card,
+        .catalog-empty,
+        footer,
+        .footer-inner {
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        footer h3 {
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 992px) {
+            .pet-detail {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .pet-detail-body {
+                padding: 24px 18px;
+            }
+
+            .public-form {
+                margin-left: 16px;
+                margin-right: 16px;
+                padding: 20px 16px;
+            }
+
+            .detalle-section {
+                padding: 24px 16px;
+            }
+
+            .requisitos-dos-columnas {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .logo-text span {
+                display: none;
+            }
+
+            section {
+                padding: 24px 16px;
+            }
+
+            .info-card {
+                padding: 16px;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }

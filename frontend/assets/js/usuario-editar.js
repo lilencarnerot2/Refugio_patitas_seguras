@@ -1,6 +1,9 @@
 var formulario = document.getElementById('formulario-usuario');
 var mensaje = document.getElementById('mensaje-formulario');
 var selectUsuario = document.getElementById('id_usuario');
+var panelEditar = document.getElementById('panel-usuario-editar');
+// A dónde volver lo dice el HTML (data-listado), no se escribe acá.
+var listadoEditar = panelEditar ? panelEditar.getAttribute('data-listado') || '' : '';
 var idInicial = new URLSearchParams(window.location.search).get('id');
 var campos = [
     'id',
@@ -21,18 +24,6 @@ function textoApi(valor) {
     }
 
     return String(valor);
-}
-
-function mensajeDeApi(origen) {
-    if (origen && origen.message) {
-        return origen.message;
-    }
-
-    if (origen && origen.data && origen.data.message) {
-        return origen.data.message;
-    }
-
-    return '';
 }
 
 function ponerCampo(nombre, valor) {
@@ -85,7 +76,12 @@ if (formulario && selectUsuario) {
 
             for (i = 0; i < lista.length; i++) {
                 usuario = lista[i];
-                opcion = document.createElement('option');
+                // clona la opción del select
+                var base = selectUsuario.querySelector('option');
+                opcion = base.cloneNode(false);
+                opcion.removeAttribute('selected');
+                opcion.removeAttribute('disabled');
+                opcion.removeAttribute('hidden');
                 opcion.value = textoApi(usuario.id);
                 opcion.textContent = textoApi(usuario.nombre);
                 selectUsuario.appendChild(opcion);
@@ -145,7 +141,9 @@ if (formulario && selectUsuario) {
                     mostrarUsuario(respuesta.data);
                 }
 
-                window.location.href = 'usuarios.php';
+                if (listadoEditar) {
+                    window.location.href = listadoEditar;
+                }
             })
             .catch(function (error) {
                 if (mensaje) {

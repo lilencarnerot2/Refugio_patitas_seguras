@@ -19,7 +19,7 @@ require __DIR__ . '/public/includes/header.php';
     <section id="adopta" class="action-cards">
         <a class="card" href="/public/mascotas.php#adopcion">
             <div class="card-body">
-                <h3><i class="fa-solid fa-house"></i> ADOPTÁ</h3>
+                <h3><i class="bi bi-house"></i> ADOPTÁ</h3>
                 <p>Dale a un animalito una segunda oportunidad de ser feliz.</p>
             </div>
             <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e" alt="Adoptar cachorro">
@@ -27,15 +27,15 @@ require __DIR__ . '/public/includes/header.php';
         </a>
         <a class="card" href="#modal-voluntariado">
             <div class="card-body">
-                <h3><i class="fa-solid fa-hand-holding-heart"></i> SE VOLUNTARIO</h3>
+                <h3><i class="bi bi-people-fill"></i> SE VOLUNTARIO</h3>
                 <p>Tu tiempo y tu amor pueden cambiarles la vida.</p>
             </div>
             <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1" alt="Voluntariado">
             <span class="card-btn">SUMATE COMO VOLUNTARIO</span>
         </a>
-        <a class="card" href="/public/mascotas.php#transito">
+        <a class="card" href="/public/mascotas.php">
             <div class="card-body">
-                <h3><i class="fa-solid fa-house-chimney"></i> HOGAR DE TRÁNSITO</h3>
+                <h3><i class="bi bi-house-door"></i> HOGAR DE TRÁNSITO</h3>
                 <p>Abri tu hogar por un tiempo y ayudanos a salvar más vidas.</p>
             </div>
             <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba" alt="Hogar de transito">
@@ -47,19 +47,19 @@ require __DIR__ . '/public/includes/header.php';
     <section>
         <div class="stats-container">
             <div class="stat-item">
-                <h4><i class="fa-solid fa-paw"></i> +1200</h4>
+                <h4><span class="icono-pata"></span> +1200</h4>
                 <p>Rescates realizados</p>
             </div>
             <div class="stat-item">
-                <h4><i class="fa-solid fa-heart"></i> +980</h4>
+                <h4><i class="bi bi-heart-fill"></i> +980</h4>
                 <p>Adopciones felices</p>
             </div>
             <div class="stat-item">
-                <h4><i class="fa-solid fa-house"></i> +150</h4>
+                <h4><i class="bi bi-house"></i> +150</h4>
                 <p>Hogares de tránsito</p>
             </div>
             <div class="stat-item">
-                <h4><i class="fa-solid fa-users"></i> +200</h4>
+                <h4><i class="bi bi-people-fill"></i> +200</h4>
                 <p>Voluntarios activos</p>
             </div>
         </div>
@@ -67,39 +67,39 @@ require __DIR__ . '/public/includes/header.php';
 
     <!-- NOSOTROS -->
     <section id="nosotros">
-        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-            <h3 style="color: var(--primary-color); margin-bottom: 15px; font-size: 24px;">SOBRE NOSOTROS</h3>
-            <p style="color: #555; line-height: 1.6; font-size: 14px;">Somos un refugio independiente sin fines de lucro. Trabajamos con compromiso y amor para rescatar animales en situación de calle o abandono, brindarles atención veterinaria, alimento y contención, y encontrarles el hogar que merecen.</p>
+        <div class="nosotros-card">
+            <h3>SOBRE NOSOTROS</h3>
+            <p>Somos un refugio independiente sin fines de lucro. Trabajamos con compromiso y amor para rescatar animales en situación de calle o abandono, brindarles atención veterinaria, alimento y contención, y encontrarles el hogar que merecen.</p>
         </div>
     </section>
 
     <!-- OTRAS FORMAS DE AYUDAR -->
     <section id="ayudar">
-        <h3 style="color: var(--primary-color); margin-bottom: 20px; text-align: center; font-size: 22px;">OTRAS FORMAS DE AYUDAR</h3>
+        <h3 class="ayudar-titulo">OTRAS FORMAS DE AYUDAR</h3>
         <div class="other-ways">
             <a class="way-card" href="#modal-alimentos">
-                <i class="fa-solid fa-bowl-food"></i>
+                <i class="bi bi-basket"></i>
                 <div>
                     <h5>DONÁ ALIMENTOS</h5>
                     <p>Alimento, mantas, camitas y todo lo que podamos necesitar.</p>
                 </div>
             </a>
             <a class="way-card" href="#modal-apadrina">
-                <i class="fa-solid fa-circle-plus"></i>
+                <i class="bi bi-plus-circle"></i>
                 <div>
                     <h5>APADRINÁ</h5>
                     <p>Con tu aporte mensual nos ayudás a cubrir tratamientos y cuidados.</p>
                 </div>
             </a>
             <a class="way-card" href="#modal-donaciones">
-                <i class="fa-solid fa-circle-dollar-to-slot"></i>
+                <i class="bi bi-cash-coin"></i>
                 <div>
                     <h5>HACÉ UNA DONACIÓN</h5>
                     <p>Tu donación nos permite seguir rescatando y cuidando más patitas.</p>
                 </div>
             </a>
             <a class="way-card" href="#modal-difundi">
-                <i class="fa-solid fa-share-nodes"></i>
+                <i class="bi bi-share"></i>
                 <div>
                     <h5>DIFUNDÍ</h5>
                     <p>Compartí nuestras historias y ayudanos a encontrarles un hogar.</p>

@@ -1,5 +1,5 @@
 <?php
-if (empty($_COOKIE['usuario_id']) || empty($_COOKIE['usuario_nombre_rol'])) {
+if (empty($_COOKIE['usuario_id'])) {
     header('Location: /public/login.php');
     exit;
 }

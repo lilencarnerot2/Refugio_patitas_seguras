@@ -2,14 +2,15 @@
 $esInicio = !empty($esInicio);
 $inicio = $esInicio ? '' : '/index.php';
 $catalogo = '/public/mascotas.php';
+$requisitos = '/public/requisitos.php';
 $login = '/public/login.php';
 $salir = '/public/login.php?salir=1';
 $autenticado = usuarioAutenticado();
 $esPersonal = esPersonalAdmin();
 ?><header>
     <a class="logo-container" href="<?php echo $esInicio ? '#inicio' : $inicio; ?>">
-            <div style="background: var(--primary-color); border-radius: 50%; padding: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
-                <i class="fa-solid fa-paw"></i>
+            <div class="logo-icon">
+                <span class="icono-pata"></span>
             </div>
             <div class="logo-text">
                 <h1>PATITAS SEGURAS</h1>
@@ -26,7 +27,8 @@ $esPersonal = esPersonalAdmin();
                         <summary>SUMATE</summary>
                         <ul class="dropdown-menu">
                             <li><a href="<?php echo $catalogo; ?>#adopcion">ADOPTÁ</a></li>
-                            <li><a href="<?php echo $catalogo; ?>#transito">HOGAR DE TRÁNSITO</a></li>
+                            <li><a href="<?php echo $catalogo; ?>">HOGAR DE TRÁNSITO</a></li>
+                            <li><a href="<?php echo $requisitos; ?>">REQUISITOS</a></li>
                             <li><a href="<?php echo $inicio; ?>#modal-voluntariado">SE VOLUNTARIO</a></li>
                         </ul>
                     </details>
@@ -48,11 +50,14 @@ $esPersonal = esPersonalAdmin();
                     <?php if ($esPersonal) { ?>
                     <a class="btn-outline" href="/admin/dashboard.php">PANEL</a>
                     <?php } ?>
+                    <?php if ($autenticado && !$esPersonal) { ?>
+                    <a class="btn-outline" href="/user/mi_perfil.php">MI PERFIL</a>
+                    <?php } ?>
                     <?php if ($autenticado) { ?>
                     <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>
                     <?php } ?>
                     <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : $inicio . '#modal-donaciones'; ?>">
-                        <i class="fa-solid fa-heart"></i> DONAR
+                        <i class="bi bi-heart-fill"></i> DONAR
                     </a>
                 </li>
             </ul>
@@ -64,15 +69,18 @@ $esPersonal = esPersonalAdmin();
             <?php if ($esPersonal) { ?>
             <a class="btn-outline" href="/admin/dashboard.php">PANEL</a>
             <?php } ?>
+            <?php if ($autenticado && !$esPersonal) { ?>
+            <a class="btn-outline" href="/user/mi_perfil.php">MI PERFIL</a>
+            <?php } ?>
             <?php if ($autenticado) { ?>
             <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>
             <?php } ?>
             <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : $inicio . '#modal-donaciones'; ?>">
-                <i class="fa-solid fa-heart"></i> DONAR
+                <i class="bi bi-heart-fill"></i> DONAR
             </a>
             <label for="nav-toggle" class="menu-toggle" aria-label="Menú">
-                <i class="fa-solid fa-bars menu-icon-bars"></i>
-                <i class="fa-solid fa-xmark menu-icon-close"></i>
+                <i class="bi bi-list menu-icon-bars"></i>
+                <i class="bi bi-x-lg menu-icon-close"></i>
             </label>
         </div>
     </header>

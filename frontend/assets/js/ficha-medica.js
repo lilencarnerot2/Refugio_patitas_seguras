@@ -15,13 +15,13 @@ let idFicha = '';
 
 function mostrarMensaje(texto, ok) {
     mensaje.textContent = texto || '';
-    mensaje.classList.remove('is-ok', 'is-error');
+    mensaje.removeAttribute('data-estado');
 
     if (!texto) {
         return;
     }
 
-    mensaje.classList.add(ok ? 'is-ok' : 'is-error');
+    mensaje.dataset.estado = ok ? 'ok' : 'error';
 }
 
 function listaDe(resultado) {
@@ -40,12 +40,32 @@ function vaciar(nodo) {
     }
 }
 
+function clonarModelo(id) {
+    // clona el modelo oculto
+    var modelo = document.getElementById(id);
+
+    if (!modelo) {
+        return null;
+    }
+
+    var copia = modelo.cloneNode(false);
+
+    copia.removeAttribute('id');
+
+    return copia;
+}
+
 function agregarOpciones(select, lista, campo) {
+    // clona la opción del modelo
     var i;
-    var opcion;
 
     for (i = 0; i < lista.length; i++) {
-        opcion = document.createElement('option');
+        var opcion = clonarModelo('opcion-modelo-ficha');
+
+        if (!opcion) {
+            return;
+        }
+
         opcion.value = lista[i].id;
         opcion.textContent = lista[i][campo];
         select.appendChild(opcion);
@@ -93,7 +113,7 @@ function mostrarMascota(mascota) {
     document.getElementById('ficha-raza').textContent = mascota.raza || '';
     document.getElementById('ficha-sexo').textContent = mascota.sexo || '';
     document.getElementById('ficha-tamano').textContent = mascota.tamaño || '';
-    document.getElementById('ficha-nacimiento').textContent = mascota.fecha_nacimiento_estimada || '';
+    document.getElementById('ficha-nacimiento').textContent = fechaCorta(mascota.fecha_nacimiento_estimada);
     document.getElementById('ficha-historial').textContent = mascota.historial || '';
 
     if (mascota.foto_url) {
@@ -116,18 +136,23 @@ function mostrarUltimoControl(controles) {
     var fecha = document.getElementById('control-fecha');
 
     peso.textContent = control.peso || '';
-    fecha.textContent = control.fecha_control || '';
+    fecha.textContent = fechaCorta(control.fecha_control);
     document.getElementById('control-observaciones').textContent = control.observaciones || '';
 }
 
 function mostrarLista(lista, destino, campo) {
+    // clona el li del modelo
     var i;
-    var item;
 
     vaciar(destino);
 
     for (i = 0; i < lista.length; i++) {
-        item = document.createElement('li');
+        var item = clonarModelo('item-modelo-ficha');
+
+        if (!item) {
+            return;
+        }
+
         item.textContent = lista[i][campo] || '';
         destino.appendChild(item);
     }
@@ -136,9 +161,8 @@ function mostrarLista(lista, destino, campo) {
 function mostrarCastracion(castracion) {
     var estado = document.getElementById('castracion-estado');
 
-    estado.textContent = castracion.fecha_castracion || '';
-    estado.classList.remove('is-ok', 'is-error');
-    estado.classList.add('is-ok');
+    estado.textContent = fechaCorta(castracion.fecha_castracion);
+    estado.dataset.estado = 'ok';
     document.getElementById('castracion-observaciones').textContent = castracion.observaciones || '';
     formularioCastracion.hidden = true;
 }
@@ -193,13 +217,13 @@ function cargarCastracion() {
         .catch(function (error) {
             var estado = document.getElementById('castracion-estado');
 
-            estado.classList.remove('is-ok', 'is-error');
+            estado.removeAttribute('data-estado');
             document.getElementById('castracion-observaciones').textContent = '';
             formularioCastracion.hidden = false;
 
             if (error.status === 404) {
                 estado.textContent = error.message;
-                estado.classList.add('is-error');
+                estado.dataset.estado = 'error';
                 return;
             }
 

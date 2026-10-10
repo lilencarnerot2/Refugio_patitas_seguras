@@ -1,23 +1,27 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const formulario = document.getElementById('form-login');
+    if (new URLSearchParams(window.location.search).get('salir') !== null) {
+        borrarSesion();
 
-    if (!formulario) {
+        // el inicio lo trae config.php
+        if (typeof INICIO_URL !== 'undefined' && INICIO_URL) {
+            window.location.href = INICIO_URL;
+        }
+
         return;
     }
 
-    const boton = formulario.querySelector('button[type="button"]');
+    var boton = document.querySelector('#form-login .btn-primary, form .btn-primary');
 
     if (!boton) {
         return;
     }
 
-    boton.addEventListener('click', function () {
-        const correo = document.getElementById('correo').value.trim();
-        const clave = document.getElementById('clave').value;
+    var formulario = boton.closest('form');
+    var mensaje = (formulario && formulario.querySelector('.mensaje-formulario')) || document.querySelector('.mensaje-formulario');
 
-        if (!correo || !clave) {
-            alert('Completá el correo y la contraseña.');
-            return;
+    boton.addEventListener('click', function () {
+        if (mensaje) {
+            mensaje.textContent = '';
         }
 
         boton.disabled = true;
@@ -25,17 +29,21 @@ document.addEventListener('DOMContentLoaded', function () {
         apiRequest('login', {
             metodo: 'POST',
             cuerpo: {
-                email: correo,
-                password: clave
+                email: document.getElementById('correo').value.trim(),
+                password: document.getElementById('clave').value
             }
         })
         .then(function (respuesta) {
-            alert(respuesta.message || 'Inicio de sesión exitoso.');
+            if (mensaje) {
+                mensaje.textContent = mensajeDeApi(respuesta);
+            }
 
-            window.location.href = '../index.php';
+            return irTrasSesion(respuesta);
         })
         .catch(function (error) {
-            alert(error.message || 'No se pudo iniciar sesión.');
+            if (mensaje) {
+                mensaje.textContent = mensajeDeApi(error);
+            }
         })
         .finally(function () {
             boton.disabled = false;

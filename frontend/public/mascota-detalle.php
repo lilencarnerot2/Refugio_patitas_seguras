@@ -29,7 +29,7 @@ require __DIR__ . '/includes/header.php';
                 <ul class="pet-detail-meta">
                     <li><span class="detalle-label">Sexo</span><span id="detalle-sexo"></span></li>
                     <li><span class="detalle-label">Tamaño</span><span id="detalle-tamano"></span></li>
-                    <li><span class="detalle-label">Nacimiento estimado</span><span id="detalle-nacimiento"></span></li>
+                    <li><span class="detalle-label">Nacimiento estimado</span><span id="detalle-nacimiento">No informado</span></li>
                 </ul>
                 <p id="detalle-historial" class="pet-detail-historial"></p>
                 <div class="pet-card-actions">

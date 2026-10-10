@@ -1,103 +1,416 @@
-var mensaje = document.getElementById('mensaje-formulario');
-var panel = document.getElementById('panel-solicitudes');
-var resumen = document.getElementById('resumen-solicitudes');
-var cuerpo = document.getElementById('cuerpo-solicitudes');
-var cabecera = document.getElementById('cabecera-solicitudes');
-var opcionesRol = document.getElementById('opciones-rol');
-var opcionesEstado = document.getElementById('opciones-estado');
+document.addEventListener('DOMContentLoaded', function () {
+    var panel = document.getElementById('panel-solicitudes');
 
-function asignarFila(fila, solicitud) {
-    asignarCeldasDeApi(fila, cabecera, solicitud, claveDeApi(cabecera));
-    fila.setAttribute('data-rol-pos', posicionDeApi(opcionesRol, solicitud.id_tipo_solicitud));
-    fila.setAttribute('data-estado-pos', posicionDeApi(opcionesEstado, solicitud.id_estado_solicitud));
-}
-
-function limpiarResumen(tarjeta) {
-    var titulo = tarjeta.querySelector('h3');
-    var numero = tarjeta.querySelector('.dash-kpi-numero');
-
-    if (titulo) {
-        titulo.removeAttribute('data-texto');
+    if (!panel) {
+        return;
     }
 
-    if (numero) {
-        numero.removeAttribute('data-texto');
+    var mensaje = document.getElementById('mensaje-formulario');
+    var cuerpo = document.getElementById('cuerpo-solicitudes');
+    var buscar = document.getElementById('buscar-solicitudes');
+    var filtroEstado = document.getElementById('filtro-estado-solicitud');
+    var filtroEspecie = document.getElementById('filtro-especie-solicitud');
+    var resumen = document.getElementById('resumen-solicitudes');
+    var paginador = panel.querySelector('[data-paginador]');
+    var listaPaginas = paginador ? paginador.querySelector('.pagination') : null;
+    var anterior = paginador ? paginador.querySelector('[data-pagina-anterior]') : null;
+    var siguiente = paginador ? paginador.querySelector('[data-pagina-siguiente]') : null;
+    var itemAnterior = anterior && anterior.closest ? anterior.closest('.page-item') : null;
+    var itemSiguiente = siguiente && siguiente.closest ? siguiente.closest('.page-item') : null;
+    var lista = [];
+    var pagina = 1;
+    var porPagina = parseInt(panel.getAttribute('data-por-pagina'), 10);
+
+    if (isNaN(porPagina) || porPagina < 1) {
+        porPagina = 0;
     }
 
-    asignarArcoDeApi(tarjeta.querySelector('.dash-donut-valor'), 0);
-}
-
-function asignarResumen(tarjeta, tipo, solicitudes) {
-    var titulo = tarjeta.querySelector('h3');
-    var numero = tarjeta.querySelector('.dash-kpi-numero');
-    var id = campoDe(tipo, 'id');
-    var cantidad = contarSiDeApi(solicitudes, function (solicitud) {
-        return campoDe(solicitud, 'id_tipo_solicitud') === id;
-    });
-    var pct = porcentajeDeApi(cantidad, solicitudes.length);
-
-    if (titulo) {
-        titulo.setAttribute('data-texto', campoDe(tipo, 'nombre_tipo'));
-    }
-
-    if (numero) {
-        numero.setAttribute('data-texto', textoApi(pct));
-    }
-
-    asignarArcoDeApi(tarjeta.querySelector('.dash-donut-valor'), pct);
-}
-
-function cargarResumen(tipos, solicitudes) {
-    var tarjetas = resumen ? resumen.querySelectorAll('.info-card') : [];
-    var i;
-
-    for (i = 0; i < tarjetas.length; i++) {
-        if (tipos[i]) {
-            asignarResumen(tarjetas[i], tipos[i], solicitudes);
-        } else {
-            limpiarResumen(tarjetas[i]);
+    function texto(valor) {
+        if (valor === undefined || valor === null) {
+            return '';
         }
-    }
-}
 
-function cargarListado() {
-    if (mensaje) {
-        mensaje.textContent = '';
+        return String(valor);
     }
 
-    return Promise.all([
-        apiRequest('tipos_solicitudes'),
-        apiRequest('estados_solicitudes'),
-        apiRequest('solicitudes')
-    ]).then(function (respuestas) {
-        var tipos = listaDeApi(respuestas[0]);
-        var estados = listaDeApi(respuestas[1]);
-        var solicitudes = listaDeApi(respuestas[2]);
+    function normalizar(valor) {
+        return texto(valor).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
 
-        cargarOpcionesDeApi(opcionesRol, tipos, function (tipo) {
-            return campoDe(tipo, 'id');
-        }, function (tipo) {
-            return campoDe(tipo, 'nombre_tipo');
-        }, null, resumenFiltroDeApi(opcionesRol), false);
+    function coincide(solicitud) {
+        var palabras = normalizar(buscar ? buscar.value : '').split(/\s+/).filter(function (palabra) {
+            return palabra !== '';
+        });
+        var fila = normalizar([
+            solicitud.nombre_usuario,
+            solicitud.apellido_usuario,
+            solicitud.solicitante,
+            solicitud.nombre_mascota,
+            solicitud.especie,
+            solicitud.tipo_solicitud,
+            solicitud.estado_solicitud
+        ].join(' '));
 
-        cargarOpcionesDeApi(opcionesEstado, estados, function (estado) {
-            return campoDe(estado, 'id');
-        }, function (estado) {
-            return campoDe(estado, 'nombre_estado');
-        }, null, resumenFiltroDeApi(opcionesEstado), false);
+        for (var i = 0; i < palabras.length; i++) {
+            if (fila.indexOf(palabras[i]) === -1) {
+                return false;
+            }
+        }
 
-        asignarFilasDeApi(cuerpo, solicitudes, asignarFila);
-        cargarResumen(tipos, solicitudes);
-    }).catch(function (error) {
-        asignarFilasDeApi(cuerpo, [], asignarFila);
-        cargarResumen([], []);
+        if (filtroEstado && filtroEstado.value !== '' && normalizar(solicitud.estado_solicitud) !== normalizar(filtroEstado.value)) {
+            return false;
+        }
 
+        if (filtroEspecie && filtroEspecie.value !== '' && normalizar(solicitud.especie) !== normalizar(filtroEspecie.value)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    function clonarModelo(id) {
+        // clona la fila modelo
+        var modelo = document.getElementById(id);
+
+        if (!modelo) {
+            return null;
+        }
+
+        var copia = modelo.cloneNode(true);
+
+        copia.removeAttribute('id');
+        copia.hidden = false;
+
+        return copia;
+    }
+
+    function dibujarPaginador(cantidad) {
+        if (!paginador || !listaPaginas) {
+            return;
+        }
+
+        listaPaginas.querySelectorAll('[data-pagina-numero]').forEach(function (existente) {
+            existente.remove();
+        });
+
+        var total = porPagina > 0 ? Math.ceil(cantidad / porPagina) : 1;
+
+        if (porPagina <= 0 || cantidad <= porPagina) {
+            paginador.hidden = true;
+            return;
+        }
+
+        if (pagina > total) {
+            pagina = total;
+        }
+
+        for (var numero = 1; numero <= total; numero++) {
+            // Diseño (li.page-item > button.page-link) en la fila modelo; aquí solo datos.
+            var item = clonarModelo('pagina-modelo-solicitud');
+
+            if (!item) {
+                return;
+            }
+
+            item.setAttribute('data-pagina-numero', String(numero));
+            item.dataset.activa = numero === pagina ? 'true' : 'false';
+
+            var botonPagina = item.querySelector('.page-link');
+
+            botonPagina.textContent = String(numero);
+
+            if (numero === pagina) {
+                botonPagina.setAttribute('aria-current', 'page');
+            }
+
+            (function (destino) {
+                botonPagina.addEventListener('click', function () {
+                    pagina = destino;
+                    dibujar();
+                });
+            })(numero);
+
+            listaPaginas.insertBefore(item, itemSiguiente);
+        }
+
+        if (itemAnterior) {
+            itemAnterior.dataset.deshabilitado = pagina <= 1 ? 'true' : 'false';
+        }
+
+        if (anterior) {
+            anterior.disabled = pagina <= 1;
+        }
+
+        if (itemSiguiente) {
+            itemSiguiente.dataset.deshabilitado = pagina >= total ? 'true' : 'false';
+        }
+
+        if (siguiente) {
+            siguiente.disabled = pagina >= total;
+        }
+
+        paginador.hidden = false;
+    }
+
+    function dibujar() {
+        cuerpo.querySelectorAll('tr:not(#fila-modelo-solicitud)').forEach(function (fila) {
+            fila.remove();
+        });
+
+        var filas = lista.filter(coincide).sort(function (a, b) {
+            return Number(a.id) - Number(b.id);
+        });
+
+        dibujarPaginador(filas.length);
+
+        var base = porPagina > 0 ? (pagina - 1) * porPagina : 0;
+        var visibles = porPagina > 0 ? filas.slice(base, base + porPagina) : filas;
+
+        visibles.forEach(function (solicitud) {
+            // Estructura de la fila en la fila modelo del HTML; aquí solo datos del backend.
+            var tr = clonarModelo('fila-modelo-solicitud');
+
+            if (!tr) {
+                return;
+            }
+
+            tr.setAttribute('data-id', texto(solicitud.id));
+
+            var valores = {
+                id: texto(solicitud.id),
+                solicitante: texto(solicitud.solicitante),
+                nombre_mascota: texto(solicitud.nombre_mascota),
+                especie: texto(solicitud.especie),
+                tipo_solicitud: texto(solicitud.tipo_solicitud),
+                estado_solicitud: texto(solicitud.estado_solicitud),
+                fecha_solicitud: fechaCorta(solicitud.fecha_solicitud)
+            };
+
+            Object.keys(valores).forEach(function (campo) {
+                var td = tr.querySelector('td[data-campo="' + campo + '"]');
+
+                if (td) {
+                    td.setAttribute('data-texto', valores[campo]);
+                }
+            });
+
+            var enlace = tr.querySelector('a');
+
+            if (enlace) {
+                // le agrega el id al href
+                enlace.setAttribute('href', (enlace.getAttribute('href') || '') + '?id=' + encodeURIComponent(solicitud.id));
+            }
+
+            cuerpo.appendChild(tr);
+        });
+    }
+
+    function agregarOpcion(select, valor) {
+        // clona la opción del modelo
+        var opcion = clonarModelo('opcion-modelo-solicitud');
+
+        if (!opcion) {
+            return;
+        }
+
+        opcion.value = valor;
+        opcion.textContent = valor;
+        select.appendChild(opcion);
+    }
+
+    function tarjetaTipo(tipo, cantidad, total) {
+        // Tarjeta diseñada en el modelo del HTML; aquí solo datos del backend.
+        var tarjeta = clonarModelo('tarjeta-modelo-tipo');
+        var porcentaje = total > 0 ? Math.round((cantidad * 100) / total) : 0;
+        var arco = tarjeta.querySelector('.dash-donut-valor');
+        var numero = tarjeta.querySelector('.dash-kpi-numero');
+        var parteCantidad = tarjeta.querySelector('[data-parte="cantidad"]');
+        var parteTotal = tarjeta.querySelector('[data-parte="total"]');
+
+        tarjeta.querySelector('h3').setAttribute('data-texto', tipo.nombre_tipo || '');
+
+        if (arco) {
+            // Solo números del backend en atributos del SVG;
+            // colores y forma los define el CSS.
+            var escala = parseInt(arco.getAttribute('pathLength') || '100', 10);
+            arco.setAttribute('stroke-dasharray', porcentaje + ' ' + (escala - porcentaje));
+        }
+
+        // Solo números; el "%" lo agrega el CSS y el "/" está en el HTML.
+        if (numero) {
+            numero.setAttribute('data-texto', String(porcentaje));
+        }
+
+        if (parteCantidad) {
+            parteCantidad.textContent = String(cantidad);
+        }
+
+        if (parteTotal) {
+            parteTotal.textContent = String(total);
+        }
+
+        return tarjeta;
+    }
+
+    function dibujarResumen(tipos) {
+        if (!resumen) {
+            return;
+        }
+
+        while (resumen.firstChild) {
+            resumen.removeChild(resumen.firstChild);
+        }
+
+        tipos.forEach(function (tipo) {
+            if (!tipo) {
+                return;
+            }
+
+            var cantidad = lista.filter(function (solicitud) {
+                return String(solicitud.id_tipo_solicitud) === String(tipo.id);
+            }).length;
+
+            resumen.appendChild(tarjetaTipo(tipo, cantidad, lista.length));
+        });
+    }
+
+    function cargarListado() {
+        if (mensaje) {
+            mensaje.textContent = '';
+        }
+
+        var especiesPorMascota = {};
+
+        return apiRequest('mascotas').then(function (respuestaMascotas) {
+            var mascotas = (respuestaMascotas && respuestaMascotas.data) || [];
+
+            (Array.isArray(mascotas) ? mascotas : [mascotas]).forEach(function (mascota) {
+                if (mascota) {
+                    especiesPorMascota[String(mascota.id)] = texto(mascota.especie);
+                }
+            });
+
+            var vistas = {};
+
+            if (filtroEspecie) {
+                while (filtroEspecie.options.length > 1) {
+                    filtroEspecie.remove(1);
+                }
+
+                Object.keys(especiesPorMascota).forEach(function (id) {
+                    var especie = especiesPorMascota[id];
+
+                    if (especie === '' || vistas[especie]) {
+                        return;
+                    }
+
+                    vistas[especie] = true;
+                    agregarOpcion(filtroEspecie, especie);
+                });
+            }
+
+            return apiRequest('solicitudes');
+        }).then(function (respuesta) {
+            var datos = (respuesta && respuesta.data) || [];
+
+            lista = (Array.isArray(datos) ? datos : [datos]).filter(function (solicitud) {
+                return !!solicitud;
+            }).filter(function (solicitud) {
+                var sinSolicitante = texto(solicitud.nombre_usuario) === '' && texto(solicitud.apellido_usuario) === '';
+                var sinMascota = texto(solicitud.nombre_mascota) === '';
+
+                return texto(solicitud.id) !== '' && !sinSolicitante && !sinMascota;
+            }).map(function (solicitud) {
+                solicitud.solicitante = [texto(solicitud.nombre_usuario), texto(solicitud.apellido_usuario)].filter(function (parte) {
+                    return parte !== '';
+                }).join(' ');
+                solicitud.especie = especiesPorMascota[String(solicitud.id_mascota)] || '';
+
+                return solicitud;
+            });
+            dibujar();
+
+            if (mensaje) {
+                mensaje.textContent = mensajeDeApi(respuesta);
+            }
+
+            return apiRequest('estados_solicitudes');
+        }).then(function (respuestaEstados) {
+            var estados = (respuestaEstados && respuestaEstados.data) || [];
+
+            if (filtroEstado) {
+                while (filtroEstado.options.length > 1) {
+                    filtroEstado.remove(1);
+                }
+
+                (Array.isArray(estados) ? estados : [estados]).forEach(function (estado) {
+                    if (estado) {
+                        agregarOpcion(filtroEstado, texto(estado.nombre_estado));
+                    }
+                });
+            }
+
+            return apiRequest('tipos_solicitudes');
+        }).then(function (respuestaTipos) {
+            var tipos = (respuestaTipos && respuestaTipos.data) || [];
+
+            dibujarResumen(Array.isArray(tipos) ? tipos : [tipos]);
+        });
+    }
+
+    if (buscar) {
+        buscar.addEventListener('input', function () {
+            pagina = 1;
+            dibujar();
+        });
+    }
+
+    if (filtroEstado) {
+        filtroEstado.addEventListener('change', function () {
+            pagina = 1;
+            dibujar();
+        });
+    }
+
+    if (filtroEspecie) {
+        filtroEspecie.addEventListener('change', function () {
+            pagina = 1;
+            dibujar();
+        });
+    }
+
+    if (anterior) {
+        anterior.addEventListener('click', function () {
+            if (pagina > 1) {
+                pagina = pagina - 1;
+                dibujar();
+            }
+        });
+    }
+
+    if (siguiente) {
+        siguiente.addEventListener('click', function () {
+            pagina = pagina + 1;
+            dibujar();
+        });
+    }
+
+    panel.querySelectorAll('[data-limpiar]').forEach(function (boton) {
+        boton.addEventListener('click', function () {
+            var campo = document.getElementById(boton.getAttribute('data-limpiar'));
+
+            if (campo) {
+                campo.value = '';
+            }
+
+            pagina = 1;
+            dibujar();
+        });
+    });
+
+    cargarListado().catch(function (error) {
         if (mensaje) {
             mensaje.textContent = mensajeDeApi(error);
         }
     });
-}
-
-if (panel && cuerpo && cabecera && opcionesRol && opcionesEstado) {
-    cargarListado();
-}
+});
