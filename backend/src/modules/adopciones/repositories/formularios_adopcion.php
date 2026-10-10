@@ -677,4 +677,22 @@ function obtener_mascotas_de_formulario(int $id_formulario): array
     $stmt->execute([':id_formulario' => $id_formulario]);
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+} 
+    
+      function obtener_tipo_solicitud_por_id(int $id): array|false
+{
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT id, nombre_tipo
+        FROM tipos_solicitudes
+        WHERE id = :id
+          AND estado = TRUE
+        LIMIT 1
+    ";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([':id' => $id]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
