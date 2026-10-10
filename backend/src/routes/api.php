@@ -274,6 +274,32 @@ function manejarRutas()
             manejar_auditorias();
             break;
 
+                case 'compromisos_adopcion':
+            require_once __DIR__ . '/../modules/adopciones/controllers/formularios_adopcion.php';
+            manejar_compromisos_adopcion();
+            break;
+
+        case 'condiciones_especiales':
+            require_once __DIR__ . '/../modules/adopciones/controllers/formularios_adopcion.php';
+            manejar_condiciones_especiales();
+            break;
+
+        case 'tipos_mascotas':
+            require_once __DIR__ . '/../modules/adopciones/controllers/formularios_adopcion.php';
+            manejar_tipos_mascotas();
+            break;
+
+        case 'formularios_adopcion':
+            require_once __DIR__ . '/../modules/adopciones/controllers/formularios_adopcion.php';
+            manejar_formularios_adopcion();
+            break;
+
+        case 'formularios_transito':
+            require_once __DIR__ . '/../modules/transito/controllers/formularios_transito.php';
+            manejar_formularios_transito();
+            break;    
+
+    
         default:
             responderJson(
                 false,
