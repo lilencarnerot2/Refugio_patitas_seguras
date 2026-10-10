@@ -1392,7 +1392,10 @@
             color: var(--primary-color);
         }
 
-        .public-form,
+        .login-form {
+            max-width: 480px;
+        }
+
         .info-card,
         .pet-card,
         .catalog-empty,
@@ -1416,9 +1419,13 @@
             }
 
             .public-form {
-                margin-left: 16px;
-                margin-right: 16px;
+                margin-left: 20px;
+                margin-right: 20px;
                 padding: 20px 16px;
+            }
+
+            .login-form {
+                max-width: 100%;
             }
 
             .detalle-section {
