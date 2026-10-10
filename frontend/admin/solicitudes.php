@@ -5,7 +5,93 @@ require __DIR__ . '/includes/head.php';
 require __DIR__ . '/includes/header.php';
 ?>
 
-    <section>
+    <section id="panel-solicitudes" class="panel-listado" data-por-pagina="5">
+        <p id="mensaje-formulario" class="mensaje-formulario"></p>
+
+        <div id="resumen-solicitudes" class="dash-fila"></div>
+
+        <div id="bloque-solicitudes" class="info-card">
+            <h3></h3>
+            <div class="listado-controles">
+                <div class="input-group listado-buscar">
+                    <i class="bi bi-search input-group-text"></i>
+                    <input type="search" id="buscar-solicitudes" class="form-control" placeholder="Buscar" aria-label="Buscar">
+                    <button type="button" class="btn btn-outline-secondary" data-limpiar="buscar-solicitudes" aria-label="Limpiar búsqueda"><i class="bi bi-x"></i></button>
+                </div>
+                <div class="input-group listado-filtro-grupo">
+                    <select id="filtro-estado-solicitud" class="form-select listado-filtro" aria-label="Estado">
+                        <option value="" selected disabled hidden>Estado</option>
+                    </select>
+                    <button type="button" class="btn btn-outline-secondary" data-limpiar="filtro-estado-solicitud" aria-label="Limpiar filtro de estado"><i class="bi bi-x"></i></button>
+                </div>
+                <div class="input-group listado-filtro-grupo">
+                    <select id="filtro-especie-solicitud" class="form-select listado-filtro" aria-label="Especie">
+                        <option value="" selected disabled hidden>Especie</option>
+                    </select>
+                    <button type="button" class="btn btn-outline-secondary" data-limpiar="filtro-especie-solicitud" aria-label="Limpiar filtro de especie"><i class="bi bi-x"></i></button>
+                </div>
+            </div>
+            <div class="lista-scroll-mascotas">
+                <table class="dash-tabla">
+                    <thead>
+                        <tr id="cabecera-solicitudes">
+                            <th id="columna-solicitud-id"></th>
+                            <th id="columna-solicitud-solicitante"></th>
+                            <th id="columna-solicitud-mascota"></th>
+                            <th id="columna-solicitud-especie"></th>
+                            <th id="columna-solicitud-tipo"></th>
+                            <th id="columna-solicitud-estado"></th>
+                            <th id="columna-solicitud-fecha"></th>
+                            <th id="columna-solicitud-ver"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpo-solicitudes">
+                        <tr id="fila-modelo-solicitud" hidden>
+                            <td data-campo="id"></td>
+                            <td data-campo="solicitante"></td>
+                            <td data-campo="nombre_mascota"></td>
+                            <td data-campo="especie"></td>
+                            <td data-campo="tipo_solicitud"></td>
+                            <td data-campo="estado_solicitud"></td>
+                            <td data-campo="fecha_solicitud"></td>
+                            <td><a class="abm-ver" href="solicitudes_detalle.php" aria-label="Ver"></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <nav class="paginador" data-paginador aria-label="Paginación" hidden>
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" data-pagina-anterior href="#panel-solicitudes" aria-label="Página anterior"><i class="bi bi-chevron-left"></i></a>
+                    </li>
+                    <li class="page-item" id="pagina-modelo-solicitud" hidden>
+                        <a class="page-link" href="#panel-solicitudes"></a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" data-pagina-siguiente href="#panel-solicitudes" aria-label="Página siguiente"><i class="bi bi-chevron-right"></i></a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- Modelos ocultos con el diseño; el JS los clona y solo pone datos -->
+            <div id="modelos-solicitud" hidden>
+                <article class="info-card" id="tarjeta-modelo-tipo">
+                    <h3></h3>
+                    <div class="dash-kpi">
+                        <svg class="dash-donut" viewBox="0 0 42 42" aria-hidden="true">
+                            <circle class="dash-donut-fondo" cx="21" cy="21" r="15.9"></circle>
+                            <circle class="dash-donut-valor" cx="21" cy="21" r="15.9" pathLength="100" stroke-dasharray="0"></circle>
+                        </svg>
+                        <p class="dash-kpi-numero"></p>
+                    </div>
+                    <ul class="dash-leyenda"><li><span data-parte="cantidad"></span> / <span data-parte="total"></span></li></ul>
+                </article>
+                <option id="opcion-modelo-solicitud"></option>
+            </div>
+        </div>
     </section>
+
+<script src="config.php"></script>
+<script src="../assets/js/api.js?t=<?php echo filemtime(__DIR__ . '/../assets/js/api.js'); ?>"></script>
+<script src="../assets/js/solicitudes.js?t=<?php echo filemtime(__DIR__ . '/../assets/js/solicitudes.js'); ?>"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

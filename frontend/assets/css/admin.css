@@ -1,3 +1,13 @@
+html {
+    scroll-behavior: smooth;
+}
+
+.admin-page #panel-solicitudes,
+.admin-page #panel-usuarios,
+.admin-page #panel-mascotas {
+    scroll-margin-top: calc(var(--header-height) + 12px);
+}
+
 .admin-page nav > ul {
     display: flex;
     flex-direction: column;
@@ -55,18 +65,31 @@
 .admin-page {
     --admin-nav-ancho: 240px;
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto 1fr auto;
     padding-top: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
 }
 
-.admin-page:has(#nav-toggle:checked) {
-    grid-template-columns: var(--admin-nav-ancho) minmax(0, 1fr);
+.admin-page .menu-toggle {
+    flex-shrink: 0;
+    background: transparent;
+    border: 0;
+    padding: 4px;
 }
 
-.admin-page > .nav-toggle {
-    grid-column: 1;
-    grid-row: 1;
+.admin-page .menu-toggle .menu-icon-close {
+    display: none;
+}
+
+.admin-page .menu-toggle[aria-expanded="true"] .menu-icon-bars {
+    display: none;
+}
+
+.admin-page .menu-toggle[aria-expanded="true"] .menu-icon-close {
+    display: inline-block;
 }
 
 .admin-page header {
@@ -79,6 +102,8 @@
     justify-content: space-between;
     gap: 12px;
     width: auto;
+    max-width: 100%;
+    min-width: 0;
     min-height: var(--header-height);
     background: var(--primary-color);
     border-bottom: none;
@@ -87,9 +112,20 @@
     z-index: 1100;
 }
 
+.admin-page .logo-container {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.admin-page .logo-text h1 {
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
 .admin-page .header-actions {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
     gap: 10px;
     padding-right: 0;
 }
@@ -100,49 +136,60 @@
     display: inline-flex;
 }
 
-.admin-page nav {
-    display: none;
-}
-
-.admin-page #nav-toggle:checked ~ nav {
-    display: flex;
+.admin-page #menu-admin {
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
     grid-column: 1;
-    grid-row: 2;
-    position: fixed;
-    top: var(--header-height);
-    left: 0;
-    right: auto;
-    bottom: 0;
-    width: var(--admin-nav-ancho);
-    height: auto;
+    position: static;
+    width: 100%;
     max-height: none;
-    overflow: auto;
+    overflow: visible;
     background: color-mix(in srgb, var(--primary-color) 75%, var(--bg-cream));
     padding: 18px 12px;
-    z-index: 1090;
-    box-shadow: none;
     border-bottom: none;
+    box-shadow: none;
+    z-index: auto;
 }
 
-.admin-page #nav-toggle:checked ~ header .menu-icon-bars {
-    display: none;
-}
-
-.admin-page #nav-toggle:checked ~ header .menu-icon-close {
-    display: inline-block;
+.admin-page #menu-admin.show,
+.admin-page #menu-admin.collapsing {
+    display: flex;
 }
 
 .admin-page section {
     grid-column: 1;
+    min-width: 0;
     padding-top: 8px;
 }
 
-.admin-page #nav-toggle:checked ~ section {
-    grid-column: 2;
-    min-width: 0;
+@media (min-width: 993px) {
+    .admin-page {
+        grid-template-columns: var(--admin-nav-ancho) minmax(0, 1fr);
+    }
+
+    .admin-page header {
+        grid-column: 1 / -1;
+    }
+
+    .admin-page #menu-admin.show,
+    .admin-page #menu-admin.collapsing {
+        display: flex;
+        grid-column: 1;
+        position: sticky;
+        top: var(--header-height);
+        height: calc(100vh - var(--header-height));
+        overflow: auto;
+    }
+
+    .admin-page section {
+        grid-column: 1 / -1;
+    }
+
+    .admin-page:has(#menu-admin.show) section,
+    .admin-page:has(#menu-admin.collapsing) section {
+        grid-column: 2;
+    }
 }
 
 .admin-page #mensaje-panel {
@@ -235,33 +282,20 @@
     display: none;
 }
 
-.admin-page #panel-tipos-estados #mensaje-formulario:not(:empty) {
-    animation: mensaje-desaparece 5s ease forwards;
-}
-
-@keyframes mensaje-desaparece {
-    0%, 70% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
 .admin-page .mensaje-formulario.is-ok,
-.admin-page #castracion-estado.is-ok {
+.admin-page #castracion-estado.is-ok,
+.admin-page .mensaje-formulario[data-estado="ok"],
+.admin-page #castracion-estado[data-estado="ok"] {
     color: var(--primary-color);
 }
 
 .admin-page .mensaje-formulario.is-error,
 .admin-page #castracion-estado.is-error,
-.admin-page #panel-salud .empty-back-link.is-error {
+.admin-page #panel-salud .empty-back-link.is-error,
+.admin-page .mensaje-formulario[data-estado="error"],
+.admin-page #castracion-estado[data-estado="error"],
+.admin-page #panel-salud .empty-back-link[data-estado="error"] {
     color: var(--bs-danger);
-}
-
-.admin-page .btn-baja {
-    background-color: #a32b21;
 }
 
 .admin-page .acciones-formulario {
@@ -274,7 +308,7 @@
 .admin-page .dash-fila {
     display: grid;
     align-items: stretch;
-    gap: 20px;
+    gap: 24px;
     margin: 0 0 28px;
 }
 
@@ -304,7 +338,6 @@
     margin: 0;
 }
 
-.admin-page .dash-torta,
 .admin-page .dash-donut {
     width: 120px;
     height: 120px;
@@ -323,22 +356,46 @@
     --dash-torta-8: #4a90a4;
 }
 
-.admin-page .dash-torta-css {
+.admin-page .dash-torta-svg {
     width: 120px;
     height: 120px;
     flex-shrink: 0;
-    border-radius: 50%;
-    background: conic-gradient(
-        var(--dash-torta-1) 0 var(--torta-1, 0%),
-        var(--dash-torta-2) var(--torta-1, 0%) var(--torta-2, 0%),
-        var(--dash-torta-3) var(--torta-2, 0%) var(--torta-3, 0%),
-        var(--dash-torta-4) var(--torta-3, 0%) var(--torta-4, 0%),
-        var(--dash-torta-5) var(--torta-4, 0%) var(--torta-5, 0%),
-        var(--dash-torta-6) var(--torta-5, 0%) var(--torta-6, 0%),
-        var(--dash-torta-7) var(--torta-6, 0%) var(--torta-7, 0%),
-        var(--dash-torta-8) var(--torta-7, 0%) var(--torta-8, 0%),
-        var(--dash-torta-vacia) var(--torta-8, 0%) 100%
-    );
+}
+
+.admin-page .dash-torta-fondo {
+    fill: none;
+    stroke: var(--dash-torta-vacia);
+    stroke-width: 8;
+}
+
+.admin-page .dash-torta-seg {
+    fill: none;
+    stroke-width: 8;
+}
+
+.admin-page .dash-torta-seg.seg-1 { stroke: var(--dash-torta-1); }
+.admin-page .dash-torta-seg.seg-2 { stroke: var(--dash-torta-2); }
+.admin-page .dash-torta-seg.seg-3 { stroke: var(--dash-torta-3); }
+.admin-page .dash-torta-seg.seg-4 { stroke: var(--dash-torta-4); }
+.admin-page .dash-torta-seg.seg-5 { stroke: var(--dash-torta-5); }
+.admin-page .dash-torta-seg.seg-6 { stroke: var(--dash-torta-6); }
+.admin-page .dash-torta-seg.seg-7 { stroke: var(--dash-torta-7); }
+.admin-page .dash-torta-seg.seg-8 { stroke: var(--dash-torta-8); }
+
+.admin-page .dash-leyenda [data-leyenda="pct"]::after {
+    content: "%";
+}
+
+.admin-page .dash-leyenda [data-leyenda="cantidad"]::before {
+    content: " (";
+}
+
+.admin-page .dash-leyenda [data-leyenda="cantidad"]::after {
+    content: ")";
+}
+
+.admin-page #panel-dashboard .dash-leyenda li:not([data-cantidad]) {
+    display: none;
 }
 
 .admin-page .dash-torta-caja {
@@ -348,13 +405,8 @@
     flex-shrink: 0;
 }
 
-.admin-page .dash-torta-caja .dash-torta-css {
+.admin-page .dash-torta-caja .dash-torta-svg {
     display: block;
-}
-
-.admin-page .dash-torta-hueco {
-    -webkit-mask: radial-gradient(circle closest-side, transparent 56%, #000 57%);
-    mask: radial-gradient(circle closest-side, transparent 56%, #000 57%);
 }
 
 .admin-page .dash-torta-caja .dash-kpi-numero {
@@ -365,28 +417,18 @@
     justify-content: center;
 }
 
-.admin-page .dash-torta-vacia {
-    fill: var(--text-light);
-}
-
-.admin-page .dash-torta-resto,
-.admin-page .dash-torta-parte {
-    fill: none;
-    stroke-width: 32;
-}
-
-.admin-page .dash-torta-resto {
-    stroke: var(--accent-color);
-}
-
-.admin-page .dash-torta-parte {
-    stroke: var(--primary-color);
-}
-
 .admin-page .dash-donut-fondo,
 .admin-page .dash-donut-valor {
     fill: none;
     stroke-width: 6;
+}
+
+.admin-page #panel-salud .resumen-fichas [id$="-pct"]::after {
+    content: "%";
+}
+
+.admin-page #panel-salud .dash-kpi-numero #texto-fichas-pct::after {
+    content: "%";
 }
 
 .admin-page .dash-donut-fondo {
@@ -466,6 +508,23 @@
     background: var(--dash-torta-vacia);
 }
 
+.admin-page #panel-dashboard .info-card {
+    padding: 16px;
+}
+
+.admin-page #panel-dashboard .dash-semanas > div {
+    height: 120px;
+}
+
+.admin-page #panel-dashboard .dash-semanas progress {
+    height: 96px;
+}
+
+.admin-page #panel-dashboard .lista-scroll-mascotas {
+    max-height: 240px;
+    overflow-y: auto;
+}
+
 .admin-page .dash-semanas {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
@@ -482,35 +541,23 @@
     height: 160px;
 }
 
-.admin-page .dash-semanas progress,
-.admin-page .dash-barra {
+.admin-page .dash-semanas progress {
     appearance: none;
     border: none;
     background: var(--icon-bg);
     border-radius: 8px;
-}
-
-.admin-page .dash-semanas progress {
     width: 18px;
     height: 130px;
     writing-mode: vertical-lr;
     direction: rtl;
 }
 
-.admin-page .dash-barra {
-    width: 100%;
-    height: 8px;
-    margin: 6px 0 10px;
-}
-
-.admin-page .dash-semanas progress::-webkit-progress-bar,
-.admin-page .dash-barra::-webkit-progress-bar {
+.admin-page .dash-semanas progress::-webkit-progress-bar {
     background: var(--icon-bg);
     border-radius: 8px;
 }
 
-.admin-page .dash-semanas progress::-webkit-progress-value,
-.admin-page .dash-barra::-webkit-progress-value {
+.admin-page .dash-semanas progress::-webkit-progress-value {
     background: var(--primary-color);
     border-radius: 8px;
 }
@@ -542,6 +589,234 @@
     padding: 16px 18px;
 }
 
+.admin-page #panel-dashboard .info-card {
+    padding: 18px;
+}
+
+.admin-page #panel-dashboard .dash-fila {
+    gap: 14px;
+}
+
+.admin-page #panel-dashboard #card-solicitudes-lista {
+    grid-column: 1 / -1;
+}
+
+/* Barra lateral para subir/bajar en Solicitudes recientes (CSS + Bootstrap overflow) */
+.admin-page #panel-dashboard #card-solicitudes-lista .lista-scroll-mascotas {
+    max-height: 175px;
+    overflow-x: auto;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--icon-bg);
+    scrollbar-gutter: stable;
+}
+
+.admin-page #panel-dashboard #card-solicitudes-lista .lista-scroll-mascotas::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.admin-page #panel-dashboard #card-solicitudes-lista .lista-scroll-mascotas::-webkit-scrollbar-track {
+    background: var(--icon-bg);
+    border-radius: 8px;
+}
+
+.admin-page #panel-dashboard #card-solicitudes-lista .lista-scroll-mascotas::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 8px;
+}
+
+.admin-page #panel-dashboard #card-solicitudes-lista .lista-scroll-mascotas::-webkit-scrollbar-thumb:hover {
+    filter: brightness(0.9);
+}
+
+/* Solicitudes recientes con el mismo estilo de Mascotas recientes */
+.admin-page #panel-dashboard #card-solicitudes-lista .dash-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.admin-page #panel-dashboard #card-solicitudes-lista .dash-tabla thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 10px 14px;
+    border: 0;
+    background: var(--icon-bg);
+    color: var(--primary-color);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.admin-page #panel-dashboard #card-solicitudes-lista .dash-tabla thead th:first-child {
+    border-radius: 12px 0 0 12px;
+}
+
+.admin-page #panel-dashboard #card-solicitudes-lista .dash-tabla thead th:last-child {
+    border-radius: 0 12px 12px 0;
+}
+
+.admin-page #panel-dashboard #card-solicitudes-lista .dash-tabla thead th::before {
+    display: inline;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: normal;
+    line-height: inherit;
+    white-space: nowrap;
+}
+
+.admin-page #panel-dashboard #card-solicitudes-lista .dash-tabla tbody td {
+    padding: 8px 14px;
+}
+
+.admin-page #panel-dashboard .dash-kpi {
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    text-align: left;
+    flex-wrap: nowrap;
+}
+
+.admin-page #panel-dashboard .dash-torta-svg,
+.admin-page #panel-dashboard .dash-torta-caja {
+    width: 96px;
+    height: 96px;
+}
+
+.admin-page #panel-dashboard .dash-torta-caja .dash-kpi-numero {
+    font-size: 22px;
+}
+
+.admin-page #panel-dashboard .dash-kpi-numero {
+    font-size: 26px;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.admin-page #panel-dashboard .dash-leyenda {
+    text-align: left;
+    min-width: 0;
+}
+
+.admin-page #panel-dashboard .dash-leyenda li {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+    text-align: left;
+    overflow-wrap: anywhere;
+}
+
+.admin-page #panel-dashboard .dash-semanas span {
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+/* Títulos de las tarjetas del dashboard */
+.admin-page #card-solicitudes .dash-card-cabecera h3::before {
+    content: "Tipos de solicitud";
+}
+
+.admin-page #card-pendientes .dash-card-cabecera h3::before {
+    content: "Estados de solicitud";
+}
+
+.admin-page #card-mascotas .dash-card-cabecera h3::before {
+    content: "Mascotas";
+}
+
+.admin-page #card-mascotas-lista .dash-card-cabecera h3::before {
+    content: "Mascotas recientes";
+}
+
+.admin-page #card-donaciones .dash-card-cabecera h3::before {
+    content: "Donaciones";
+}
+
+.admin-page #card-solicitudes-lista .dash-card-cabecera h3::before {
+    content: "Solicitudes recientes";
+}
+
+.admin-page #panel-dashboard .dash-card-cabecera .empty-back-link::after {
+    content: "Ver más";
+}
+
+/* Solo muestra los colores con datos */
+.admin-page #panel-dashboard .dash-leyenda li:empty,
+.admin-page #panel-dashboard .dash-leyenda li[data-cantidad="0"] {
+    display: none;
+}
+
+/* Encabezados de las tablas recientes */
+.admin-page #panel-dashboard thead th[data-campo="id"]::before {
+    content: "Id";
+}
+
+.admin-page #panel-dashboard thead th[data-campo="nombre"]::before {
+    content: "Nombre";
+}
+
+.admin-page #panel-dashboard thead th[data-campo="especie"]::before {
+    content: "Especie";
+}
+
+.admin-page #panel-dashboard thead th[data-campo="raza"]::before {
+    content: "Raza";
+}
+
+.admin-page #panel-dashboard thead th[data-campo="fecha_nacimiento_estimada"]::before {
+    content: "Fecha de nacimiento";
+}
+
+.admin-page #panel-dashboard thead th[data-campo="nombre_usuario"]::before {
+    content: "Nombre";
+}
+
+.admin-page #panel-dashboard thead th[data-campo="apellido_usuario"]::before {
+    content: "Apellido";
+}
+
+.admin-page #panel-dashboard thead th[data-campo="nombre_mascota"]::before {
+    content: "Mascota";
+}
+
+.admin-page #panel-dashboard thead th[data-campo="tipo_solicitud"]::before {
+    content: "Tipo";
+}
+
+.admin-page #panel-dashboard thead th[data-campo="estado_solicitud"]::before {
+    content: "Estado";
+}
+
+.admin-page #panel-dashboard thead th[data-campo="fecha_solicitud"]::before {
+    content: "Fecha";
+}
+
+/* Tablas recientes legibles */
+.admin-page #panel-dashboard .dash-card-recientes .lista-scroll-mascotas {
+    overflow-x: auto;
+}
+
+.admin-page #panel-dashboard .dash-card-recientes .dash-tabla {
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.admin-page #panel-dashboard .dash-card-recientes .dash-tabla th,
+.admin-page #panel-dashboard .dash-card-recientes .dash-tabla td {
+    padding: 8px 10px;
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+
 .admin-page .dash-tabla {
     width: auto;
     border-collapse: collapse;
@@ -549,23 +824,23 @@
 }
 
 .admin-page .dash-tabla th {
-    text-align: left;
+    text-align: center;
     color: var(--text-soft);
     font-weight: 500;
-    padding: 0 16px 6px 0;
+    padding: 0 16px 6px;
     white-space: nowrap;
 }
 
 .admin-page .dash-tabla td {
-    padding: 6px 16px 6px 0;
+    padding: 6px 16px;
     color: var(--text-dark);
+    text-align: center;
     vertical-align: middle;
     white-space: nowrap;
 }
 
 .admin-page .dash-tabla th:last-child,
 .admin-page .dash-tabla td:last-child {
-    padding-right: 0;
     color: var(--primary-color);
     font-weight: 500;
 }
@@ -594,8 +869,13 @@
     width: 100%;
 }
 
-.admin-page #panel-salud .dash-tabla td:last-child .is-error {
+.admin-page #panel-salud .dash-tabla td:last-child .is-error,
+.admin-page #panel-salud .dash-tabla td:last-child a[data-estado="error"] {
     color: var(--bs-danger);
+}
+
+.admin-page #panel-salud .dash-tabla td:last-child a[data-estado="ok"] {
+    color: var(--primary-color);
 }
 
 .admin-page #panel-salud .dash-tabla td:last-child {
@@ -781,9 +1061,29 @@
         grid-template-columns: 1fr;
     }
 
-    .admin-page:has(#nav-toggle:checked) {
+    .admin-page {
         --admin-nav-ancho: max(10.5rem, 36vw);
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .admin-page:has(#menu-admin.show),
+    .admin-page:has(#menu-admin.collapsing) {
         grid-template-columns: var(--admin-nav-ancho) minmax(0, 1fr);
+    }
+
+    .admin-page:has(#menu-admin.show) #menu-admin,
+    .admin-page:has(#menu-admin.collapsing) #menu-admin {
+        grid-column: 1;
+        grid-row: 2;
+        position: sticky;
+        top: var(--header-height);
+        max-height: calc(100vh - var(--header-height));
+        overflow: auto;
+    }
+
+    .admin-page:has(#menu-admin.show) section,
+    .admin-page:has(#menu-admin.collapsing) section {
+        grid-column: 2;
     }
 
     .admin-page header {
@@ -803,11 +1103,6 @@
     .admin-page nav > ul > li.nav-sitio,
     .admin-page nav > ul > li.nav-salir {
         display: block;
-    }
-
-    .admin-page #nav-toggle:checked ~ section {
-        grid-column: 2;
-        min-width: 0;
     }
 
     .admin-page .formulario-mascota {
@@ -858,21 +1153,52 @@
         padding-right: 16px;
     }
 
-    .admin-page #panel-salud .dash-tabla th:nth-child(3),
-    .admin-page #panel-salud .dash-tabla td:nth-child(3),
-    .admin-page #panel-salud .dash-tabla th:nth-child(4),
-    .admin-page #panel-salud .dash-tabla td:nth-child(4) {
-        display: none;
-    }
-
     .admin-page #panel-salud .dash-tabla td:last-child {
         max-width: 12rem;
+    }
+
+    .admin-page .info-card,
+    .admin-page .formulario-mascota,
+    .admin-page .panel-listado,
+    .admin-page footer {
+        min-width: 0;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-page .panel-listado .listado-filtro,
+    .admin-page #panel-salud .listado-filtro {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    .admin-page section .btn-primary,
+    .admin-page section .btn-outline {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .admin-page .dash-kpi-numero {
+        font-size: clamp(1.4rem, 6vw, 32px);
+        overflow-wrap: anywhere;
     }
 }
 
 @media (max-width: 576px) {
+    .admin-page header {
+        gap: 8px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .admin-page .logo-icon {
+        padding: 6px;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
     .admin-page .logo-text h1 {
-        font-size: 14px;
+        font-size: clamp(12px, 4.5vw, 14px);
     }
 
     .admin-page .formulario-mascota {
@@ -945,258 +1271,6 @@
     content: "Solicitudes";
 }
 
-.admin-page #listado-tipos .cuadros-catalogo,
-.admin-page #listado-estados .cuadros-catalogo {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
-    align-items: stretch;
-}
-
-.admin-page #listado-tipos .bloque-tipo,
-.admin-page #listado-estados .bloque-estado {
-    margin: 0;
-    padding: 16px;
-}
-
-.admin-page #listado-tipos .bloque-tipo .ficha-usuario-icono,
-.admin-page #listado-estados .bloque-estado .ficha-usuario-icono {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-}
-
-.admin-page #listado-tipos .bloque-tipo .dash-card-cabecera,
-.admin-page #listado-estados .bloque-estado .dash-card-cabecera {
-    margin-bottom: 10px;
-    padding-bottom: 8px;
-}
-
-.admin-page #listado-tipos .bloque-tipo .dash-card-cabecera h3[data-texto]::before,
-.admin-page #listado-estados .bloque-estado .dash-card-cabecera h3[data-texto]::before {
-    content: attr(data-texto);
-}
-
-.admin-page #listado-tipos .bloque-tipo:not(:has(h3[data-texto])),
-.admin-page #listado-estados .bloque-estado:not(:has(h3[data-texto])) {
-    display: none;
-}
-
-.admin-page #panel-tipos-estados #listado-tipos .bloque-tipo .lista-scroll-mascotas,
-.admin-page #panel-tipos-estados #listado-estados .bloque-estado .lista-scroll-mascotas {
-    min-height: 0;
-    max-height: 148px;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-.admin-page #panel-tipos-estados .lista-scroll-mascotas thead th {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
-
-.admin-page #listado-tipos .bloque-tipo .dash-tabla th,
-.admin-page #listado-tipos .bloque-tipo .dash-tabla td,
-.admin-page #listado-estados .bloque-estado .dash-tabla th,
-.admin-page #listado-estados .bloque-estado .dash-tabla td {
-    padding: 8px 10px;
-    font-size: 13px;
-}
-
-.admin-page #panel-tipos-estados [data-campo="id_usuario"] {
-    display: none;
-}
-
-.admin-page #listado-tipos thead th[data-campo="nombre_usuario"]::before,
-.admin-page #listado-estados thead th[data-campo="nombre_usuario"]::before {
-    content: "Nombre";
-}
-
-.admin-page #listado-tipos thead th[data-campo="apellido_usuario"]::before,
-.admin-page #listado-estados thead th[data-campo="apellido_usuario"]::before {
-    content: "Apellido";
-}
-
-.admin-page #listado-tipos thead th[data-campo="estado_solicitud"]::before {
-    content: "Estado";
-}
-
-.admin-page #listado-estados thead th[data-campo="tipo_solicitud"]::before {
-    content: "Tipo";
-}
-
-.admin-page #listado-estados {
-    margin-top: 24px;
-}
-
-.admin-page #listado-tipos .bloque-tipo tbody td:has(> a),
-.admin-page #listado-estados .bloque-estado tbody td:has(> a) {
-    position: relative;
-}
-
-.admin-page #listado-tipos .acciones-tipo,
-.admin-page #listado-estados .acciones-estado {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    margin-top: 12px;
-}
-
-.admin-page #listado-tipos .acciones-tipo .form-select,
-.admin-page #listado-estados .acciones-estado .form-select {
-    flex: 1 1 140px;
-    min-width: 0;
-    height: 40px;
-    background-color: var(--white);
-    color: var(--text-dark);
-}
-
-.admin-page #listado-tipos .acciones-tipo option:not([disabled]):not([value]),
-.admin-page #listado-tipos .acciones-tipo option:not([disabled])[value=""],
-.admin-page #listado-estados .acciones-estado option:not([disabled]):not([value]),
-.admin-page #listado-estados .acciones-estado option:not([disabled])[value=""] {
-    display: none;
-}
-
-.admin-page #listado-estados .opciones-cambio {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-}
-
-.admin-page #listado-tipos .acciones-tipo .btn-primary,
-.admin-page #listado-tipos .acciones-tipo .abm-baja,
-.admin-page #listado-estados .acciones-estado .btn-primary {
-    padding: 8px 16px;
-    border-radius: 25px;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 13px;
-}
-
-.admin-page #listado-estados .opciones-cambio label.btn-primary {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    margin: 0;
-}
-
-.admin-page #listado-estados .opciones-cambio input {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-}
-
-.admin-page #listado-estados .opciones-cambio label:has(input:not([value])),
-.admin-page #listado-estados .opciones-cambio label:has(input[value=""]) {
-    display: none;
-}
-
-.admin-page #listado-estados .opciones-cambio label[data-nombre]::after {
-    content: attr(data-nombre);
-}
-
-.admin-page #listado-tipos .acciones-tipo .btn-primary:hover,
-.admin-page #listado-tipos .acciones-tipo .abm-baja:hover,
-.admin-page #listado-estados .acciones-estado .btn-primary:hover {
-    filter: brightness(1.08);
-}
-
-.admin-page #listado-tipos .acciones-tipo .btn-primary:active,
-.admin-page #listado-tipos .acciones-tipo .abm-baja:active,
-.admin-page #listado-estados .acciones-estado .btn-primary:active {
-    transform: scale(0.96);
-    filter: brightness(0.86);
-}
-
-.admin-page #listado-estados .opciones-cambio label:has(input:checked) {
-    box-shadow: inset 0 0 0 2px var(--white);
-    filter: brightness(0.82);
-}
-
-.admin-page #listado-estados .acciones-estado .btn-primary:focus-visible,
-.admin-page #listado-tipos .acciones-tipo .btn-primary:focus-visible,
-.admin-page #listado-tipos .acciones-tipo .abm-baja:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
-.admin-page #listado-tipos .acciones-tipo [data-alta]::after {
-    content: "Alta";
-}
-
-.admin-page #listado-tipos .acciones-tipo [data-baja]::after {
-    content: "Baja";
-}
-
-.admin-page #listado-tipos .acciones-tipo [data-editar]::after,
-.admin-page #listado-estados .acciones-estado [data-editar]::after {
-    content: "Editar";
-}
-
-.admin-page #listado-tipos .formulario-abm,
-.admin-page #listado-estados .formulario-abm {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-    flex: 1 1 220px;
-    margin: 0;
-}
-
-.admin-page #listado-tipos .formulario-abm .form-control,
-.admin-page #listado-estados .formulario-abm .form-control {
-    flex: 1 1 160px;
-    min-width: 0;
-    height: 44px;
-}
-
-.admin-page #listado-tipos .formulario-abm .btn-primary::after,
-.admin-page #listado-estados .formulario-abm .btn-primary::after {
-    content: "Alta";
-}
-
-.admin-page #listado-tipos .formulario-abm:has([name="id"]:not([value=""])) .btn-primary::after,
-.admin-page #listado-estados .formulario-abm:has([name="id"]:not([value=""])) .btn-primary::after {
-    content: "Editar";
-}
-
-.admin-page #listado-tipos .abm-limpiar,
-.admin-page #listado-estados .abm-limpiar {
-    display: none;
-}
-
-.admin-page #listado-tipos .formulario-abm:has([name="id"]:not([value=""])) .abm-limpiar,
-.admin-page #listado-estados .formulario-abm:has([name="id"]:not([value=""])) .abm-limpiar {
-    display: inline-flex;
-}
-
-.admin-page #columna-tipo-editar::before,
-.admin-page #columna-estado-editar::before {
-    content: "Editar";
-}
-
-.admin-page #listado-tipos .abm-baja,
-.admin-page #listado-estados .abm-baja {
-    background-color: #a32b21;
-    color: var(--white);
-}
-
-.admin-page #listado-tipos tbody tr:not([data-id]) button,
-.admin-page #listado-estados tbody tr:not([data-id]) button {
-    display: none;
-}
-
-.admin-page #listado-tipos .dash-tabla tbody tr[data-id],
-.admin-page #listado-estados .dash-tabla tbody tr[data-id] {
-    cursor: default;
-}
-
 .admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary,
 .admin-page #panel-solicitud-detalle .dash-card-cabecera .btn-primary {
     margin-left: auto;
@@ -1226,7 +1300,10 @@
 .admin-page .panel-listado .lista-scroll-mascotas {
     max-height: none;
     overflow-x: auto;
-    overflow-y: visible;
+    overflow-y: auto;
+    padding-left: 8px;
+    padding-right: 8px;
+    box-sizing: border-box;
 }
 
 .admin-page .panel-listado .dash-tabla {
@@ -1242,6 +1319,7 @@
     font-size: 12px;
     letter-spacing: 0.02em;
     white-space: nowrap;
+    text-align: center;
 }
 
 .admin-page .panel-listado .dash-tabla th:first-child {
@@ -1251,6 +1329,12 @@
 .admin-page .panel-listado .dash-tabla th:last-child {
     border-radius: 0 12px 12px 0;
     color: var(--primary-color);
+    text-align: center;
+}
+
+.admin-page #columna-usuario-ver,
+.admin-page #columna-solicitud-ver {
+    text-align: center;
 }
 
 .admin-page .panel-listado .dash-tabla th,
@@ -1263,6 +1347,26 @@
     padding: 14px 16px;
     border-bottom: 1px solid var(--border-light);
     color: var(--text-dark);
+    text-align: center;
+}
+
+.admin-page #panel-dashboard .dash-tabla th[data-campo="id"],
+.admin-page #panel-dashboard .dash-tabla td[data-campo="id"],
+.admin-page .panel-listado .dash-tabla th:first-child,
+.admin-page .panel-listado .dash-tabla td[data-campo="id"] {
+    text-align: center;
+}
+
+.admin-page #panel-dashboard .dash-tabla th,
+.admin-page #panel-dashboard .dash-tabla td {
+    text-align: center;
+}
+
+.admin-page #panel-dashboard .dash-tabla td a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .admin-page .panel-listado .dash-tabla td[data-texto]::after {
@@ -1316,22 +1420,92 @@
     content: "Estado";
 }
 
-.admin-page #pagina-anterior label::before {
-    content: "Anterior";
+.admin-page #columna-usuario-ver::before,
+.admin-page #columna-solicitud-ver::before {
+    content: "Ver";
 }
 
-.admin-page #pagina-siguiente label::before {
-    content: "Siguiente";
+.admin-page #columna-usuario-editar::before {
+    content: "Editar";
+}
+
+.admin-page #columna-usuario-alta::before {
+    content: "Alta";
+}
+
+.admin-page #columna-usuario-baja::before {
+    content: "Baja";
+}
+
+.admin-page .panel-listado .dash-tabla .abm-editar::after {
+    content: "Editar";
+}
+
+.admin-page .panel-listado .dash-tabla .abm-alta::after {
+    content: "Alta";
+}
+
+.admin-page .panel-listado .dash-tabla .abm-baja::after {
+    content: "Baja";
+}
+
+.admin-page .panel-listado .dash-tabla .abm-ver,
+.admin-page .panel-listado .dash-tabla .abm-editar,
+.admin-page .panel-listado .dash-tabla .abm-alta,
+.admin-page .panel-listado .dash-tabla .abm-baja {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 72px;
+    min-width: 72px;
+    max-width: 72px;
+    min-height: 34px;
+    padding: 8px 10px;
+    box-shadow: none;
+    border: none;
+    border-radius: 999px;
+    background: var(--primary-color);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.admin-page .panel-listado .dash-tabla td:has(> a[class*="abm"]),
+.admin-page .panel-listado .dash-tabla td:has(> button[class*="abm"]) {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.admin-page .panel-listado .dash-tabla .abm-baja {
+    background: var(--primary-color);
+}
+
+.admin-page .panel-listado .dash-tabla .abm-alta:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.admin-page #panel-usuarios .dash-tabla {
+    font-size: 12px;
+}
+
+.admin-page #panel-usuarios .dash-tabla th,
+.admin-page #panel-usuarios .dash-tabla td {
+    padding: 10px 12px;
 }
 
 .admin-page .panel-listado .dash-tabla td:first-child {
     font-weight: 600;
+    white-space: normal;
 }
 
 .admin-page .panel-listado .dash-tabla td[data-estado]::after,
-.admin-page #detalle-estado::after,
-.admin-page #opciones-estado label::after,
-.admin-page .panel-listado .listado-filtro-estado .listado-filtro-resumen::after {
+.admin-page #detalle-estado::after {
     display: inline-flex;
     align-items: center;
     padding: 3px 10px;
@@ -1347,13 +1521,7 @@
 .admin-page .panel-listado .dash-tabla td[data-estado="1"]::after,
 .admin-page #detalle-estado[data-estado="true"]::after,
 .admin-page #detalle-estado[data-estado="t"]::after,
-.admin-page #detalle-estado[data-estado="1"]::after,
-.admin-page #opciones-estado label:has(input[data-estado="true"])::after,
-.admin-page #opciones-estado label:has(input[data-estado="t"])::after,
-.admin-page #opciones-estado label:has(input[data-estado="1"])::after,
-.admin-page .panel-listado .listado-filtro-estado:has([data-estado="true"]:checked) .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-estado:has([data-estado="t"]:checked) .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-estado:has([data-estado="1"]:checked) .listado-filtro-resumen::after {
+.admin-page #detalle-estado[data-estado="1"]::after {
     content: "Activo";
     color: var(--primary-color);
     border-color: var(--primary-color);
@@ -1365,20 +1533,15 @@
 .admin-page .panel-listado .dash-tabla td[data-estado="0"]::after,
 .admin-page #detalle-estado[data-estado="false"]::after,
 .admin-page #detalle-estado[data-estado="f"]::after,
-.admin-page #detalle-estado[data-estado="0"]::after,
-.admin-page #opciones-estado label:has(input[data-estado="false"])::after,
-.admin-page #opciones-estado label:has(input[data-estado="f"])::after,
-.admin-page #opciones-estado label:has(input[data-estado="0"])::after,
-.admin-page .panel-listado .listado-filtro-estado:has([data-estado="false"]:checked) .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-estado:has([data-estado="f"]:checked) .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-estado:has([data-estado="0"]:checked) .listado-filtro-resumen::after {
+.admin-page #detalle-estado[data-estado="0"]::after {
     content: "Inactivo";
     color: #a32b21;
     border-color: #a32b21;
     background: transparent;
 }
 
-.admin-page .panel-listado .listado-controles {
+.admin-page .panel-listado .listado-controles,
+.admin-page #panel-salud .listado-controles {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -1386,7 +1549,8 @@
     margin-bottom: 18px;
 }
 
-.admin-page .panel-listado .listado-buscar {
+.admin-page .panel-listado .listado-buscar,
+.admin-page #panel-salud .listado-buscar {
     position: relative;
     display: flex;
     align-items: center;
@@ -1402,7 +1566,8 @@
     color: var(--text-soft);
 }
 
-.admin-page .panel-listado .listado-buscar .form-control {
+.admin-page .panel-listado .listado-buscar .form-control,
+.admin-page #panel-salud .listado-buscar .form-control {
     border: 0;
     box-shadow: none;
     background: transparent;
@@ -1410,8 +1575,20 @@
     height: 42px;
 }
 
+.admin-page .panel-listado .listado-buscar input[type="search"]::-webkit-search-cancel-button,
+.admin-page #panel-salud .listado-buscar input[type="search"]::-webkit-search-cancel-button {
+    display: none;
+}
+
+.admin-page .panel-listado .listado-buscar input[type="search"]::-ms-clear,
+.admin-page #panel-salud .listado-buscar input[type="search"]::-ms-clear {
+    display: none;
+}
+
 .admin-page .panel-listado .listado-buscar .form-control::placeholder,
-.admin-page .panel-listado .listado-buscar .form-control::-webkit-input-placeholder {
+.admin-page .panel-listado .listado-buscar .form-control::-webkit-input-placeholder,
+.admin-page #panel-salud .listado-buscar .form-control::placeholder,
+.admin-page #panel-salud .listado-buscar .form-control::-webkit-input-placeholder {
     color: transparent;
     opacity: 0;
 }
@@ -1436,7 +1613,8 @@
     visibility: hidden;
 }
 
-.admin-page .panel-listado .listado-filtro {
+.admin-page .panel-listado .listado-filtro,
+.admin-page #panel-salud .listado-filtro {
     position: relative;
     display: flex;
     align-items: center;
@@ -1445,480 +1623,41 @@
     height: 44px;
 }
 
-.admin-page .panel-listado .filtro-interruptor {
-    position: absolute;
-    width: 0;
-    height: 0;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.admin-page .panel-listado .filtro-fondo {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 4;
-}
-
-.admin-page .panel-listado .listado-filtro-rol:has(.filtro-interruptor:checked) .filtro-fondo,
-.admin-page .panel-listado .listado-filtro-estado-nombre:has(.filtro-interruptor:checked) .filtro-fondo,
-.admin-page .panel-listado .listado-filtro-estado:has(.filtro-interruptor:checked) .filtro-fondo {
-    display: block;
-}
-
-.admin-page .panel-listado .listado-filtro-rol .listado-filtro-resumen::before {
-    content: "Rol";
-}
-
-.admin-page #panel-solicitudes .listado-filtro-rol .listado-filtro-resumen::before {
-    content: "Tipo";
-}
-
-.admin-page .panel-listado .listado-filtro-estado .listado-filtro-resumen::before,
-.admin-page .panel-listado .listado-filtro-estado-nombre .listado-filtro-resumen::before {
-    content: "Estado";
-}
-
-.admin-page .panel-listado .listado-filtro-estado,
-.admin-page .panel-listado .listado-filtro-estado-nombre,
-.admin-page .panel-listado .listado-filtro-rol {
-    display: block;
-    height: auto;
-    min-height: 44px;
-    overflow: visible;
-    cursor: pointer;
-}
-
-.admin-page .panel-listado .listado-filtro-resumen {
-    position: relative;
+.admin-page .panel-listado .listado-filtro-grupo,
+.admin-page #panel-salud .listado-filtro-grupo {
+    flex: 0 1 220px;
+    min-width: 0;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
     height: 44px;
-    padding: 0 2.2em 0 12px;
+    margin: 0;
+    padding: 0 8px 0 14px;
     border: 1px solid var(--border-light);
     border-radius: 12px;
     background: var(--white);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    outline: none;
-}
-
-.admin-page .panel-listado .listado-filtro-flecha {
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    width: 8px;
-    height: 8px;
-    margin-top: -6px;
-    border-right: 2px solid var(--text-soft);
-    border-bottom: 2px solid var(--text-soft);
-    transform: rotate(45deg);
-    pointer-events: none;
-}
-
-.admin-page .panel-listado .listado-filtro-rol:has(.filtro-interruptor:checked) .listado-filtro-flecha,
-.admin-page .panel-listado .listado-filtro-estado-nombre:has(.filtro-interruptor:checked) .listado-filtro-flecha,
-.admin-page .panel-listado .listado-filtro-estado:has(.filtro-interruptor:checked) .listado-filtro-flecha {
-    margin-top: -2px;
-    transform: rotate(-135deg);
-}
-
-.admin-page .panel-listado .listado-filtro-resumen::before {
-    color: color-mix(in srgb, var(--text-soft) 65%, transparent);
-}
-
-.admin-page .panel-listado .listado-filtro-estado:has(#opciones-estado input[data-estado]:checked) .listado-filtro-resumen::before,
-.admin-page .panel-listado .listado-filtro-estado-nombre:has(#opciones-estado input[value]:not([value=""]):checked) .listado-filtro-resumen::before,
-.admin-page .panel-listado .listado-filtro-rol:has(#opciones-rol input[value]:not([value=""]):checked) .listado-filtro-resumen::before {
-    content: none;
-}
-
-.admin-page .panel-listado .listado-filtro-estado .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-estado-nombre .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-rol .listado-filtro-resumen::after {
-    display: none;
-}
-
-.admin-page .panel-listado .listado-filtro-rol:has(#opciones-rol label:nth-child(1) input:checked):not(:has(#opciones-rol label:not(:nth-child(1)) input:checked)) .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-estado-nombre:has(#opciones-estado label:nth-child(1) input:checked):not(:has(#opciones-estado label:not(:nth-child(1)) input:checked)) .listado-filtro-resumen::after {
-    display: inline;
-    position: static;
-    border: 0;
-    padding: 0;
-    background: transparent;
-    color: var(--text-dark);
-    font-size: inherit;
-    font-weight: 400;
-    content: attr(data-nombre-1);
-}
-
-.admin-page .panel-listado .listado-filtro-rol:has(#opciones-rol label:nth-child(2) input:checked):not(:has(#opciones-rol label:not(:nth-child(2)) input:checked)) .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-estado-nombre:has(#opciones-estado label:nth-child(2) input:checked):not(:has(#opciones-estado label:not(:nth-child(2)) input:checked)) .listado-filtro-resumen::after {
-    display: inline;
-    position: static;
-    border: 0;
-    padding: 0;
-    background: transparent;
-    color: var(--text-dark);
-    font-size: inherit;
-    font-weight: 400;
-    content: attr(data-nombre-2);
-}
-
-.admin-page .panel-listado .listado-filtro-rol:has(#opciones-rol label:nth-child(3) input:checked):not(:has(#opciones-rol label:not(:nth-child(3)) input:checked)) .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-estado-nombre:has(#opciones-estado label:nth-child(3) input:checked):not(:has(#opciones-estado label:not(:nth-child(3)) input:checked)) .listado-filtro-resumen::after {
-    display: inline;
-    position: static;
-    border: 0;
-    padding: 0;
-    background: transparent;
-    color: var(--text-dark);
-    font-size: inherit;
-    font-weight: 400;
-    content: attr(data-nombre-3);
-}
-
-.admin-page .panel-listado .listado-filtro-rol:has(#opciones-rol label:nth-child(4) input:checked):not(:has(#opciones-rol label:not(:nth-child(4)) input:checked)) .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-estado-nombre:has(#opciones-estado label:nth-child(4) input:checked):not(:has(#opciones-estado label:not(:nth-child(4)) input:checked)) .listado-filtro-resumen::after {
-    display: inline;
-    position: static;
-    border: 0;
-    padding: 0;
-    background: transparent;
-    color: var(--text-dark);
-    font-size: inherit;
-    font-weight: 400;
-    content: attr(data-nombre-4);
-}
-
-.admin-page .panel-listado .listado-filtro-rol:has(#opciones-rol label:nth-child(5) input:checked):not(:has(#opciones-rol label:not(:nth-child(5)) input:checked)) .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-estado-nombre:has(#opciones-estado label:nth-child(5) input:checked):not(:has(#opciones-estado label:not(:nth-child(5)) input:checked)) .listado-filtro-resumen::after {
-    display: inline;
-    position: static;
-    border: 0;
-    padding: 0;
-    background: transparent;
-    color: var(--text-dark);
-    font-size: inherit;
-    font-weight: 400;
-    content: attr(data-nombre-5);
-}
-
-.admin-page .panel-listado .listado-filtro-rol:has(#opciones-rol label:nth-child(6) input:checked):not(:has(#opciones-rol label:not(:nth-child(6)) input:checked)) .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-estado-nombre:has(#opciones-estado label:nth-child(6) input:checked):not(:has(#opciones-estado label:not(:nth-child(6)) input:checked)) .listado-filtro-resumen::after {
-    display: inline;
-    position: static;
-    border: 0;
-    padding: 0;
-    background: transparent;
-    color: var(--text-dark);
-    font-size: inherit;
-    font-weight: 400;
-    content: attr(data-nombre-6);
-}
-
-.admin-page .panel-listado .listado-filtro-rol:has(#opciones-rol label:nth-child(7) input:checked):not(:has(#opciones-rol label:not(:nth-child(7)) input:checked)) .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-estado-nombre:has(#opciones-estado label:nth-child(7) input:checked):not(:has(#opciones-estado label:not(:nth-child(7)) input:checked)) .listado-filtro-resumen::after {
-    display: inline;
-    position: static;
-    border: 0;
-    padding: 0;
-    background: transparent;
-    color: var(--text-dark);
-    font-size: inherit;
-    font-weight: 400;
-    content: attr(data-nombre-7);
-}
-
-.admin-page .panel-listado .listado-filtro-rol:has(#opciones-rol label:nth-child(8) input:checked):not(:has(#opciones-rol label:not(:nth-child(8)) input:checked)) .listado-filtro-resumen::after,
-.admin-page .panel-listado .listado-filtro-estado-nombre:has(#opciones-estado label:nth-child(8) input:checked):not(:has(#opciones-estado label:not(:nth-child(8)) input:checked)) .listado-filtro-resumen::after {
-    display: inline;
-    position: static;
-    border: 0;
-    padding: 0;
-    background: transparent;
-    color: var(--text-dark);
-    font-size: inherit;
-    font-weight: 400;
-    content: attr(data-nombre-8);
-}
-
-.admin-page .panel-listado:has(#opciones-rol label:nth-child(1) input:checked):not(:has(#opciones-rol label:not(:nth-child(1)) input:checked)) tbody tr:not([data-rol-pos="1"]),
-.admin-page .panel-listado:has(#opciones-rol label:nth-child(2) input:checked):not(:has(#opciones-rol label:not(:nth-child(2)) input:checked)) tbody tr:not([data-rol-pos="2"]),
-.admin-page .panel-listado:has(#opciones-rol label:nth-child(3) input:checked):not(:has(#opciones-rol label:not(:nth-child(3)) input:checked)) tbody tr:not([data-rol-pos="3"]),
-.admin-page .panel-listado:has(#opciones-rol label:nth-child(4) input:checked):not(:has(#opciones-rol label:not(:nth-child(4)) input:checked)) tbody tr:not([data-rol-pos="4"]),
-.admin-page .panel-listado:has(#opciones-rol label:nth-child(5) input:checked):not(:has(#opciones-rol label:not(:nth-child(5)) input:checked)) tbody tr:not([data-rol-pos="5"]),
-.admin-page .panel-listado:has(#opciones-rol label:nth-child(6) input:checked):not(:has(#opciones-rol label:not(:nth-child(6)) input:checked)) tbody tr:not([data-rol-pos="6"]),
-.admin-page .panel-listado:has(#opciones-rol label:nth-child(7) input:checked):not(:has(#opciones-rol label:not(:nth-child(7)) input:checked)) tbody tr:not([data-rol-pos="7"]),
-.admin-page .panel-listado:has(#opciones-rol label:nth-child(8) input:checked):not(:has(#opciones-rol label:not(:nth-child(8)) input:checked)) tbody tr:not([data-rol-pos="8"]) {
-    display: none;
-}
-
-.admin-page #panel-solicitudes:has(#opciones-estado label:nth-child(1) input:checked):not(:has(#opciones-estado label:not(:nth-child(1)) input:checked)) tbody tr:not([data-estado-pos="1"]),
-.admin-page #panel-solicitudes:has(#opciones-estado label:nth-child(2) input:checked):not(:has(#opciones-estado label:not(:nth-child(2)) input:checked)) tbody tr:not([data-estado-pos="2"]),
-.admin-page #panel-solicitudes:has(#opciones-estado label:nth-child(3) input:checked):not(:has(#opciones-estado label:not(:nth-child(3)) input:checked)) tbody tr:not([data-estado-pos="3"]),
-.admin-page #panel-solicitudes:has(#opciones-estado label:nth-child(4) input:checked):not(:has(#opciones-estado label:not(:nth-child(4)) input:checked)) tbody tr:not([data-estado-pos="4"]),
-.admin-page #panel-solicitudes:has(#opciones-estado label:nth-child(5) input:checked):not(:has(#opciones-estado label:not(:nth-child(5)) input:checked)) tbody tr:not([data-estado-pos="5"]),
-.admin-page #panel-solicitudes:has(#opciones-estado label:nth-child(6) input:checked):not(:has(#opciones-estado label:not(:nth-child(6)) input:checked)) tbody tr:not([data-estado-pos="6"]),
-.admin-page #panel-solicitudes:has(#opciones-estado label:nth-child(7) input:checked):not(:has(#opciones-estado label:not(:nth-child(7)) input:checked)) tbody tr:not([data-estado-pos="7"]),
-.admin-page #panel-solicitudes:has(#opciones-estado label:nth-child(8) input:checked):not(:has(#opciones-estado label:not(:nth-child(8)) input:checked)) tbody tr:not([data-estado-pos="8"]) {
-    display: none;
-}
-
-.admin-page .panel-listado .listado-filtro-estado:has([data-estado]:checked) .listado-filtro-resumen::after {
-    display: inline-flex;
-    position: static;
-}
-
-.admin-page .panel-listado .filtro-abrir {
-    position: absolute;
-    inset: 0;
-    margin: 0;
-    cursor: pointer;
-}
-
-.admin-page .panel-listado .filtro-limpiar {
-    display: none;
-    position: absolute;
-    inset: 0 2.2em 0 0;
-    z-index: 2;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-}
-
-.admin-page .panel-listado .listado-filtro-rol:has(#opciones-rol input[value]:not([value=""]):checked) .filtro-limpiar,
-.admin-page .panel-listado .listado-filtro-estado-nombre:has(#opciones-estado input[value]:not([value=""]):checked) .filtro-limpiar,
-.admin-page .panel-listado .listado-filtro-estado:has(#opciones-estado input[data-estado]:checked) .filtro-limpiar {
-    display: block;
-}
-
-.admin-page #opciones-estado,
-.admin-page #opciones-rol {
-    display: none;
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-    z-index: 5;
-    max-height: 200px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding: 6px 0;
-    border: 1px solid var(--border-light);
-    border-radius: 12px;
-    background: var(--white);
-}
-
-.admin-page .panel-listado .listado-filtro-rol:has(.filtro-interruptor:checked) #opciones-rol,
-.admin-page .panel-listado .listado-filtro-estado-nombre:has(.filtro-interruptor:checked) #opciones-estado,
-.admin-page .panel-listado .listado-filtro-estado:has(.filtro-interruptor:checked) #opciones-estado {
-    display: block;
-}
-
-.admin-page #opciones-estado label,
-.admin-page #opciones-rol label {
-    position: relative;
-    display: flex;
-    align-items: center;
-    min-height: 40px;
-    padding: 8px 12px;
-    cursor: pointer;
-}
-
-.admin-page #opciones-estado input,
-.admin-page #opciones-rol input {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    opacity: 0;
-    cursor: pointer;
-}
-
-.admin-page #opciones-estado label[data-nombre]::after,
-.admin-page #opciones-rol label[data-nombre]::after {
-    content: attr(data-nombre);
-    color: var(--text-dark);
-    border: 0;
-    padding: 0;
-    background: transparent;
-    font-size: inherit;
-    font-weight: 400;
-}
-
-.admin-page #opciones-estado label:has(input:not([value])),
-.admin-page #opciones-estado label:has(input[value=""]),
-.admin-page #opciones-rol label:has(input:not([value])),
-.admin-page #opciones-rol label:has(input[value=""]) {
-    display: none;
-}
-
-.admin-page #opciones-estado:not(:has(input[value]:not([value=""]))),
-.admin-page #opciones-rol:not(:has(input[value]:not([value=""]))) {
-    display: none;
-}
-
-.admin-page .panel-listado .dash-tabla td:first-child {
-    white-space: normal;
-}
-
-.admin-page .panel-listado .dash-tabla td:first-child span {
-    display: block;
-}
-
-.admin-page .panel-listado .dash-tabla td:first-child span:first-child {
-    font-weight: 600;
-}
-
-.admin-page .panel-listado .dash-tabla td:first-child span:last-child {
-    color: var(--text-soft);
-    font-size: 13px;
-    font-weight: 400;
-}
-
-.admin-page .panel-listado .dash-tabla td:first-child span:empty {
-    display: none;
-}
-
-.admin-page .panel-listado .listado-paginacion {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 16px;
-}
-
-.admin-page .panel-listado .pagina-radio {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    overflow: hidden;
-}
-
-.admin-page #pagina-anterior,
-.admin-page #pagina-siguiente {
-    display: flex;
-    align-items: center;
-}
-
-.admin-page #pagina-anterior label,
-.admin-page #pagina-siguiente label {
-    display: none;
-    border: 1px solid var(--border-light);
-    background: var(--white);
-    color: var(--primary-color);
-    border-radius: 8px;
-    padding: 6px 14px;
-    cursor: pointer;
-}
-
-.admin-page .panel-listado:has(#pagina-2:checked) #pagina-anterior label[for="pagina-1"],
-.admin-page .panel-listado:has(#pagina-3:checked) #pagina-anterior label[for="pagina-2"],
-.admin-page .panel-listado:has(#pagina-4:checked) #pagina-anterior label[for="pagina-3"],
-.admin-page .panel-listado:has(#pagina-5:checked) #pagina-anterior label[for="pagina-4"],
-.admin-page .panel-listado:has(#pagina-6:checked) #pagina-anterior label[for="pagina-5"],
-.admin-page .panel-listado:has(#pagina-7:checked) #pagina-anterior label[for="pagina-6"],
-.admin-page .panel-listado:has(#pagina-8:checked) #pagina-anterior label[for="pagina-7"] {
-    display: inline-flex;
-}
-
-.admin-page .panel-listado:has(#pagina-1:checked):has(tbody tr:nth-child(6)[data-id]) #pagina-siguiente label[for="pagina-2"],
-.admin-page .panel-listado:has(#pagina-2:checked):has(tbody tr:nth-child(11)[data-id]) #pagina-siguiente label[for="pagina-3"],
-.admin-page .panel-listado:has(#pagina-3:checked):has(tbody tr:nth-child(16)[data-id]) #pagina-siguiente label[for="pagina-4"],
-.admin-page .panel-listado:has(#pagina-4:checked):has(tbody tr:nth-child(21)[data-id]) #pagina-siguiente label[for="pagina-5"],
-.admin-page .panel-listado:has(#pagina-5:checked):has(tbody tr:nth-child(26)[data-id]) #pagina-siguiente label[for="pagina-6"],
-.admin-page .panel-listado:has(#pagina-6:checked):has(tbody tr:nth-child(31)[data-id]) #pagina-siguiente label[for="pagina-7"],
-.admin-page .panel-listado:has(#pagina-7:checked):has(tbody tr:nth-child(36)[data-id]) #pagina-siguiente label[for="pagina-8"] {
-    display: inline-flex;
-}
-
-.admin-page .panel-listado:has(#pagina-1:checked):not(:has(tbody tr:nth-child(6)[data-id])) #pagina-anterior,
-.admin-page .panel-listado:has(#pagina-1:checked):not(:has(tbody tr:nth-child(6)[data-id])) #pagina-siguiente {
-    pointer-events: none;
-}
-
-.admin-page .panel-listado:has(#pagina-1:checked):not(:has(tbody tr:nth-child(6)[data-id])) #pagina-anterior label,
-.admin-page .panel-listado:has(#pagina-1:checked):not(:has(tbody tr:nth-child(6)[data-id])) #pagina-siguiente label {
     color: var(--text-soft);
 }
 
-.admin-page .panel-listado .listado-paginacion p {
-    margin: 0;
+.admin-page .panel-listado .listado-filtro-grupo .listado-filtro,
+.admin-page #panel-salud .listado-filtro-grupo .listado-filtro {
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+    height: 42px;
+    padding: 0 1.75rem 0 0;
+    border: 0;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.admin-page .panel-listado .listado-filtro-grupo .btn,
+.admin-page #panel-salud .listado-filtro-grupo .btn {
+    flex: 0 0 auto;
+    border: 0;
+    background: transparent;
+    padding: 0 6px;
     color: var(--text-soft);
-    font-size: 14px;
-}
-
-.admin-page .panel-listado:not(:has(tbody tr)) #pagina-indicador {
-    display: none;
-}
-
-.admin-page .panel-listado {
-    --pagina: "1";
-    --total: "1";
-}
-
-.admin-page .panel-listado:has(#pagina-2:checked) { --pagina: "2"; }
-.admin-page .panel-listado:has(#pagina-3:checked) { --pagina: "3"; }
-.admin-page .panel-listado:has(#pagina-4:checked) { --pagina: "4"; }
-.admin-page .panel-listado:has(#pagina-5:checked) { --pagina: "5"; }
-.admin-page .panel-listado:has(#pagina-6:checked) { --pagina: "6"; }
-.admin-page .panel-listado:has(#pagina-7:checked) { --pagina: "7"; }
-.admin-page .panel-listado:has(#pagina-8:checked) { --pagina: "8"; }
-
-.admin-page .panel-listado:has(tbody tr:nth-child(6)[data-id]) { --total: "2"; }
-.admin-page .panel-listado:has(tbody tr:nth-child(11)[data-id]) { --total: "3"; }
-.admin-page .panel-listado:has(tbody tr:nth-child(16)[data-id]) { --total: "4"; }
-.admin-page .panel-listado:has(tbody tr:nth-child(21)[data-id]) { --total: "5"; }
-.admin-page .panel-listado:has(tbody tr:nth-child(26)[data-id]) { --total: "6"; }
-.admin-page .panel-listado:has(tbody tr:nth-child(31)[data-id]) { --total: "7"; }
-.admin-page .panel-listado:has(tbody tr:nth-child(36)[data-id]) { --total: "8"; }
-
-.admin-page #pagina-indicador::after {
-    content: var(--pagina) " / " var(--total);
-}
-
-.admin-page .panel-listado:has(#pagina-1:checked) tbody tr:nth-child(n+6),
-.admin-page .panel-listado:has(#pagina-2:checked) tbody tr:nth-child(-n+5),
-.admin-page .panel-listado:has(#pagina-2:checked) tbody tr:nth-child(n+11),
-.admin-page .panel-listado:has(#pagina-3:checked) tbody tr:nth-child(-n+10),
-.admin-page .panel-listado:has(#pagina-3:checked) tbody tr:nth-child(n+16),
-.admin-page .panel-listado:has(#pagina-4:checked) tbody tr:nth-child(-n+15),
-.admin-page .panel-listado:has(#pagina-4:checked) tbody tr:nth-child(n+21),
-.admin-page .panel-listado:has(#pagina-5:checked) tbody tr:nth-child(-n+20),
-.admin-page .panel-listado:has(#pagina-5:checked) tbody tr:nth-child(n+26),
-.admin-page .panel-listado:has(#pagina-6:checked) tbody tr:nth-child(-n+25),
-.admin-page .panel-listado:has(#pagina-6:checked) tbody tr:nth-child(n+31),
-.admin-page .panel-listado:has(#pagina-7:checked) tbody tr:nth-child(-n+30),
-.admin-page .panel-listado:has(#pagina-7:checked) tbody tr:nth-child(n+36),
-.admin-page .panel-listado:has(#pagina-8:checked) tbody tr:nth-child(-n+35) {
-    display: none;
-}
-
-.admin-page .panel-listado:has(#opciones-rol input[value]:not([value=""]):checked) tbody tr[data-id],
-.admin-page .panel-listado:has(#opciones-estado input[value]:not([value=""]):checked) tbody tr[data-id],
-.admin-page .panel-listado:has(#opciones-estado input[data-estado]:checked) tbody tr[data-id],
-.admin-page .panel-listado[data-q] tbody tr[data-id] {
-    display: table-row;
-}
-
-.admin-page .panel-listado:has(#opciones-estado [data-estado="true"]:checked) tbody tr:not([data-estado="true"]),
-.admin-page .panel-listado:has(#opciones-estado [data-estado="t"]:checked) tbody tr:not([data-estado="t"]),
-.admin-page .panel-listado:has(#opciones-estado [data-estado="1"]:checked) tbody tr:not([data-estado="1"]),
-.admin-page .panel-listado:has(#opciones-estado [data-estado="false"]:checked) tbody tr:not([data-estado="false"]),
-.admin-page .panel-listado:has(#opciones-estado [data-estado="f"]:checked) tbody tr:not([data-estado="f"]),
-.admin-page .panel-listado:has(#opciones-estado [data-estado="0"]:checked) tbody tr:not([data-estado="0"]) {
-    display: none;
-}
-
-.admin-page .panel-listado:has(#opciones-rol input[value]:not([value=""]):checked) .listado-paginacion,
-.admin-page .panel-listado:has(#opciones-estado input[value]:not([value=""]):checked) .listado-paginacion,
-.admin-page .panel-listado:has(#opciones-estado input[data-estado]:checked) .listado-paginacion,
-.admin-page .panel-listado[data-q] .listado-paginacion {
-    display: none;
 }
 
 .admin-page #etiqueta-uid::before {
@@ -1934,26 +1673,9 @@
 }
 
 .admin-page #columna-solicitud-id::before,
-.admin-page #columna-tipo-id::before,
-.admin-page #columna-estado-id::before,
 .admin-page #bloque-solicitudes .dash-tabla td[data-campo="id"]::before,
 .admin-page .panel-listado .dash-tabla td[data-campo="id"]::before {
     content: "Id";
-}
-
-.admin-page #columna-tipo-nombre::before,
-.admin-page #panel-tipos .dash-tabla td[data-campo="nombre_tipo"]::before {
-    content: "Nombre";
-}
-
-.admin-page #columna-tipo-baja::before,
-.admin-page #columna-estado-baja::before {
-    content: "Baja";
-}
-
-.admin-page #columna-estado-nombre::before,
-.admin-page #panel-estados .dash-tabla td[data-campo="nombre_estado"]::before {
-    content: "Nombre";
 }
 
 .admin-page #columna-solicitud-nombre::before,
@@ -1978,6 +1700,26 @@
     content: "Mascota";
 }
 
+.admin-page #columna-solicitud-solicitante::before,
+.admin-page #bloque-solicitudes .dash-tabla td[data-campo="solicitante"]::before,
+.admin-page .panel-listado .dash-tabla td[data-campo="solicitante"]::before {
+    content: "Solicitante";
+}
+
+.admin-page #columna-solicitud-especie::before,
+.admin-page #bloque-solicitudes .dash-tabla td[data-campo="especie"]::before,
+.admin-page .panel-listado .dash-tabla td[data-campo="especie"]::before {
+    content: "Especie";
+}
+
+.admin-page .panel-listado .dash-tabla td[data-campo="raza"]::before {
+    content: "Raza";
+}
+
+.admin-page .panel-listado .dash-tabla td[data-campo="fecha_nacimiento_estimada"]::before {
+    content: "Fecha de nacimiento";
+}
+
 .admin-page #columna-solicitud-estado::before,
 .admin-page #bloque-solicitudes .dash-tabla td[data-campo="estado_solicitud"]::before,
 .admin-page .panel-listado .dash-tabla td[data-campo="estado_solicitud"]::before {
@@ -1988,6 +1730,123 @@
 .admin-page #bloque-solicitudes .dash-tabla td[data-campo="fecha_solicitud"]::before,
 .admin-page .panel-listado .dash-tabla td[data-campo="fecha_solicitud"]::before {
     content: "Fecha";
+}
+
+.admin-page section .btn-primary,
+.admin-page section .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 148px;
+    min-height: 40px;
+    text-align: center;
+}
+
+.admin-page section .acciones-formulario {
+    justify-content: center;
+}
+
+.admin-page .panel-listado .dash-tabla a.abm-editar,
+.admin-page .panel-listado .dash-tabla a.abm-ver,
+.admin-page .panel-listado .dash-tabla button.abm-alta:not(:disabled) {
+    background-color: var(--primary-color);
+    color: var(--white);
+    opacity: 1;
+}
+
+.admin-page .panel-listado .dash-tabla button.abm-baja:not(:disabled) {
+    background-color: var(--primary-color);
+    color: var(--white);
+    opacity: 1;
+}
+
+.admin-page .panel-listado .dash-tabla button.abm-alta:disabled {
+    background-color: var(--primary-color);
+    color: var(--white);
+    opacity: 1;
+}
+
+
+.admin-page .panel-listado .dash-tabla .abm-ver::after {
+    content: "Ver";
+}
+
+.admin-page .panel-listado .paginador {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+.admin-page .panel-listado .paginador[hidden] {
+    display: none;
+}
+
+.admin-page .panel-listado .paginador .pagination {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-page .panel-listado .paginador .page-item {
+    width: auto;
+}
+
+.admin-page .panel-listado .paginador .page-item .page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 999px;
+    background: var(--primary-color);
+    color: var(--white);
+    font-size: 13px;
+    box-shadow: none;
+}
+
+.admin-page .panel-listado .paginador .page-item .page-link:hover,
+.admin-page .panel-listado .paginador .page-item .page-link:focus,
+.admin-page .panel-listado .paginador .page-item .page-link:active {
+    border: none;
+    background: var(--primary-color);
+    color: var(--white);
+    box-shadow: none;
+}
+
+.admin-page .panel-listado .paginador .page-item.active .page-link,
+.admin-page .panel-listado .paginador .page-item[data-activa="true"] .page-link {
+    filter: brightness(0.78);
+}
+
+.admin-page .panel-listado .paginador .page-item.disabled .page-link,
+.admin-page .panel-listado .paginador .page-item[data-deshabilitado="true"] .page-link {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.admin-page .panel-listado .dash-tabla .abm-ver:hover,
+.admin-page .panel-listado .dash-tabla .abm-ver:focus,
+.admin-page .panel-listado .dash-tabla .abm-ver:active,
+.admin-page .panel-listado .dash-tabla .abm-editar:hover,
+.admin-page .panel-listado .dash-tabla .abm-editar:focus,
+.admin-page .panel-listado .dash-tabla .abm-editar:active,
+.admin-page .panel-listado .dash-tabla .abm-alta:hover,
+.admin-page .panel-listado .dash-tabla .abm-alta:focus,
+.admin-page .panel-listado .dash-tabla .abm-alta:active,
+.admin-page .panel-listado .dash-tabla .abm-baja:hover,
+.admin-page .panel-listado .dash-tabla .abm-baja:focus,
+.admin-page .panel-listado .dash-tabla .abm-baja:active {
+    box-shadow:0;
 }
 
 .admin-page .panel-listado .dash-tabla td::before,
@@ -2007,7 +1866,7 @@
     position: relative;
 }
 
-.admin-page .panel-listado .dash-tabla tbody td > a {
+.admin-page .panel-listado .dash-tabla tbody td > a:not([class*="abm"]) {
     position: absolute;
     inset: 0;
     z-index: 1;
@@ -2065,8 +1924,8 @@
     color: #a32b21;
 }
 
-.admin-page .panel-listado .dash-tabla tbody tr:hover td a[href*="usuario_editar.php"],
-.admin-page .panel-listado .dash-tabla tbody tr:focus-within td a[href*="usuario_editar.php"],
+.admin-page .panel-listado .dash-tabla tbody tr:hover td a[class*="abm"],
+.admin-page .panel-listado .dash-tabla tbody tr:focus-within td a[class*="abm"],
 .admin-page .panel-listado .dash-tabla tbody tr:hover td button,
 .admin-page .panel-listado .dash-tabla tbody tr:focus-within td button {
     color: var(--white);
@@ -2126,6 +1985,11 @@
     padding: 0;
 }
 
+.admin-page #panel-solicitud-detalle #ficha-formulario {
+    max-height: 420px;
+    overflow-y: auto;
+}
+
 .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li,
 .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li:has(#detalle-estado[data-estado]),
 .admin-page #panel-solicitud-detalle #ficha-solicitud .pet-detail-meta li {
@@ -2177,6 +2041,7 @@
     background: var(--icon-bg);
     color: var(--primary-color);
     font-size: 12px;
+    text-align: center;
 }
 
 .admin-page #bloque-solicitudes .dash-tabla th:first-child {
@@ -2190,6 +2055,7 @@
 .admin-page #bloque-solicitudes .dash-tabla td {
     position: relative;
     padding: 14px 16px;
+    text-align: center;
     border-bottom: 1px solid var(--border-light);
     color: var(--text-dark);
 }
@@ -2219,16 +2085,17 @@
 @media (max-width: 960px) {
     .admin-page .panel-listado .info-card,
     .admin-page #panel-usuario-detalle .info-card {
-        padding: 20px 16px;
+        padding: 14px 12px;
     }
 
     .admin-page .panel-listado > .info-card {
-        padding: 18px 12px 12px;
+        padding: 14px 10px 10px;
         background: transparent;
         box-shadow: none;
     }
 
-    .admin-page .panel-listado .listado-controles {
+    .admin-page .panel-listado .listado-controles,
+.admin-page #panel-salud .listado-controles {
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
@@ -2240,7 +2107,17 @@
     }
 
     .admin-page .panel-listado .listado-buscar,
-    .admin-page .panel-listado .listado-filtro {
+    .admin-page #panel-salud .listado-buscar,
+    .admin-page .panel-listado .listado-filtro,
+    .admin-page #panel-salud .listado-filtro {
+        flex: none;
+        width: 100%;
+        min-width: 0;
+        height: 44px;
+    }
+
+    .admin-page .panel-listado .listado-filtro-grupo,
+.admin-page #panel-salud .listado-filtro-grupo {
         flex: none;
         width: 100%;
         min-width: 0;
@@ -2262,24 +2139,6 @@
         padding-bottom: 8px;
     }
 
-    .admin-page #listado-tipos .cuadros-catalogo,
-    .admin-page #listado-estados .cuadros-catalogo {
-        grid-template-columns: minmax(0, 360px);
-        justify-content: center;
-        justify-items: stretch;
-    }
-
-    .admin-page #listado-tipos .acciones-tipo,
-    .admin-page #listado-estados .acciones-estado {
-        justify-content: flex-start;
-        text-align: center;
-    }
-
-    .admin-page #listado-tipos .dash-tabla,
-    .admin-page #listado-estados .dash-tabla {
-        text-align: center;
-    }
-
     .admin-page .panel-listado .dash-tabla thead {
         display: none;
     }
@@ -2288,11 +2147,140 @@
         overflow: visible;
     }
 
-    .admin-page #panel-tipos-estados #listado-tipos .bloque-tipo .lista-scroll-mascotas,
-    .admin-page #panel-tipos-estados #listado-estados .bloque-estado .lista-scroll-mascotas {
-        max-height: 220px;
-        overflow-x: hidden;
+    /* Paginación en móvil: tarjeta propia para que no flote sobre el contenido */
+    .admin-page .panel-listado .paginador {
+        position: relative;
+        z-index: 5;
+        margin-top: 12px;
+        padding: 10px 6px;
+        background: var(--white);
+        border-radius: 14px;
+        box-shadow: 0 4px 18px rgba(46, 80, 46, 0.08);
+    }
+
+    .admin-page .panel-listado .paginador .pagination {
+        gap: 6px;
+    }
+
+    .admin-page .panel-listado .paginador .page-item .page-link {
+        min-width: 36px;
+        min-height: 36px;
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    /* Dashboard en móvil: las recientes mantienen su barra vertical */
+    .admin-page #panel-dashboard #card-mascotas-lista .lista-scroll-mascotas,
+    .admin-page #panel-dashboard #card-solicitudes-lista .lista-scroll-mascotas {
+        max-height: 280px;
+        overflow-x: auto;
         overflow-y: auto;
+        scrollbar-gutter: stable;
+    }
+
+    /* Salud en móvil: mismo formato de tarjetas centradas que el resto de listas */
+    .admin-page #panel-salud .lista-scroll-mascotas {
+        max-height: 280px;
+        overflow-x: auto;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+    }
+
+    /* Sin foto no se muestra la celda (evita el recuadro vacío en móvil) */
+    .admin-page #panel-salud .dash-tabla td:nth-child(1):has(img:not([src])),
+    .admin-page #panel-salud .dash-tabla td:nth-child(1):has(img[src=""]) {
+        display: none;
+    }
+
+    .admin-page #panel-salud .dash-foto {
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .admin-page #panel-salud .dash-foto img {
+        font-size: 0;
+    }
+
+    .admin-page #panel-salud .dash-tabla thead {
+        display: none;
+    }
+
+    .admin-page #panel-salud .dash-tabla,
+    .admin-page #panel-salud .dash-tabla tbody,
+    .admin-page #panel-salud .dash-tabla tr,
+    .admin-page #panel-salud .dash-tabla td {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        height: auto;
+    }
+
+    .admin-page #panel-salud .dash-tabla tbody tr {
+        max-width: none;
+        margin: 0 0 20px;
+        padding: 10px 8px;
+        text-align: center;
+        background: var(--white);
+        border-radius: 14px;
+        box-shadow: 0 4px 18px rgba(46, 80, 46, 0.08);
+    }
+
+    .admin-page #panel-salud .dash-tabla tbody tr:last-child {
+        margin-bottom: 0;
+    }
+
+    .admin-page #panel-salud .dash-tabla td {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        width: 100%;
+        margin: 0 0 6px;
+        padding: 8px 14px;
+        background: var(--icon-bg);
+        border: 0;
+        border-radius: 8px;
+        text-align: right;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    /* Foto y acción no tienen etiqueta: contenido centrado */
+    .admin-page #panel-salud .dash-tabla td:nth-child(1),
+    .admin-page #panel-salud .dash-tabla td:nth-child(5) {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .admin-page #panel-salud .dash-tabla td:last-child {
+        margin-bottom: 0;
+    }
+
+    .admin-page #panel-salud .dash-tabla td::before {
+        display: block;
+        flex-shrink: 0;
+        color: var(--text-soft);
+        font-size: 10px;
+        font-weight: 500;
+        text-align: left;
+    }
+
+    .admin-page #panel-salud .dash-tabla td:nth-child(2)::before {
+        content: "Nombre";
+    }
+
+    .admin-page #panel-salud .dash-tabla td:nth-child(3)::before {
+        content: "Especie";
+    }
+
+    .admin-page #panel-salud .dash-tabla td:nth-child(4)::before {
+        content: "Nacimiento";
+    }
+
+    .admin-page #panel-salud .dash-tabla td:nth-child(1)::before,
+    .admin-page #panel-salud .dash-tabla td:nth-child(5)::before {
+        content: none;
     }
 
     .admin-page .panel-listado .dash-tabla,
@@ -2307,11 +2295,11 @@
 
     .admin-page .panel-listado .dash-tabla tbody tr {
         max-width: none;
-        margin: 0 0 16px;
-        padding: 18px 16px;
-        text-align: left;
+        margin: 0 0 20px;
+        padding: 10px 8px;
+        text-align: center;
         background: var(--white);
-        border-radius: 18px;
+        border-radius: 14px;
         box-shadow: 0 4px 18px rgba(46, 80, 46, 0.08);
     }
 
@@ -2320,21 +2308,6 @@
     }
 
 
-    .admin-page .panel-listado:has(#opciones-rol input[value]:not([value=""]):checked) tbody tr[data-id],
-    .admin-page .panel-listado:has(#opciones-estado input[value]:not([value=""]):checked) tbody tr[data-id],
-    .admin-page .panel-listado:has(#opciones-estado input[data-estado]:checked) tbody tr[data-id],
-    .admin-page .panel-listado[data-q] tbody tr[data-id] {
-        display: block;
-    }
-
-    .admin-page .panel-listado:has(#opciones-estado [data-estado="true"]:checked) tbody tr:not([data-estado="true"]),
-    .admin-page .panel-listado:has(#opciones-estado [data-estado="t"]:checked) tbody tr:not([data-estado="t"]),
-    .admin-page .panel-listado:has(#opciones-estado [data-estado="1"]:checked) tbody tr:not([data-estado="1"]),
-    .admin-page .panel-listado:has(#opciones-estado [data-estado="false"]:checked) tbody tr:not([data-estado="false"]),
-    .admin-page .panel-listado:has(#opciones-estado [data-estado="f"]:checked) tbody tr:not([data-estado="f"]),
-    .admin-page .panel-listado:has(#opciones-estado [data-estado="0"]:checked) tbody tr:not([data-estado="0"]) {
-        display: none;
-    }
 
     .admin-page .panel-listado .dash-tabla tbody tr:last-child {
         margin-bottom: 0;
@@ -2359,17 +2332,32 @@
     .admin-page .panel-listado .dash-tabla td:empty,
     .admin-page .panel-listado .dash-tabla td:has(> a) {
         display: flex;
-        flex-direction: column;
-        gap: 4px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
         width: 100%;
-        margin: 0 0 10px;
-        padding: 14px 16px;
+        box-sizing: border-box;
+        margin: 0 0 6px;
+        padding: 8px 16px;
         background: var(--icon-bg);
         border: 0;
-        border-radius: 12px;
-        text-align: left;
+        border-radius: 8px;
+        text-align: right;
         white-space: normal;
         overflow-wrap: anywhere;
+    }
+
+    /* En móvil el link vuelve al flujo de la fila para respetar el padding */
+    .admin-page .panel-listado .dash-tabla tbody td > a:not([class*="abm"]),
+    .admin-page #bloque-solicitudes .dash-tabla tbody td > a {
+        position: static;
+    }
+
+    /* Celdas de acción sin etiqueta (solo link): contenido centrado */
+    .admin-page .panel-listado .dash-tabla td:has(> a):not([data-campo]):not([data-celda]) {
+        justify-content: center;
+        text-align: center;
     }
 
     .admin-page .panel-listado .dash-tabla td:last-child {
@@ -2381,8 +2369,25 @@
 
     .admin-page .panel-listado .dash-tabla td::before {
         display: block;
+        flex-shrink: 0;
         color: var(--text-soft);
-        font-size: 12px;
+        font-size: 10px;
+        font-weight: 500;
+        text-align: left;
+    }
+
+    .admin-page .panel-listado .dash-tabla td[data-texto]::after {
+        align-self: center;
+        text-align: right;
+    }
+
+    /* Las etiquetas de #bloque-solicitudes las oculta una regla de escritorio con ID;
+       acá se vuelven a mostrar en móvil con la misma especificidad */
+    .admin-page #bloque-solicitudes .dash-tabla td::before {
+        display: block;
+        flex-shrink: 0;
+        color: var(--text-soft);
+        font-size: 10px;
         font-weight: 500;
         text-align: left;
     }
@@ -2393,48 +2398,106 @@
 
     .admin-page .panel-listado .dash-tabla td[data-estado]::after {
         width: max-content;
-        justify-self: start;
+        max-width: 100%;
+        align-self: center;
         padding: 4px 12px;
     }
 
-    .admin-page .panel-listado .listado-paginacion {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .admin-page .panel-listado .dash-tabla td:has(> a[href*="usuario_editar.php"]),
+    /* Celdas de acción (Ver/Editar/Alta/Baja): sin caja ni etiqueta, solo el botón centrado */
+    .admin-page .panel-listado .dash-tabla td:has(> a[class*="abm"]),
     .admin-page .panel-listado .dash-tabla td:has(> button),
     .admin-page .panel-listado .dash-tabla td:has(> form) {
-        display: inline-block;
-        width: 32%;
-        vertical-align: top;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
         border-bottom: none;
-        padding: 12px 4px 0;
+        padding: 6px 0;
         background: transparent;
     }
 
-    .admin-page .panel-listado .dash-tabla td:has(> a[href*="usuario_editar.php"]) {
-        padding-top: 16px;
-    }
-
-    .admin-page .panel-listado .dash-tabla td:has(> a[href*="usuario_editar.php"])::before,
+    .admin-page .panel-listado .dash-tabla td:has(> a[class*="abm"])::before,
     .admin-page .panel-listado .dash-tabla td:has(> button)::before,
     .admin-page .panel-listado .dash-tabla td:has(> form)::before {
         content: none;
     }
 
     .admin-page .panel-listado .dash-tabla td:first-child {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 600;
     }
 
-    .admin-page .panel-listado .dash-tabla td a[href*="usuario_editar.php"],
+    .admin-page .panel-listado .dash-tabla td a[class*="abm"],
     .admin-page .panel-listado .dash-tabla td button {
         width: 100%;
         justify-content: center;
         padding: 8px 6px;
         font-size: 13px;
         white-space: nowrap;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td {
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td a[class*="abm"],
+    .admin-page #panel-usuarios .dash-tabla td button {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .admin-page #panel-usuarios .dash-tabla td:has(> a[class*="abm"]),
+    .admin-page #panel-usuarios .dash-tabla td:has(> button[class*="abm"]) {
+        overflow: visible;
+    }
+
+    .admin-page .panel-listado .dash-tabla td:has(> a[class*="abm"]),
+    .admin-page .panel-listado .dash-tabla td:has(> button[class*="abm"]) {
+        align-items: stretch;
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+    }
+
+    .admin-page .panel-listado .dash-tabla td:has(> a[class*="abm"]) > a[class*="abm"],
+    .admin-page .panel-listado .dash-tabla td:has(> button[class*="abm"]) > button[class*="abm"] {
+        align-items: stretch;
+        width: 100%;
+        min-width: 64px;
+        max-width: none;
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+
+    .admin-page #panel-mascotas .dash-tabla td:nth-child(1)::before {
+        content: "Nro";
+    }
+
+    .admin-page #panel-mascotas .dash-tabla td:nth-child(2)::before {
+        content: "Nombre";
+    }
+
+    .admin-page #panel-mascotas .dash-tabla td:nth-child(3)::before {
+        content: "Especie";
+    }
+
+    .admin-page #panel-mascotas .dash-tabla td:nth-child(4)::before {
+        content: "Raza";
+    }
+
+    .admin-page #panel-mascotas .dash-tabla td:nth-child(5)::before {
+        content: "Sexo";
+    }
+
+    .admin-page #panel-mascotas .dash-tabla td:nth-child(6)::before {
+        content: "Tamaño";
+    }
+
+    .admin-page #panel-mascotas .dash-tabla td:nth-child(7)::before,
+    .admin-page #panel-mascotas .dash-tabla td:nth-child(8)::before {
+        content: none;
     }
 
 }
@@ -2462,33 +2525,5 @@
         width: 100%;
         margin-left: 0;
         text-align: center;
-    }
-
-    .admin-page #bloque-solicitudes .dash-tabla thead {
-        display: none;
-    }
-
-    .admin-page #bloque-solicitudes .dash-tabla,
-    .admin-page #bloque-solicitudes .dash-tabla tbody,
-    .admin-page #bloque-solicitudes .dash-tabla tr,
-    .admin-page #bloque-solicitudes .dash-tabla td {
-        display: block;
-        width: 100%;
-    }
-
-    .admin-page #bloque-solicitudes .dash-tabla tbody tr:not([data-id]) {
-        display: none;
-    }
-
-    .admin-page #bloque-solicitudes .dash-tabla td {
-        display: grid;
-        grid-template-columns: 8em 1fr;
-        padding: 8px 0;
-    }
-
-    .admin-page #bloque-solicitudes .dash-tabla td::before {
-        display: block;
-        color: var(--text-soft);
-        font-size: 12px;
     }
 }

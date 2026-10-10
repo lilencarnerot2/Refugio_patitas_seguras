@@ -20,10 +20,13 @@ $slots = $paginas;
                     <h3></h3>
                 </div>
                 <div class="dash-kpi">
-                    <div id="torta-solicitudes" class="dash-torta-css"></div>
+                    <svg id="torta-solicitudes" class="dash-torta-svg" viewBox="0 0 42 42" role="img" aria-label="Distribución">
+                        <circle class="dash-torta-fondo" cx="21" cy="21" r="15.9"></circle>
+                        <?php for ($i = 1; $i <= $slots; $i++) { ?><circle class="dash-torta-seg seg-<?php echo $i; ?>" data-seg="<?php echo $i; ?>" cx="21" cy="21" r="15.9" pathLength="100" stroke-dasharray="0" stroke-dashoffset="0" transform="rotate(-90 21 21)"></circle><?php } ?>
+                    </svg>
                     <ul id="leyenda-tipos" class="dash-leyenda">
                         <?php for ($i = 0; $i < $slots; $i++) { ?>
-                        <li></li>
+                        <li><span data-leyenda="nombre"></span><span data-leyenda="pct"></span><span data-leyenda="cantidad"></span></li>
                         <?php } ?>
                     </ul>
                 </div>
@@ -36,15 +39,18 @@ $slots = $paginas;
                 </div>
                 <div class="dash-kpi">
                     <div class="dash-torta-caja">
-                        <div id="torta-pendientes" class="dash-torta-css dash-torta-hueco"></div>
+                        <svg id="torta-pendientes" class="dash-torta-svg" viewBox="0 0 42 42" role="img" aria-label="Distribución">
+                            <circle class="dash-torta-fondo" cx="21" cy="21" r="15.9"></circle>
+                            <?php for ($i = 1; $i <= $slots; $i++) { ?><circle class="dash-torta-seg seg-<?php echo $i; ?>" data-seg="<?php echo $i; ?>" cx="21" cy="21" r="15.9" pathLength="100" stroke-dasharray="0" stroke-dashoffset="0" transform="rotate(-90 21 21)"></circle><?php } ?>
+                        </svg>
                         <p id="numero-pendientes" class="dash-kpi-numero"></p>
                     </div>
+                    <ul id="leyenda-estados" class="dash-leyenda">
+                        <?php for ($i = 0; $i < $slots; $i++) { ?>
+                        <li><span data-leyenda="nombre"></span><span data-leyenda="pct"></span><span data-leyenda="cantidad"></span></li>
+                        <?php } ?>
+                    </ul>
                 </div>
-                <ul id="leyenda-estados" class="dash-leyenda">
-                    <?php for ($i = 0; $i < $slots; $i++) { ?>
-                    <li></li>
-                    <?php } ?>
-                </ul>
             </article>
 
             <article id="card-mascotas" class="info-card">
@@ -54,19 +60,22 @@ $slots = $paginas;
                 </div>
                 <div class="dash-kpi">
                     <div class="dash-torta-caja">
-                        <div id="torta-mascotas" class="dash-torta-css dash-torta-hueco"></div>
+                        <svg id="torta-mascotas" class="dash-torta-svg" viewBox="0 0 42 42" role="img" aria-label="Distribución">
+                            <circle class="dash-torta-fondo" cx="21" cy="21" r="15.9"></circle>
+                            <?php for ($i = 1; $i <= $slots; $i++) { ?><circle class="dash-torta-seg seg-<?php echo $i; ?>" data-seg="<?php echo $i; ?>" cx="21" cy="21" r="15.9" pathLength="100" stroke-dasharray="0" stroke-dashoffset="0" transform="rotate(-90 21 21)"></circle><?php } ?>
+                        </svg>
                         <p id="numero-mascotas" class="dash-kpi-numero"></p>
                     </div>
+                    <ul id="leyenda-movimientos" class="dash-leyenda">
+                        <?php for ($i = 0; $i < $slots; $i++) { ?>
+                        <li><span data-leyenda="nombre"></span><span data-leyenda="pct"></span><span data-leyenda="cantidad"></span></li>
+                        <?php } ?>
+                    </ul>
                 </div>
-                <ul id="leyenda-movimientos" class="dash-leyenda">
-                    <?php for ($i = 0; $i < $slots; $i++) { ?>
-                    <li></li>
-                    <?php } ?>
-                </ul>
             </article>
         </div>
 
-        <div class="dash-fila dash-fila-tres">
+        <div class="dash-fila dash-fila-dos">
             <article id="card-mascotas-lista" class="info-card dash-card-recientes">
                 <div class="dash-card-cabecera">
                     <span class="ficha-usuario-icono"><span class="icono-pata"></span></span>
@@ -77,7 +86,7 @@ $slots = $paginas;
                     <table class="dash-tabla">
                         <thead>
                             <tr id="cabecera-dashboard-mascotas">
-                                <th data-campo="id" data-href="ficha_medica.php"></th>
+                                <th data-campo="id" data-href="ficha_medica.php?id="></th>
                                 <th data-campo="nombre"></th>
                                 <th data-campo="especie"></th>
                                 <th data-campo="raza"></th>
@@ -116,23 +125,22 @@ $slots = $paginas;
                 </div>
             </article>
 
-            <article id="card-solicitudes-lista" class="info-card">
+            <article id="card-solicitudes-lista" class="info-card dash-card-recientes">
                 <div class="dash-card-cabecera">
                     <span class="ficha-usuario-icono"><i class="bi bi-hourglass-split"></i></span>
                     <h3></h3>
                     <a class="empty-back-link" href="solicitudes.php"></a>
                 </div>
-                <div class="lista-scroll-mascotas">
-                    <table class="dash-tabla">
+                <div class="lista-scroll-mascotas pe-2">
+                    <table class="dash-tabla table table-sm align-middle mb-0">
                         <thead>
                             <tr id="cabecera-dashboard-solicitudes">
-                                <th data-campo="id" data-href="solicitudes_detalle.php"></th>
+                                <th data-campo="id" data-href="solicitudes_detalle.php?id="></th>
                                 <th data-campo="nombre_usuario"></th>
                                 <th data-campo="apellido_usuario"></th>
                                 <th data-campo="nombre_mascota"></th>
                                 <th data-campo="tipo_solicitud"></th>
                                 <th data-campo="estado_solicitud"></th>
-                                <th data-campo="fecha_solicitud"></th>
                             </tr>
                         </thead>
                         <tbody id="cuerpo-dashboard-solicitudes">
@@ -144,7 +152,6 @@ $slots = $paginas;
                                 <td data-campo="nombre_mascota"><a href="solicitudes_detalle.php"></a></td>
                                 <td data-campo="tipo_solicitud"><a href="solicitudes_detalle.php"></a></td>
                                 <td data-campo="estado_solicitud"><a href="solicitudes_detalle.php"></a></td>
-                                <td data-campo="fecha_solicitud"><a href="solicitudes_detalle.php"></a></td>
                             </tr>
                             <?php } ?>
                         </tbody>
@@ -155,7 +162,7 @@ $slots = $paginas;
     </section>
 
 <script src="config.php"></script>
-<script src="../assets/js/api.js"></script>
+<script src="../assets/js/api.js?t=<?php echo filemtime(__DIR__ . '/../assets/js/api.js'); ?>"></script>
 <script src="../assets/js/dashboard.js?t=<?php echo filemtime(__DIR__ . '/../assets/js/dashboard.js'); ?>"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

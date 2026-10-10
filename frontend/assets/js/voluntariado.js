@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const formulario = document.getElementById('form-voluntariado');
+    var formulario = document.getElementById('form-voluntariado');
 
     if (!formulario) {
         return;
@@ -8,23 +8,29 @@ document.addEventListener('DOMContentLoaded', function () {
     formulario.addEventListener('submit', function (evento) {
         evento.preventDefault();
 
-        const feedback = document.getElementById('form-feedback');
-        const datos = Object.fromEntries(new FormData(formulario).entries());
+        var aviso = document.getElementById('form-feedback');
+        var datos = Object.fromEntries(new FormData(formulario).entries());
 
         apiRequest('voluntariado', {
             metodo: 'POST',
             cuerpo: datos
         })
             .then(function (data) {
-                mostrarFeedback(feedback, data.message || 'Inscripción registrada. Te vamos a contactar para coordinar.', true);
+                mostrarAviso(aviso, mensajeDeApi(data), true);
                 formulario.reset();
             })
             .catch(function (error) {
-                mostrarFeedback(
-                    feedback,
-                    error.message || 'No se pudo enviar la inscripción.',
-                    false
-                );
+                mostrarAviso(aviso, mensajeDeApi(error), false);
             });
     });
 });
+
+function mostrarAviso(elemento, texto, ok) {
+    if (!elemento) {
+        return;
+    }
+
+    elemento.hidden = false;
+    elemento.dataset.estado = ok ? 'ok' : 'error';
+    elemento.textContent = texto || '';
+}

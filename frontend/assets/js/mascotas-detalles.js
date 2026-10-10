@@ -8,20 +8,19 @@ if (ficha) {
     if (!id) {
         mostrarVacio();
     } else {
-        fetch(API_URL + '/?recurso=mascotas&id=' + encodeURIComponent(id))
-            .then(function (response) {
-                return response.json();
-            })
+        apiRequest('mascotas', {
+            parametros: { id: id }
+        })
             .then(function (respuesta) {
                 if (!respuesta.success || !respuesta.data) {
-                    mostrarVacio();
+                    mostrarVacio(respuesta);
                     return;
                 }
 
                 mostrarFicha(respuesta.data);
             })
-            .catch(function () {
-                mostrarVacio();
+            .catch(function (error) {
+                mostrarVacio(error);
             });
     }
 }
@@ -29,6 +28,8 @@ if (ficha) {
 function mostrarFicha(mascota) {
     var foto = document.getElementById('detalle-foto');
     var fotoVacia = document.getElementById('detalle-foto-vacia');
+    var nacimiento = document.getElementById('detalle-nacimiento');
+    var fecha = fechaCorta(mascota.fecha_nacimiento_estimada);
 
     carga.hidden = true;
     vacio.hidden = true;
@@ -37,14 +38,19 @@ function mostrarFicha(mascota) {
     document.getElementById('detalle-nombre').textContent = mascota.nombre || '';
     document.getElementById('detalle-sexo').textContent = mascota.sexo || '';
     document.getElementById('detalle-tamano').textContent = mascota.tamaño || '';
-    document.getElementById('detalle-nacimiento').textContent = mascota.fecha_nacimiento_estimada || 'No informado';
+
+    // si hay fecha, pisa el texto que ya está en el html
+    if (fecha) {
+        nacimiento.textContent = fecha;
+    }
+
     document.getElementById('detalle-historial').textContent = mascota.historial || '';
-    document.getElementById('detalle-adoptar').href = '../user/solicitar_adopcion.php?id=' + mascota.id;
-    document.getElementById('detalle-transito').href = '../user/solicitar_transito.php?id=' + mascota.id;
+    ponerDestino('detalle-adoptar', mascota.id);
+    ponerDestino('detalle-transito', mascota.id);
 
     if (mascota.foto_url) {
         foto.src = mascota.foto_url;
-        foto.alt = 'Foto de ' + mascota.nombre;
+        foto.alt = mascota.nombre || '';
         foto.hidden = false;
         fotoVacia.hidden = true;
     } else {
@@ -52,11 +58,30 @@ function mostrarFicha(mascota) {
         fotoVacia.hidden = false;
     }
 
-    document.title = (mascota.nombre || 'Mascota') + ' - Patitas Seguras';
+    if (mascota.nombre) {
+        document.title = mascota.nombre;
+    }
 }
 
-function mostrarVacio() {
+// le agrega el id al href
+function ponerDestino(idEnlace, id) {
+    var enlace = document.getElementById(idEnlace);
+
+    if (!enlace) {
+        return;
+    }
+
+    enlace.setAttribute('href', (enlace.getAttribute('href') || '') + '?id=' + encodeURIComponent(id));
+}
+
+function mostrarVacio(origen) {
+    var parrafo = vacio.querySelector('p');
+
     carga.hidden = true;
     vacio.hidden = false;
     ficha.hidden = true;
+
+    if (parrafo && origen) {
+        parrafo.textContent = mensajeDeApi(origen);
+    }
 }

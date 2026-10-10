@@ -1,5 +1,5 @@
 <?php
-$autenticado = !empty($_COOKIE['usuario_id']) && !empty($_COOKIE['usuario_nombre_rol']);
+$autenticado = !empty($_COOKIE['usuario_id']);
 
 if (!isset($_GET['salir']) && $autenticado) {
     if (!empty($_COOKIE['usuario_acceso_admin'])) {
@@ -22,7 +22,7 @@ require __DIR__ . '/includes/header.php';
             <p>Ingresá con el correo asociado a tu usuario.</p>
         </div>
 
-        <form id="form-login" class="public-form login-form" novalidate>
+<form id="form-login" class="public-form login-form" novalidate>
             <h3>Accedé a tu cuenta</h3>
             <p>Completá tus datos para ingresar.</p>
             <p class="mensaje-formulario campo-obligatorio"></p>
@@ -47,10 +47,10 @@ require __DIR__ . '/includes/header.php';
             <p class="campo-obligatorio"></p>
 
             <input class="form-intento" id="intento-login" name="intento-login" type="radio">
-            <label class="btn-primary" for="intento-login">Ingresar</label>
+            <button class="btn-primary" type="button">Ingresar</button>
             <p class="form-alt-link"><a href="recuperar.php">Recuperar contraseña</a></p>
             <p class="form-alt-link">¿No tenés usuario? <a href="registro.php">Crear cuenta</a></p>
-        </form>
+</form>
     </section>
 
 <script src="config.php"></script>

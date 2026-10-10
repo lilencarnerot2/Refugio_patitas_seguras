@@ -1,6 +1,5 @@
 <?php
 $tituloPagina = 'Voluntariado - Patitas Seguras';
-$scriptsPagina = ['voluntariado.js'];
 require __DIR__ . '/includes/head.php';
 require __DIR__ . '/includes/header.php';
 ?>
@@ -49,5 +48,9 @@ require __DIR__ . '/includes/header.php';
             <p id="form-feedback" class="form-feedback" hidden></p>
         </form>
     </section>
+
+<script src="config.php"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/voluntariado.js"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

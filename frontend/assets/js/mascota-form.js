@@ -5,21 +5,34 @@ const selectRaza = document.getElementById('id_raza');
 
 function mostrarMensaje(texto, ok) {
     mensaje.textContent = texto || '';
-    mensaje.classList.remove('is-ok', 'is-error');
+    mensaje.removeAttribute('data-estado');
 
     if (!texto) {
         return;
     }
 
-    mensaje.classList.add(ok ? 'is-ok' : 'is-error');
+    mensaje.dataset.estado = ok ? 'ok' : 'error';
+}
+
+function nuevaOpcion(select) {
+    // clona la opción vacía del select
+    var base = select.querySelector('option');
+    var opcion = base.cloneNode(false);
+
+    opcion.removeAttribute('selected');
+    opcion.removeAttribute('disabled');
+    opcion.removeAttribute('hidden');
+    opcion.value = '';
+    opcion.textContent = '';
+
+    return opcion;
 }
 
 function agregarOpciones(select, lista, campo) {
     var i;
-    var opcion;
 
     for (i = 0; i < lista.length; i++) {
-        opcion = document.createElement('option');
+        var opcion = nuevaOpcion(select);
         opcion.value = lista[i].id;
         opcion.textContent = lista[i][campo];
         select.appendChild(opcion);

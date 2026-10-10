@@ -205,8 +205,14 @@ require __DIR__ . '/includes/header.php';
         </div>
     </section>
 
+    <!-- Modelos ocultos con el diseño; el JS los clona y solo pone datos -->
+    <div id="modelos-ficha" hidden>
+        <option id="opcion-modelo-ficha"></option>
+        <ul><li id="item-modelo-ficha"></li></ul>
+    </div>
+
 <script src="config.php"></script>
-<script src="../assets/js/api.js"></script>
-<script src="../assets/js/ficha-medica.js"></script>
+<script src="../assets/js/api.js?t=<?php echo filemtime(__DIR__ . '/../assets/js/api.js'); ?>"></script>
+<script src="../assets/js/ficha-medica.js?t=<?php echo filemtime(__DIR__ . '/../assets/js/ficha-medica.js'); ?>"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

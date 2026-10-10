@@ -12,16 +12,22 @@ require __DIR__ . '/includes/header.php';
         </div>
 
         <div class="catalog-filters" id="filtros-especies">
-            <span class="filtro-btn is-activo" data-especie=""><i class="fa-solid fa-paw"></i> Todos</span>
+            <span class="filtro-btn" data-activa="true" data-especie=""><i class="fa-solid fa-paw"></i> Todos</span>
+            <span class="filtro-btn" id="filtro-modelo-especie" data-activa="false" hidden><i class="fa-solid fa-paw"></i> <span data-texto-filtro></span></span>
         </div>
     </section>
 
     <section id="catalogo">
         <div id="contenedor-mascotas" class="pet-catalog"></div>
+        <div id="aviso-catalogo" class="catalog-empty" hidden>
+            <i class="fa-solid fa-paw"></i>
+            <h4>Todavía no hay mascotas cargadas</h4>
+            <p>No se encontraron mascotas disponibles.</p>
+        </div>
     </section>
 
-    <template id="plantilla-tarjeta">
-        <article class="pet-card">
+    <div id="modelos-catalogo" hidden>
+        <article class="pet-card" id="tarjeta-modelo" data-separador=" · ">
             <img hidden alt="">
             <div class="pet-photo-empty"></div>
             <div class="pet-card-body">
@@ -34,32 +40,7 @@ require __DIR__ . '/includes/header.php';
                 </div>
             </div>
         </article>
-    </template>
-
-    <section class="requisitos-section" id="transito">
-        <div class="page-intro">
-            <h2>Requisitos para adoptar</h2>
-            <p>Nos aseguramos de que cada animal vaya al hogar ideal para él.</p>
-        </div>
-
-        <div class="requisitos-grid">
-            <div class="requisito-item"><span class="requisito-mark"></span>Usuario registrado.</div>
-            <div class="requisito-item"><span class="requisito-mark"></span>La solicitud va asociada a una mascota.</div>
-            <div class="requisito-item"><span class="requisito-mark"></span>Completar vivienda, patio y hogar.</div>
-            <div class="requisito-item"><span class="requisito-mark"></span>Integrantes, menores y horas sola.</div>
-            <div class="requisito-item"><span class="requisito-mark"></span>Otras mascotas, experiencia y cuidado.</div>
-            <div class="requisito-item"><span class="requisito-mark"></span>Compromisos y seguimiento posterior.</div>
-        </div>
-
-        <details class="proceso-adopcion">
-            <summary>Proceso de adopción</summary>
-            <ol>
-                <li>Ingresá con un usuario registrado.</li>
-                <li>Elegí la mascota y completá el formulario.</li>
-                <li>El refugio evalúa. La compatibilidad es orientativa.</li>
-            </ol>
-        </details>
-    </section>
+    </div>
 
 <script src="/public/config.php"></script>
 <script src="/assets/js/api.js"></script>
