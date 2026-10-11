@@ -45,7 +45,7 @@ function cargarEspecies() {
             agregarOpciones(selectEspecie, resultado.data || [], 'nombre_especie');
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 }
 
@@ -66,7 +66,7 @@ function cargarRazas(idEspecie) {
             agregarOpciones(selectRaza, resultado.data || [], 'nombre_raza');
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 }
 
@@ -113,12 +113,12 @@ formulario.addEventListener('submit', function (evento) {
         cuerpo: datos
     })
         .then(function (resultado) {
-            mostrarMensaje(resultado.message, true);
+            mostrarMensaje(mensajeDeApi(resultado), true);
 
             formulario.reset();
             vaciarRazas();
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 });

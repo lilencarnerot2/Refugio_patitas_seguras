@@ -27,7 +27,7 @@ function apiRequest(recurso, opciones) {
   var config = {
     method: opts.metodo || 'GET',
     headers: {},
-    credentials: opts.credenciales === false ? 'omit' : 'include'
+    credentials: 'include'
   };
 
   if (opts.cuerpo !== undefined) {
@@ -54,23 +54,6 @@ function apiRequest(recurso, opciones) {
 
 function guardarCookie(nombre, valor) {
   document.cookie = nombre + '=' + encodeURIComponent(valor || '') + '; path=/; SameSite=Lax';
-}
-
-function leerCookie(nombre) {
-  var prefijo = nombre + '=';
-  var partes = document.cookie.split(';');
-  var i;
-  var parte;
-
-  for (i = 0; i < partes.length; i++) {
-    parte = partes[i].trim();
-
-    if (parte.indexOf(prefijo) === 0) {
-      return decodeURIComponent(parte.slice(prefijo.length));
-    }
-  }
-
-  return '';
 }
 
 function borrarCookie(nombre) {
@@ -137,15 +120,23 @@ function fechaCorta(valor) {
 }
 
 function mensajeDeApi(origen) {
-  if (!origen) return '';
-  if (typeof origen === 'string') return origen;
+  var cuerpo;
 
-  return origen.message ||
-    origen.error ||
-    origen.mensaje ||
-    origen.detalle ||
-    (origen.data && (origen.data.message || origen.data.error || origen.data.mensaje || origen.data.detalle)) ||
-    '';
+  if (!origen) {
+    return '';
+  }
+
+  if (typeof origen === 'string') {
+    return origen;
+  }
+
+  cuerpo = origen.data && origen.data.message !== undefined ? origen.data : origen;
+
+  if (cuerpo.message === undefined || cuerpo.message === null) {
+    return '';
+  }
+
+  return String(cuerpo.message);
 }
 
 function avisoDeApi(caja, origen) {
@@ -169,18 +160,15 @@ document.addEventListener('DOMContentLoaded', function () {
   var acceso = document.getElementById('acceso-solicitud');
   var bloque = document.getElementById('bloque-solicitud');
   var mensaje = document.getElementById('mensaje-solicitud');
-  var conSesion = !!leerCookie('usuario_id');
 
   if (!acceso) {
     return;
   }
 
-  apiRequest('tipos_solicitudes', {
-    credenciales: conSesion
-  }).then(function (respuesta) {
+  apiRequest('tipos_solicitudes').then(function (respuesta) {
     avisoDeApi(mensaje, respuesta);
 
-    if (bloque && conSesion) {
+    if (bloque) {
       bloque.hidden = false;
     }
   }).catch(function (error) {
