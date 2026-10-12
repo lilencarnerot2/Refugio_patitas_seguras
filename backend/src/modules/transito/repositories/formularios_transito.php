@@ -501,3 +501,101 @@ function obtener_mascotas_de_transito(int $id_formulario): array
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function obtener_formularios_transito_filtrados(array $filtros, ?int $id_usuario_solo_suyos): array
+{
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT
+            ft.id,
+            ft.id_solicitud,
+            s.fecha_solicitud,
+            s.id_usuario,
+            u.nombre AS nombre_usuario,
+            u.apellido AS apellido_usuario,
+            s.id_mascota,
+            m.nombre AS nombre_mascota,
+            s.id_tipo_solicitud,
+            ts.nombre_tipo AS tipo_solicitud,
+            s.id_estado_solicitud,
+            es.nombre_estado AS estado_solicitud,
+            ft.id_tipo_vivienda,
+            tv.nombre_tipo AS tipo_vivienda,
+            ft.id_condicion_vivienda,
+            cv.descripcion AS condicion_vivienda,
+            ft.tiene_patio,
+            ft.metros_cuadrados_patio,
+            ft.cantidad_integrantes,
+            ft.hay_ninos,
+            ft.horas_solo,
+            ft.tiene_mascotas,
+            ft.cantidad_maxima_mascotas,
+            ft.puede_realizar_paseos,
+            ft.puede_realizar_traslados,
+            ft.puede_administrar_medicacion,
+            ft.cuenta_con_apoyo,
+            ft.limitaciones_cuidado,
+            ft.observaciones,
+            ft.disponibilidad_desde,
+            ft.disponibilidad_hasta
+        FROM formulario_hogar_transito ft
+        INNER JOIN solicitudes s
+            ON s.id = ft.id_solicitud
+        INNER JOIN usuarios u
+            ON u.id = s.id_usuario
+        INNER JOIN mascotas m
+            ON m.id = s.id_mascota
+        INNER JOIN tipos_solicitudes ts
+            ON ts.id = s.id_tipo_solicitud
+        INNER JOIN estados_solicitudes es
+            ON es.id = s.id_estado_solicitud
+        INNER JOIN tipos_vivienda tv
+            ON tv.id = ft.id_tipo_vivienda
+        INNER JOIN condiciones_vivienda cv
+            ON cv.id = ft.id_condicion_vivienda
+        WHERE 1 = 1
+    ";
+
+    $parametros = [];
+
+    if ($id_usuario_solo_suyos !== null) {
+        $sql .= " AND s.id_usuario = :id_usuario";
+        $parametros[':id_usuario'] = $id_usuario_solo_suyos;
+    }
+
+    if (!empty($filtros['estado'])) {
+        $sql .= " AND LOWER(TRIM(es.nombre_estado)) = LOWER(TRIM(:estado))";
+        $parametros[':estado'] = $filtros['estado'];
+    }
+
+    if (!empty($filtros['id_tipo_vivienda'])) {
+        $sql .= " AND ft.id_tipo_vivienda = :id_tipo_vivienda";
+        $parametros[':id_tipo_vivienda'] = (int) $filtros['id_tipo_vivienda'];
+    }
+
+    if (!empty($filtros['disponibilidad_desde'])) {
+        $sql .= " AND ft.disponibilidad_desde >= :disponibilidad_desde";
+        $parametros[':disponibilidad_desde'] = $filtros['disponibilidad_desde'];
+    }
+
+    if (!empty($filtros['disponibilidad_hasta'])) {
+        $sql .= " AND ft.disponibilidad_hasta <= :disponibilidad_hasta";
+        $parametros[':disponibilidad_hasta'] = $filtros['disponibilidad_hasta'];
+    }
+
+    if (!empty($filtros['busqueda'])) {
+        $sql .= " AND (
+            LOWER(u.nombre) LIKE LOWER(:busqueda)
+            OR LOWER(u.apellido) LIKE LOWER(:busqueda)
+            OR LOWER(m.nombre) LIKE LOWER(:busqueda)
+        )";
+        $parametros[':busqueda'] = '%' . $filtros['busqueda'] . '%';
+    }
+
+    $sql .= " ORDER BY s.fecha_solicitud DESC, ft.id DESC";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute($parametros);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
