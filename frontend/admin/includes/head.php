@@ -21,7 +21,7 @@ if (!empty($requiereSuperadministrador)) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="/assets/css/styles.css?t=<?php echo filemtime(__DIR__ . '/../../assets/css/styles.css'); ?>">
-    <link rel="stylesheet" href="/assets/css/admin.css?t=<?php echo filemtime(__DIR__ . '/../../assets/css/admin.css'); ?>">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/admin.css">
 </head>
 <body class="<?php echo $cuerpoClase; ?>">

@@ -79,8 +79,7 @@ function borrarSesion() {
   borrarCookie('usuario_acceso_superadmin');
 }
 
-// El backend no dice si la sesión es de personal o de usuario común,
-// así que se averigua con recursos que solo responden a administración.
+
 function accesoDeApi(recurso, parametros) {
   return apiRequest(recurso, { parametros: parametros || {} }).then(function () {
     return true;
@@ -119,6 +118,30 @@ function fechaCorta(valor) {
   return texto.split(' ')[0];
 }
 
+function textoDeItem(item) {
+  var clave;
+
+  if (!item || typeof item !== 'object') {
+    return '';
+  }
+
+  for (clave in item) {
+    if (!Object.prototype.hasOwnProperty.call(item, clave)) {
+      continue;
+    }
+
+    if (clave === 'id' || clave === 'estado') {
+      continue;
+    }
+
+    if (typeof item[clave] === 'string' && item[clave]) {
+      return item[clave];
+    }
+  }
+
+  return '';
+}
+
 function mensajeDeApi(origen) {
   var cuerpo;
 
@@ -155,27 +178,3 @@ function avisoDeApi(caja, origen) {
     caja.removeAttribute('data-codigo');
   }
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-  var acceso = document.getElementById('acceso-solicitud');
-  var bloque = document.getElementById('bloque-solicitud');
-  var mensaje = document.getElementById('mensaje-solicitud');
-
-  if (!acceso) {
-    return;
-  }
-
-  apiRequest('tipos_solicitudes').then(function (respuesta) {
-    avisoDeApi(mensaje, respuesta);
-
-    if (bloque) {
-      bloque.hidden = false;
-    }
-  }).catch(function (error) {
-    if (bloque) {
-      bloque.hidden = true;
-    }
-
-    avisoDeApi(mensaje, error);
-  });
-});

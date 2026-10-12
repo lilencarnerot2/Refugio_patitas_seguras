@@ -75,7 +75,7 @@ require __DIR__ . '/includes/header.php';
     </section>
 
 <script src="config.php"></script>
-<script src="../assets/js/api.js?t=<?php echo filemtime(__DIR__ . '/../assets/js/api.js'); ?>"></script>
-<script src="../assets/js/mascotas-listado.js?t=<?php echo filemtime(__DIR__ . '/../assets/js/mascotas-listado.js'); ?>"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/mascotas-listado.js"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

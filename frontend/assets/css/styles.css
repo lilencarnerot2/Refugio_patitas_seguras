@@ -1317,6 +1317,80 @@
             font-size: 22px;
         }
 
+        .public-form .form-label:has(+ [required])::after,
+        .public-form .form-label:has(+ * [required])::after,
+        .public-form .form-label:has(+ [data-requerido])::after {
+            content: " *";
+            color: #a32b21;
+        }
+
+        .public-form .campo-con-x {
+            position: relative;
+            overflow: visible;
+        }
+
+        .public-form .campo-con-x .form-control,
+        .public-form .campo-con-x .form-select {
+            padding-right: 2.4rem;
+        }
+
+        .public-form .campo-con-x:has(.form-select) .form-select {
+            padding-right: 3.2rem;
+        }
+
+        .public-form .btn-limpiar-campo {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            border: 0;
+            background: transparent;
+            color: var(--text-muted);
+            line-height: 1;
+            padding: 0;
+            font-size: 1.05rem;
+            z-index: 2;
+        }
+
+        .public-form .campo-con-x:has(.form-select) .btn-limpiar-campo {
+            right: 1.85rem;
+        }
+
+        .public-form select option[value=""] {
+            display: none;
+        }
+
+        .lista-desplegable {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 20;
+            width: 100%;
+            margin: 2px 0 0;
+            padding: 4px 0;
+            list-style: none;
+            background: var(--white);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+            max-height: 160px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .lista-desplegable-item {
+            padding: 4px 12px;
+            font-size: 13px;
+            line-height: 1.3;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        .lista-desplegable-item:hover,
+        .lista-desplegable-item[data-activo] {
+            background: var(--icon-bg);
+        }
+
         .public-form > p {
             font-size: 13px;
             color: var(--text-muted);
@@ -1380,11 +1454,230 @@
         #acceso-solicitud {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: stretch;
             justify-content: flex-start;
             flex: 1 1 auto;
             width: 100%;
-            padding: 40px 5% 48px;
+            max-width: 100%;
+            overflow-x: hidden;
+            padding: 28px 5% 48px;
+        }
+
+        #bloque-solicitud {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto;
+            align-items: start;
+            width: 100%;
+            max-width: none;
+            min-width: 0;
+        }
+
+        #bloque-solicitud .solicitud-formulario {
+            display: contents;
+        }
+
+        #bloque-solicitud #ficha-mascota {
+            grid-row: 2;
+            grid-column: 1;
+            justify-self: start;
+            align-self: start;
+            width: 340px;
+            max-width: 340px;
+            border: 1px solid var(--border-light);
+        }
+
+        #bloque-solicitud #ficha-mascota img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            background: #eaf0e9;
+        }
+
+        #bloque-solicitud #ficha-mascota .pet-card-body {
+            padding: 12px 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        #bloque-solicitud #ficha-mascota .pet-card-body h4 {
+            width: 100%;
+            font-size: 18px;
+            margin: 0 0 4px;
+            text-align: center;
+        }
+
+        #bloque-solicitud #ficha-mascota .pet-card-body p {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            width: 100%;
+            margin: 0;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: var(--white);
+            box-shadow: 0 2px 8px rgba(46, 82, 41, 0.14);
+            font-size: 13px;
+            color: var(--text-dark);
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        #bloque-solicitud #ficha-mascota .pet-card-body p:empty {
+            display: none;
+        }
+
+        #bloque-solicitud #ficha-mascota .pet-card-body p[data-etiqueta]::before {
+            content: attr(data-etiqueta);
+            flex: 0 0 42%;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            text-align: left;
+        }
+
+        #bloque-solicitud #ficha-mascota .pet-card-body p[data-campo="historial"] {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: auto;
+        }
+
+        #bloque-solicitud #ficha-mascota .pet-card-body p[data-campo="historial"][data-etiqueta]::before {
+            flex: 0 0 auto;
+            width: 100%;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        #bloque-solicitud .page-intro {
+            grid-row: 1;
+            grid-column: 1;
+            justify-self: center;
+            width: min(640px, 100%);
+            max-width: 640px;
+            margin: 0 auto 8px;
+            text-align: center;
+        }
+
+        #bloque-solicitud .page-intro h2 {
+            text-align: center;
+        }
+
+        #bloque-solicitud .public-form {
+            grid-row: 2;
+            grid-column: 1;
+            justify-self: center;
+            width: min(640px, 100%);
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 28px 26px 24px;
+            text-align: left;
+            border: 1px solid var(--border-light);
+            border-radius: 18px;
+            box-shadow: 0 12px 32px rgba(46, 82, 41, 0.12);
+        }
+
+        .form-seccion {
+            background: #f7f9f4;
+            border-radius: 14px;
+            padding: 16px 16px 18px;
+            box-shadow: 0 4px 14px rgba(46, 82, 41, 0.1);
+        }
+
+        .form-seccion-titulo {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0 0 8px;
+            letter-spacing: 0.02em;
+        }
+
+        #bloque-solicitud .public-form .form-label,
+        #panel-solicitud-detalle .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        #bloque-solicitud .public-form .form-control,
+        #bloque-solicitud .public-form .form-select,
+        #panel-solicitud-detalle .form-control {
+            border-radius: 10px;
+            border-color: var(--border-light);
+            min-height: 42px;
+            box-shadow: 0 1px 4px rgba(46, 82, 41, 0.06);
+        }
+
+        #bloque-solicitud .public-form .form-check,
+        #panel-solicitud-detalle .form-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 32px;
+            margin: 0;
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: var(--white);
+            box-shadow: 0 1px 4px rgba(46, 82, 41, 0.08);
+            line-height: 1.2;
+        }
+
+        #bloque-solicitud .public-form .form-check-input,
+        #panel-solicitud-detalle .form-check-input {
+            position: static;
+            float: none;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        #bloque-solicitud .public-form [data-lista],
+        #panel-solicitud-detalle [data-lista-valor] {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        #grupo-mascotas-hogar > .form-label {
+            margin-bottom: 6px;
+        }
+
+        #lista-mascotas-hogar > .row {
+            align-items: end;
+            padding: 4px 12px 12px;
+            margin-left: 0;
+            margin-right: 0;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(46, 82, 41, 0.08);
+        }
+
+        #bloque-solicitud .public-form .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .btn-quitar-mascota {
+            border: 0;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            line-height: 1;
+            padding: 0 4px;
+        }
+
+        #bloque-solicitud[hidden] {
+            display: none !important;
         }
 
         #acceso-solicitud:has(#mensaje-solicitud:not(:empty)) {
@@ -1475,6 +1768,37 @@
                 margin-left: 20px;
                 margin-right: 20px;
                 padding: 20px 16px;
+            }
+
+            #acceso-solicitud {
+                padding: 20px 16px 36px;
+            }
+
+            #bloque-solicitud {
+                grid-template-rows: auto auto auto;
+            }
+
+            #bloque-solicitud #ficha-mascota {
+                grid-row: 2;
+                width: 100%;
+                max-width: 320px;
+                min-width: 0;
+                margin: 0 0 24px;
+            }
+
+            #bloque-solicitud #ficha-mascota img {
+                height: 150px;
+                object-fit: contain;
+            }
+
+            #bloque-solicitud .public-form {
+                grid-row: 3;
+                width: 100%;
+            }
+
+            #bloque-solicitud .public-form {
+                margin-left: 0;
+                margin-right: 0;
             }
 
             .login-form {
