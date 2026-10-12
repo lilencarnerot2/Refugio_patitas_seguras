@@ -120,13 +120,62 @@ function fechaCorta(valor) {
 }
 
 function mensajeDeApi(origen) {
-  if (!origen) return '';
-  if (typeof origen === 'string') return origen;
+  var cuerpo;
 
-  return origen.message ||
-    origen.error ||
-    origen.mensaje ||
-    origen.detalle ||
-    (origen.data && (origen.data.message || origen.data.error || origen.data.mensaje || origen.data.detalle)) ||
-    '';
+  if (!origen) {
+    return '';
+  }
+
+  if (typeof origen === 'string') {
+    return origen;
+  }
+
+  cuerpo = origen.data && origen.data.message !== undefined ? origen.data : origen;
+
+  if (cuerpo.message === undefined || cuerpo.message === null) {
+    return '';
+  }
+
+  return String(cuerpo.message);
 }
+
+function avisoDeApi(caja, origen) {
+  var codigo;
+
+  if (!caja) {
+    return;
+  }
+
+  caja.textContent = mensajeDeApi(origen);
+  codigo = origen && origen.status;
+
+  if (codigo) {
+    caja.setAttribute('data-codigo', codigo);
+  } else {
+    caja.removeAttribute('data-codigo');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  var acceso = document.getElementById('acceso-solicitud');
+  var bloque = document.getElementById('bloque-solicitud');
+  var mensaje = document.getElementById('mensaje-solicitud');
+
+  if (!acceso) {
+    return;
+  }
+
+  apiRequest('tipos_solicitudes').then(function (respuesta) {
+    avisoDeApi(mensaje, respuesta);
+
+    if (bloque) {
+      bloque.hidden = false;
+    }
+  }).catch(function (error) {
+    if (bloque) {
+      bloque.hidden = true;
+    }
+
+    avisoDeApi(mensaje, error);
+  });
+});

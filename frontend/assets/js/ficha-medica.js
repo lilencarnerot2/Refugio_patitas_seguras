@@ -175,7 +175,7 @@ function cargarControles() {
             mostrarUltimoControl(listaDe(resultado));
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 }
 
@@ -187,7 +187,7 @@ function cargarVacunas() {
             mostrarLista(listaDe(resultado), document.getElementById('lista-vacunas'), 'nombre_vacuna');
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 }
 
@@ -203,7 +203,7 @@ function cargarDesparasitaciones() {
             );
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 }
 
@@ -222,12 +222,12 @@ function cargarCastracion() {
             formularioCastracion.hidden = false;
 
             if (error.status === 404) {
-                estado.textContent = error.message;
+                estado.textContent = mensajeDeApi(error);
                 estado.dataset.estado = 'error';
                 return;
             }
 
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 }
 
@@ -247,7 +247,7 @@ function cargarTipos() {
             agregarOpciones(selectProducto, listaDe(resultados[1]), 'nombre_tipo');
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 }
 
@@ -336,7 +336,7 @@ function enviarControl() {
         cuerpo: datosControl()
     })
         .then(function (resultado) {
-            mostrarMensaje(resultado.message, true);
+            mostrarMensaje(mensajeDeApi(resultado), true);
             formularioControl.reset();
             return cargarControles();
         });
@@ -348,7 +348,7 @@ function enviarVacuna() {
         cuerpo: datosVacuna()
     })
         .then(function (resultado) {
-            mostrarMensaje(resultado.message, true);
+            mostrarMensaje(mensajeDeApi(resultado), true);
             formularioVacuna.reset();
             return cargarVacunas();
         });
@@ -360,7 +360,7 @@ function enviarCastracion() {
         cuerpo: datosCastracion()
     })
         .then(function (resultado) {
-            mostrarMensaje(resultado.message, true);
+            mostrarMensaje(mensajeDeApi(resultado), true);
             mostrarCastracion(resultado.data || {});
             formularioCastracion.reset();
         });
@@ -372,7 +372,7 @@ function enviarDesparasitacion() {
         cuerpo: datosDesparasitacion()
     })
         .then(function (resultado) {
-            mostrarMensaje(resultado.message, true);
+            mostrarMensaje(mensajeDeApi(resultado), true);
             formularioDesparasitacion.reset();
             return cargarDesparasitaciones();
         });
@@ -424,7 +424,7 @@ function cargarFicha() {
             mostrarFichaMedica(ficha);
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
             mostrarAltaFicha();
         });
 }
@@ -438,7 +438,7 @@ if (idMascota) {
             return cargarFicha();
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 }
 
@@ -461,12 +461,12 @@ formularioCrearFicha.addEventListener('submit', function (evento) {
         .then(function (resultado) {
             var ficha = resultado.data || {};
 
-            mostrarMensaje(resultado.message, true);
+            mostrarMensaje(mensajeDeApi(resultado), true);
             idFicha = ficha.id;
 
             return enviarRegistrosIniciales()
                 .catch(function (error) {
-                    mostrarMensaje(error.message, false);
+                    mostrarMensaje(mensajeDeApi(error), false);
                 })
                 .then(function () {
                     return ficha;
@@ -476,7 +476,7 @@ formularioCrearFicha.addEventListener('submit', function (evento) {
             mostrarFichaMedica(ficha);
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 });
 
@@ -489,7 +489,7 @@ formularioControl.addEventListener('submit', function (evento) {
     }
 
     enviarControl().catch(function (error) {
-        mostrarMensaje(error.message, false);
+        mostrarMensaje(mensajeDeApi(error), false);
     });
 });
 
@@ -502,7 +502,7 @@ formularioVacuna.addEventListener('submit', function (evento) {
     }
 
     enviarVacuna().catch(function (error) {
-        mostrarMensaje(error.message, false);
+        mostrarMensaje(mensajeDeApi(error), false);
     });
 });
 
@@ -515,7 +515,7 @@ formularioCastracion.addEventListener('submit', function (evento) {
     }
 
     enviarCastracion().catch(function (error) {
-        mostrarMensaje(error.message, false);
+        mostrarMensaje(mensajeDeApi(error), false);
     });
 });
 
@@ -528,6 +528,6 @@ formularioDesparasitacion.addEventListener('submit', function (evento) {
     }
 
     enviarDesparasitacion().catch(function (error) {
-        mostrarMensaje(error.message, false);
+        mostrarMensaje(mensajeDeApi(error), false);
     });
 });

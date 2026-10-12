@@ -62,7 +62,7 @@ function cargarMascotas() {
             agregarOpciones(selectMascota, resultado.data || [], 'nombre');
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 }
 
@@ -74,7 +74,7 @@ function cargarEspecies() {
             agregarOpciones(selectEspecie, especies, 'nombre_especie');
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 }
 
@@ -101,7 +101,7 @@ function cargarRazas(idEspecie, razaSeleccionada) {
             }
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 }
 
@@ -122,7 +122,7 @@ function cargarMascota(id) {
             return cargarRazas(idEspecie, mascota.raza);
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 }
 
@@ -191,11 +191,11 @@ formulario.addEventListener('submit', function (evento) {
             const mascota = resultado.data || {};
             const nombre = mascota.nombre || '';
 
-            mostrarMensaje(resultado.message, true);
+            mostrarMensaje(mensajeDeApi(resultado), true);
             formulario.elements.nombre.value = nombre;
             selectMascota.options[selectMascota.selectedIndex].textContent = nombre;
         })
         .catch(function (error) {
-            mostrarMensaje(error.message, false);
+            mostrarMensaje(mensajeDeApi(error), false);
         });
 });

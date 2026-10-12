@@ -453,7 +453,7 @@ apiRequest('mascotas')
         });
     })
     .catch(function (error) {
-        mostrarMensaje(error.message, false);
+        mostrarMensaje(mensajeDeApi(error), false);
     });
 
 apiRequest('tipos_vacunas')
@@ -464,7 +464,7 @@ apiRequest('tipos_vacunas')
         agregarNombres(tipos, 'nombre_vacuna', document.getElementById('lista-tipos-vacunas'));
     })
     .catch(function (error) {
-        mostrarMensaje(error.message, false);
+        mostrarMensaje(mensajeDeApi(error), false);
     });
 
 apiRequest('tipos_productos')
@@ -475,5 +475,5 @@ apiRequest('tipos_productos')
         agregarNombres(tipos, 'nombre_tipo', document.getElementById('lista-tipos-productos'));
     })
     .catch(function (error) {
-        mostrarMensaje(error.message, false);
+        mostrarMensaje(mensajeDeApi(error), false);
     });
