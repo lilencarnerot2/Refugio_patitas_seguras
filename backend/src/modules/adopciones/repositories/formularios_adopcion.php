@@ -731,3 +731,111 @@ function obtener_destinos_mascotas(): array
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function obtener_formularios_adopcion_filtrados(array $filtros, ?int $id_usuario_solo_suyos): array
+{
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT
+            fa.id,
+            fa.id_solicitud,
+            s.fecha_solicitud,
+            s.id_usuario,
+            u.nombre AS nombre_usuario,
+            u.apellido AS apellido_usuario,
+            s.id_mascota,
+            m.nombre AS nombre_mascota,
+            s.id_tipo_solicitud,
+            ts.nombre_tipo AS tipo_solicitud,
+            s.id_estado_solicitud,
+            es.nombre_estado AS estado_solicitud,
+            fa.id_tipo_vivienda,
+            tv.nombre_tipo AS tipo_vivienda,
+            fa.id_condicion_vivienda,
+            cv.descripcion AS condicion_vivienda,
+            fa.tiene_patio,
+            fa.metros_cuadrados_patio,
+            fa.id_destino_mascota,
+            dm.descripcion AS destino_mascota,
+            fa.cantidad_integrantes,
+            fa.hay_ninos,
+            fa.horas_solo,
+            fa.tiene_mascotas,
+            fa.responsable_principal,
+            fa.motivo_adopcion,
+            fa.puede_realizar_paseos,
+            fa.puede_realizar_traslados,
+            fa.cuenta_con_apoyo,
+            fa.limitaciones_cuidado,
+            fa.experiencia_cuidado,
+            fa.cuenta_con_recursos,
+            fa.observaciones
+        FROM formularios_adopcion fa
+        INNER JOIN solicitudes s
+            ON s.id = fa.id_solicitud
+        INNER JOIN usuarios u
+            ON u.id = s.id_usuario
+        INNER JOIN mascotas m
+            ON m.id = s.id_mascota
+        INNER JOIN tipos_solicitudes ts
+            ON ts.id = s.id_tipo_solicitud
+        INNER JOIN estados_solicitudes es
+            ON es.id = s.id_estado_solicitud
+        INNER JOIN tipos_vivienda tv
+            ON tv.id = fa.id_tipo_vivienda
+        INNER JOIN condiciones_vivienda cv
+            ON cv.id = fa.id_condicion_vivienda
+        INNER JOIN destinos_mascotas dm
+            ON dm.id = fa.id_destino_mascota
+        WHERE 1 = 1
+    ";
+
+    $parametros = [];
+
+    if ($id_usuario_solo_suyos !== null) {
+        $sql .= " AND s.id_usuario = :id_usuario";
+        $parametros[':id_usuario'] = $id_usuario_solo_suyos;
+    }
+
+    if (!empty($filtros['estado'])) {
+        $sql .= " AND LOWER(TRIM(es.nombre_estado)) = LOWER(TRIM(:estado))";
+        $parametros[':estado'] = $filtros['estado'];
+    }
+
+    if (!empty($filtros['id_tipo_vivienda'])) {
+        $sql .= " AND fa.id_tipo_vivienda = :id_tipo_vivienda";
+        $parametros[':id_tipo_vivienda'] = (int) $filtros['id_tipo_vivienda'];
+    }
+
+    if (!empty($filtros['id_condicion_vivienda'])) {
+        $sql .= " AND fa.id_condicion_vivienda = :id_condicion_vivienda";
+        $parametros[':id_condicion_vivienda'] = (int) $filtros['id_condicion_vivienda'];
+    }
+
+    if (isset($filtros['hay_ninos']) && $filtros['hay_ninos'] !== '') {
+        $sql .= " AND fa.hay_ninos = :hay_ninos";
+        $parametros[':hay_ninos'] = ($filtros['hay_ninos'] === 'true' || $filtros['hay_ninos'] === true) ? 't' : 'f';
+    }
+
+    if (isset($filtros['tiene_mascotas']) && $filtros['tiene_mascotas'] !== '') {
+        $sql .= " AND fa.tiene_mascotas = :tiene_mascotas";
+        $parametros[':tiene_mascotas'] = ($filtros['tiene_mascotas'] === 'true' || $filtros['tiene_mascotas'] === true) ? 't' : 'f';
+    }
+
+    if (!empty($filtros['busqueda'])) {
+        $sql .= " AND (
+            LOWER(u.nombre) LIKE LOWER(:busqueda)
+            OR LOWER(u.apellido) LIKE LOWER(:busqueda)
+            OR LOWER(m.nombre) LIKE LOWER(:busqueda)
+        )";
+        $parametros[':busqueda'] = '%' . $filtros['busqueda'] . '%';
+    }
+
+    $sql .= " ORDER BY s.fecha_solicitud DESC, fa.id DESC";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute($parametros);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
