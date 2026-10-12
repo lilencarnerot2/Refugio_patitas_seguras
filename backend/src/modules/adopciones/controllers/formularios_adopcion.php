@@ -89,7 +89,7 @@ function manejar_formularios_adopcion(): void
     $es_admin = es_admin_actual();
 
     try {
-        // -------- GET --------
+                // -------- GET --------
         if ($metodo === 'GET') {
 
             if (isset($_GET['id_solicitud'])) {
@@ -120,8 +120,22 @@ function manejar_formularios_adopcion(): void
                 return;
             }
 
-            responderJson(false, 'Debe indicar id o id_solicitud.', null, 400);
+            // Listado con filtros
+            $filtros = [
+                'estado' => $_GET['estado'] ?? null,
+                'id_tipo_vivienda' => $_GET['id_tipo_vivienda'] ?? null,
+                'id_condicion_vivienda' => $_GET['id_condicion_vivienda'] ?? null,
+                'hay_ninos' => $_GET['hay_ninos'] ?? null,
+                'tiene_mascotas' => $_GET['tiene_mascotas'] ?? null,
+                'busqueda' => $_GET['busqueda'] ?? null,
+            ];
+
+            $formularios = listar_formularios_adopcion($filtros, $id_usuario_actual, $es_admin);
+
+            responderJson(true, null, $formularios, 200);
             return;
+           
+       
         }
 
         // -------- POST --------

@@ -409,3 +409,10 @@ function listar_destinos_mascotas(): array
 {
     return obtener_destinos_mascotas();
 }
+
+function listar_formularios_adopcion(array $filtros, int $id_usuario_actual, bool $es_admin): array
+{
+    $id_usuario_solo_suyos = $es_admin ? null : $id_usuario_actual;
+
+    return obtener_formularios_adopcion_filtrados($filtros, $id_usuario_solo_suyos);
+}
