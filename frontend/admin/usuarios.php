@@ -93,7 +93,7 @@ require __DIR__ . '/includes/header.php';
     </section>
 
 <script src="config.php"></script>
-<script src="../assets/js/api.js?t=<?php echo filemtime(__DIR__ . '/../assets/js/api.js'); ?>"></script>
-<script src="../assets/js/usuarios.js?t=<?php echo filemtime(__DIR__ . '/../assets/js/usuarios.js'); ?>"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/usuarios.js"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

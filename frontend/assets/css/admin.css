@@ -1238,14 +1238,12 @@ html {
 }
 
 .admin-page .panel-listado .info-card,
-.admin-page #panel-usuario-detalle .info-card,
-.admin-page #panel-solicitud-detalle .info-card {
+.admin-page #panel-usuario-detalle .info-card {
     padding: 28px 30px;
 }
 
 .admin-page .panel-listado .dash-card-cabecera,
-.admin-page #panel-usuario-detalle .dash-card-cabecera,
-.admin-page #panel-solicitud-detalle .dash-card-cabecera {
+.admin-page #panel-usuario-detalle .dash-card-cabecera {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -1256,8 +1254,7 @@ html {
 }
 
 .admin-page .panel-listado .dash-card-cabecera h3,
-.admin-page #panel-usuario-detalle .dash-card-cabecera h3,
-.admin-page #panel-solicitud-detalle .dash-card-cabecera h3 {
+.admin-page #panel-usuario-detalle .dash-card-cabecera h3 {
     flex: 1 1 auto;
     min-width: 0;
     margin: 0;
@@ -1271,13 +1268,8 @@ html {
     content: "Solicitudes";
 }
 
-.admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary,
-.admin-page #panel-solicitud-detalle .dash-card-cabecera .btn-primary {
+.admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary {
     margin-left: auto;
-}
-
-.admin-page #panel-solicitud-detalle .dash-card-cabecera .btn-primary::after {
-    content: "Solicitudes";
 }
 
 .admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary::after {
@@ -1957,7 +1949,7 @@ html {
 }
 
 .admin-page #panel-usuario-detalle #ficha-nombre,
-.admin-page #panel-solicitud-detalle #ficha-nombre {
+.admin-page #panel-usuario-detalle #ficha-nombre {
     color: var(--primary-color);
     font-size: 26px;
     font-weight: 600;
@@ -1965,7 +1957,6 @@ html {
 
 .admin-page #panel-usuario-detalle #ficha-nombre[data-texto]::after,
 .admin-page #panel-usuario-detalle .pet-detail-meta [data-campo][data-texto]::after,
-.admin-page #panel-solicitud-detalle #ficha-nombre[data-texto]::after,
 .admin-page #panel-solicitud-detalle .pet-detail-meta [data-campo][data-texto]::after,
 .admin-page #bloque-solicitudes .dash-tabla td[data-texto]::after {
     content: attr(data-texto);
@@ -1985,20 +1976,98 @@ html {
     padding: 0;
 }
 
+.admin-page #panel-solicitud-detalle .dash-fila-dos {
+    position: relative;
+    align-items: start;
+    gap: 16px;
+}
+
+.admin-page #panel-solicitud-detalle .info-card {
+    height: auto;
+    padding: 16px 18px;
+}
+
+.admin-page #panel-solicitud-detalle .dash-card-cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.admin-page #panel-solicitud-detalle .dash-card-cabecera h3 {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    font-size: 16px;
+}
+
+.admin-page #panel-solicitud-detalle .ficha-usuario-icono {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+}
+
 .admin-page #panel-solicitud-detalle #ficha-formulario {
-    max-height: 420px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 993px) {
+    .admin-page #panel-solicitud-detalle #ficha-formulario {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: calc(50% - 8px);
+    }
+}
+
+.admin-page #panel-solicitud-detalle .formulario-detalle-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
+    padding-right: 8px;
+}
+
+.admin-page #panel-solicitud-detalle #bloque-compatibilidad {
+    width: 100%;
+    min-height: 168px;
+    padding-top: 20px;
+    padding-bottom: 28px;
+}
+
+.admin-page #panel-solicitud-detalle #campos-formulario {
+    align-items: start;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-control {
+    background: var(--icon-bg);
+    border: 0;
+    min-height: 34px;
+    font-size: 13px;
 }
 
 .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li,
-.admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li:has(#detalle-estado[data-estado]),
-.admin-page #panel-solicitud-detalle #ficha-solicitud .pet-detail-meta li {
+.admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li:has(#detalle-estado[data-estado]) {
     display: flex;
     flex-direction: column;
     gap: 4px;
     padding: 14px 16px;
     background: var(--icon-bg);
     border-radius: 12px;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-solicitud .pet-detail-meta li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
+    background: var(--icon-bg);
+    border-radius: 10px;
 }
 
 .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li:not(:has([data-texto])):not(:has([data-estado])),
@@ -2525,5 +2594,66 @@ html {
         width: 100%;
         margin-left: 0;
         text-align: center;
+    }
+}
+
+@media (max-width: 992px) {
+    .admin-page {
+        overflow-x: clip;
+    }
+
+    .admin-page section {
+        padding-left: 12px;
+        padding-right: 12px;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .admin-page .dash-fila,
+    .admin-page .dash-fila-dos,
+    .admin-page .dash-fila-tres,
+    .admin-page #panel-solicitud-detalle .dash-fila-dos {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .admin-page .info-card,
+    .admin-page #panel-solicitud-detalle .info-card,
+    .admin-page #panel-solicitud-detalle #ficha-formulario,
+    .admin-page #panel-solicitud-detalle #bloque-compatibilidad {
+        position: static;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .admin-page #panel-solicitud-detalle #ficha-formulario {
+        max-height: 70vh;
+    }
+
+    .admin-page #panel-solicitud-detalle #ficha-solicitud .pet-detail-meta,
+    .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-page #botones-estado {
+        flex-wrap: wrap;
+    }
+
+    .admin-page #botones-estado .btn {
+        flex: 1 1 100%;
+    }
+
+    .admin-page .listado-controles,
+    .admin-page .dash-card-cabecera {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-page .form-seccion .row > [class*="col-"] {
+        width: 100%;
+        max-width: 100%;
+        flex: 0 0 100%;
     }
 }

@@ -98,7 +98,7 @@ require __DIR__ . '/includes/header.php';
     </section>
 
 <script src="config.php"></script>
-<script src="../assets/js/api.js?t=<?php echo filemtime(__DIR__ . '/../assets/js/api.js'); ?>"></script>
-<script src="../assets/js/salud.js?t=<?php echo filemtime(__DIR__ . '/../assets/js/salud.js'); ?>"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/salud.js"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>
