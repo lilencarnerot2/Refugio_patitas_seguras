@@ -359,3 +359,10 @@ function modificar_formulario_transito(int $id_formulario, int $id_usuario_actua
 
     return obtener_formulario_transito($id_formulario, $id_usuario_actual, false);
 }
+
+function listar_formularios_transito(array $filtros, int $id_usuario_actual, bool $es_admin): array
+{
+    $id_usuario_solo_suyos = $es_admin ? null : $id_usuario_actual;
+
+    return obtener_formularios_transito_filtrados($filtros, $id_usuario_solo_suyos);
+}

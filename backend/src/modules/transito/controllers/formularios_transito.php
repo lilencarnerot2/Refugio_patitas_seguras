@@ -32,7 +32,8 @@ function manejar_formularios_transito(): void
     $es_admin = es_admin_actual_transito();
 
     try {
-        // -------- GET --------
+
+                // -------- GET --------
         if ($metodo === 'GET') {
 
             if (isset($_GET['id_solicitud'])) {
@@ -63,8 +64,21 @@ function manejar_formularios_transito(): void
                 return;
             }
 
-            responderJson(false, 'Debe indicar id o id_solicitud.', null, 400);
+            // Listado con filtros
+            $filtros = [
+                'estado' => $_GET['estado'] ?? null,
+                'id_tipo_vivienda' => $_GET['id_tipo_vivienda'] ?? null,
+                'disponibilidad_desde' => $_GET['disponibilidad_desde'] ?? null,
+                'disponibilidad_hasta' => $_GET['disponibilidad_hasta'] ?? null,
+                'busqueda' => $_GET['busqueda'] ?? null,
+            ];
+
+            $formularios = listar_formularios_transito($filtros, $id_usuario_actual, $es_admin);
+
+            responderJson(true, null, $formularios, 200);
             return;
+
+            
         }
 
         // -------- POST --------
