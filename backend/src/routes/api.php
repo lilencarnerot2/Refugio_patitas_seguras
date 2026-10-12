@@ -289,6 +289,16 @@ function manejarRutas()
             manejar_tipos_mascotas();
             break;
 
+                case 'condiciones_vivienda':
+            require_once __DIR__ . '/../modules/adopciones/controllers/formularios_adopcion.php';
+            manejar_condiciones_vivienda();
+            break;
+
+        case 'destinos_mascotas':
+            require_once __DIR__ . '/../modules/adopciones/controllers/formularios_adopcion.php';
+            manejar_destinos_mascotas();
+            break;    
+
         case 'formularios_adopcion':
             require_once __DIR__ . '/../modules/adopciones/controllers/formularios_adopcion.php';
             manejar_formularios_adopcion();

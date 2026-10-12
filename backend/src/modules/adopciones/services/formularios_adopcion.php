@@ -399,3 +399,13 @@ function modificar_formulario_adopcion(int $id_formulario, int $id_usuario_actua
 
     return obtener_formulario_adopcion($id_formulario, $id_usuario_actual, false);
 }
+function listar_condiciones_vivienda(): array
+{
+    return obtener_condiciones_vivienda();
+}
+
+
+function listar_destinos_mascotas(): array
+{
+    return obtener_destinos_mascotas();
+}

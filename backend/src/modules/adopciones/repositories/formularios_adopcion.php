@@ -696,3 +696,38 @@ function obtener_mascotas_de_formulario(int $id_formulario): array
 
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
+
+function obtener_condiciones_vivienda(): array
+{
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT id, descripcion, estado
+        FROM condiciones_vivienda
+        WHERE estado = TRUE
+        ORDER BY id
+    ";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+function obtener_destinos_mascotas(): array
+{
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT id, descripcion, estado
+        FROM destinos_mascotas
+        WHERE estado = TRUE
+        ORDER BY id
+    ";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}

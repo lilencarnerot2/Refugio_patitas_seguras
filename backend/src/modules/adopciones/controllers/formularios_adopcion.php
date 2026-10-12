@@ -172,3 +172,40 @@ function manejar_formularios_adopcion(): void
         responderJson(false, 'Error al procesar el formulario de adopción.', null, 500);
     }
 }
+
+function manejar_condiciones_vivienda(): void
+{
+    try {
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            responderJson(false, 'Método no permitido.', null, 405);
+            return;
+        }
+
+        if (!requerir_autenticacion()) {
+            return;
+        }
+
+        responderJson(true, null, listar_condiciones_vivienda(), 200);
+    } catch (Throwable $e) {
+        responderJson(false, 'Error al listar condiciones de vivienda.', null, 500);
+    }
+}
+
+
+function manejar_destinos_mascotas(): void
+{
+    try {
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            responderJson(false, 'Método no permitido.', null, 405);
+            return;
+        }
+
+        if (!requerir_autenticacion()) {
+            return;
+        }
+
+        responderJson(true, null, listar_destinos_mascotas(), 200);
+    } catch (Throwable $e) {
+        responderJson(false, 'Error al listar destinos de mascotas.', null, 500);
+    }
+}
