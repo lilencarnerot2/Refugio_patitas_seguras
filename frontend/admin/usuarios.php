@@ -13,25 +13,31 @@ require __DIR__ . '/includes/header.php';
                 <span class="ficha-usuario-icono"><i class="bi bi-people-fill"></i></span>
                 <h3></h3>
             </div>
-            <div class="listado-controles">
-                <div class="input-group listado-buscar">
-                    <i class="bi bi-search input-group-text"></i>
-                    <input type="search" id="buscar-usuarios" class="form-control" placeholder="Buscar" aria-label="Buscar">
-                    <button type="button" class="btn btn-outline-secondary" data-limpiar="buscar-usuarios" aria-label="Limpiar búsqueda"><i class="bi bi-x"></i></button>
+            <div class="listado-controles row g-2">
+                <div class="col-12 col-lg min-w-0">
+                    <div class="input-group listado-buscar">
+                        <i class="bi bi-search input-group-text"></i>
+                        <input type="search" id="buscar-usuarios" class="form-control" placeholder="Buscar" aria-label="Buscar">
+                        <button type="button" class="btn btn-outline-secondary" data-limpiar="buscar-usuarios" aria-label="Limpiar búsqueda"><i class="bi bi-x"></i></button>
+                    </div>
                 </div>
-                <div class="input-group listado-filtro-grupo">
-                    <select id="filtro-rol" class="form-select listado-filtro" aria-label="Rol">
-                        <option value="" selected disabled hidden>Rol</option>
-                    </select>
-                    <button type="button" class="btn btn-outline-secondary" data-limpiar="filtro-rol" aria-label="Limpiar filtro de rol"><i class="bi bi-x"></i></button>
+                <div class="col-12 col-md min-w-0">
+                    <div class="input-group listado-filtro-grupo" aria-label="Rol">
+                        <select id="filtro-rol" class="form-select listado-filtro" aria-label="Rol">
+                            <option value="" selected hidden></option>
+                        </select>
+                        <button type="button" class="btn btn-outline-secondary" data-limpiar="filtro-rol" aria-label="Limpiar filtro de rol"><i class="bi bi-x"></i></button>
+                    </div>
                 </div>
-                <div class="input-group listado-filtro-grupo">
-                    <select id="filtro-estado" class="form-select listado-filtro" aria-label="Estado">
-                        <option value="" selected disabled hidden>Estado</option>
-                        <option value="true">Activo</option>
-                        <option value="false">Inactivo</option>
-                    </select>
-                    <button type="button" class="btn btn-outline-secondary" data-limpiar="filtro-estado" aria-label="Limpiar filtro de estado"><i class="bi bi-x"></i></button>
+                <div class="col-12 col-md min-w-0">
+                    <div class="input-group listado-filtro-grupo" aria-label="Estado">
+                        <select id="filtro-estado" class="form-select listado-filtro" aria-label="Estado">
+                            <option value="" selected hidden></option>
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                        <button type="button" class="btn btn-outline-secondary" data-limpiar="filtro-estado" aria-label="Limpiar filtro de estado"><i class="bi bi-x"></i></button>
+                    </div>
                 </div>
             </div>
             <div class="lista-scroll-mascotas">

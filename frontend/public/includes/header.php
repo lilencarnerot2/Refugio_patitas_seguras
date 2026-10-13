@@ -7,6 +7,7 @@ $login = '/public/login.php';
 $salir = '/public/login.php?salir=1';
 $autenticado = usuarioAutenticado();
 $esPersonal = esPersonalAdmin();
+$donar = '/public/donaciones.php';
 ?><header>
     <a class="logo-container" href="<?php echo $esInicio ? '#inicio' : $inicio; ?>">
             <div class="logo-icon">
@@ -37,6 +38,7 @@ $esPersonal = esPersonalAdmin();
                     <details>
                         <summary>CÓMO AYUDAR</summary>
                         <ul class="dropdown-menu">
+                            <li><a href="/public/donaciones.php">DONAR</a></li>
                             <li><a href="<?php echo $inicio; ?>#modal-castracion">CASTRACIÓN</a></li>
                             <li><a href="<?php echo $inicio; ?>#modal-maltrato">DENUNCIA MALTRATO</a></li>
                         </ul>
@@ -56,7 +58,7 @@ $esPersonal = esPersonalAdmin();
                     <?php if ($autenticado) { ?>
                     <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>
                     <?php } ?>
-                    <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : $inicio . '#modal-donaciones'; ?>">
+                    <a class="btn-donate" href="<?php echo $donar; ?>">
                         <i class="bi bi-heart-fill"></i> DONAR
                     </a>
                 </li>
@@ -75,7 +77,7 @@ $esPersonal = esPersonalAdmin();
             <?php if ($autenticado) { ?>
             <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>
             <?php } ?>
-            <a class="btn-donate" href="<?php echo $esInicio ? '#modal-donaciones' : $inicio . '#modal-donaciones'; ?>">
+            <a class="btn-donate" href="<?php echo $donar; ?>">
                 <i class="bi bi-heart-fill"></i> DONAR
             </a>
             <label for="nav-toggle" class="menu-toggle" aria-label="Menú">

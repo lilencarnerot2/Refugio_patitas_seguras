@@ -1,6 +1,7 @@
 // Todo sale del backend (APP_CONFIG lo arma el servidor con variables de entorno).
 var API_URL = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) || '';
 var INICIO_URL = (window.APP_CONFIG && window.APP_CONFIG.inicioUrl) || '';
+var PANEL_URL = (window.APP_CONFIG && window.APP_CONFIG.panelUrl) || '';
 
 function apiRequest(recurso, opciones) {
   if (!API_URL) {
@@ -105,7 +106,6 @@ function irTrasSesion(origen) {
         guardarCookie('usuario_acceso_superadmin', '1');
       }
 
-      // va al inicio que armó el servidor
       if (INICIO_URL) {
         window.location.href = INICIO_URL;
       }
@@ -119,24 +119,35 @@ function fechaCorta(valor) {
 }
 
 function textoDeItem(item) {
-  var clave;
-
-  if (!item || typeof item !== 'object') {
+  if (item === undefined || item === null) {
     return '';
   }
 
-  for (clave in item) {
-    if (!Object.prototype.hasOwnProperty.call(item, clave)) {
+  if (typeof item !== 'object') {
+    return String(item);
+  }
+
+  var claves = Object.keys(item);
+  var i;
+  var clave;
+  var valor;
+
+  for (i = 0; i < claves.length; i++) {
+    clave = claves[i];
+
+    if (clave === 'id' || clave === 'estado' || clave.indexOf('id_') === 0) {
       continue;
     }
 
-    if (clave === 'id' || clave === 'estado') {
-      continue;
-    }
+    valor = item[clave];
 
-    if (typeof item[clave] === 'string' && item[clave]) {
-      return item[clave];
+    if (valor !== undefined && valor !== null && valor !== '' && typeof valor !== 'object') {
+      return String(valor);
     }
+  }
+
+  if (item.id !== undefined && item.id !== null) {
+    return String(item.id);
   }
 
   return '';

@@ -290,11 +290,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var contenedor = document.getElementById('barras-donaciones');
         var campo = contenedor ? contenedor.getAttribute('data-campo') : null;
+        var items = datos.donaciones;
+        var primero = items[0];
+        var clave;
 
-        pintarNumero('numero-donaciones', datos.donaciones.length);
+        pintarNumero('numero-donaciones', items.length);
+
+        if (!campo && primero) {
+            for (clave in primero) {
+                if (Object.prototype.hasOwnProperty.call(primero, clave) && clave.toLowerCase().indexOf('tipo') !== -1 && typeof primero[clave] !== 'object') {
+                    campo = clave;
+                    break;
+                }
+            }
+        }
 
         if (campo) {
-            pintarBarras(datos.donaciones, campo);
+            pintarBarras(items, campo);
         }
     }
 
@@ -320,5 +332,5 @@ document.addEventListener('DOMContentLoaded', function () {
         mostrarPendientes();
     });
     pedir('mascotas', 'mascotas', mostrarMascotas);
-    pedir('donaciones', 'donaciones', mostrarDonaciones);
+    pedir('movimientos', 'donaciones', mostrarDonaciones);
 });

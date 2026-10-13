@@ -373,7 +373,7 @@ function poblarEspeciesSalud() {
     }
 
     Array.prototype.forEach.call(filtroEspecieSalud.querySelectorAll('option'), function (actual) {
-        if (!actual.disabled) {
+        if (actual.value !== '') {
             actual.remove();
         }
     });
