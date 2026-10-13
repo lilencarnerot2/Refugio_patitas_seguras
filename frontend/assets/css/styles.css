@@ -1694,11 +1694,18 @@
             padding: 0 4px;
         }
 
-        #bloque-solicitud[hidden] {
+        #bloque-solicitud[hidden],
+        #bloque-solicitud[hidden] .solicitud-formulario,
+        #bloque-solicitud[hidden] #ficha-mascota,
+        #bloque-solicitud[hidden] .public-form,
+        #acceso-solicitud[data-estado="error"] #bloque-solicitud,
+        #acceso-solicitud:has(#mensaje-solicitud:not(:empty)) #bloque-solicitud {
             display: none !important;
         }
 
-        #acceso-solicitud:has(#mensaje-solicitud:not(:empty)) {
+        #acceso-solicitud:has(#mensaje-solicitud:not(:empty)),
+        #acceso-solicitud[data-estado="error"] {
+            align-items: center;
             justify-content: center;
             min-height: calc(100vh - 220px);
         }
@@ -1714,7 +1721,8 @@
             justify-content: center;
             gap: 18px;
             width: min(560px, 100%);
-            margin: 0;
+            margin: auto;
+            align-self: center;
             padding: 2.75rem 2.25rem;
             border-width: 2px;
             border-radius: 1rem;
@@ -2071,6 +2079,70 @@
         #panel-mi-perfil .dash-tabla td {
             padding: 6px 8px;
             font-size: 12px;
+        }
+
+        #panel-mi-perfil .paginador {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        #panel-mi-perfil .paginador[hidden] {
+            display: none;
+        }
+
+        #panel-mi-perfil .paginador .pagination {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: auto;
+            margin: 0;
+            padding: 0;
+        }
+
+        #panel-mi-perfil .paginador .page-item {
+            width: auto;
+        }
+
+        #panel-mi-perfil .paginador .page-item .page-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            min-width: 40px;
+            min-height: 40px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 999px;
+            background: var(--primary-color);
+            color: var(--white);
+            font-size: 13px;
+            box-shadow: none;
+        }
+
+        #panel-mi-perfil .paginador .page-item .page-link:hover,
+        #panel-mi-perfil .paginador .page-item .page-link:focus,
+        #panel-mi-perfil .paginador .page-item .page-link:active {
+            border: none;
+            background: var(--primary-color);
+            color: var(--white);
+            box-shadow: none;
+        }
+
+        #panel-mi-perfil .paginador .page-item.active .page-link,
+        #panel-mi-perfil .paginador .page-item [aria-current="page"],
+        #panel-mi-perfil .paginador .page-item[data-activa="true"] .page-link {
+            filter: brightness(0.78);
+        }
+
+        #panel-mi-perfil .paginador .page-item.disabled .page-link,
+        #panel-mi-perfil .paginador .page-item[data-deshabilitado="true"] .page-link {
+            opacity: 0.45;
+            pointer-events: none;
         }
 
         @media (max-width: 768px) {

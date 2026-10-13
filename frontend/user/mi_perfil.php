@@ -19,7 +19,7 @@ require __DIR__ . '/includes/header.php';
                                 <span class="ficha-usuario-icono"><i class="bi bi-person-fill"></i></span>
                                 <h3>Datos</h3>
                             </div>
-                            <ul class="pet-detail-meta" id="datos-perfil"></ul>
+                            <ul class="pet-detail-meta" id="datos-perfil" data-recurso="contactos"></ul>
                         </article>
                     </div>
 
@@ -29,14 +29,14 @@ require __DIR__ . '/includes/header.php';
                                 <span class="ficha-usuario-icono"><i class="bi bi-geo-alt"></i></span>
                                 <h3>Domicilio</h3>
                             </div>
-                            <ul class="pet-detail-meta" id="lista-domicilio"></ul>
+                            <ul class="pet-detail-meta" id="lista-domicilio" data-recurso="domicilios"></ul>
                         </article>
                     </div>
                 </div>
             </div>
 
             <div class="tab-pane fade<?php echo $paginaPerfil === 'movimientos' ? ' show active' : ''; ?>" id="vista-movimientos" role="tabpanel">
-                <article class="info-card ficha-compacta ficha-ancha h-auto">
+                <article class="info-card ficha-compacta ficha-ancha h-auto" data-por-pagina="5">
                     <div class="dash-card-cabecera">
                         <span class="ficha-usuario-icono"><i class="bi bi-list-ul"></i></span>
                         <h3>Mis movimientos</h3>
@@ -46,14 +46,27 @@ require __DIR__ . '/includes/header.php';
                             <thead>
                                 <tr id="cabecera-movimientos"></tr>
                             </thead>
-                            <tbody id="cuerpo-movimientos"></tbody>
+                            <tbody id="cuerpo-movimientos" data-recurso="movimientos"></tbody>
                         </table>
                     </div>
+                    <nav class="paginador" data-paginador aria-label="Paginación" hidden>
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" data-pagina-anterior href="#vista-movimientos" aria-label="Página anterior"><i class="bi bi-chevron-left"></i></a>
+                            </li>
+                            <li class="page-item" data-pagina-modelo hidden>
+                                <button type="button" class="page-link"></button>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" data-pagina-siguiente href="#vista-movimientos" aria-label="Página siguiente"><i class="bi bi-chevron-right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
                 </article>
             </div>
 
             <div class="tab-pane fade<?php echo $paginaPerfil === 'solicitudes' ? ' show active' : ''; ?>" id="vista-solicitudes" role="tabpanel">
-                <article class="info-card ficha-compacta ficha-ancha h-auto">
+                <article class="info-card ficha-compacta ficha-ancha h-auto" data-por-pagina="5">
                     <div class="dash-card-cabecera">
                         <span class="ficha-usuario-icono"><i class="bi bi-file-earmark-text"></i></span>
                         <h3>Mis solicitudes</h3>
@@ -63,9 +76,22 @@ require __DIR__ . '/includes/header.php';
                             <thead>
                                 <tr id="cabecera-solicitudes"></tr>
                             </thead>
-                            <tbody id="cuerpo-solicitudes"></tbody>
+                            <tbody id="cuerpo-solicitudes" data-recurso="solicitudes"></tbody>
                         </table>
                     </div>
+                    <nav class="paginador" data-paginador aria-label="Paginación" hidden>
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" data-pagina-anterior href="#vista-solicitudes" aria-label="Página anterior"><i class="bi bi-chevron-left"></i></a>
+                            </li>
+                            <li class="page-item" data-pagina-modelo hidden>
+                                <button type="button" class="page-link"></button>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" data-pagina-siguiente href="#vista-solicitudes" aria-label="Página siguiente"><i class="bi bi-chevron-right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
                 </article>
             </div>
         </div>
