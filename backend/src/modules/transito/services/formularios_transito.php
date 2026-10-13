@@ -366,3 +366,43 @@ function listar_formularios_transito(array $filtros, int $id_usuario_actual, boo
 
     return obtener_formularios_transito_filtrados($filtros, $id_usuario_solo_suyos);
 }
+
+function finalizar_transito(
+    int $id_solicitud
+): bool {
+
+    if ($id_solicitud <= 0) {
+        throw new InvalidArgumentException(
+            'El id de la solicitud no es válido.'
+        );
+    }
+
+    $transito =
+        obtener_estado_transito_por_solicitud(
+            $id_solicitud
+        );
+
+    if (!$transito) {
+        throw new RuntimeException(
+            'No se encontró una solicitud de hogar de tránsito.'
+        );
+    }
+
+    $estado_actual = strtolower(
+        trim((string) $transito['nombre_estado'])
+    );
+
+    if ($estado_actual !== 'aprobado') {
+        throw new InvalidArgumentException(
+            'Solo se puede finalizar un tránsito que se encuentre aprobado.'
+        );
+    }
+
+    if (!finalizar_transito_db($id_solicitud)) {
+        throw new RuntimeException(
+            'No se pudo finalizar el tránsito.'
+        );
+    }
+
+    return true;
+}

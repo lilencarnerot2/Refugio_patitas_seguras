@@ -33,7 +33,7 @@ function manejar_formularios_transito(): void
 
     try {
 
-                // -------- GET --------
+        // -------- GET --------
         if ($metodo === 'GET') {
 
             if (isset($_GET['id_solicitud'])) {
@@ -98,25 +98,83 @@ function manejar_formularios_transito(): void
 
         // -------- PUT --------
         if ($metodo === 'PUT') {
-            $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
 
-            if ($id === false || $id <= 0) {
-                responderJson(false, 'El id del formulario no es válido.', null, 400);
+            $accion = $_GET['accion'] ?? null;
+
+            // Finalizar tránsito
+            if ($accion === 'finalizar') {
+                if (!$es_admin) {
+                    responderJson(
+                    false,
+                    'No tenés permisos para finalizar un tránsito.',
+                    null,
+                    403
+                );
                 return;
             }
 
-            $datos = json_decode(file_get_contents('php://input'), true);
+            $id_solicitud = filter_var($_GET['id_solicitud'] ?? null,   FILTER_VALIDATE_INT);
 
-            if (!is_array($datos)) {
-                responderJson(false, 'JSON inválido.', null, 400);
+            if ($id_solicitud === false || $id_solicitud <= 0) {
+                responderJson(
+                    false,
+                    'El id de la solicitud no es válido.',
+                    null,
+                    400
+                );
                 return;
             }
 
-            $formulario = modificar_formulario_transito($id, $id_usuario_actual, $datos);
-
-            responderJson(true, 'Formulario de tránsito actualizado correctamente.', $formulario, 200);
+            finalizar_transito($id_solicitud);
+            responderJson(
+                true,
+                'Tránsito finalizado correctamente.',
+                null,
+                200
+            );
             return;
+            }
         }
+
+        
+        $id = filter_var($_GET['id'] ?? null,FILTER_VALIDATE_INT);
+        if ($id === false || $id <= 0) {
+        responderJson(
+            false,
+            'El id del formulario no es válido.',
+            null,
+            400
+        );
+        return;
+        }
+
+        $datos = json_decode(file_get_contents('php://input'),true);
+
+        if (!is_array($datos)) {
+            responderJson(
+                false,
+                'JSON inválido.',
+                null,
+                400
+            );
+        r   eturn;
+        }
+
+        $formulario = modificar_formulario_transito(
+            $id,
+            $id_usuario_actual,
+            $datos
+        );
+
+        responderJson(
+            true,
+            'Formulario de tránsito actualizado correctamente.',
+            $formulario,
+            200
+        );
+        return;
+        
+    }
 
         responderJson(false, 'Método no permitido.', null, 405);
 

@@ -599,3 +599,68 @@ function obtener_formularios_transito_filtrados(array $filtros, ?int $id_usuario
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function obtener_estado_transito_por_solicitud(
+    int $id_solicitud
+): array|false {
+
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT
+            s.id AS id_solicitud,
+            s.id_tipo_solicitud,
+            s.id_estado_solicitud,
+            es.nombre_estado
+        FROM solicitudes s
+        INNER JOIN estados_solicitudes es
+            ON es.id = s.id_estado_solicitud
+        WHERE s.id = :id_solicitud
+          AND s.id_tipo_solicitud = 2
+        LIMIT 1
+    ";
+
+    $stmt = $conexion->prepare($sql);
+
+    $stmt->execute([
+        ':id_solicitud' => $id_solicitud
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+function finalizar_transito_db(
+    int $id_solicitud
+): bool {
+
+    $conexion = conectarDB();
+
+    $sql = "
+        UPDATE solicitudes
+        SET id_estado_solicitud = (
+            SELECT id
+            FROM estados_solicitudes
+            WHERE LOWER(TRIM(nombre_estado)) = 'finalizado'
+              AND estado = TRUE
+            LIMIT 1
+        )
+        WHERE id = :id_solicitud
+          AND id_tipo_solicitud = 2
+          AND id_estado_solicitud = (
+              SELECT id
+              FROM estados_solicitudes
+              WHERE LOWER(TRIM(nombre_estado)) = 'aprobado'
+                AND estado = TRUE
+              LIMIT 1
+          )
+        RETURNING id
+    ";
+
+    $stmt = $conexion->prepare($sql);
+
+    $stmt->execute([
+        ':id_solicitud' => $id_solicitud
+    ]);
+
+    return (bool) $stmt->fetchColumn();
+}
