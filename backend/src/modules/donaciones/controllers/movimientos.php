@@ -167,3 +167,60 @@ function manejar_movimientos(): void
         responderJson(false, 'Error al procesar el movimiento.', null, 500);
     }
 }
+
+// ============================================================
+// REPORTES
+// ============================================================
+
+function manejar_reportes_movimientos(): void
+{
+    $metodo = $_SERVER['REQUEST_METHOD'];
+
+    if ($metodo !== 'GET') {
+        responderJson(false, 'Método no permitido.', null, 405);
+        return;
+    }
+
+    if (!requerir_autenticacion()) {
+        return;
+    }
+
+    if (!es_admin_actual_donaciones()) {
+        responderJson(false, 'No tenés permisos para ver reportes.', null, 403);
+        return;
+    }
+
+    try {
+        $filtros = [
+            'id_tipo_movimiento' => $_GET['id_tipo_movimiento'] ?? null,
+            'id_tipo_aporte' => $_GET['id_tipo_aporte'] ?? null,
+            'id_metodo_pago' => $_GET['id_metodo_pago'] ?? null,
+            'id_frecuencia_aporte' => $_GET['id_frecuencia_aporte'] ?? null,
+            'fecha_desde' => $_GET['fecha_desde'] ?? null,
+            'fecha_hasta' => $_GET['fecha_hasta'] ?? null,
+        ];
+
+        $agrupado_por = $_GET['agrupado_por'] ?? null;
+
+        if ($agrupado_por === 'tipo_aporte') {
+            $data = reporte_por_tipo_aporte($filtros);
+        } elseif ($agrupado_por === 'metodo_pago') {
+            $data = reporte_por_metodo_pago($filtros);
+        } elseif ($agrupado_por === 'frecuencia') {
+            $data = reporte_por_frecuencia($filtros);
+        } elseif ($agrupado_por === null || $agrupado_por === '') {
+            $data = resumen_movimientos($filtros);
+        } else {
+            responderJson(false, 'El valor de agrupado_por no es válido.', null, 400);
+            return;
+        }
+
+        responderJson(true, null, $data, 200);
+
+    } catch (InvalidArgumentException $e) {
+        responderJson(false, $e->getMessage(), null, 400);
+    } catch (Throwable $e) {
+        error_log('ERROR REPORTES MOVIMIENTOS: ' . $e->getMessage());
+        responderJson(false, 'Error al generar el reporte.', null, 500);
+    }
+}

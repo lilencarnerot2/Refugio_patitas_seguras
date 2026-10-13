@@ -289,3 +289,247 @@ function crear_movimiento(array $datos): array|false
 
     return $fila ?: false;
 }
+
+// ============================================================
+// REPORTES
+// ============================================================
+
+function obtener_resumen_movimientos(array $filtros): array
+{
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT
+            COALESCE(SUM(CASE WHEN m.id_tipo_movimiento = 1 AND m.monto IS NOT NULL THEN m.monto ELSE 0 END), 0) AS total_ingresos,
+            COALESCE(SUM(CASE WHEN m.id_tipo_movimiento = 2 AND m.monto IS NOT NULL THEN m.monto ELSE 0 END), 0) AS total_egresos,
+            COALESCE(SUM(CASE WHEN m.id_tipo_movimiento = 1 THEN 1 ELSE 0 END), 0) AS cantidad_ingresos,
+            COALESCE(SUM(CASE WHEN m.id_tipo_movimiento = 2 THEN 1 ELSE 0 END), 0) AS cantidad_egresos,
+            COUNT(*) AS total_aportes
+        FROM movimientos m
+        INNER JOIN tipos_movimientos_aportes tm
+            ON tm.id = m.id_tipo_movimiento
+        INNER JOIN tipos_aportes ta
+            ON ta.id = m.id_tipo_aporte
+        LEFT JOIN metodos_pago mp
+            ON mp.id = m.id_metodo_pago
+        LEFT JOIN frecuencia_aportes fa
+            ON fa.id = m.id_frecuencia_aporte
+        WHERE 1 = 1
+    ";
+
+    $parametros = [];
+
+    if (!empty($filtros['id_tipo_movimiento'])) {
+        $sql .= " AND m.id_tipo_movimiento = :id_tipo_movimiento";
+        $parametros[':id_tipo_movimiento'] = (int) $filtros['id_tipo_movimiento'];
+    }
+
+    if (!empty($filtros['id_tipo_aporte'])) {
+        $sql .= " AND m.id_tipo_aporte = :id_tipo_aporte";
+        $parametros[':id_tipo_aporte'] = (int) $filtros['id_tipo_aporte'];
+    }
+
+    if (!empty($filtros['id_metodo_pago'])) {
+        $sql .= " AND m.id_metodo_pago = :id_metodo_pago";
+        $parametros[':id_metodo_pago'] = (int) $filtros['id_metodo_pago'];
+    }
+
+    if (!empty($filtros['id_frecuencia_aporte'])) {
+        $sql .= " AND m.id_frecuencia_aporte = :id_frecuencia_aporte";
+        $parametros[':id_frecuencia_aporte'] = (int) $filtros['id_frecuencia_aporte'];
+    }
+
+    if (!empty($filtros['fecha_desde'])) {
+        $sql .= " AND m.fecha >= :fecha_desde";
+        $parametros[':fecha_desde'] = $filtros['fecha_desde'];
+    }
+
+    if (!empty($filtros['fecha_hasta'])) {
+        $sql .= " AND m.fecha <= :fecha_hasta";
+        $parametros[':fecha_hasta'] = $filtros['fecha_hasta'];
+    }
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute($parametros);
+
+    $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$fila) {
+        return [
+            'total_ingresos' => 0,
+            'total_egresos' => 0,
+            'balance' => 0,
+            'cantidad_ingresos' => 0,
+            'cantidad_egresos' => 0,
+            'total_aportes' => 0
+        ];
+    }
+
+    $total_ingresos = (float) $fila['total_ingresos'];
+    $total_egresos = (float) $fila['total_egresos'];
+
+    return [
+        'total_ingresos' => $total_ingresos,
+        'total_egresos' => $total_egresos,
+        'balance' => $total_ingresos - $total_egresos,
+        'cantidad_ingresos' => (int) $fila['cantidad_ingresos'],
+        'cantidad_egresos' => (int) $fila['cantidad_egresos'],
+        'total_aportes' => (int) $fila['total_aportes']
+    ];
+}
+
+
+function obtener_totales_por_tipo_aporte(array $filtros): array
+{
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT
+            ta.id AS id_tipo_aporte,
+            ta.nombre_aporte AS tipo_aporte,
+            COUNT(m.id) AS cantidad,
+            COALESCE(SUM(m.monto), 0) AS total_monto
+        FROM movimientos m
+        INNER JOIN tipos_aportes ta
+            ON ta.id = m.id_tipo_aporte
+        WHERE 1 = 1
+    ";
+
+    $parametros = [];
+
+    if (!empty($filtros['id_tipo_movimiento'])) {
+        $sql .= " AND m.id_tipo_movimiento = :id_tipo_movimiento";
+        $parametros[':id_tipo_movimiento'] = (int) $filtros['id_tipo_movimiento'];
+    }
+
+    if (!empty($filtros['id_metodo_pago'])) {
+        $sql .= " AND m.id_metodo_pago = :id_metodo_pago";
+        $parametros[':id_metodo_pago'] = (int) $filtros['id_metodo_pago'];
+    }
+
+    if (!empty($filtros['id_frecuencia_aporte'])) {
+        $sql .= " AND m.id_frecuencia_aporte = :id_frecuencia_aporte";
+        $parametros[':id_frecuencia_aporte'] = (int) $filtros['id_frecuencia_aporte'];
+    }
+
+    if (!empty($filtros['fecha_desde'])) {
+        $sql .= " AND m.fecha >= :fecha_desde";
+        $parametros[':fecha_desde'] = $filtros['fecha_desde'];
+    }
+
+    if (!empty($filtros['fecha_hasta'])) {
+        $sql .= " AND m.fecha <= :fecha_hasta";
+        $parametros[':fecha_hasta'] = $filtros['fecha_hasta'];
+    }
+
+    $sql .= " GROUP BY ta.id, ta.nombre_aporte ORDER BY ta.id";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute($parametros);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+function obtener_totales_por_metodo_pago(array $filtros): array
+{
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT
+            mp.id AS id_metodo_pago,
+            mp.nombre_metodo AS metodo_pago,
+            COUNT(m.id) AS cantidad,
+            COALESCE(SUM(m.monto), 0) AS total_monto
+        FROM movimientos m
+        INNER JOIN metodos_pago mp
+            ON mp.id = m.id_metodo_pago
+        WHERE 1 = 1
+    ";
+
+    $parametros = [];
+
+    if (!empty($filtros['id_tipo_movimiento'])) {
+        $sql .= " AND m.id_tipo_movimiento = :id_tipo_movimiento";
+        $parametros[':id_tipo_movimiento'] = (int) $filtros['id_tipo_movimiento'];
+    }
+
+    if (!empty($filtros['id_tipo_aporte'])) {
+        $sql .= " AND m.id_tipo_aporte = :id_tipo_aporte";
+        $parametros[':id_tipo_aporte'] = (int) $filtros['id_tipo_aporte'];
+    }
+
+    if (!empty($filtros['id_frecuencia_aporte'])) {
+        $sql .= " AND m.id_frecuencia_aporte = :id_frecuencia_aporte";
+        $parametros[':id_frecuencia_aporte'] = (int) $filtros['id_frecuencia_aporte'];
+    }
+
+    if (!empty($filtros['fecha_desde'])) {
+        $sql .= " AND m.fecha >= :fecha_desde";
+        $parametros[':fecha_desde'] = $filtros['fecha_desde'];
+    }
+
+    if (!empty($filtros['fecha_hasta'])) {
+        $sql .= " AND m.fecha <= :fecha_hasta";
+        $parametros[':fecha_hasta'] = $filtros['fecha_hasta'];
+    }
+
+    $sql .= " GROUP BY mp.id, mp.nombre_metodo ORDER BY mp.id";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute($parametros);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+function obtener_totales_por_frecuencia(array $filtros): array
+{
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT
+            fa.id AS id_frecuencia_aporte,
+            fa.nombre_frecuencia_aporte AS frecuencia_aporte,
+            COUNT(m.id) AS cantidad,
+            COALESCE(SUM(m.monto), 0) AS total_monto
+        FROM movimientos m
+        INNER JOIN frecuencia_aportes fa
+            ON fa.id = m.id_frecuencia_aporte
+        WHERE 1 = 1
+    ";
+
+    $parametros = [];
+
+    if (!empty($filtros['id_tipo_movimiento'])) {
+        $sql .= " AND m.id_tipo_movimiento = :id_tipo_movimiento";
+        $parametros[':id_tipo_movimiento'] = (int) $filtros['id_tipo_movimiento'];
+    }
+
+    if (!empty($filtros['id_tipo_aporte'])) {
+        $sql .= " AND m.id_tipo_aporte = :id_tipo_aporte";
+        $parametros[':id_tipo_aporte'] = (int) $filtros['id_tipo_aporte'];
+    }
+
+    if (!empty($filtros['id_metodo_pago'])) {
+        $sql .= " AND m.id_metodo_pago = :id_metodo_pago";
+        $parametros[':id_metodo_pago'] = (int) $filtros['id_metodo_pago'];
+    }
+
+    if (!empty($filtros['fecha_desde'])) {
+        $sql .= " AND m.fecha >= :fecha_desde";
+        $parametros[':fecha_desde'] = $filtros['fecha_desde'];
+    }
+
+    if (!empty($filtros['fecha_hasta'])) {
+        $sql .= " AND m.fecha <= :fecha_hasta";
+        $parametros[':fecha_hasta'] = $filtros['fecha_hasta'];
+    }
+
+    $sql .= " GROUP BY fa.id, fa.nombre_frecuencia_aporte ORDER BY fa.id";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute($parametros);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}

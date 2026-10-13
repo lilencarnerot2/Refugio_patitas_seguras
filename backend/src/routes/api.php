@@ -365,6 +365,10 @@ function manejarRutas() {
             manejar_movimientos();
             break; 
             
+                case 'reportes_movimientos':
+            require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
+            manejar_reportes_movimientos();
+            break;    
 
     
         default:

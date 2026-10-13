@@ -215,3 +215,86 @@ function registrar_movimiento(int $id_usuario_actual, array $datos): array
 
     return buscar_movimiento_por_id((int) $creado['id'], $id_usuario_actual, true);
 }
+
+// ============================================================
+// REPORTES
+// ============================================================
+
+function validar_filtros_reporte(array $filtros): void
+{
+    if (!empty($filtros['fecha_desde'])) {
+        if (!validar_fecha((string) $filtros['fecha_desde'])) {
+            throw new InvalidArgumentException('La fecha_desde no es válida. Formato esperado: YYYY-MM-DD.');
+        }
+    }
+
+    if (!empty($filtros['fecha_hasta'])) {
+        if (!validar_fecha((string) $filtros['fecha_hasta'])) {
+            throw new InvalidArgumentException('La fecha_hasta no es válida. Formato esperado: YYYY-MM-DD.');
+        }
+    }
+
+    if (
+        !empty($filtros['fecha_desde']) &&
+        !empty($filtros['fecha_hasta']) &&
+        $filtros['fecha_hasta'] < $filtros['fecha_desde']
+    ) {
+        throw new InvalidArgumentException('La fecha_hasta no puede ser menor que la fecha_desde.');
+    }
+
+    if (!empty($filtros['id_tipo_movimiento'])) {
+        if (!existe_tipo_movimiento((int) $filtros['id_tipo_movimiento'])) {
+            throw new InvalidArgumentException('El tipo de movimiento no es válido.');
+        }
+    }
+
+    if (!empty($filtros['id_tipo_aporte'])) {
+        if (!existe_tipo_aporte((int) $filtros['id_tipo_aporte'])) {
+            throw new InvalidArgumentException('El tipo de aporte no es válido.');
+        }
+    }
+
+    if (!empty($filtros['id_metodo_pago'])) {
+        if (!existe_metodo_pago((int) $filtros['id_metodo_pago'])) {
+            throw new InvalidArgumentException('El método de pago no es válido.');
+        }
+    }
+
+    if (!empty($filtros['id_frecuencia_aporte'])) {
+        if (!existe_frecuencia_aporte((int) $filtros['id_frecuencia_aporte'])) {
+            throw new InvalidArgumentException('La frecuencia del aporte no es válida.');
+        }
+    }
+}
+
+
+function resumen_movimientos(array $filtros): array
+{
+    validar_filtros_reporte($filtros);
+
+    return obtener_resumen_movimientos($filtros);
+}
+
+
+function reporte_por_tipo_aporte(array $filtros): array
+{
+    validar_filtros_reporte($filtros);
+
+    return obtener_totales_por_tipo_aporte($filtros);
+}
+
+
+function reporte_por_metodo_pago(array $filtros): array
+{
+    validar_filtros_reporte($filtros);
+
+    return obtener_totales_por_metodo_pago($filtros);
+}
+
+
+function reporte_por_frecuencia(array $filtros): array
+{
+    validar_filtros_reporte($filtros);
+
+    return obtener_totales_por_frecuencia($filtros);
+}
