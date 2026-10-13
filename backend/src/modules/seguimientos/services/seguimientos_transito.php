@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../repositories/seguimientos_transito.php';
+require_once __DIR__ . '/../../transito/repositories/formularios_transito.php';
 
 
 function listar_seguimientos_transito(array $filtros = []): array {
@@ -262,15 +263,22 @@ function transito_continua_activo(
     int $id_solicitud
 ): bool {
 
-    /*
-     * Por ahora lo dejamos en TRUE porque todavía
-     * no está terminado el módulo definitivo de tránsito.
-     *
-     * Cuando ese módulo exista, esta función deberá
-     * consultar si el tránsito continúa activo.
-     */
+    if ($id_solicitud <= 0) {
+        return false;
+    }
 
-    return true;
+    $transito =
+        obtener_estado_transito_por_solicitud(
+            $id_solicitud
+        );
+
+    if (!$transito) {
+        return false;
+    }
+
+    return strtolower(
+        trim($transito['nombre_estado'])
+    ) === 'aprobado';
 }
 
 

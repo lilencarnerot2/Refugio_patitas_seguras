@@ -5,8 +5,7 @@ require_once __DIR__ . '/../../../utils/response.php';
 require_once __DIR__ . '/../../../middleware/autenticacion.php';
 
 
-function es_admin_actual_transito(): bool
-{
+function es_admin_actual_transito(): bool {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -20,8 +19,7 @@ function es_admin_actual_transito(): bool
 }
 
 
-function manejar_formularios_transito(): void
-{
+function manejar_formularios_transito(): void {
     $metodo = $_SERVER['REQUEST_METHOD'];
 
     if (!requerir_autenticacion()) {
@@ -33,34 +31,68 @@ function manejar_formularios_transito(): void
 
     try {
 
-                // -------- GET --------
+        // -------- GET --------
         if ($metodo === 'GET') {
 
             if (isset($_GET['id_solicitud'])) {
-                $id_solicitud = filter_var($_GET['id_solicitud'], FILTER_VALIDATE_INT);
+                $id_solicitud = filter_var(
+                    $_GET['id_solicitud'],
+                    FILTER_VALIDATE_INT
+                );
 
                 if ($id_solicitud === false || $id_solicitud <= 0) {
-                    responderJson(false, 'El id de la solicitud no es válido.', null, 400);
+                    responderJson(
+                        false,
+                        'El id de la solicitud no es válido.',
+                        null,
+                        400
+                    );
                     return;
                 }
 
-                $formulario = obtener_formulario_transito_por_solicitud($id_solicitud, $id_usuario_actual, $es_admin);
+                $formulario = obtener_formulario_transito_por_solicitud(
+                    $id_solicitud,
+                    $id_usuario_actual,
+                    $es_admin
+                );
 
-                responderJson(true, null, $formulario, 200);
+                responderJson(
+                    true,
+                    null,
+                    $formulario,
+                    200
+                );
                 return;
             }
 
             if (isset($_GET['id'])) {
-                $id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
+                $id = filter_var(
+                    $_GET['id'],
+                    FILTER_VALIDATE_INT
+                );
 
                 if ($id === false || $id <= 0) {
-                    responderJson(false, 'El id del formulario no es válido.', null, 400);
+                    responderJson(
+                        false,
+                        'El id del formulario no es válido.',
+                        null,
+                        400
+                    );
                     return;
                 }
 
-                $formulario = obtener_formulario_transito($id, $id_usuario_actual, $es_admin);
+                $formulario = obtener_formulario_transito(
+                    $id,
+                    $id_usuario_actual,
+                    $es_admin
+                );
 
-                responderJson(true, null, $formulario, 200);
+                responderJson(
+                    true,
+                    null,
+                    $formulario,
+                    200
+                );
                 return;
             }
 
@@ -73,59 +105,182 @@ function manejar_formularios_transito(): void
                 'busqueda' => $_GET['busqueda'] ?? null,
             ];
 
-            $formularios = listar_formularios_transito($filtros, $id_usuario_actual, $es_admin);
+            $formularios = listar_formularios_transito(
+                $filtros,
+                $id_usuario_actual,
+                $es_admin
+            );
 
-            responderJson(true, null, $formularios, 200);
+            responderJson(
+                true,
+                null,
+                $formularios,
+                200
+            );
             return;
-
-            
         }
+
 
         // -------- POST --------
         if ($metodo === 'POST') {
-            $datos = json_decode(file_get_contents('php://input'), true);
+
+            $datos = json_decode(
+                file_get_contents('php://input'),
+                true
+            );
 
             if (!is_array($datos)) {
-                responderJson(false, 'JSON inválido.', null, 400);
+                responderJson(
+                    false,
+                    'JSON inválido.',
+                    null,
+                    400
+                );
                 return;
             }
 
-            $formulario = registrar_formulario_transito($id_usuario_actual, $datos);
+            $formulario = registrar_formulario_transito(
+                $id_usuario_actual,
+                $datos
+            );
 
-            responderJson(true, 'Formulario de tránsito creado correctamente.', $formulario, 201);
+            responderJson(
+                true,
+                'Formulario de tránsito creado correctamente.',
+                $formulario,
+                201
+            );
             return;
         }
+
 
         // -------- PUT --------
         if ($metodo === 'PUT') {
-            $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
+
+            $accion = $_GET['accion'] ?? null;
+
+            // Finalizar tránsito
+            if ($accion === 'finalizar') {
+
+                if (!$es_admin) {
+                    responderJson(
+                        false,
+                        'No tenés permisos para finalizar un tránsito.',
+                        null,
+                        403
+                    );
+                    return;
+                }
+
+                $id_solicitud = filter_var(
+                    $_GET['id_solicitud'] ?? null,
+                    FILTER_VALIDATE_INT
+                );
+
+                if ($id_solicitud === false || $id_solicitud <= 0) {
+                    responderJson(
+                        false,
+                        'El id de la solicitud no es válido.',
+                        null,
+                        400
+                    );
+                    return;
+                }
+
+                finalizar_transito($id_solicitud);
+
+                responderJson(
+                    true,
+                    'Tránsito finalizado correctamente.',
+                    null,
+                    200
+                );
+                return;
+            }
+
+            // Modificación normal del formulario
+            $id = filter_var(
+                $_GET['id'] ?? null,
+                FILTER_VALIDATE_INT
+            );
 
             if ($id === false || $id <= 0) {
-                responderJson(false, 'El id del formulario no es válido.', null, 400);
+                responderJson(
+                    false,
+                    'El id del formulario no es válido.',
+                    null,
+                    400
+                );
                 return;
             }
 
-            $datos = json_decode(file_get_contents('php://input'), true);
+            $datos = json_decode(
+                file_get_contents('php://input'),
+                true
+            );
 
             if (!is_array($datos)) {
-                responderJson(false, 'JSON inválido.', null, 400);
+                responderJson(
+                    false,
+                    'JSON inválido.',
+                    null,
+                    400
+                );
                 return;
             }
 
-            $formulario = modificar_formulario_transito($id, $id_usuario_actual, $datos);
+            $formulario = modificar_formulario_transito(
+                $id,
+                $id_usuario_actual,
+                $datos
+            );
 
-            responderJson(true, 'Formulario de tránsito actualizado correctamente.', $formulario, 200);
+            responderJson(
+                true,
+                'Formulario de tránsito actualizado correctamente.',
+                $formulario,
+                200
+            );
             return;
         }
 
-        responderJson(false, 'Método no permitido.', null, 405);
+
+        responderJson(
+            false,
+            'Método no permitido.',
+            null,
+            405
+        );
 
     } catch (InvalidArgumentException $e) {
-        responderJson(false, $e->getMessage(), null, 400);
+
+        responderJson(
+            false,
+            $e->getMessage(),
+            null,
+            400
+        );
+
     } catch (RuntimeException $e) {
-        responderJson(false, $e->getMessage(), null, 404);
+
+        responderJson(
+            false,
+            $e->getMessage(),
+            null,
+            404
+        );
+
     } catch (Throwable $e) {
-        error_log('ERROR FORMULARIOS TRANSITO: ' . $e->getMessage());
-        responderJson(false, 'Error al procesar el formulario de tránsito.', null, 500);
+
+        error_log(
+            'ERROR FORMULARIOS TRANSITO: ' . $e->getMessage()
+        );
+
+        responderJson(
+            false,
+            'Error al procesar el formulario de tránsito.',
+            null,
+            500
+        );
     }
 }
