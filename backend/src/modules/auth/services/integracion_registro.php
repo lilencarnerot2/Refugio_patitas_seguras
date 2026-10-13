@@ -82,7 +82,7 @@ function registrarEnPadron($datos)
         'apellido' => $datos['apellido'],
         'email' => $datos['email'],
         'password' => $datos['password'],
-        'proyecto_id' => 4
+        'proyecto_id' => (int) getenv('PROYECTO_ID')
     ]);
 
     $ch = curl_init($url . '/registrar');
