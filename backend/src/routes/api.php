@@ -204,21 +204,14 @@ function manejarRutas() {
             break;
 
         case 'solicitudes':
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                if (!requerir_autenticacion()) {
+            if (!requerir_autenticacion()) {
                 break;
-                }
-            } else {
-                if (!requerir_roles([
-                    'Administrador',
-                    'Super Administrador'
-                ])) {
-                break;
-                }
             }
             require_once __DIR__ . '/../modules/solicitudes/controllers/solicitudes.php';
             manejar_solicitudes();
             break;
+
+        case 'tipos_solicitudes':
 
         case 'tipos_solicitudes':
             if ($_SERVER['REQUEST_METHOD'] === 'GET') {

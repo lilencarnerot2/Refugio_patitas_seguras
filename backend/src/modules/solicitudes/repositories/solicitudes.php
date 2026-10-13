@@ -301,3 +301,39 @@ function crear_solicitud(
 
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
+
+  function obtener_solicitudes_por_usuario(int $id_usuario): array
+{
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT
+            s.id,
+            s.id_usuario,
+            u.nombre AS nombre_usuario,
+            u.apellido AS apellido_usuario,
+            s.id_mascota,
+            m.nombre AS nombre_mascota,
+            s.id_tipo_solicitud,
+            ts.nombre_tipo AS tipo_solicitud,
+            s.id_estado_solicitud,
+            es.nombre_estado AS estado_solicitud,
+            s.fecha_solicitud
+        FROM solicitudes s
+        INNER JOIN usuarios u
+            ON u.id = s.id_usuario
+        INNER JOIN mascotas m
+            ON m.id = s.id_mascota
+        INNER JOIN tipos_solicitudes ts
+            ON ts.id = s.id_tipo_solicitud
+        INNER JOIN estados_solicitudes es
+            ON es.id = s.id_estado_solicitud
+        WHERE s.id_usuario = :id_usuario
+        ORDER BY s.fecha_solicitud DESC, s.id DESC
+    ";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([':id_usuario' => $id_usuario]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}

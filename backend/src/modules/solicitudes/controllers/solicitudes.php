@@ -51,7 +51,16 @@ function manejar_solicitudes(): void
                 return;
             }
 
-            $solicitudes = listar_solicitudes();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            $id_usuario_actual = (int) ($_SESSION['usuario_id'] ?? 0);
+            $rol_actual = (int) ($_SESSION['usuario_rol'] ?? 0);
+            $es_admin = $rol_actual >= 2;
+
+            $solicitudes = listar_solicitudes($id_usuario_actual, $es_admin);
+
             responderJson(
                 true,
                 null,
@@ -59,7 +68,7 @@ function manejar_solicitudes(): void
                 200
             );
 
-            return;
+            return; 
         }
 
         // POST

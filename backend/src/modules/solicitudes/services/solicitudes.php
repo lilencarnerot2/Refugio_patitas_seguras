@@ -3,8 +3,13 @@
 require_once __DIR__ . '/../repositories/solicitudes.php';
 require_once __DIR__ . '/../../mail/services/mail.php';
 
-function listar_solicitudes(): array{
-    return obtener_solicitudes();
+function listar_solicitudes(int $id_usuario_actual = 0, bool $es_admin = false): array
+{
+    if ($es_admin || $id_usuario_actual <= 0) {
+        return obtener_solicitudes();
+    }
+
+    return obtener_solicitudes_por_usuario($id_usuario_actual);
 }
 
 
