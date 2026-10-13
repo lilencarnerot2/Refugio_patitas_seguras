@@ -1,15 +1,11 @@
-# Usa la imagen oficial de PHP con Apache
-FROM php:8.2-apache
+FROM php:8.2-cli
 
-# Directorio de trabajo
 WORKDIR /var/www/html
 
-# Copia todo el contenido del frontend al contenedor
-COPY . /var/www/html/
+COPY --chown=www-data:www-data . .
 
-# Da permisos a Apache para leer los archivos
-RUN chown -R www-data:www-data /var/www/html
+USER www-data
 
-# Expone el puerto 80
-EXPOSE 80
+EXPOSE 8080
 
+CMD ["php", "-S", "0.0.0.0:8080", "-t", "/var/www/html"]

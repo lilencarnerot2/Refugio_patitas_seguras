@@ -270,6 +270,13 @@ function manejarRutas() {
             manejar_seguimientos_transito();
             break;    
             
+        case 'formularios_transito':
+            if (!requerir_autenticacion()) {
+            break;
+            }
+            require_once __DIR__ . '/../modules/transito/controllers/formularios_transito.php';
+            manejar_formularios_transito();
+            break;
 
         case 'tipos_movimientos_mascotas':
             if (!requerir_roles([

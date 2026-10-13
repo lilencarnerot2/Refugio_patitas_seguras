@@ -1,5 +1,7 @@
 # Variables de entorno
 .env
+.env.*
+!.env.example
 
 # PHP
 backend/vendor/
@@ -25,3 +27,7 @@ logs/
 # Sistema operativo
 .DS_Store
 Thumbs.db
+
+#js
+node_modules/
+
