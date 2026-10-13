@@ -5,7 +5,7 @@ require __DIR__ . '/includes/head.php';
 require __DIR__ . '/includes/header.php';
 ?>
 
-    <section id="panel-aportes-reportes" class="panel-listado panel-aportes" data-por-pagina="12">
+    <section id="panel-aportes-reportes" class="panel-listado panel-aportes" data-por-pagina="5">
         <p id="mensaje-aportes" class="mensaje-formulario"></p>
 
         <div class="page-intro">
@@ -29,6 +29,14 @@ require __DIR__ . '/includes/header.php';
                 </div>
             </form>
             <div class="listado-controles row g-2">
+                <div class="col-12 col-md min-w-0">
+                    <div class="input-group listado-filtro-grupo" aria-label="Tipo de movimiento">
+                        <select id="filtro-tipo-movimiento" class="form-select listado-filtro" data-catalogo="tipos_movimientos_aportes" data-filtro="id_tipo_movimiento" aria-label="Tipo de movimiento">
+                            <option value="" selected hidden></option>
+                        </select>
+                        <button type="button" class="btn btn-outline-secondary" data-limpiar="filtro-tipo-movimiento" aria-label="Limpiar filtro"><i class="bi bi-x"></i></button>
+                    </div>
+                </div>
                 <div class="col-12 col-md min-w-0">
                     <div class="input-group listado-filtro-grupo" aria-label="Tipos">
                         <select id="filtro-tipo-aporte" class="form-select listado-filtro" data-catalogo="tipos_aportes" data-filtro="id_tipo_aporte" aria-label="Tipo de aporte">
@@ -81,6 +89,5 @@ require __DIR__ . '/includes/header.php';
 <script src="config.php"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/aportes.js"></script>
-<script src="../assets/js/admin-aportes-reportes.js"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

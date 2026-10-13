@@ -24,14 +24,14 @@ require __DIR__ . '/includes/header.php';
                     </select>
                 </div>
                 <div class="col-12 col-md-6 min-w-0">
-                    <label class="form-label text-break" for="id_tipo_movimiento_aporte">Tipo de movimiento</label>
-                    <select class="form-select w-100" id="id_tipo_movimiento_aporte" name="id_tipo_movimiento_aporte" data-catalogo="tipos_movimientos_aportes" data-a-seleccionar required>
+                    <label class="form-label text-break" for="id_tipo_movimiento">Tipo de movimiento</label>
+                    <select class="form-select w-100" id="id_tipo_movimiento" name="id_tipo_movimiento" data-catalogo="tipos_movimientos_aportes" data-a-seleccionar required>
                         <option value="" selected hidden></option>
                     </select>
                 </div>
                 <div class="col-12 col-md-6 min-w-0">
                     <label class="form-label text-break" for="id_frecuencia_aporte">Frecuencia</label>
-                    <select class="form-select w-100" id="id_frecuencia_aporte" name="id_frecuencia_aporte" data-catalogo="frecuencia_aportes" data-a-seleccionar required>
+                    <select class="form-select w-100" id="id_frecuencia_aporte" name="id_frecuencia_aporte" data-catalogo="frecuencia_aportes">
                         <option value="" selected hidden></option>
                     </select>
                 </div>
@@ -45,6 +45,14 @@ require __DIR__ . '/includes/header.php';
                     <label class="form-label" for="monto">Monto</label>
                     <input class="form-control w-100" id="monto" name="monto" type="number" step="any" min="0" disabled>
                 </div>
+                <div class="col-12 col-md-6 min-w-0">
+                    <label class="form-label" for="fecha">Fecha</label>
+                    <input class="form-control w-100" id="fecha" name="fecha" type="date">
+                </div>
+                <div class="col-12 min-w-0">
+                    <label class="form-label" for="descripcion">Descripción</label>
+                    <textarea class="form-control w-100" id="descripcion" name="descripcion" rows="2"></textarea>
+                </div>
             </div>
 
             <button class="btn-donate mt-4" type="submit">Enviar registro</button>
@@ -54,6 +62,5 @@ require __DIR__ . '/includes/header.php';
 <script src="config.php"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/aportes.js"></script>
-<script src="../assets/js/donaciones.js"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

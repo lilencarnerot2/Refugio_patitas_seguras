@@ -657,44 +657,38 @@ html {
     padding: 16px;
 }
 
-.admin-page #panel-dashboard .dash-semanas > div {
-    height: 120px;
-}
-
-.admin-page #panel-dashboard .dash-semanas progress {
-    height: 96px;
-}
-
 .admin-page #panel-dashboard .lista-scroll-mascotas {
     max-height: 240px;
     overflow-y: auto;
 }
 
 .admin-page .dash-semanas {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-    align-items: end;
-    gap: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
 }
 
 .admin-page .dash-semanas > div {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(7rem, 0.35fr) minmax(0, 1fr) auto;
     align-items: center;
-    justify-content: flex-end;
-    gap: 6px;
-    height: 160px;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+    height: auto;
 }
 
 .admin-page .dash-semanas progress {
     appearance: none;
+    -webkit-appearance: none;
     border: none;
     background: var(--icon-bg);
     border-radius: 8px;
-    width: 18px;
-    height: 130px;
-    writing-mode: vertical-lr;
-    direction: rtl;
+    width: 100%;
+    height: 12px;
+    writing-mode: horizontal-tb;
+    direction: ltr;
 }
 
 .admin-page .dash-semanas progress::-webkit-progress-bar {
@@ -707,9 +701,28 @@ html {
     border-radius: 8px;
 }
 
+.admin-page .dash-semanas progress::-moz-progress-bar {
+    background: var(--primary-color);
+    border-radius: 8px;
+}
+
 .admin-page .dash-semanas span {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-soft);
+    white-space: nowrap;
+}
+
+.admin-page .dash-semanas span[data-barra="nombre"] {
+    color: var(--text-dark);
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+.admin-page .dash-semanas span[data-barra="cantidad"] {
+    min-width: 1.5rem;
+    text-align: right;
+    font-weight: 600;
+    color: var(--primary-color);
 }
 
 .admin-page .dash-card-cabecera {
@@ -860,8 +873,8 @@ html {
 }
 
 .admin-page #panel-dashboard .dash-semanas span {
-    text-align: center;
-    overflow-wrap: anywhere;
+    text-align: left;
+    overflow-wrap: normal;
 }
 
 /* Títulos de las tarjetas del dashboard */
@@ -2710,11 +2723,28 @@ html {
 }
 
 .admin-page #resumen-aportes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
     margin-bottom: 20px;
 }
 
 .admin-page #resumen-aportes .info-card {
-    max-width: 280px;
+    max-width: none;
+    min-width: 0;
+    height: auto;
+    padding: 20px 16px;
+    text-align: center;
+}
+
+.admin-page #resumen-aportes .dash-kpi-numero {
+    line-height: 1.1;
+}
+
+.admin-page #resumen-aportes .info-card p:last-child {
+    margin: 8px 0 0;
+    color: var(--text-soft);
+    font-size: 13px;
 }
 
 .admin-page .panel-aportes .dash-tabla button.abm-editar {
@@ -2722,6 +2752,88 @@ html {
     background: transparent;
     color: var(--primary-color);
     cursor: pointer;
+}
+
+.admin-page #panel-aportes-admin .lista-scroll-mascotas,
+.admin-page #panel-aportes-reportes .lista-scroll-mascotas {
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+.admin-page #panel-aportes-admin.panel-listado .dash-tabla,
+.admin-page #panel-aportes-reportes.panel-listado .dash-tabla {
+    width: max-content;
+    min-width: max-content;
+    max-width: none;
+    table-layout: auto;
+}
+
+.admin-page #panel-aportes-admin.panel-listado .dash-tabla th,
+.admin-page #panel-aportes-admin.panel-listado .dash-tabla td,
+.admin-page #panel-aportes-reportes.panel-listado .dash-tabla th,
+.admin-page #panel-aportes-reportes.panel-listado .dash-tabla td {
+    white-space: nowrap;
+    overflow: visible;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+.admin-page #panel-aportes-admin .dash-tabla td[data-campo="descripcion"],
+.admin-page #panel-aportes-reportes .dash-tabla td[data-campo="descripcion"] {
+    white-space: normal;
+    overflow-wrap: break-word;
+    min-width: 12rem;
+}
+
+.admin-page .panel-listado .dash-tabla td[data-campo="tipo_movimiento"]::before {
+    content: "Tipo movimiento";
+}
+
+.admin-page .panel-listado .dash-tabla td[data-campo="tipo_aporte"]::before {
+    content: "Tipo aporte";
+}
+
+.admin-page .panel-listado .dash-tabla td[data-campo="metodo_pago"]::before {
+    content: "Método pago";
+}
+
+.admin-page .panel-listado .dash-tabla td[data-campo="frecuencia_aporte"]::before {
+    content: "Frecuencia";
+}
+
+.admin-page .panel-listado .dash-tabla td[data-campo="fecha"]::before {
+    content: "Fecha";
+}
+
+.admin-page .panel-listado .dash-tabla td[data-campo="monto"]::before {
+    content: "Monto";
+}
+
+.admin-page .panel-listado .dash-tabla td[data-campo="descripcion"]::before {
+    content: "Descripción";
+}
+
+@media (max-width: 720px) {
+    .admin-page #resumen-aportes {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-page #panel-aportes-admin.panel-listado .dash-tabla,
+    .admin-page #panel-aportes-reportes.panel-listado .dash-tabla {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .admin-page #panel-aportes-admin.panel-listado .dash-tabla th,
+    .admin-page #panel-aportes-admin.panel-listado .dash-tabla td,
+    .admin-page #panel-aportes-reportes.panel-listado .dash-tabla th,
+    .admin-page #panel-aportes-reportes.panel-listado .dash-tabla td {
+        white-space: normal;
+        overflow: visible;
+        overflow-wrap: break-word;
+        word-break: normal;
+    }
 }
 
 @media (max-width: 720px) {

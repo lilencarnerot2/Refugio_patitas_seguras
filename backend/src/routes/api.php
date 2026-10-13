@@ -338,9 +338,38 @@ function manejarRutas() {
         case 'formularios_transito':
             require_once __DIR__ . '/../modules/transito/controllers/formularios_transito.php';
             manejar_formularios_transito();
-            break;    
+            break;
 
-    
+        case 'tipos_aportes':
+            require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
+            manejar_tipos_aportes();
+            break;
+
+        case 'tipos_movimientos_aportes':
+            require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
+            manejar_tipos_movimientos_aportes();
+            break;
+
+        case 'frecuencia_aportes':
+            require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
+            manejar_frecuencia_aportes();
+            break;
+
+        case 'metodos_pago':
+            require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
+            manejar_metodos_pago();
+            break;
+
+        case 'movimientos':
+            require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
+            manejar_movimientos();
+            break;
+
+        case 'reportes_movimientos':
+            require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
+            manejar_reportes_movimientos();
+            break;
+
         default:
             responderJson(
                 false,

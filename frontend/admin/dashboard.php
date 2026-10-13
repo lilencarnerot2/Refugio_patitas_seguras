@@ -113,15 +113,8 @@ $slots = $paginas;
                     <span class="ficha-usuario-icono"><i class="bi bi-heart-fill"></i></span>
                     <h3></h3>
                 </div>
-                <p id="numero-donaciones" class="dash-kpi-numero"></p>
-                <div id="barras-donaciones" class="dash-semanas">
-                    <?php for ($i = 0; $i < $slots; $i++) { ?>
-                    <div>
-                        <progress max="1" value="0"></progress>
-                        <span></span>
-                    </div>
-                    <?php } ?>
-                </div>
+                <p id="numero-donaciones" class="dash-kpi-numero" data-campo="total_aportes"></p>
+                <div id="barras-donaciones" class="dash-semanas" data-agrupado="tipo_aporte"></div>
             </article>
 
             <article id="card-solicitudes-lista" class="info-card dash-card-recientes">

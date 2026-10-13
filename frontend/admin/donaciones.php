@@ -5,7 +5,7 @@ require __DIR__ . '/includes/head.php';
 require __DIR__ . '/includes/header.php';
 ?>
 
-    <section id="panel-aportes-admin" class="panel-listado panel-aportes" data-por-pagina="8">
+    <section id="panel-aportes-admin" class="panel-listado panel-aportes" data-por-pagina="5">
         <p id="mensaje-aportes" class="mensaje-formulario"></p>
 
         <div class="page-intro">
@@ -62,6 +62,5 @@ require __DIR__ . '/includes/header.php';
 <script src="config.php"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/aportes.js"></script>
-<script src="../assets/js/admin-aportes.js"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>
