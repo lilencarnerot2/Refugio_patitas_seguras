@@ -339,7 +339,12 @@ function manejarRutas() {
             require_once __DIR__ . '/../modules/transito/controllers/formularios_transito.php';
             manejar_formularios_transito();
             break;    
-
+        
+        case 'voluntariado':
+            require_once __DIR__ . '/../modules/voluntariado/controllers/voluntariado.php';
+            manejar_voluntariado();
+            break;   
+                   
     
         default:
             responderJson(
