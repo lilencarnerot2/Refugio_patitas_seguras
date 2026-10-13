@@ -4,10 +4,15 @@ $salir = '/public/login.php?salir=1';
 $esSuperadministrador = esSuperadministrador();
 ?>
 <header>
-    <button type="button" class="menu-toggle" data-bs-toggle="collapse" data-bs-target="#menu-admin" aria-controls="menu-admin" aria-expanded="false" aria-label="Menú">
-        <i class="bi bi-list menu-icon-bars"></i>
-        <i class="bi bi-x-lg menu-icon-close"></i>
-    </button>
+    <div class="menu-botones">
+        <input type="checkbox" id="menu-admin-toggle" class="nav-toggle">
+        <label for="menu-admin-toggle" class="menu-toggle menu-abrir" aria-label="Menú">
+            <i class="bi bi-list"></i>
+        </label>
+        <label for="menu-admin-toggle" class="menu-toggle menu-cerrar" aria-label="Cerrar menú">
+            <i class="bi bi-x-lg"></i>
+        </label>
+    </div>
 
     <a class="logo-container" href="dashboard.php">
         <div class="logo-icon"><span class="icono-pata"></span></div>
@@ -23,7 +28,7 @@ $esSuperadministrador = esSuperadministrador();
     </div>
 </header>
 
-<nav id="menu-admin" class="collapse">
+<nav id="menu-admin" class="position-fixed start-0 overflow-auto">
     <ul>
         <li>
             <a href="dashboard.php"<?php echo $paginaAdmin === 'dashboard' ? ' class="active"' : ''; ?>>
@@ -51,9 +56,13 @@ $esSuperadministrador = esSuperadministrador();
             </a>
         </li>
         <li>
-            <a href="donaciones.php"<?php echo $paginaAdmin === 'donaciones' ? ' class="active"' : ''; ?>>
-                <i class="bi bi-heart-fill"></i> Donaciones
-            </a>
+            <details<?php echo in_array($paginaAdmin, ['donaciones', 'reportes_movimiento'], true) ? ' open' : ''; ?>>
+                <summary<?php echo in_array($paginaAdmin, ['donaciones', 'reportes_movimiento'], true) ? ' class="active"' : ''; ?>>
+                    <i class="bi bi-heart-fill"></i> Donaciones
+                </summary>
+                <a href="donaciones.php"<?php echo $paginaAdmin === 'donaciones' ? ' class="active"' : ''; ?>>Aportes</a>
+                <a href="reportes_movimiento.php"<?php echo $paginaAdmin === 'reportes_movimiento' ? ' class="active"' : ''; ?>>Movimiento</a>
+            </details>
         </li>
         <li>
             <a href="salud.php"<?php echo in_array($paginaAdmin, ['salud', 'ficha_medica'], true) ? ' class="active"' : ''; ?>>

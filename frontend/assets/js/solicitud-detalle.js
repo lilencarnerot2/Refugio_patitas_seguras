@@ -13,9 +13,19 @@ document.addEventListener('DOMContentLoaded', function () {
     var id = new URLSearchParams(window.location.search).get('id');
     var listado = panel.getAttribute('data-listado') || '';
 
-    function mostrarAviso(origen) {
-        if (mensaje) {
-            mensaje.textContent = mensajeDeApi(origen);
+    function mostrarAviso(origen, ok) {
+        if (!mensaje) {
+            return;
+        }
+
+        mensaje.textContent = mensajeDeApi(origen);
+
+        if (ok) {
+            mensaje.setAttribute('data-estado', 'ok');
+        } else if (origen) {
+            mensaje.setAttribute('data-estado', 'error');
+        } else {
+            mensaje.removeAttribute('data-estado');
         }
     }
 
@@ -225,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
             cuerpo: { id_estado_solicitud: boton.getAttribute('data-id-estado') }
         }).then(function (respuesta) {
             return mostrar(id).then(function (solicitud) {
-                mostrarAviso(respuesta);
+                mostrarAviso(respuesta, true);
 
                 if (solicitud) {
                     return cargarEstados(solicitud.id_estado_solicitud);

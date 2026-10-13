@@ -12,23 +12,29 @@ require __DIR__ . '/includes/header.php';
 
         <div id="bloque-solicitudes" class="info-card">
             <h3></h3>
-            <div class="listado-controles">
-                <div class="input-group listado-buscar">
-                    <i class="bi bi-search input-group-text"></i>
-                    <input type="search" id="buscar-solicitudes" class="form-control" placeholder="Buscar" aria-label="Buscar">
-                    <button type="button" class="btn btn-outline-secondary" data-limpiar="buscar-solicitudes" aria-label="Limpiar búsqueda"><i class="bi bi-x"></i></button>
+            <div class="listado-controles row g-2">
+                <div class="col-12 col-lg min-w-0">
+                    <div class="input-group listado-buscar" aria-label="Buscar">
+                        <i class="bi bi-search input-group-text"></i>
+                        <input type="search" id="buscar-solicitudes" class="form-control" placeholder="Buscar" aria-label="Buscar">
+                        <button type="button" class="btn btn-outline-secondary" data-limpiar="buscar-solicitudes" aria-label="Limpiar búsqueda"><i class="bi bi-x"></i></button>
+                    </div>
                 </div>
-                <div class="input-group listado-filtro-grupo">
-                    <select id="filtro-estado-solicitud" class="form-select listado-filtro" aria-label="Estado">
-                        <option value="" selected disabled hidden>Estado</option>
-                    </select>
-                    <button type="button" class="btn btn-outline-secondary" data-limpiar="filtro-estado-solicitud" aria-label="Limpiar filtro de estado"><i class="bi bi-x"></i></button>
+                <div class="col-12 col-md min-w-0">
+                    <div class="input-group listado-filtro-grupo" aria-label="Estado">
+                        <select id="filtro-estado-solicitud" class="form-select listado-filtro" aria-label="Estado">
+                            <option value="" selected hidden></option>
+                        </select>
+                        <button type="button" class="btn btn-outline-secondary" data-limpiar="filtro-estado-solicitud" aria-label="Limpiar filtro de estado"><i class="bi bi-x"></i></button>
+                    </div>
                 </div>
-                <div class="input-group listado-filtro-grupo">
-                    <select id="filtro-especie-solicitud" class="form-select listado-filtro" aria-label="Especie">
-                        <option value="" selected disabled hidden>Especie</option>
-                    </select>
-                    <button type="button" class="btn btn-outline-secondary" data-limpiar="filtro-especie-solicitud" aria-label="Limpiar filtro de especie"><i class="bi bi-x"></i></button>
+                <div class="col-12 col-md min-w-0">
+                    <div class="input-group listado-filtro-grupo" aria-label="Especie">
+                        <select id="filtro-especie-solicitud" class="form-select listado-filtro" aria-label="Especie">
+                            <option value="" selected hidden></option>
+                        </select>
+                        <button type="button" class="btn btn-outline-secondary" data-limpiar="filtro-especie-solicitud" aria-label="Limpiar filtro de especie"><i class="bi bi-x"></i></button>
+                    </div>
                 </div>
             </div>
             <div class="lista-scroll-mascotas">

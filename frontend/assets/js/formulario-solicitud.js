@@ -153,9 +153,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function mostrarAviso(caja, origen) {
-        if (caja) {
-            caja.textContent = mensajeDeApi(origen);
+    function mostrarAviso(caja, origen, ok) {
+        if (!caja) {
+            return;
+        }
+
+        caja.textContent = typeof origen === 'string' ? origen : mensajeDeApi(origen);
+
+        if (ok) {
+            caja.setAttribute('data-estado', 'ok');
+        } else if (origen) {
+            caja.setAttribute('data-estado', 'error');
+        } else {
+            caja.removeAttribute('data-estado');
         }
     }
 
@@ -392,6 +402,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.querySelectorAll('#formulario-solicitud select[data-catalogo="' + recurso + '"]:not([data-param]), #modelos-adopcion select[data-catalogo="' + recurso + '"]').forEach(function (select) {
                     llenarSelect(select, lista);
                 });
+            }).catch(function (error) {
+                mostrarAviso(mensaje, error);
+                return [];
             }));
         });
 
@@ -423,10 +436,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     textoOpcion = opcion.querySelector('[data-texto]');
                     entrada.name = nombre;
                     entrada.value = String(item.id);
-                    entrada.required = caja.hasAttribute('data-requerido');
                     textoOpcion.textContent = nombreDeItem(item);
                     caja.appendChild(opcion);
                 });
+            }).catch(function (error) {
+                mostrarAviso(mensaje, error);
+                return [];
             }));
         });
 
@@ -533,24 +548,61 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function enviar() {
-        var cuerpo = cuerpoDelFormulario();
+    function validar() {
+        var listas;
+        var i;
+        var cajaLista;
 
-        if (mensaje) {
-            mensaje.textContent = '';
+        mostrarAviso(mensaje, '');
+
+        if (typeof formulario.checkValidity === 'function' && !formulario.checkValidity()) {
+            if (typeof formulario.reportValidity === 'function') {
+                formulario.reportValidity();
+            }
+
+            mostrarAviso(mensaje, 'Completá los campos obligatorios.');
+            return false;
         }
+
+        listas = formulario.querySelectorAll('[data-lista][data-requerido]');
+
+        for (i = 0; i < listas.length; i++) {
+            cajaLista = listas[i];
+
+            if (!cajaLista.querySelector('input:checked')) {
+                mostrarAviso(mensaje, 'Completá los campos obligatorios.');
+                return false;
+            }
+        }
+
+        if (formulario.elements.tiene_mascotas && formulario.elements.tiene_mascotas.checked && mascotasHogar().length === 0) {
+            mostrarAviso(mensaje, 'Agregá al menos una mascota del hogar.');
+            return false;
+        }
+
+        return true;
+    }
+
+    function enviar() {
+        var cuerpo;
+
+        if (!validar()) {
+            return;
+        }
+
+        cuerpo = cuerpoDelFormulario();
 
         apiRequest('solicitudes', { metodo: 'POST', cuerpo: cuerpo })
             .then(function (respuesta) {
                 var solicitud = (respuesta && respuesta.data) || {};
 
-                mostrarAviso(mensaje, respuesta);
+                mostrarAviso(mensaje, respuesta, true);
                 cuerpo.id_solicitud = solicitud.id;
 
                 return apiRequest('formularios_adopcion', { metodo: 'POST', cuerpo: cuerpo });
             })
             .then(function (respuesta) {
-                mostrarAviso(mensaje, respuesta);
+                mostrarAviso(mensaje, respuesta, true);
 
                 return apiRequest('domicilios', { metodo: 'POST', cuerpo: cuerpo }).catch(function (error) {
                     mostrarAviso(mensaje, error);

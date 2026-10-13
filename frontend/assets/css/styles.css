@@ -36,6 +36,13 @@
             overflow-x: clip;
         }
 
+        html:has(body.admin-page),
+        body.admin-page,
+        html:has(body.pagina-perfil),
+        body.pagina-perfil {
+            overflow-x: visible;
+        }
+
         html {
             background-color: var(--footer-bg);
         }
@@ -769,6 +776,13 @@
 
             #nav-toggle:checked ~ nav {
                 display: block;
+                position: fixed;
+                top: var(--header-height);
+                left: 0;
+                right: 0;
+                max-height: calc(100dvh - var(--header-height));
+                overflow-x: hidden;
+                overflow-y: auto;
             }
 
             nav > ul {
@@ -1397,6 +1411,10 @@
             margin-bottom: 20px;
         }
 
+        .form-label:has(+ [data-a-seleccionar])::after {
+            content: " *";
+        }
+
         .login-form .form-label {
             display: block;
             font-size: 14px;
@@ -1765,8 +1783,8 @@
             }
 
             .public-form {
-                margin-left: 20px;
-                margin-right: 20px;
+                margin-left: 12px;
+                margin-right: 12px;
                 padding: 20px 16px;
             }
 
@@ -1815,6 +1833,272 @@
             }
         }
 
+        .panel-aportes .mensaje-formulario {
+            max-width: 960px;
+            margin: 0 auto 16px;
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+
+        .panel-aportes .mensaje-formulario:empty {
+            display: none;
+        }
+
+        .panel-aportes .mensaje-formulario[data-estado="error"] {
+            color: #b02a37;
+        }
+
+        .panel-aportes .dash-tabla {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .panel-aportes .dash-tabla th,
+        .panel-aportes .dash-tabla td {
+            padding: 10px 12px;
+            font-size: 13px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+            white-space: nowrap;
+            overflow: visible;
+            overflow-wrap: normal;
+            word-break: normal;
+        }
+
+        .panel-aportes .dash-tabla th {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .panel-aportes .lista-scroll-mascotas {
+            overflow-x: auto;
+        }
+
+        .panel-aportes .dash-card-cabecera {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .panel-aportes .dash-card-cabecera h3 {
+            margin-bottom: 0;
+        }
+
+        .panel-aportes .public-form .btn-donate {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+        }
+
+        .aportes-listado {
+            max-width: 960px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #panel-mi-perfil {
+            max-width: 1480px;
+            width: 100%;
+            margin: 0 auto;
+            padding-top: 12px;
+        }
+
+        #panel-mi-perfil .perfil-datos-grid {
+            max-width: 1480px;
+            margin: 0 auto;
+        }
+
+        #panel-mi-perfil .perfil-tres-cards {
+            max-width: 1480px;
+            margin: 0 auto;
+        }
+
+        #panel-mi-perfil > .info-card,
+        #panel-mi-perfil > .ficha-compacta,
+        #panel-mi-perfil .perfil-tres-cards .ficha-compacta {
+            margin-bottom: 0;
+            max-width: none;
+            width: 100%;
+            height: auto;
+            padding: 12px 14px;
+        }
+
+        #panel-mi-perfil > .ficha-ancha {
+            max-width: none;
+            margin: 0;
+            padding: 16px 20px;
+            min-height: 280px;
+            width: 100%;
+        }
+
+        #panel-mi-perfil #ficha-usuario {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        #panel-mi-perfil .ficha-foto-perfil {
+            width: 64px;
+            height: 64px;
+            flex-shrink: 0;
+            overflow: hidden;
+            border-radius: 50%;
+            border: 3px solid var(--icon-bg);
+            box-shadow: 0 0 0 2px var(--primary-color);
+            background: var(--icon-bg);
+        }
+
+        #panel-mi-perfil #usuario-foto-vacia {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: var(--primary-color);
+            font-size: 24px;
+        }
+
+        #panel-mi-perfil .ficha-perfil-datos {
+            flex: 1;
+            min-width: 0;
+        }
+
+        #panel-mi-perfil #ficha-nombre {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        #panel-mi-perfil #ficha-nombre[data-texto]::after,
+        #panel-mi-perfil .pet-detail-meta [data-campo][data-texto]::after,
+        #panel-mi-perfil .pet-detail-meta span[data-texto]::after {
+            content: attr(data-texto);
+        }
+
+        #panel-mi-perfil .pet-detail-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 6px;
+            list-style: none;
+            margin: 8px 0 0;
+            padding: 0;
+        }
+
+        #panel-mi-perfil .pet-detail-meta li {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            min-width: 0;
+            padding: 6px 8px;
+            background: var(--icon-bg);
+            border-radius: 10px;
+        }
+
+        #panel-mi-perfil .pet-detail-meta li:not(:has([data-texto])):not(:has([data-estado])) {
+            display: none;
+        }
+
+        #panel-mi-perfil .detalle-label {
+            color: var(--text-soft);
+            font-size: 11px;
+        }
+
+        #panel-mi-perfil .pet-detail-meta li span:last-child {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+
+        #panel-mi-perfil .dash-card-cabecera {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        #panel-mi-perfil .dash-card-cabecera h3 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+
+        #panel-mi-perfil .ficha-usuario-icono {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--icon-bg);
+            color: var(--primary-color);
+        }
+
+        #panel-mi-perfil .acciones-formulario {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        #panel-mi-perfil .acciones-formulario .btn-donate {
+            display: inline-flex;
+            border: none;
+        }
+
+        #panel-mi-perfil .form-label {
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+
+        #panel-mi-perfil .lista-scroll-mascotas {
+            overflow-x: auto;
+            overflow-y: scroll;
+            max-height: 320px;
+            min-height: 220px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #panel-mi-perfil .dash-tabla th,
+        #panel-mi-perfil .dash-tabla td {
+            padding: 6px 8px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .panel-aportes .public-form {
+                padding: 20px 16px;
+            }
+
+            #panel-mi-perfil #ficha-usuario {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            #panel-mi-perfil .pet-detail-meta {
+                grid-template-columns: 1fr;
+                width: 100%;
+            }
+
+            #panel-mi-perfil .pet-detail-meta li {
+                text-align: left;
+            }
+
+            #panel-mi-perfil .perfil-tres-cards {
+                grid-template-columns: 1fr;
+                max-width: 420px;
+            }
+        }
+
         @media (max-width: 576px) {
             .logo-text span {
                 display: none;
@@ -1835,5 +2119,351 @@
             .footer-inner {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+        }
+
+        .pagina-perfil {
+            --perfil-nav-ancho: clamp(9.75rem, 34vw, 12.5rem);
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+            padding-top: 0;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .pagina-perfil .menu-botones {
+            justify-self: start;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .pagina-perfil .menu-toggle {
+            flex-shrink: 0;
+            background: transparent;
+            border: 0;
+            padding: 4px;
+            display: inline-flex;
+            align-items: center;
+            color: var(--white);
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .pagina-perfil .menu-cerrar {
+            display: none;
+        }
+
+        .pagina-perfil:has(#menu-perfil-toggle:checked) .menu-abrir {
+            display: none;
+            pointer-events: none;
+        }
+
+        .pagina-perfil:has(#menu-perfil-toggle:checked) .menu-cerrar {
+            display: inline-flex;
+        }
+
+        .pagina-perfil header {
+            grid-column: 1 / -1;
+            grid-row: 1;
+            position: sticky;
+            top: 0;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 12px;
+            width: auto;
+            max-width: 100%;
+            min-height: var(--header-height);
+            background: var(--primary-color);
+            border-bottom: none;
+            padding: 12px 24px;
+            z-index: 1100;
+        }
+
+        .pagina-perfil header .menu-botones {
+            justify-self: start;
+        }
+
+        .pagina-perfil .logo-container {
+            justify-self: center;
+            flex: none;
+            min-width: 0;
+        }
+
+        .pagina-perfil .logo-text h1,
+        .pagina-perfil .logo-text span,
+        .pagina-perfil header .menu-toggle,
+        .pagina-perfil nav a {
+            color: var(--white);
+        }
+
+        .pagina-perfil .logo-text h1 {
+            white-space: nowrap;
+        }
+
+        .pagina-perfil .logo-text span {
+            color: var(--footer-muted);
+        }
+
+        .pagina-perfil .logo-icon {
+            background: var(--bg-cream);
+            border-radius: 50%;
+            padding: 8px;
+        }
+
+        .pagina-perfil .header-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-right: 0;
+            justify-self: end;
+        }
+
+        .pagina-perfil .header-actions .btn-outline,
+        .pagina-perfil .menu-abrir {
+            display: inline-flex;
+        }
+
+        .pagina-perfil .header-actions .btn-outline {
+            border-color: var(--bg-cream);
+            color: var(--bg-cream);
+        }
+
+        .pagina-perfil .header-actions .btn-outline[hidden] {
+            display: none;
+        }
+
+        .pagina-perfil #menu-perfil {
+            display: none;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+            grid-column: 1;
+            grid-row: 2;
+            width: 100%;
+            max-width: none;
+            background: color-mix(in srgb, var(--primary-color) 75%, var(--bg-cream));
+            padding: 18px 12px;
+            border-bottom: none;
+            box-shadow: none;
+            z-index: 1050;
+            scrollbar-width: none;
+        }
+
+        .pagina-perfil #menu-perfil::-webkit-scrollbar {
+            display: none;
+        }
+
+        .pagina-perfil:has(#menu-perfil-toggle:checked) #menu-perfil {
+            display: flex;
+            top: var(--header-height);
+            right: 0;
+            bottom: auto;
+            left: 0;
+            width: 100%;
+            height: auto !important;
+            max-height: calc(100dvh - var(--header-height));
+            z-index: 1080;
+        }
+
+        .pagina-perfil nav > ul {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 6px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .pagina-perfil nav > ul > li {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-bottom: none;
+        }
+
+        .pagina-perfil nav > ul > li.nav-sitio,
+        .pagina-perfil nav > ul > li.nav-salir {
+            display: block;
+        }
+
+        .pagina-perfil #menu-perfil a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: none;
+            letter-spacing: 0;
+            line-height: 1.4;
+            text-align: left;
+        }
+
+        .pagina-perfil #menu-perfil a.active,
+        .pagina-perfil #menu-perfil a:hover {
+            background: var(--primary-color);
+            color: var(--bg-cream);
+        }
+
+        .pagina-perfil section {
+            grid-column: 1;
+            grid-row: 2;
+            min-width: 0;
+            width: 100%;
+            max-width: 100%;
+            padding-top: 8px;
+        }
+
+        .pagina-perfil nav label {
+            display: block;
+            width: 100%;
+            margin: 0;
+        }
+
+        .pagina-perfil footer {
+            grid-column: 1 / -1;
+            grid-row: 3;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pagina-perfil #panel-mi-perfil {
+            max-width: 1480px;
+            margin: 0 auto;
+            padding: 16px 32px 32px;
+        }
+
+        @media (min-width: 993px) {
+            .pagina-perfil {
+                --perfil-nav-ancho: 13rem;
+            }
+
+            .pagina-perfil header {
+                grid-column: 1 / -1;
+            }
+
+            .pagina-perfil:has(#menu-perfil-toggle:checked) {
+                grid-template-columns: var(--perfil-nav-ancho) minmax(0, 1fr);
+            }
+
+            .pagina-perfil:has(#menu-perfil-toggle:checked) #menu-perfil {
+                display: flex;
+                top: var(--header-height);
+                bottom: 0;
+                left: 0;
+                right: auto;
+                width: var(--perfil-nav-ancho);
+                height: auto;
+                max-height: none;
+                z-index: 1080;
+            }
+
+            .pagina-perfil:has(#menu-perfil-toggle:checked) section {
+                grid-column: 2;
+            }
+
+            .pagina-perfil:has(#menu-perfil-toggle:checked) footer {
+                margin-left: var(--perfil-nav-ancho);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .pagina-perfil:has(#menu-perfil-toggle:checked) #menu-perfil {
+                top: var(--header-height);
+                right: 0;
+                bottom: auto;
+                left: 0;
+                width: 100%;
+                max-width: 100%;
+                height: auto !important;
+                max-height: calc(100dvh - var(--header-height));
+                overflow-x: hidden;
+                overflow-y: auto;
+                padding: 0 0 12px;
+                background: var(--white);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+            }
+
+            .pagina-perfil header {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .pagina-perfil .logo-text span {
+                display: none;
+            }
+
+            .pagina-perfil nav > ul > li.nav-panel:not([hidden]) {
+                display: block;
+            }
+
+            .pagina-perfil #panel-mi-perfil {
+                padding: 12px 12px 24px;
+                max-width: 100%;
+            }
+
+            .pagina-perfil section,
+            .pagina-perfil .info-card,
+            .pagina-perfil .ficha-compacta,
+            .pagina-perfil .ficha-ancha,
+            .pagina-perfil .row,
+            .pagina-perfil [class*="col-"] {
+                max-width: 100%;
+                min-width: 0;
+            }
+
+            .pagina-perfil .lista-scroll-mascotas,
+            .pagina-perfil .dash-tabla {
+                display: block;
+                width: 100%;
+                max-width: 100%;
+                overflow-x: auto;
+            }
+
+            .pagina-perfil .pet-detail-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .pagina-perfil footer .footer-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .row > [class*="col"],
+            .form-control,
+            .form-select,
+            .form-label,
+            .input-group {
+                min-width: 0;
+                max-width: 100%;
+                overflow-wrap: break-word;
+            }
+
+            .public-form,
+            .login-form {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .input-group {
+                flex-wrap: nowrap;
+            }
+
+            .input-group > .form-select,
+            .input-group > .form-control {
+                flex: 1 1 auto;
+                min-width: 0;
             }
         }

@@ -91,7 +91,7 @@ require __DIR__ . '/public/includes/header.php';
                     <p>Con tu aporte mensual nos ayudás a cubrir tratamientos y cuidados.</p>
                 </div>
             </a>
-            <a class="way-card" href="#modal-donaciones">
+            <a class="way-card" href="/public/donaciones.php">
                 <i class="bi bi-cash-coin"></i>
                 <div>
                     <h5>HACÉ UNA DONACIÓN</h5>

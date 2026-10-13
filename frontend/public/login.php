@@ -2,11 +2,6 @@
 $autenticado = !empty($_COOKIE['usuario_id']);
 
 if (!isset($_GET['salir']) && $autenticado) {
-    if (!empty($_COOKIE['usuario_acceso_admin'])) {
-        header('Location: /admin/dashboard.php');
-        exit;
-    }
-
     header('Location: /index.php');
     exit;
 }

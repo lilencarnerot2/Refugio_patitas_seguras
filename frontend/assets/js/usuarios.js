@@ -235,8 +235,10 @@ document.addEventListener('DOMContentLoaded', function () {
         var elegido = filtroRol.value;
         var vistos = {};
 
-        filtroRol.querySelectorAll('option:not([hidden])').forEach(function (opcion) {
-            opcion.remove();
+        filtroRol.querySelectorAll('option').forEach(function (opcion) {
+            if (opcion.value !== '') {
+                opcion.remove();
+            }
         });
 
         lista.forEach(function (usuario) {

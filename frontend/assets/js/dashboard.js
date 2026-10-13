@@ -215,19 +215,64 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function pintarBarras(items, campo) {
+    function numeroDeItem(item) {
+        var claves;
+        var i;
+        var clave;
+        var valor;
+        var numero;
+
+        if (!item) {
+            return 0;
+        }
+
+        claves = Object.keys(item);
+
+        for (i = 0; i < claves.length; i++) {
+            clave = claves[i];
+
+            if (clave === 'id' || clave.indexOf('id_') === 0 || clave === 'estado') {
+                continue;
+            }
+
+            valor = item[clave];
+
+            if (valor === undefined || valor === null || valor === '' || typeof valor === 'boolean' || typeof valor === 'object') {
+                continue;
+            }
+
+            numero = Number(valor);
+
+            if (!isNaN(numero)) {
+                return numero;
+            }
+        }
+
+        return 0;
+    }
+
+    function partesDeBarras(items) {
+        return (items || []).map(function (item) {
+            return {
+                nombre: typeof textoDeItem === 'function' ? textoDeItem(item) : texto(item),
+                cantidad: numeroDeItem(item)
+            };
+        }).filter(function (parte) {
+            return parte.nombre !== '';
+        });
+    }
+
+    function pintarBarras(items) {
         var contenedor = document.getElementById('barras-donaciones');
+        var partes;
+        var maximo = 1;
 
         if (!contenedor) {
             return;
         }
 
-        var partes = partesPor(items, function (item) {
-            return item[campo];
-        }, function (item) {
-            return item[campo];
-        });
-        var maximo = 1;
+        partes = partesDeBarras(items);
+        contenedor.innerHTML = '';
 
         partes.forEach(function (parte) {
             if (parte.cantidad > maximo) {
@@ -235,19 +280,22 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        Array.prototype.forEach.call(contenedor.children, function (grupo, indice) {
-            var barra = grupo.querySelector('progress');
-            var etiqueta = grupo.querySelector('span');
-            var parte = partes[indice];
+        partes.forEach(function (parte) {
+            var grupo = document.createElement('div');
+            var nombre = document.createElement('span');
+            var barra = document.createElement('progress');
+            var cantidad = document.createElement('span');
 
-            if (barra) {
-                barra.max = maximo;
-                barra.value = parte ? parte.cantidad : 0;
-            }
-
-            if (etiqueta) {
-                etiqueta.textContent = parte ? parte.nombre : '';
-            }
+            nombre.setAttribute('data-barra', 'nombre');
+            nombre.textContent = parte.nombre;
+            barra.max = maximo;
+            barra.value = parte.cantidad;
+            cantidad.setAttribute('data-barra', 'cantidad');
+            cantidad.textContent = String(parte.cantidad);
+            grupo.appendChild(nombre);
+            grupo.appendChild(barra);
+            grupo.appendChild(cantidad);
+            contenedor.appendChild(grupo);
         });
     }
 
@@ -284,18 +332,39 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function mostrarDonaciones() {
-        if (!datos.donaciones) {
-            return;
-        }
-
         var contenedor = document.getElementById('barras-donaciones');
-        var campo = contenedor ? contenedor.getAttribute('data-campo') : null;
+        var numero = document.getElementById('numero-donaciones');
+        var agrupado = contenedor ? contenedor.getAttribute('data-agrupado') : '';
+        var campo = numero ? numero.getAttribute('data-campo') : '';
+        var parametros = {};
 
-        pintarNumero('numero-donaciones', datos.donaciones.length);
-
-        if (campo) {
-            pintarBarras(datos.donaciones, campo);
+        if (agrupado) {
+            parametros.agrupado_por = agrupado;
         }
+
+        apiRequest('reportes_movimientos').then(function (respuesta) {
+            var data = respuesta && respuesta.data;
+
+            if (!data || Array.isArray(data)) {
+                return;
+            }
+
+            if (campo && data[campo] !== undefined) {
+                pintarNumero('numero-donaciones', data[campo]);
+            }
+        }).catch(function (error) {
+            if (mensaje && !mensaje.textContent) {
+                mensaje.textContent = mensajeDeApi(error);
+            }
+        });
+
+        apiRequest('reportes_movimientos', { parametros: parametros }).then(function (respuesta) {
+            pintarBarras(listaDe(respuesta));
+        }).catch(function (error) {
+            if (mensaje && !mensaje.textContent) {
+                mensaje.textContent = mensajeDeApi(error);
+            }
+        });
     }
 
     function pedir(recurso, clave, mostrar) {
@@ -320,5 +389,5 @@ document.addEventListener('DOMContentLoaded', function () {
         mostrarPendientes();
     });
     pedir('mascotas', 'mascotas', mostrarMascotas);
-    pedir('donaciones', 'donaciones', mostrarDonaciones);
+    mostrarDonaciones();
 });
