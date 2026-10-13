@@ -28,6 +28,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+      FRONTEND_URL: ${FRONTEND_URL}
       PP2_API_URL: ${PP2_API_URL}
       PP2_API_KEY: ${PP2_API_KEY}
       MAIL_API_URL: ${MAIL_API_URL}

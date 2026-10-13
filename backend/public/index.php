@@ -1,6 +1,10 @@
 <?php
 
-header('Access-Control-Allow-Origin: http://localhost:8080');
+$frontend_url = getenv('FRONTEND_URL');
+
+if ($frontend_url) {
+    header("Access-Control-Allow-Origin: $frontend_url");
+}
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Content-Type: application/json; charset=utf-8');
