@@ -10,7 +10,7 @@ services:
     volumes:
       - ./frontend:/var/www/html
     environment:
-      BACKEND_SERVICE_URL: ${BACKEND_SERVICE_URL}
+      BACKEND_INTERNAL_URL: ${BACKEND_INTERNAL_URL}
     networks:
       - patitas_network
 

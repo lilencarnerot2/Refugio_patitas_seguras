@@ -2,7 +2,7 @@
 /**
  * Cliente HTTP para el servicio externo "Servicio de Mail PP2".
  * Este service se encarga de la comunicación con el servicio de mail
- * que provee la cátedra (https://apimailisft177.duckdns.org).
+ * que provee la cátedra.
  *
  * IMPORTANTE: la MAIL_API_KEY vive SIEMPRE en el backend. Nunca debe
  * exponerse al frontend ni al JavaScript del navegador.

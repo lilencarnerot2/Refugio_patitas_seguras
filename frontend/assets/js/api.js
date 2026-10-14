@@ -9,9 +9,6 @@ function apiRequest(recurso, opciones) {
   }
 
   var url = API_URL;
-  if (url.charAt(url.length - 1) !== '/') {
-    url = url + '/';
-  }
 
   var params = new URLSearchParams();
   params.set('recurso', recurso);

@@ -2,7 +2,7 @@
 header('Content-Type: application/javascript');
 
 echo 'window.APP_CONFIG = ' . json_encode([
-    'backendUrl' => getenv('BACKEND_SERVICE_URL'),
+    'backendUrl' => '/public/api.php',
     'inicioUrl' => '/index.php',
     'panelUrl' => '/admin/dashboard.php'
 ]) . ';';

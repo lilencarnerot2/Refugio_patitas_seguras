@@ -211,7 +211,6 @@ function manejarRutas() {
             manejar_solicitudes();
             break;
 
-        case 'tipos_solicitudes':
 
         case 'tipos_solicitudes':
             if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -293,6 +292,37 @@ function manejarRutas() {
             require_once __DIR__ . '/../modules/movimientos_mascotas/controllers/movimientos_mascotas.php';
             manejar_movimientos_mascotas();
             break;
+
+                        case 'tipos_aportes':
+            require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
+            manejar_tipos_aportes();
+            break;
+
+        case 'tipos_movimientos_aportes':
+            require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
+            manejar_tipos_movimientos_aportes();
+            break;
+
+        case 'frecuencia_aportes':
+            require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
+            manejar_frecuencia_aportes();
+            break;
+
+        case 'metodos_pago':
+            require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
+            manejar_metodos_pago();
+            break;
+
+        case 'movimientos':
+            require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
+            manejar_movimientos();
+            break; 
+            
+                case 'reportes_movimientos':
+            require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
+            manejar_reportes_movimientos();
+            break;    
+
 
         case 'auditorias':
             if (!requerir_roles([
