@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../../utils/response.php';
 
 function registroController($datos)
 {
+    
     // 1. Validar entrada
     $nombre = trim($datos['nombre'] ?? '');
     $apellido = trim($datos['apellido'] ?? '');
@@ -16,6 +17,11 @@ function registroController($datos)
 
     if ($nombre === '' || $apellido === '' || $email === '' || $password === '') {
         return responderJson(false, 'Todos los campos son obligatorios', null, 400);
+    }
+
+    // 1.5. Validar formato de email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return responderJson(false, 'El email no tiene un formato válido', null, 400);
     }
 
     // 2. Normalizar email
