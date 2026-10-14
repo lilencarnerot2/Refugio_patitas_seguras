@@ -4,54 +4,24 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    var ficha = document.getElementById('datos-perfil');
-    var listaDomicilio = document.getElementById('lista-domicilio');
-    var cabeceraMov = document.getElementById('cabecera-movimientos');
-    var cuerpoMov = document.getElementById('cuerpo-movimientos');
-    var cabeceraSol = document.getElementById('cabecera-solicitudes');
-    var cuerpoSol = document.getElementById('cuerpo-solicitudes');
     var caja = document.getElementById('mensaje-perfil') || document.getElementById('mensaje-aportes');
-    var idUsuario = valorCookie('usuario_id');
     var linkPanel = document.querySelector('#menu-perfil .nav-panel');
     var menu = document.getElementById('menu-perfil');
-
-    function cargarFicha(desdeApi) {
-        if (!ficha) {
-            return Promise.resolve();
-        }
-
-        if (desdeApi) {
-            return pedirSiPuede('usuarios', {
-                parametros: idUsuario ? { id: idUsuario } : {}
-            }).then(function (res) {
-                var u;
-
-                if (res) {
-                    u = datoDeRespuesta(res);
-                    if (u.id) {
-                        idUsuario = asTexto(u.id);
-                    }
-                    llenarLista(ficha, u);
-                }
-
-                return cargarContactos();
-            });
-        }
-
-        return cargarContactos();
-    }
+    var avisos = {};
 
     accesoDeApi('usuarios').then(function (ok) {
         if (linkPanel) {
             linkPanel.hidden = !ok;
         }
-
-        return cargarFicha(ok);
     });
+
+    pedirNodos('.tab-pane.active [data-recurso]');
 
     if (menu) {
         menu.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (tab) {
             tab.addEventListener('shown.bs.tab', function (ev) {
+                var destino = ev.target.getAttribute('data-bs-target');
+
                 menu.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (otro) {
                     if (otro === ev.target) {
                         otro.classList.add('active');
@@ -59,55 +29,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         otro.classList.remove('active');
                     }
                 });
+
+                pedirNodos((destino || '') + ' [data-recurso]');
+                pintarAviso();
             });
         });
-    }
-
-    function valorCookie(nombre) {
-        var lista = document.cookie.split(';');
-        var i;
-        var parte;
-        var clave = nombre + '=';
-
-        for (i = 0; i < lista.length; i++) {
-            parte = lista[i].trim();
-            if (parte.indexOf(clave) === 0) {
-                return decodeURIComponent(parte.slice(clave.length));
-            }
-        }
-
-        return '';
-    }
-
-    function datosDeSesion() {
-        var datos = {};
-        var lista = document.cookie.split(';');
-        var i;
-        var parte;
-        var corte;
-        var clave;
-        var valor;
-        var prefijo = 'usuario_';
-
-        for (i = 0; i < lista.length; i++) {
-            parte = lista[i].trim();
-            corte = parte.indexOf('=');
-
-            if (corte < 1 || parte.indexOf(prefijo) !== 0) {
-                continue;
-            }
-
-            clave = parte.slice(prefijo.length, corte);
-            valor = decodeURIComponent(parte.slice(corte + 1));
-
-            if (!clave || !valor || esId(clave) || clave.indexOf('acceso') === 0 || esSoloNumero(valor)) {
-                continue;
-            }
-
-            datos[clave] = valor;
-        }
-
-        return datos;
     }
 
     function asTexto(v) {
@@ -117,37 +43,47 @@ document.addEventListener('DOMContentLoaded', function () {
         return String(v);
     }
 
-    function avisar(err) {
+    function vistaDe(nodo) {
+        var vista = nodo && nodo.closest('.tab-pane');
+
+        return (vista && vista.id) || 'vista-datos';
+    }
+
+    function vistaActual() {
+        var vista = panel.querySelector('.tab-pane.active');
+
+        return (vista && vista.id) || 'vista-datos';
+    }
+
+    function pintarAviso() {
+        var err;
         var texto;
 
         if (!caja) {
             return;
         }
 
+        err = avisos[vistaActual()];
         texto = mensajeDeApi(err);
 
-        if (!texto) {
-            return;
-        }
+        caja.textContent = texto || '';
 
-        if (caja.textContent && caja.textContent.indexOf(texto) !== -1) {
-            return;
-        }
-
-        caja.textContent = caja.textContent ? caja.textContent + ' ' + texto : texto;
-        caja.setAttribute('data-estado', 'error');
-
-        if (err && err.status) {
-            caja.setAttribute('data-codigo', String(err.status));
+        if (texto) {
+            caja.setAttribute('data-estado', 'error');
+            if (err && err.status) {
+                caja.setAttribute('data-codigo', String(err.status));
+            } else {
+                caja.removeAttribute('data-codigo');
+            }
+        } else {
+            caja.removeAttribute('data-estado');
+            caja.removeAttribute('data-codigo');
         }
     }
 
-    function esId(clave) {
-        return clave === 'id' || clave.indexOf('id_') === 0;
-    }
-
-    function esSoloNumero(valor) {
-        return /^\d+$/.test(asTexto(valor));
+    function avisar(vista, err) {
+        avisos[vista] = err || null;
+        pintarAviso();
     }
 
     function datoDeRespuesta(res) {
@@ -160,11 +96,8 @@ document.addEventListener('DOMContentLoaded', function () {
         return datos;
     }
 
-    function pedirSiPuede(recurso, opciones) {
-        return apiRequest(recurso, opciones).catch(function (error) {
-            avisar(error);
-            return null;
-        });
+    function esId(clave) {
+        return clave === 'id' || clave.indexOf('id_') === 0;
     }
 
     function ponerDato(ul, etiqueta, valor) {
@@ -177,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var val = document.createElement('span');
 
         nom.className = 'detalle-label';
-        nom.textContent = etiqueta.replace(/_/g, ' ');
+        nom.textContent = asTexto(etiqueta).replace(/_/g, ' ');
         val.setAttribute('data-texto', asTexto(valor));
 
         li.appendChild(nom);
@@ -213,104 +146,95 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function delUsuario(item) {
-        if (!item) {
-            return false;
+    function pintarTablaPaginada(cuerpo, cabecera, items) {
+        var cajaLista = cuerpo.closest('[data-por-pagina]') || cuerpo;
+        var claves = clavesDeItems(items);
+
+        function dibujar(nuevaPagina) {
+            var corte = armarPaginador(cajaLista, items.length, nuevaPagina, dibujar);
+
+            pintarTabla(cabecera, cuerpo, items.slice(corte.desde, corte.hasta), claves);
         }
-        if (item.id_usuario === undefined || item.id_usuario === null) {
-            return true;
-        }
-        return asTexto(item.id_usuario) === asTexto(idUsuario);
+
+        dibujar(1);
     }
 
-    function cargarContactos() {
-        return pedirSiPuede('contactos').then(function (r2) {
-            var arr;
-            var i;
-            var c;
+    function pintarNodo(nodo, res) {
+        var items;
+        var i;
+        var item;
+        var cabecera;
 
-            if (!r2 || !ficha) {
-                return;
+        if (!nodo) {
+            return;
+        }
+
+        items = listaDe(res);
+
+        if (nodo.tagName === 'TBODY') {
+            cabecera = document.getElementById(nodo.getAttribute('data-cabecera'));
+            if (!cabecera) {
+                cabecera = nodo.parentNode && nodo.parentNode.querySelector('thead tr');
             }
+            pintarTablaPaginada(nodo, cabecera, items);
+            return;
+        }
 
-            arr = listaDe(r2);
-            for (i = 0; i < arr.length; i++) {
-                c = arr[i];
-                if (!c) {
+        if (items.length > 1) {
+            nodo.innerHTML = '';
+            for (i = 0; i < items.length; i++) {
+                item = items[i];
+                if (!item) {
                     continue;
                 }
-                ponerDato(ficha, textoDeItem(c), c.valor);
+                if (item.valor !== undefined) {
+                    ponerDato(nodo, textoDeItem(item), item.valor);
+                } else {
+                    llenarLista(nodo, item);
+                }
             }
-        });
-    }
-
-    if (ficha) {
-        llenarLista(ficha, datosDeSesion());
-    }
-
-    if (listaDomicilio) {
-        pedirSiPuede('domicilios').then(function (res) {
-            if (!res) {
-                return;
-            }
-
-            llenarLista(listaDomicilio, datoDeRespuesta(res));
-        });
-    }
-
-    function vistaActiva(id) {
-        var vista = document.getElementById(id);
-
-        return !!(vista && vista.classList.contains('active'));
-    }
-
-    function cargarMovimientos() {
-        if (!cuerpoMov || cuerpoMov.getAttribute('data-pedido')) {
             return;
         }
 
-        cuerpoMov.setAttribute('data-pedido', '1');
-
-        pedirSiPuede('movimientos').then(function (res) {
-            if (!res) {
-                return;
-            }
-
-            pintarTabla(cabeceraMov, cuerpoMov, listaDe(res).filter(delUsuario));
-        });
+        llenarLista(nodo, datoDeRespuesta(res));
     }
 
-    function cargarSolicitudes() {
-        if (!cuerpoSol || cuerpoSol.getAttribute('data-pedido')) {
-            return;
+    function pedirNodo(nodo) {
+        var recurso;
+        var vista;
+
+        if (!nodo || nodo.getAttribute('data-pedido')) {
+            return Promise.resolve();
         }
 
-        cuerpoSol.setAttribute('data-pedido', '1');
+        recurso = nodo.getAttribute('data-recurso');
+        vista = vistaDe(nodo);
 
-        pedirSiPuede('solicitudes').then(function (res) {
-            if (!res) {
-                return;
-            }
+        if (!recurso) {
+            return Promise.resolve();
+        }
 
-            pintarTabla(cabeceraSol, cuerpoSol, listaDe(res).filter(delUsuario));
+        nodo.setAttribute('data-pedido', '1');
+
+        return apiRequest(recurso).then(function (res) {
+            pintarNodo(nodo, res);
+            avisar(vista, null);
+            return res;
+        }).catch(function (error) {
+            avisar(vista, error);
+            return null;
         });
     }
 
-    if (vistaActiva('vista-movimientos')) {
-        cargarMovimientos();
-    }
+    function pedirNodos(selector) {
+        var nodos = panel.querySelectorAll(selector);
+        var i;
+        var pedidos = [];
 
-    if (vistaActiva('vista-solicitudes')) {
-        cargarSolicitudes();
-    }
+        for (i = 0; i < nodos.length; i++) {
+            pedidos.push(pedirNodo(nodos[i]));
+        }
 
-    if (menu) {
-        menu.querySelectorAll('[data-bs-target="#vista-movimientos"]').forEach(function (tab) {
-            tab.addEventListener('shown.bs.tab', cargarMovimientos);
-        });
-
-        menu.querySelectorAll('[data-bs-target="#vista-solicitudes"]').forEach(function (tab) {
-            tab.addEventListener('shown.bs.tab', cargarSolicitudes);
-        });
+        return Promise.all(pedidos);
     }
 });

@@ -5,7 +5,7 @@ require __DIR__ . '/../public/includes/header.php';
 ?>
 
     <section id="acceso-solicitud">
-        <p id="mensaje-solicitud" class="alert alert-danger"></p>
+        <div id="mensaje-solicitud" class="alert alert-danger text-center" role="alert"></div>
         <div id="bloque-solicitud" hidden>
             <article id="ficha-mascota" class="pet-card">
                 <img data-campo="foto_url" alt="" hidden>
@@ -24,7 +24,7 @@ require __DIR__ . '/../public/includes/header.php';
                 <div class="page-intro text-center">
                     <h2>Formulario de adopción</h2>
                 </div>
-                <form id="formulario-solicitud" class="public-form" data-clave="adopcion" novalidate autocomplete="off">
+                <form id="formulario-solicitud" class="public-form" data-clave="adopcion" data-recurso="formularios_adopcion" novalidate autocomplete="off">
                     <input type="hidden" name="id_mascota" id="id_mascota">
                     <input type="hidden" name="id_tipo_solicitud" id="id_tipo_solicitud">
 
@@ -85,12 +85,7 @@ require __DIR__ . '/../public/includes/header.php';
                                         <div class="col-md-6 d-flex flex-column gap-2">
                                             <div>
                                                 <label class="form-label" for="horas_solo">Horas solo</label>
-                                                <select class="form-select" id="horas_solo" name="horas_solo">
-                                                    <option value="" selected></option>
-                                                    <?php for ($hora = 0; $hora <= 24; $hora++): ?>
-                                                    <option value="<?php echo $hora; ?>"><?php echo $hora; ?></option>
-                                                    <?php endfor; ?>
-                                                </select>
+                                                <input class="form-control" type="number" min="0" max="24" id="horas_solo" name="horas_solo">
                                             </div>
                                             <label class="form-check" for="tiene_mascotas">
                                                 <input class="form-check-input" type="checkbox" id="tiene_mascotas" name="tiene_mascotas">
