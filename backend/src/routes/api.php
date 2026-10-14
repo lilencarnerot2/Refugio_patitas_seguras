@@ -305,6 +305,11 @@ function manejarRutas() {
             manejar_auditorias();
             break;
 
+        case 'compatibilidad':
+            require_once __DIR__ . '/../modules/compatibilidad/controllers/compatibilidad.php';
+            manejar_compatibilidad();
+            break;  
+
         default:
             responderJson(
                 false,
