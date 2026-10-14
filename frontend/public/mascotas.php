@@ -27,13 +27,13 @@ require __DIR__ . '/includes/header.php';
     </section>
 
     <div id="modelos-catalogo" hidden>
-        <article class="pet-card" id="tarjeta-modelo" data-separador=" · ">
-            <img hidden alt="">
-            <div class="pet-photo-empty"></div>
-            <div class="pet-card-body">
+        <article class="pet-card h-100 d-flex flex-column" id="tarjeta-modelo" data-separador=" · ">
+            <img class="w-100 object-fit-cover" hidden alt="">
+            <div class="pet-photo-empty w-100"></div>
+            <div class="pet-card-body d-flex flex-column align-items-center text-center flex-grow-1">
                 <h4></h4>
                 <p class="pet-card-meta"></p>
-                <div class="pet-card-actions">
+                <div class="pet-card-actions d-flex flex-column align-items-center w-100 mt-auto">
                     <a class="btn-adopt" href="../user/solicitar_adopcion.php">Adoptar</a>
                     <a class="btn-transito" href="../user/solicitar_transito.php">Hogar de tránsito</a>
                     <a class="btn-detail" href="mascota-detalle.php">Ver detalle</a>

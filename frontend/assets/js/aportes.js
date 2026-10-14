@@ -105,15 +105,40 @@ function valorCelda(valor) {
     return String(valor);
 }
 
+function nombreNormalizado(valor) {
+    return String(valor || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function listaParaSelect(select, lista) {
+    var incluir = nombreNormalizado(select && select.getAttribute('data-incluir'));
+    var excluir = nombreNormalizado(select && select.getAttribute('data-excluir'));
+
+    return (Array.isArray(lista) ? lista : []).filter(function (item) {
+        var nombre = nombreNormalizado(textoDeItem(item));
+
+        if (incluir && nombre.indexOf(incluir) === -1) {
+            return false;
+        }
+
+        if (excluir && nombre.indexOf(excluir) !== -1) {
+            return false;
+        }
+
+        return true;
+    });
+}
+
 function llenarSelect(select, lista) {
     var i;
     var opcion;
     var base;
+    var visibles;
 
     if (!select) {
         return;
     }
 
+    visibles = listaParaSelect(select, lista);
     base = select.querySelector('option');
 
     while (select.options.length > 1) {
@@ -130,15 +155,37 @@ function llenarSelect(select, lista) {
         }
     }
 
-    for (i = 0; i < lista.length; i++) {
-        if (!lista[i] || lista[i].id === undefined || lista[i].id === null) {
+    for (i = 0; i < visibles.length; i++) {
+        if (!visibles[i] || visibles[i].id === undefined || visibles[i].id === null) {
             continue;
         }
 
         opcion = document.createElement('option');
-        opcion.value = String(lista[i].id);
-        opcion.textContent = textoDeItem(lista[i]);
+        opcion.value = String(visibles[i].id);
+        opcion.textContent = textoDeItem(visibles[i]);
         select.appendChild(opcion);
+    }
+
+    seleccionarOpcionUnica(select);
+}
+
+function seleccionarOpcionUnica(select) {
+    var reales;
+    var i;
+
+    if (!select) {
+        return;
+    }
+
+    reales = [];
+    for (i = 0; i < select.options.length; i++) {
+        if (select.options[i].value) {
+            reales.push(select.options[i]);
+        }
+    }
+
+    if (reales.length === 1) {
+        select.value = reales[0].value;
     }
 }
 
@@ -179,6 +226,8 @@ function cargarCatalogos(raiz) {
             if (caja && !caja.textContent) {
                 caja.textContent = mensajeDeApi(error);
                 caja.setAttribute('data-estado', 'error');
+                caja.classList.remove('alert-success');
+                caja.classList.add('alert-danger');
             }
 
             return [];
@@ -564,11 +613,6 @@ function validarFormularioMovimiento(formulario, caja) {
         }
 
         if (String(campo.value || '').trim() === '') {
-            if (caja) {
-                caja.textContent = 'Completá los campos obligatorios.';
-                caja.setAttribute('data-estado', 'error');
-            }
-
             if (typeof formulario.reportValidity === 'function') {
                 formulario.reportValidity();
             }
@@ -582,9 +626,8 @@ function validarFormularioMovimiento(formulario, caja) {
 
     if (campoVisible(monto)) {
         if (String(monto.value || '').trim() === '' || isNaN(Number(monto.value)) || Number(monto.value) <= 0) {
-            if (caja) {
-                caja.textContent = 'Indicá un monto válido.';
-                caja.setAttribute('data-estado', 'error');
+            if (typeof formulario.reportValidity === 'function') {
+                formulario.reportValidity();
             }
 
             monto.focus();
@@ -612,9 +655,12 @@ function enviarMovimiento(formulario, recargar) {
         if (caja) {
             caja.textContent = mensajeDeApi(respuesta);
             caja.setAttribute('data-estado', 'ok');
+            caja.classList.remove('alert-danger');
+            caja.classList.add('alert-success');
         }
 
         formulario.reset();
+        formulario.querySelectorAll('select[data-catalogo]').forEach(seleccionarOpcionUnica);
         actualizarCamposDependientes(formulario);
 
         if (recargar) {
@@ -624,18 +670,56 @@ function enviarMovimiento(formulario, recargar) {
         if (caja) {
             caja.textContent = mensajeDeApi(error);
             caja.setAttribute('data-estado', 'error');
+            caja.classList.remove('alert-success');
+            caja.classList.add('alert-danger');
         }
     });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     var sitio = document.getElementById('panel-aportes-sitio');
+    var bloque;
+    var caja;
+    var formulario;
 
-    if (sitio) {
-        cargarCatalogos(sitio).then(function () {
-            enlazarFormularioMovimiento(document.getElementById('form-movimiento'));
+    if (!sitio || !document.getElementById('form-movimiento')) {
+        return;
+    }
+
+    bloque = document.getElementById('bloque-aportes');
+    caja = document.getElementById('mensaje-aportes');
+    formulario = document.getElementById('form-movimiento');
+
+    function pintarAliases() {
+        sitio.querySelectorAll('[data-alias]').forEach(function (card) {
+            var medio = card.querySelector('[data-campo="medio"]');
+            var alias = card.querySelector('[data-campo="alias"]');
+
+            if (medio) {
+                medio.textContent = card.getAttribute('data-medio') || '';
+            }
+
+            if (alias) {
+                alias.textContent = card.getAttribute('data-alias') || '';
+            }
         });
     }
+
+    cargarCatalogos(sitio).then(function () {
+        if (caja && caja.getAttribute('data-estado') === 'error') {
+            if (bloque) {
+                bloque.hidden = true;
+            }
+            return;
+        }
+
+        pintarAliases();
+        enlazarFormularioMovimiento(formulario);
+
+        if (bloque) {
+            bloque.hidden = false;
+        }
+    });
 });
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -801,18 +885,6 @@ document.addEventListener('DOMContentLoaded', function () {
         caja.setAttribute('data-estado', ok ? 'ok' : 'error');
     }
 
-    function itemPorId(id) {
-        var i;
-
-        for (i = 0; i < lista.length; i++) {
-            if (String(lista[i].id) === String(id)) {
-                return lista[i];
-            }
-        }
-
-        return null;
-    }
-
     function catalogoDeCampo(nombre) {
         var origen = panel.querySelector('[data-filtro="' + nombre + '"][data-catalogo]');
 
@@ -886,50 +958,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function celdaBoton(clase, id, etiqueta) {
-        var celda = document.createElement('td');
-        var boton = document.createElement('button');
-
-        boton.type = 'button';
-        boton.className = clase;
-        boton.setAttribute('data-id', id);
-        boton.setAttribute('aria-label', etiqueta);
-        boton.disabled = !datosListos;
-        celda.appendChild(boton);
-
-        return celda;
-    }
-
-    function ponerAcciones() {
-        var i;
-        var fila;
-        var id;
-        var filas;
-
-        if (!cuerpo || !datosListos) {
-            return;
-        }
-
-        if (cabecera) {
-            for (i = 0; i < 3; i++) {
-                cabecera.appendChild(document.createElement('th'));
-            }
-        }
-
-        filas = cuerpo.querySelectorAll('tr[data-id]');
-
-        for (i = 0; i < filas.length; i++) {
-            fila = filas[i];
-            id = fila.getAttribute('data-id');
-            fila.appendChild(celdaBoton('abm-alta', id, 'Alta'));
-            fila.appendChild(celdaBoton('abm-editar', id, 'Edición'));
-            fila.appendChild(celdaBoton('abm-baja', id, 'Baja'));
-        }
-    }
-
     function dibujar(nuevaPagina) {
         var visibles;
         var corte;
+        var claves;
 
         if (nuevaPagina) {
             pagina = nuevaPagina;
@@ -938,8 +970,10 @@ document.addEventListener('DOMContentLoaded', function () {
         visibles = ordenarPorId(lista);
         corte = armarPaginador(panel, visibles.length, pagina, dibujar);
         pagina = corte.pagina;
-        pintarTabla(cabecera, cuerpo, visibles.slice(corte.desde, corte.hasta), clavesDeItems(visibles));
-        ponerAcciones();
+        claves = clavesDeItems(visibles).filter(function (clave) {
+            return clave !== 'descripcion';
+        });
+        pintarTabla(cabecera, cuerpo, visibles.slice(corte.desde, corte.hasta), claves);
     }
 
     function armarCampos(modelo) {
@@ -1028,40 +1062,6 @@ document.addEventListener('DOMContentLoaded', function () {
         formulario.hidden = true;
     }
 
-    function mostrarForm(item) {
-        var claves;
-        var i;
-        var campo;
-
-        if (!formulario || !datosListos) {
-            return;
-        }
-
-        armarCampos(item || lista[0] || modeloDesdeFiltros());
-
-        if (!formArmado) {
-            return;
-        }
-
-        formulario.reset();
-        formulario.querySelector('[name="id"]').value = item && item.id !== undefined ? String(item.id) : '';
-
-        if (item) {
-            claves = clavesVisibles(item);
-
-            for (i = 0; i < claves.length; i++) {
-                campo = formulario.elements[claves[i]];
-
-                if (campo && claves[i] !== 'id' && item[claves[i]] !== undefined && item[claves[i]] !== null) {
-                    campo.value = String(item[claves[i]]);
-                }
-            }
-        }
-
-        actualizarCamposDependientes(formulario);
-        formulario.hidden = false;
-    }
-
     function cargarListado() {
         var filtros = parametrosDeFiltros(panel);
 
@@ -1132,46 +1132,6 @@ document.addEventListener('DOMContentLoaded', function () {
             cargarListado();
         });
     });
-
-    if (cuerpo) {
-        cuerpo.addEventListener('click', function (evento) {
-            var alta = evento.target.closest('.abm-alta');
-            var editar = evento.target.closest('.abm-editar');
-            var baja = evento.target.closest('.abm-baja');
-            var id;
-
-            if (!datosListos) {
-                return;
-            }
-
-            if (alta) {
-                mostrarForm(null);
-                return;
-            }
-
-            if (editar) {
-                mostrarForm(itemPorId(editar.getAttribute('data-id')));
-                return;
-            }
-
-            if (!baja) {
-                return;
-            }
-
-            id = baja.getAttribute('data-id');
-
-            apiRequest('movimientos', {
-                metodo: 'DELETE',
-                parametros: { id: id }
-            }).then(function (respuesta) {
-                avisar(respuesta, true);
-                limpiarForm();
-                return cargarListado();
-            }).catch(function (error) {
-                avisar(error, false);
-            });
-        });
-    }
 
     if (formulario) {
         formulario.addEventListener('submit', function (evento) {

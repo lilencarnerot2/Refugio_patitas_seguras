@@ -38,7 +38,8 @@ $donar = '/public/donaciones.php';
                     <details>
                         <summary>CÓMO AYUDAR</summary>
                         <ul class="dropdown-menu">
-                            <li><a href="/public/donaciones.php">DONAR</a></li>
+                            <li><a href="/public/donaciones_monetarias.php">DONACIÓN MONETARIA</a></li>
+                            <li><a href="/public/donaciones_insumos.php">DONACIÓN DE INSUMOS</a></li>
                             <li><a href="<?php echo $inicio; ?>#modal-castracion">CASTRACIÓN</a></li>
                             <li><a href="<?php echo $inicio; ?>#modal-maltrato">DENUNCIA MALTRATO</a></li>
                         </ul>

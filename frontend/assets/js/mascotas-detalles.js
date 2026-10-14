@@ -29,7 +29,11 @@ function mostrarFicha(mascota) {
     var foto = document.getElementById('detalle-foto');
     var fotoVacia = document.getElementById('detalle-foto-vacia');
     var nacimiento = document.getElementById('detalle-nacimiento');
+    var historialCaja = document.getElementById('detalle-historial-caja');
+    var historial = document.getElementById('detalle-historial');
+    var subtitulo = document.getElementById('detalle-subtitulo');
     var fecha = fechaCorta(mascota.fecha_nacimiento_estimada);
+    var partes = [mascota.especie, mascota.raza].filter(Boolean);
 
     carga.hidden = true;
     vacio.hidden = true;
@@ -38,13 +42,20 @@ function mostrarFicha(mascota) {
     document.getElementById('detalle-nombre').textContent = mascota.nombre || '';
     document.getElementById('detalle-sexo').textContent = mascota.sexo || '';
     document.getElementById('detalle-tamano').textContent = mascota.tamaño || '';
+    document.getElementById('detalle-especie').textContent = mascota.especie || '';
+    document.getElementById('detalle-raza').textContent = mascota.raza || '';
+
+    if (subtitulo) {
+        subtitulo.textContent = partes.join(' · ');
+    }
 
     // si hay fecha, pisa el texto que ya está en el html
     if (fecha) {
         nacimiento.textContent = fecha;
     }
 
-    document.getElementById('detalle-historial').textContent = mascota.historial || '';
+    historial.textContent = mascota.historial || '';
+    historialCaja.hidden = !historial.textContent;
     ponerDestino('detalle-adoptar', mascota.id);
     ponerDestino('detalle-transito', mascota.id);
 

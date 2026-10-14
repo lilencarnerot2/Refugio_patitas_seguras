@@ -8,7 +8,6 @@ require __DIR__ . '/includes/header.php';
 
     <section id="panel-mi-perfil" class="panel-perfil panel-aportes">
         <p id="mensaje-perfil" class="mensaje-formulario"></p>
-        <p id="mensaje-aportes" class="mensaje-formulario" hidden></p>
 
         <div class="tab-content">
             <div class="tab-pane fade<?php echo $paginaPerfil === 'datos' ? ' show active' : ''; ?>" id="vista-datos" role="tabpanel">
@@ -20,6 +19,7 @@ require __DIR__ . '/includes/header.php';
                                 <h3>Datos</h3>
                             </div>
                             <ul class="pet-detail-meta" id="datos-perfil" data-recurso="contactos"></ul>
+                            <p class="perfil-vacio">Todavía no cargaste datos de contacto.</p>
                         </article>
                     </div>
 
@@ -36,11 +36,12 @@ require __DIR__ . '/includes/header.php';
             </div>
 
             <div class="tab-pane fade<?php echo $paginaPerfil === 'movimientos' ? ' show active' : ''; ?>" id="vista-movimientos" role="tabpanel">
-                <article class="info-card ficha-compacta ficha-ancha h-auto" data-por-pagina="5">
+                <article class="info-card ficha-compacta ficha-ancha ficha-listado h-auto" data-por-pagina="5">
                     <div class="dash-card-cabecera">
                         <span class="ficha-usuario-icono"><i class="bi bi-list-ul"></i></span>
                         <h3>Mis movimientos</h3>
                     </div>
+                    <p class="mensaje-formulario" data-aviso></p>
                     <div class="lista-scroll-mascotas overflow-auto">
                         <table class="dash-tabla">
                             <thead>
@@ -66,11 +67,12 @@ require __DIR__ . '/includes/header.php';
             </div>
 
             <div class="tab-pane fade<?php echo $paginaPerfil === 'solicitudes' ? ' show active' : ''; ?>" id="vista-solicitudes" role="tabpanel">
-                <article class="info-card ficha-compacta ficha-ancha h-auto" data-por-pagina="5">
+                <article class="info-card ficha-compacta ficha-ancha ficha-listado h-auto" data-por-pagina="5">
                     <div class="dash-card-cabecera">
                         <span class="ficha-usuario-icono"><i class="bi bi-file-earmark-text"></i></span>
                         <h3>Mis solicitudes</h3>
                     </div>
+                    <p class="mensaje-formulario" data-aviso></p>
                     <div class="lista-scroll-mascotas overflow-auto">
                         <table class="dash-tabla">
                             <thead>

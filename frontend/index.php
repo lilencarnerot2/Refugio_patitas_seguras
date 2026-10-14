@@ -77,7 +77,7 @@ require __DIR__ . '/public/includes/header.php';
     <section id="ayudar">
         <h3 class="ayudar-titulo">OTRAS FORMAS DE AYUDAR</h3>
         <div class="other-ways">
-            <a class="way-card" href="#modal-alimentos">
+            <a class="way-card" href="/public/donaciones_insumos.php">
                 <i class="bi bi-basket"></i>
                 <div>
                     <h5>DONÁ ALIMENTOS</h5>
@@ -91,7 +91,7 @@ require __DIR__ . '/public/includes/header.php';
                     <p>Con tu aporte mensual nos ayudás a cubrir tratamientos y cuidados.</p>
                 </div>
             </a>
-            <a class="way-card" href="/public/donaciones.php">
+            <a class="way-card" href="/public/donaciones_monetarias.php">
                 <i class="bi bi-cash-coin"></i>
                 <div>
                     <h5>HACÉ UNA DONACIÓN</h5>

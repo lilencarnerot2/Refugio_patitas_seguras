@@ -3188,3 +3188,75 @@ html {
         font-weight: 600;
     }
 }
+
+@media (max-width: 992px) {
+    .admin-page,
+    .admin-page section,
+    .admin-page .panel-listado,
+    .admin-page .formulario-mascota {
+        width: 100%;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        box-sizing: border-box;
+    }
+
+    .admin-page section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .admin-page section > * {
+        width: 100%;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .admin-page .page-intro,
+    .admin-page .dash-card-cabecera,
+    .admin-page .dash-card-cabecera h3 {
+        text-align: center;
+        justify-content: center;
+    }
+
+    .admin-page .info-card,
+    .admin-page .formulario-mascota,
+    .admin-page .dash-fila,
+    .admin-page .listado-controles {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .admin-page .row,
+    .admin-page .listado-controles,
+    .admin-page .acciones-formulario,
+    .admin-page .paginador {
+        justify-content: center;
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+    }
+
+    .admin-page .btn-primary,
+    .admin-page .btn-outline {
+        justify-content: center;
+    }
+
+    .admin-page footer .footer-inner {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .admin-page .row > [class*="col-"] {
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: 100%;
+    }
+}

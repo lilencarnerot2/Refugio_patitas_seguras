@@ -24,28 +24,22 @@ $paginaPerfil = $paginaPerfil ?? 'datos';
     <div class="header-actions"></div>
 </header>
 
-<nav id="menu-perfil" class="position-fixed start-0 overflow-auto">
+<nav id="menu-perfil" class="overflow-auto">
     <ul role="tablist">
         <li>
-            <label for="menu-perfil-toggle">
-                <a href="#vista-datos" data-bs-toggle="tab" data-bs-target="#vista-datos"<?php echo $paginaPerfil === 'datos' ? ' class="active"' : ''; ?>>
-                    <i class="bi bi-person-fill"></i> Datos
-                </a>
-            </label>
+            <a href="#vista-datos" data-bs-toggle="tab" data-bs-target="#vista-datos"<?php echo $paginaPerfil === 'datos' ? ' class="active"' : ''; ?>>
+                <i class="bi bi-person-fill"></i> Datos
+            </a>
         </li>
         <li>
-            <label for="menu-perfil-toggle">
-                <a href="#vista-movimientos" data-bs-toggle="tab" data-bs-target="#vista-movimientos"<?php echo $paginaPerfil === 'movimientos' ? ' class="active"' : ''; ?>>
-                    <i class="bi bi-list-ul"></i> Movimientos
-                </a>
-            </label>
+            <a href="#vista-movimientos" data-bs-toggle="tab" data-bs-target="#vista-movimientos"<?php echo $paginaPerfil === 'movimientos' ? ' class="active"' : ''; ?>>
+                <i class="bi bi-list-ul"></i> Movimientos
+            </a>
         </li>
         <li>
-            <label for="menu-perfil-toggle">
-                <a href="#vista-solicitudes" data-bs-toggle="tab" data-bs-target="#vista-solicitudes"<?php echo $paginaPerfil === 'solicitudes' ? ' class="active"' : ''; ?>>
-                    <i class="bi bi-file-earmark-text"></i> Mis solicitudes
-                </a>
-            </label>
+            <a href="#vista-solicitudes" data-bs-toggle="tab" data-bs-target="#vista-solicitudes"<?php echo $paginaPerfil === 'solicitudes' ? ' class="active"' : ''; ?>>
+                <i class="bi bi-file-earmark-text"></i> Mis solicitudes
+            </a>
         </li>
         <li class="nav-panel" hidden>
             <a href="/admin/dashboard.php">

@@ -8,6 +8,11 @@ document.addEventListener('DOMContentLoaded', function () {
     var linkPanel = document.querySelector('#menu-perfil .nav-panel');
     var menu = document.getElementById('menu-perfil');
     var avisos = {};
+    var toggleMenu = document.getElementById('menu-perfil-toggle');
+
+    if (toggleMenu && window.matchMedia('(min-width: 993px)').matches) {
+        toggleMenu.checked = true;
+    }
 
     accesoDeApi('usuarios').then(function (ok) {
         if (linkPanel) {
@@ -16,6 +21,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     pedirNodos('.tab-pane.active [data-recurso]');
+
+    function cerrarMenuMovil() {
+        if (toggleMenu && window.matchMedia('(max-width: 992px)').matches) {
+            toggleMenu.checked = false;
+        }
+    }
 
     if (menu) {
         menu.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (tab) {
@@ -29,9 +40,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         otro.classList.remove('active');
                     }
                 });
-
                 pedirNodos((destino || '') + ' [data-recurso]');
                 pintarAviso();
+                cerrarMenuMovil();
             });
         });
     }
@@ -218,6 +229,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return apiRequest(recurso).then(function (res) {
             pintarNodo(nodo, res);
+            nodo.setAttribute('data-cargado', '1');
             avisar(vista, null);
             return res;
         }).catch(function (error) {
