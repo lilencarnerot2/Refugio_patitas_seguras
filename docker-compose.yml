@@ -34,8 +34,25 @@ services:
       PROYECTO_ID: ${PROYECTO_ID}
       MAIL_API_URL: ${MAIL_API_URL}
       MAIL_API_KEY: ${MAIL_API_KEY}
+      COMPATIBILITY_SERVICE_URL: ${COMPATIBILITY_SERVICE_URL}
     networks:
       - patitas_network
+
+  compatibility-service:
+    build:
+      context: ./microservices/compatibility-service
+      dockerfile: Dockerfile
+
+    container_name: patitas_compatibility
+
+    restart: unless-stopped
+
+    ports:
+      - "${COMPATIBILITY_PORT}:5000"
+
+    networks:
+      - patitas_network
+    
 
 networks:
   patitas_network:
