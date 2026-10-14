@@ -156,6 +156,93 @@ require __DIR__ . '/../public/includes/header.php';
                                     </div>
                                 </section>
                             </div>
+                            <div class="col-12">
+                                <section class="form-seccion">
+                                    <h3 class="form-seccion-titulo">Domicilio y contacto</h3>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="id_provincia">Provincia</label>
+                                            <select class="form-select" id="id_provincia" name="id_provincia" data-catalogo="provincias" data-carga="id_comuna_municipio">
+                                                <option value="" selected disabled></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="id_comuna_municipio">Comuna o municipio</label>
+                                            <select class="form-select" id="id_comuna_municipio" name="id_comuna_municipio" data-catalogo="comunas_municipios" data-param="id_provincia" data-carga="id_localidad">
+                                                <option value="" selected disabled></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="id_localidad">Localidad</label>
+                                            <select class="form-select" id="id_localidad" name="id_localidad" data-catalogo="localidades" data-param="id_comuna_municipio" data-carga="id_barrio_zona">
+                                                <option value="" selected disabled></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="id_barrio_zona">Barrio o zona</label>
+                                            <select class="form-select" id="id_barrio_zona" name="id_barrio_zona" data-catalogo="barrios_zonas" data-param="id_localidad">
+                                                <option value="" selected disabled></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="calle">Calle</label>
+                                            <input class="form-control" type="text" id="calle" name="calle">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="altura">Altura</label>
+                                            <input class="form-control" type="text" id="altura" name="altura">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="piso">Piso</label>
+                                            <input class="form-control" type="text" id="piso" name="piso">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="departamento">Departamento</label>
+                                            <input class="form-control" type="text" id="departamento" name="departamento">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="ruta_nombre">Ruta</label>
+                                            <input class="form-control" type="text" id="ruta_nombre" name="ruta_nombre">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="kilometro">Kilómetro</label>
+                                            <input class="form-control" type="text" id="kilometro" name="kilometro">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="entre_calle_1">Entre calle 1</label>
+                                            <input class="form-control" type="text" id="entre_calle_1" name="entre_calle_1">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="entre_calle_2">Entre calle 2</label>
+                                            <input class="form-control" type="text" id="entre_calle_2" name="entre_calle_2">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" for="indicadores_referencia">Indicadores de referencia</label>
+                                            <input class="form-control" type="text" id="indicadores_referencia" name="indicadores_referencia">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="codigo_postal">Código postal</label>
+                                            <input class="form-control" type="text" id="codigo_postal" name="codigo_postal">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="id_tipo_contacto">Tipo de contacto</label>
+                                            <select class="form-select" id="id_tipo_contacto" name="id_tipo_contacto" data-catalogo="tipos_contacto">
+                                                <option value="" selected disabled></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 d-flex flex-column gap-2">
+                                            <div>
+                                                <label class="form-label" for="valor">Contacto</label>
+                                                <input class="form-control" type="text" id="valor" name="valor">
+                                            </div>
+                                            <label class="form-check" for="es_principal">
+                                                <input class="form-check-input" type="checkbox" id="es_principal" name="es_principal">
+                                                <span>Es principal</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
                         </div>
 
                     <p id="mensaje-formulario" class="mensaje-formulario"></p>

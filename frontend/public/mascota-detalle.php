@@ -21,17 +21,63 @@ require __DIR__ . '/includes/header.php';
 
         <article id="ficha-mascota" class="pet-detail" hidden>
             <div class="pet-detail-photo">
-                <img id="detalle-foto" hidden alt="">
+                <img id="detalle-foto" class="object-fit-cover" hidden alt="">
                 <div id="detalle-foto-vacia" class="pet-photo-empty"></div>
             </div>
             <div class="pet-detail-body">
                 <h2 id="detalle-nombre"></h2>
-                <ul class="pet-detail-meta">
-                    <li><span class="detalle-label">Sexo</span><span id="detalle-sexo"></span></li>
-                    <li><span class="detalle-label">Tamaño</span><span id="detalle-tamano"></span></li>
-                    <li><span class="detalle-label">Nacimiento estimado</span><span id="detalle-nacimiento">No informado</span></li>
-                </ul>
-                <p id="detalle-historial" class="pet-detail-historial"></p>
+                <p id="detalle-subtitulo" class="pet-detail-subtitle"></p>
+                <div class="row g-2 pet-detail-facts">
+                    <div class="col-6">
+                        <div class="pet-detail-chip">
+                            <i class="fa-solid fa-venus-mars" aria-hidden="true"></i>
+                            <div>
+                                <span class="detalle-label">Sexo</span>
+                                <strong id="detalle-sexo"></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="pet-detail-chip">
+                            <i class="fa-solid fa-ruler-combined" aria-hidden="true"></i>
+                            <div>
+                                <span class="detalle-label">Tamaño</span>
+                                <strong id="detalle-tamano"></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="pet-detail-chip">
+                            <i class="fa-solid fa-paw" aria-hidden="true"></i>
+                            <div>
+                                <span class="detalle-label">Especie</span>
+                                <strong id="detalle-especie"></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="pet-detail-chip">
+                            <i class="fa-solid fa-dna" aria-hidden="true"></i>
+                            <div>
+                                <span class="detalle-label">Raza</span>
+                                <strong id="detalle-raza"></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="pet-detail-chip">
+                            <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+                            <div>
+                                <span class="detalle-label">Nacimiento estimado</span>
+                                <strong id="detalle-nacimiento">No informado</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="detalle-historial-caja" class="pet-detail-historial" hidden>
+                    <span class="detalle-label">Historial</span>
+                    <p id="detalle-historial"></p>
+                </div>
                 <div class="pet-card-actions">
                     <a id="detalle-adoptar" class="btn-adopt" href="../user/solicitar_adopcion.php">Adoptar</a>
                     <a id="detalle-transito" class="btn-transito" href="../user/solicitar_transito.php">Hogar de tránsito</a>
