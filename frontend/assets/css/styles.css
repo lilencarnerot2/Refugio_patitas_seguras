@@ -1520,6 +1520,10 @@
             box-shadow: 0 0 0 0.2rem var(--tema-verde-suave);
         }
 
+        .public-form input[type="date"][data-min-hoy] {
+            scroll-margin-bottom: 300px;
+        }
+
         .public-form h3 {
             color: var(--primary-color);
             margin-bottom: 8px;
@@ -1960,7 +1964,19 @@
         [data-total="1"] .cantidad-plural { display: none; }
 
         .seguimiento-solicitudes[data-cargando] [data-lista],
-        #modal-detalle-solicitud[data-cargando] .seguimiento-datos { opacity: 0.55; }
+        #modal-detalle-solicitud[data-cargando] .seguimiento-datos,
+        #modal-detalle-solicitud[data-cargando] [data-ver-formulario] { opacity: 0.55; }
+
+        .seguimiento-formulario-accion {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: var(--tema-verde-fondo);
+        }
 
         .perfil-titulo {
             color: var(--primary-color);
@@ -2042,6 +2058,32 @@
             pointer-events: none;
         }
 
+<<<<<<< Updated upstream
+=======
+        .movimientos-donaciones-grupo .lista-scroll-mascotas:has(tbody tr[data-id]:nth-child(3)) {
+            max-height: 23.5rem;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            padding-right: 8px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--tema-verde) var(--tema-verde-fondo);
+        }
+
+        .movimientos-donaciones-grupo .lista-scroll-mascotas::-webkit-scrollbar { width: 8px; }
+
+        .movimientos-donaciones-grupo .lista-scroll-mascotas::-webkit-scrollbar-track {
+            background: var(--tema-verde-fondo);
+            border-radius: 8px;
+        }
+
+        .movimientos-donaciones-grupo .lista-scroll-mascotas::-webkit-scrollbar-thumb {
+            background: var(--tema-verde);
+            border-radius: 8px;
+        }
+
+        .movimientos-pestanas .nav-link > span i { color: var(--tema-crema-tinta); }
+
+>>>>>>> Stashed changes
         .solicitudes-vacio > i {
             display: block;
             margin-bottom: 12px;
@@ -2571,6 +2613,10 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        #panel-mi-perfil .lista-scroll-donaciones {
+            max-height: min(420px, 55vh);
+        }
+
         #panel-mi-perfil .ficha-listado .dash-card-cabecera { margin-bottom: 8px; }
         #panel-mi-perfil .ficha-listado .dash-card-cabecera h3 { font-size: 16px; }
 
@@ -2780,7 +2826,7 @@
 
         .pagina-perfil #menu-perfil {
             display: none;
-            position: static;
+            position: fixed !important;
             flex-direction: column;
             gap: 24px;
             top: var(--header-height);
@@ -3016,7 +3062,12 @@
             .pagina-perfil #menu-perfil,
             .pagina-perfil:has(#menu-perfil-toggle:checked) #menu-perfil {
                 display: flex;
+                position: static !important;
+                grid-column: 1;
+                grid-row: 2;
+                align-self: start;
                 width: var(--perfil-nav-ancho);
+                min-height: calc(100vh - var(--header-height));
                 box-shadow: none;
             }
 

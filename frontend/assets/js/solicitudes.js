@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var lista = [];
     var pagina = 1;
     var porPagina = parseInt(panel.getAttribute('data-por-pagina'), 10);
+    var tipoPedido = panel.getAttribute('data-tipo') || '';
 
     if (isNaN(porPagina) || porPagina < 1) {
         porPagina = 0;
@@ -35,6 +36,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function normalizar(valor) {
         return texto(valor).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function urlDetalleSolicitud(solicitud) {
+        var tipo = normalizar(solicitud && solicitud.tipo_solicitud);
+
+        if (tipoPedido === 'adopcion' || tipo.indexOf('adopcion') !== -1) {
+            return 'adopcion_detalle.php';
+        }
+
+        return 'solicitudes_detalle.php';
     }
 
     function coincide(solicitud) {
@@ -180,10 +191,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 id: texto(solicitud.id),
                 solicitante: texto(solicitud.solicitante),
                 nombre_mascota: texto(solicitud.nombre_mascota),
-                especie: texto(solicitud.especie),
                 tipo_solicitud: texto(solicitud.tipo_solicitud),
-                estado_solicitud: texto(solicitud.estado_solicitud),
-                fecha_solicitud: fechaCorta(solicitud.fecha_solicitud)
+                estado_solicitud: texto(solicitud.estado_solicitud)
             };
 
             Object.keys(valores).forEach(function (campo) {
@@ -197,8 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var enlace = tr.querySelector('a');
 
             if (enlace) {
-                // le agrega el id al href
-                enlace.setAttribute('href', (enlace.getAttribute('href') || '') + '?id=' + encodeURIComponent(solicitud.id));
+                enlace.setAttribute('href', urlDetalleSolicitud(solicitud) + '?id=' + encodeURIComponent(solicitud.id));
             }
 
             cuerpo.appendChild(tr);
@@ -327,6 +335,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 solicitud.especie = especiesPorMascota[String(solicitud.id_mascota)] || '';
 
                 return solicitud;
+            }).filter(function (solicitud) {
+                if (!tipoPedido) {
+                    return true;
+                }
+
+                return normalizar(solicitud.tipo_solicitud).indexOf(normalizar(tipoPedido)) !== -1;
             });
             dibujar();
 
@@ -348,6 +362,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         agregarOpcion(filtroEstado, texto(estado.nombre_estado));
                     }
                 });
+            }
+
+            if (!resumen) {
+                return;
             }
 
             return apiRequest('tipos_solicitudes');

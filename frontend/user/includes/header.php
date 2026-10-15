@@ -53,24 +53,32 @@ $inicialPerfil = mb_strtoupper(mb_substr($usuarioPerfil['nombre'] ?? '', 0, 1));
 </header>
 
 <nav id="menu-perfil" class="position-fixed start-0 overflow-auto">
-    <ul role="tablist">
+    <ul>
         <li>
             <label for="menu-perfil-toggle">
-                <a href="#vista-datos" data-bs-toggle="tab" data-bs-target="#vista-datos"<?php echo $paginaPerfil === 'datos' ? ' class="active"' : ''; ?>>
+                <a href="mi_perfil.php"<?php echo $paginaPerfil === 'datos' ? ' class="active"' : ''; ?>>
                     <i class="bi bi-person"></i> Datos
                 </a>
             </label>
         </li>
         <li>
             <label for="menu-perfil-toggle">
+<<<<<<< Updated upstream
                 <a href="#vista-movimientos" data-bs-toggle="tab" data-bs-target="#vista-movimientos"<?php echo $paginaPerfil === 'movimientos' ? ' class="active"' : ''; ?>>
+=======
+                <a href="mis_movimientos.php"<?php echo $paginaPerfil === 'movimientos' ? ' class="active"' : ''; ?>>
+>>>>>>> Stashed changes
                     <i class="bi bi-cash-coin"></i> Mis donaciones
                 </a>
             </label>
         </li>
         <li>
             <label for="menu-perfil-toggle">
+<<<<<<< Updated upstream
                 <a href="#vista-solicitudes" data-bs-toggle="tab" data-bs-target="#vista-solicitudes"<?php echo $paginaPerfil === 'solicitudes' ? ' class="active"' : ''; ?>>
+=======
+                <a href="mis_solicitudes.php"<?php echo $paginaPerfil === 'solicitudes' ? ' class="active"' : ''; ?>>
+>>>>>>> Stashed changes
                     <i class="bi bi-file-earmark-text"></i> Mis solicitudes
                 </a>
             </label>

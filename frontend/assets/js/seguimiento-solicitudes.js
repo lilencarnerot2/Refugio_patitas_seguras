@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var modal = document.getElementById('modal-detalle-solicitud');
     var mensaje = raiz && raiz.querySelector('[data-mensaje-solicitudes]');
     var mensajeDetalle = modal && modal.querySelector('[data-mensaje-detalle]');
+    var btnFormulario = modal && modal.querySelector('[data-ver-formulario]');
+    var panelFormulario = modal && modal.querySelector('[data-formulario-completado]');
     var grupos = [];
     var abierta = null;
 
@@ -29,12 +31,21 @@ document.addEventListener('DOMContentLoaded', function () {
             var fila = evento.relatedTarget && evento.relatedTarget.closest('[data-id]');
 
             if (fila) {
-                abrirDetalle(fila.getAttribute('data-id'));
+                prepararModal(fila.getAttribute('data-id'));
             }
         });
 
         modal.addEventListener('hidden.bs.modal', function () {
             abierta = null;
+            resetFormularioModal();
+        });
+    }
+
+    if (btnFormulario) {
+        btnFormulario.addEventListener('click', function () {
+            if (abierta) {
+                cargarFormularioCompletado(abierta);
+            }
         });
     }
 
@@ -173,8 +184,10 @@ document.addEventListener('DOMContentLoaded', function () {
         return encontrada;
     }
 
-    function abrirDetalle(id) {
+    function prepararModal(id) {
         var datos = buscar(id);
+        var encabezado;
+        var resumen;
 
         if (!modal || !datos) {
             return;
@@ -182,28 +195,96 @@ document.addEventListener('DOMContentLoaded', function () {
 
         abierta = String(id);
         avisar(mensajeDetalle, null);
-        llenarCampos(modal, datos.item);
+        resetFormularioModal();
 
-        if (!datos.grupo.recurso) {
+        encabezado = modal.querySelector('.modal-header');
+        resumen = modal.querySelector('.seguimiento-estado');
+
+        if (encabezado) {
+            llenarCampos(encabezado, datos.item);
+        }
+
+        if (resumen) {
+            llenarCampos(resumen, datos.item);
+        }
+    }
+
+    function resetFormularioModal() {
+        if (panelFormulario) {
+            panelFormulario.hidden = true;
+            panelFormulario.querySelectorAll('[data-campo]').forEach(function (nodo) {
+                nodo.textContent = '';
+
+                if (nodo.classList.contains('estado-solicitud')) {
+                    nodo.removeAttribute('data-estado-solicitud');
+                }
+            });
+        }
+
+        if (btnFormulario) {
+            btnFormulario.hidden = false;
+            btnFormulario.disabled = false;
+        }
+
+        if (modal) {
+            modal.removeAttribute('data-cargando');
+        }
+    }
+
+    function cargarFormularioCompletado(id) {
+        var datos = buscar(id);
+
+        if (!modal || !datos || !datos.grupo.recurso) {
+            avisar(mensajeDetalle, { message: 'No encontramos el formulario de esta solicitud.' });
             return;
+        }
+
+        avisar(mensajeDetalle, null);
+
+        if (btnFormulario) {
+            btnFormulario.disabled = true;
         }
 
         modal.setAttribute('data-cargando', '1');
 
         apiRequest(datos.grupo.recurso, { parametros: { id_solicitud: id } })
             .then(function (respuesta) {
-                if (abierta === String(id)) {
-                    llenarCampos(modal, Object.assign({}, datoDe(respuesta), datos.item));
+                var mezcla;
+
+                if (abierta !== String(id)) {
+                    return;
+                }
+
+                mezcla = Object.assign({}, datoDe(respuesta), datos.item);
+
+                if (panelFormulario) {
+                    llenarCampos(panelFormulario, mezcla);
+                    panelFormulario.hidden = false;
+                }
+
+                if (btnFormulario) {
+                    btnFormulario.hidden = true;
                 }
             })
             .catch(function (error) {
                 if (abierta === String(id)) {
                     avisar(mensajeDetalle, error);
+
+                    if (btnFormulario) {
+                        btnFormulario.disabled = false;
+                    }
                 }
             })
             .then(function () {
-                modal.removeAttribute('data-cargando');
+                if (abierta === String(id) && modal) {
+                    modal.removeAttribute('data-cargando');
+                }
             });
+    }
+
+    function abrirDetalle(id) {
+        prepararModal(id);
+        cargarFormularioCompletado(id);
     }
 
     function abrirDesdeUrl() {
@@ -225,6 +306,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         bootstrap.Modal.getOrCreateInstance(modal).show(boton);
+
+        if (boton) {
+            abrirDetalle(datos.item.id);
+        }
     }
 
     function llenarCampos(contenedor, datos) {
@@ -264,7 +349,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (Array.isArray(valor)) {
-            return valor.map(textoDeItem).filter(Boolean).join(', ');
+            return valor.map(function (item) {
+                if (item && item.descripcion) {
+                    return String(item.descripcion);
+                }
+
+                if (item && item.nombre) {
+                    return String(item.nombre);
+                }
+
+                return textoDeItem(item);
+            }).filter(Boolean).join(', ');
         }
 
         if (nodo.getAttribute('data-formato') === 'fecha') {

@@ -46,7 +46,7 @@ $esSuperadministrador = esSuperadministrador();
             </details>
         </li>
         <li>
-            <a href="solicitudes.php"<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle'], true) ? ' class="active"' : ''; ?>>
+            <a href="solicitudes.php"<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle', 'adopcion_detalle'], true) ? ' class="active"' : ''; ?>>
                 <i class="bi bi-file-earmark-text"></i> Solicitudes
             </a>
         </li>

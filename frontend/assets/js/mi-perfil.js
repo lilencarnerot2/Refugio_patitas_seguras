@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    pedirNodos('.tab-pane.active [data-recurso]');
+    pedirNodos('[data-recurso]');
 
     function cerrarMenuMovil() {
         if (toggleMenu && window.matchMedia('(max-width: 992px)').matches) {
@@ -29,19 +29,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (menu) {
-        menu.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (tab) {
-            tab.addEventListener('shown.bs.tab', function (ev) {
-                var destino = ev.target.getAttribute('data-bs-target');
-
-                menu.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (otro) {
-                    if (otro === ev.target) {
-                        otro.classList.add('active');
-                    } else {
-                        otro.classList.remove('active');
-                    }
-                });
-                pedirNodos((destino || '') + ' [data-recurso]');
-                pintarAviso();
+        menu.querySelectorAll('a[href]').forEach(function (link) {
+            link.addEventListener('click', function () {
                 cerrarMenuMovil();
             });
         });
@@ -57,13 +46,13 @@ document.addEventListener('DOMContentLoaded', function () {
     function vistaDe(nodo) {
         var vista = nodo && nodo.closest('.tab-pane');
 
-        return (vista && vista.id) || 'vista-datos';
+        return (vista && vista.id) || vistaActual();
     }
 
     function vistaActual() {
         var vista = panel.querySelector('.tab-pane.active');
 
-        return (vista && vista.id) || 'vista-datos';
+        return (vista && vista.id) || 'datos';
     }
 
     function pintarAviso() {

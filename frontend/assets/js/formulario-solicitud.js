@@ -410,7 +410,22 @@ document.addEventListener('DOMContentLoaded', function () {
             var origen = formulario.elements[campo.getAttribute('data-min-desde') || ''];
             var minimo = origen && origen.value ? diaSiguiente(origen.value) : hoy;
 
-            campo.min = minimo > hoy ? minimo : hoy;
+            minimo = minimo > hoy ? minimo : hoy;
+            campo.min = minimo;
+
+            if (campo.value && campo.value < minimo) {
+                campo.value = minimo;
+            }
+
+            if (!campo.getAttribute('data-calendario-enlazado')) {
+                campo.setAttribute('data-calendario-enlazado', '1');
+                campo.addEventListener('focus', function () {
+                    reservarEspacioCalendario(campo);
+                });
+                campo.addEventListener('click', function () {
+                    reservarEspacioCalendario(campo);
+                });
+            }
         });
     }
 

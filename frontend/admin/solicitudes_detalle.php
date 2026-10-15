@@ -29,7 +29,7 @@ require __DIR__ . '/includes/header.php';
                     <span class="ficha-usuario-icono"><i class="bi bi-ui-checks"></i></span>
                     <h3>Formulario</h3>
                 </div>
-                <div id="cuerpo-formulario" class="formulario-detalle-scroll">
+                <div id="cuerpo-formulario" class="formulario-detalle-scroll overflow-auto">
                     <div id="campos-formulario" class="row g-3">
                         <div class="col-12">
                             <section class="form-seccion">

@@ -111,11 +111,11 @@ require __DIR__ . '/../public/includes/header.php';
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label class="form-label" for="disponibilidad_desde">Disponibilidad desde</label>
-                                            <input class="form-control" type="date" id="disponibilidad_desde" name="disponibilidad_desde" required data-min-hoy>
+                                            <input class="form-control" type="date" id="disponibilidad_desde" name="disponibilidad_desde" required data-min-hoy min="<?php echo date('Y-m-d'); ?>">
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="disponibilidad_hasta">Disponibilidad hasta</label>
-                                            <input class="form-control" type="date" id="disponibilidad_hasta" name="disponibilidad_hasta" required data-min-hoy data-min-desde="disponibilidad_desde">
+                                            <input class="form-control" type="date" id="disponibilidad_hasta" name="disponibilidad_hasta" required data-min-hoy data-min-desde="disponibilidad_desde" min="<?php echo date('Y-m-d'); ?>">
                                         </div>
                                     </div>
                                 </section>
