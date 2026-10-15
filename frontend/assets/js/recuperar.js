@@ -52,17 +52,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert(respuesta.message || 'Si el email está registrado, te enviamos un mail.');
             })
             .catch(function (error) {
-                const status = error.status || 0;
+                const status = (error && error.status) ? error.status : 0;
+                const mensaje = (error && error.message) ? error.message : '';
 
                 if (status === 409) {
                     alert('El proyecto todavía no tiene configurada la URL de reset. Contactá al administrador.');
                 } else if (status === 400) {
-                    alert(error.message || 'El email no es válido.');
+                    alert(mensaje || 'El email no es válido.');
                 } else if (status === 404) {
-                    // no revelanmos si existe el mail por seguridad
+                    // no revelamos si existe el mail por seguridad
                     alert('Si el email está registrado, te enviamos un mail.');
                 } else {
-                    alert(error.message || 'No se pudo procesar la solicitud.');
+                    alert(mensaje || 'No se pudo procesar la solicitud. Intentá de nuevo más tarde.');
                 }
             })
             .finally(function () {
@@ -72,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    //Flujo B: nueva contraseña
+    // Flujo B: nueva contraseña
     function inicializarFormularioPassword() {
         const boton = formPassword.querySelector('.btn-primary');
         if (!boton) {
@@ -109,14 +110,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.location.href = 'login.php?reset=ok';
             })
             .catch(function (error) {
-                const status = error.status || 0;
+                const status = (error && error.status) ? error.status : 0;
+                const mensaje = (error && error.message) ? error.message : '';
 
                 if (status === 400) {
                     alert('El token no sirve o ya venció. Pedí uno nuevo.');
                 } else if (status === 422) {
                     alert('La contraseña debe tener entre 8 y 72 caracteres.');
                 } else {
-                    alert(error.message || 'No se pudo cambiar la contraseña.');
+                    alert(mensaje || 'No se pudo cambiar la contraseña. Intentá de nuevo más tarde.');
                 }
             })
             .finally(function () {
