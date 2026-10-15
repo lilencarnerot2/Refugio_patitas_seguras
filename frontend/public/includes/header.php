@@ -30,7 +30,7 @@ $donar = '/public/donaciones.php';
                             <li><a href="<?php echo $catalogo; ?>#adopcion">ADOPTÁ</a></li>
                             <li><a href="<?php echo $catalogo; ?>">HOGAR DE TRÁNSITO</a></li>
                             <li><a href="<?php echo $requisitos; ?>">REQUISITOS</a></li>
-                            <li><a href="<?php echo $inicio; ?>#modal-voluntariado">SE VOLUNTARIO</a></li>
+                            <li><a href="/public/voluntariado.php">SE VOLUNTARIO</a></li>
                         </ul>
                     </details>
                 </li>

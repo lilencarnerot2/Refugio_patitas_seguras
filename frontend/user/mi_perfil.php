@@ -54,34 +54,88 @@ require __DIR__ . '/includes/header.php';
             </div>
 
             <div class="tab-pane fade<?php echo $paginaPerfil === 'movimientos' ? ' show active' : ''; ?>" id="vista-movimientos" role="tabpanel">
-                <article class="info-card ficha-compacta ficha-ancha ficha-listado h-auto" data-por-pagina="5">
-                    <div class="dash-card-cabecera">
-                        <span class="ficha-usuario-icono"><i class="bi bi-list-ul"></i></span>
-                        <h3>Mis movimientos</h3>
+                <div id="seguimiento-movimientos" class="seguimiento-movimientos">
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-4">
+                            <div class="card contador-solicitudes border-0 rounded-4 h-100">
+                                <div class="card-body d-flex align-items-center gap-3">
+                                    <span class="contador-icono rounded-circle d-inline-flex align-items-center justify-content-center"><i class="bi bi-list-check"></i></span>
+                                    <div>
+                                        <strong class="d-block fs-4" data-contador-total>0</strong>
+                                        <span class="small d-block">Movimientos registrados</span>
+                                        <small class="text-body-secondary">en total</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="card contador-solicitudes border-0 rounded-4 h-100">
+                                <div class="card-body d-flex align-items-center gap-3">
+                                    <span class="contador-icono rounded-circle d-inline-flex align-items-center justify-content-center"><i class="bi bi-cash-stack"></i></span>
+                                    <div>
+                                        <strong class="d-block fs-4" data-contador-dinero>0</strong>
+                                        <span class="small d-block">Aportes en dinero</span>
+                                        <small class="text-body-secondary">registrados</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="card contador-solicitudes border-0 rounded-4 h-100">
+                                <div class="card-body d-flex align-items-center gap-3">
+                                    <span class="contador-icono rounded-circle d-inline-flex align-items-center justify-content-center"><i class="bi bi-box-seam"></i></span>
+                                    <div>
+                                        <strong class="d-block fs-4" data-contador-insumos>0</strong>
+                                        <span class="small d-block">Aportes en especie</span>
+                                        <small class="text-body-secondary">registrados</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <p class="mensaje-formulario" data-aviso></p>
-                    <div class="lista-scroll-mascotas overflow-auto">
-                        <table class="dash-tabla">
-                            <thead>
-                                <tr id="cabecera-movimientos"></tr>
-                            </thead>
-                            <tbody id="cuerpo-movimientos" data-recurso="movimientos"></tbody>
-                        </table>
-                    </div>
-                    <nav class="paginador" data-paginador aria-label="Paginación" hidden>
-                        <ul class="pagination">
-                            <li class="page-item">
-                                <a class="page-link" data-pagina-anterior href="#vista-movimientos" aria-label="Página anterior"><i class="bi bi-chevron-left"></i></a>
-                            </li>
-                            <li class="page-item" data-pagina-modelo hidden>
-                                <button type="button" class="page-link"></button>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" data-pagina-siguiente href="#vista-movimientos" aria-label="Página siguiente"><i class="bi bi-chevron-right"></i></a>
-                            </li>
-                        </ul>
-                    </nav>
-                </article>
+
+                    <h3 class="perfil-titulo h4 mb-3">Mis movimientos de donaciones</h3>
+                    <p class="mensaje-formulario" data-mensaje-movimientos role="status"></p>
+
+                    <article class="card solicitudes-grupo movimientos-donaciones-grupo border-0 rounded-4 shadow-sm" data-por-pagina="5" data-total="0">
+                        <div class="card-body p-4">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                                <h4 class="h5 mb-0 d-flex align-items-center gap-2"><i class="bi bi-folder2"></i> Historial de aportes</h4>
+                                <span class="badge rounded-pill solicitudes-cantidad"><span data-cantidad>0</span> <span class="cantidad-plural">movimientos</span><span class="cantidad-singular">movimiento</span></span>
+                            </div>
+
+                            <div class="solicitudes-vacio text-center rounded-4 p-4">
+                                <i class="bi bi-inbox"></i>
+                                <p class="fw-semibold mb-1">Todavía no registraste donaciones.</p>
+                                <p class="small text-body-secondary mb-3">Cuando cargues un aporte en el sitio, lo vas a ver acá.</p>
+                                <a class="btn btn-outline-success btn-sm rounded-pill px-3" href="/public/donaciones.php">Ir a donaciones <i class="bi bi-chevron-right"></i></a>
+                            </div>
+
+                            <div class="lista-scroll-mascotas overflow-auto mt-3">
+                                <table class="dash-tabla mb-0">
+                                    <thead>
+                                        <tr id="cabecera-movimientos-perfil"></tr>
+                                    </thead>
+                                    <tbody id="cuerpo-movimientos-perfil"></tbody>
+                                </table>
+                            </div>
+
+                            <nav class="paginador mt-3" data-paginador aria-label="Paginación de movimientos" hidden>
+                                <ul class="pagination justify-content-center mb-0">
+                                    <li class="page-item">
+                                        <a class="page-link" data-pagina-anterior href="#vista-movimientos" aria-label="Página anterior"><i class="bi bi-chevron-left"></i></a>
+                                    </li>
+                                    <li class="page-item" data-pagina-modelo hidden>
+                                        <button type="button" class="page-link"></button>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" data-pagina-siguiente href="#vista-movimientos" aria-label="Página siguiente"><i class="bi bi-chevron-right"></i></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </article>
+                </div>
             </div>
 
             <div class="tab-pane fade<?php echo $paginaPerfil === 'solicitudes' ? ' show active' : ''; ?>" id="vista-solicitudes" role="tabpanel">
@@ -289,6 +343,7 @@ require __DIR__ . '/includes/header.php';
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/aportes.js"></script>
 <script src="../assets/js/mi-perfil.js"></script>
+<script src="../assets/js/mis-movimientos-perfil.js"></script>
 <script src="../assets/js/seguimiento-solicitudes.js"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>
