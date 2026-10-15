@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function cargarListado() {
         if (mensaje) {
-            mensaje.textContent = '';
+            avisoDeApi(mensaje, '');
         }
 
         apiRequest('usuarios').then(function (respuesta) {
@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dibujar();
         }).catch(function (error) {
             if (mensaje) {
-                mensaje.textContent = mensajeDeApi(error);
+                avisoDeApi(mensaje, error);
             }
         });
     }
@@ -352,12 +352,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then(function (respuesta) {
             return cargarListado().then(function () {
                 if (mensaje) {
-                    mensaje.textContent = mensajeDeApi(respuesta);
+                    avisoDeApi(mensaje, respuesta);
                 }
             });
         }).catch(function (error) {
             if (mensaje) {
-                mensaje.textContent = mensajeDeApi(error);
+                avisoDeApi(mensaje, error);
             }
         });
     });

@@ -187,7 +187,7 @@ SELECT
     'pequeño',
     '2023-11-05',
     'Es sociable, juguetón y disfruta de los espacios tranquilos.',
-    'image.png',
+    'https://images.unsplash.com/photo-1592194996308-7b43878e84a6',
     TRUE
 FROM especies e
 JOIN razas r

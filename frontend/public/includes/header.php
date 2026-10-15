@@ -57,7 +57,7 @@ $donar = '/public/donaciones.php';
                     <a class="btn-outline" href="/user/mi_perfil.php">MI PERFIL</a>
                     <?php } ?>
                     <?php if ($autenticado) { ?>
-                    <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>
+                    <a class="btn-outline" href="<?php echo $salir; ?>" role="button" data-bs-toggle="modal" data-bs-target="#modal-salir">SALIR</a>
                     <?php } ?>
                     <a class="btn-donate" href="<?php echo $donar; ?>">
                         <i class="bi bi-heart-fill"></i> DONAR
@@ -76,7 +76,7 @@ $donar = '/public/donaciones.php';
             <a class="btn-outline" href="/user/mi_perfil.php">MI PERFIL</a>
             <?php } ?>
             <?php if ($autenticado) { ?>
-            <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>
+            <a class="btn-outline" href="<?php echo $salir; ?>" role="button" data-bs-toggle="modal" data-bs-target="#modal-salir">SALIR</a>
             <?php } ?>
             <a class="btn-donate" href="<?php echo $donar; ?>">
                 <i class="bi bi-heart-fill"></i> DONAR
@@ -87,3 +87,4 @@ $donar = '/public/donaciones.php';
             </label>
         </div>
     </header>
+<?php if ($autenticado) { require __DIR__ . '/modal_salir.php'; } ?>

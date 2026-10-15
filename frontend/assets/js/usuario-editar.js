@@ -57,7 +57,7 @@ function cargarUsuario(id) {
         })
         .catch(function (error) {
             if (mensaje) {
-                mensaje.textContent = mensajeDeApi(error);
+                avisoDeApi(mensaje, error);
             }
         });
 }
@@ -97,13 +97,13 @@ if (formulario && selectUsuario) {
         })
         .catch(function (error) {
             if (mensaje) {
-                mensaje.textContent = mensajeDeApi(error);
+                avisoDeApi(mensaje, error);
             }
         });
 
     selectUsuario.addEventListener('change', function () {
         if (mensaje) {
-            mensaje.textContent = '';
+            avisoDeApi(mensaje, '');
         }
 
         cargarUsuario(selectUsuario.value);
@@ -113,7 +113,7 @@ if (formulario && selectUsuario) {
         evento.preventDefault();
 
         if (mensaje) {
-            mensaje.textContent = '';
+            avisoDeApi(mensaje, '');
         }
 
         if (!selectUsuario.value) {
@@ -134,7 +134,7 @@ if (formulario && selectUsuario) {
         })
             .then(function (respuesta) {
                 if (mensaje) {
-                    mensaje.textContent = mensajeDeApi(respuesta);
+                    avisoDeApi(mensaje, respuesta);
                 }
 
                 if (respuesta.data) {
@@ -147,7 +147,7 @@ if (formulario && selectUsuario) {
             })
             .catch(function (error) {
                 if (mensaje) {
-                    mensaje.textContent = mensajeDeApi(error);
+                    avisoDeApi(mensaje, error);
                 }
             });
     });

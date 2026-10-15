@@ -52,7 +52,7 @@ $opciones = [
         'method' => $metodo,
         'header' => implode("\r\n", $headers),
         'ignore_errors' => true,
-        'timeout' => 15
+        'timeout' => 60
     ]
 ];
 

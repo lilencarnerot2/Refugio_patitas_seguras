@@ -55,8 +55,15 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(cargarCatalogos)
         .then(cargarListas)
         .then(function () {
+            var idMascota = formulario.elements.id_mascota && formulario.elements.id_mascota.value;
+
             if (acceso) {
                 acceso.removeAttribute('data-estado');
+            }
+
+            if (acceso && !idMascota && document.getElementById('sin-mascota')) {
+                acceso.setAttribute('data-estado', 'sin-mascota');
+                return;
             }
 
             if (bloque) {
@@ -64,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             aplicarDependencias();
+            aplicarFechasMinimas();
             ponerBotonesLimpiar(formulario);
         })
         .catch(function (error) {
@@ -141,6 +149,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (campo.name === 'tiene_patio' || campo.name === 'tiene_mascotas') {
             aplicarDependencias();
         }
+
+        if (campo.type === 'date') {
+            aplicarFechasMinimas();
+        }
     });
 
     formulario.addEventListener('change', function (evento) {
@@ -148,6 +160,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (evento.target.name === 'tiene_patio' || evento.target.name === 'tiene_mascotas') {
             aplicarDependencias();
+        }
+
+        if (evento.target.type === 'date') {
+            aplicarFechasMinimas();
         }
 
         if (origen) {
@@ -371,6 +387,50 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function fechaDeHoy() {
+        var hoy = new Date();
+
+        hoy.setMinutes(hoy.getMinutes() - hoy.getTimezoneOffset());
+
+        return hoy.toISOString().slice(0, 10);
+    }
+
+    function diaSiguiente(fecha) {
+        var dia = new Date(fecha + 'T00:00:00Z');
+
+        dia.setUTCDate(dia.getUTCDate() + 1);
+
+        return dia.toISOString().slice(0, 10);
+    }
+
+    function aplicarFechasMinimas() {
+        var hoy = fechaDeHoy();
+
+        formulario.querySelectorAll('input[type="date"][data-min-hoy]').forEach(function (campo) {
+            var origen = formulario.elements[campo.getAttribute('data-min-desde') || ''];
+            var minimo = origen && origen.value ? diaSiguiente(origen.value) : hoy;
+
+            campo.min = minimo > hoy ? minimo : hoy;
+        });
+    }
+
+    function limpiarFormulario() {
+        var lista = document.getElementById('lista-mascotas-hogar');
+
+        formulario.reset();
+
+        while (lista && lista.firstChild) {
+            lista.removeChild(lista.firstChild);
+        }
+
+        formulario.querySelectorAll('select[data-carga]').forEach(function (select) {
+            cargarHijo(select);
+        });
+
+        aplicarDependencias();
+        aplicarFechasMinimas();
+    }
+
     function aplicarDependencias() {
         var patio = formulario.elements.tiene_patio;
         var metros = formulario.elements.metros_cuadrados_patio;
@@ -449,6 +509,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     textoOpcion = opcion.querySelector('[data-texto]');
                     entrada.name = nombre;
                     entrada.value = String(item.id);
+                    entrada.required = caja.hasAttribute('data-requerido');
                     textoOpcion.textContent = nombreDeItem(item);
                     caja.appendChild(opcion);
                 });
@@ -559,7 +620,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function validar() {
+        var lista = document.getElementById('lista-mascotas-hogar');
+        var tieneMascotas = formulario.elements.tiene_mascotas && formulario.elements.tiene_mascotas.checked;
+
         mostrarAviso(mensaje, '');
+
+        if (tieneMascotas && lista && !lista.children.length) {
+            agregarMascotaHogar();
+        }
 
         if (typeof formulario.checkValidity === 'function' && !formulario.checkValidity()) {
             if (typeof formulario.reportValidity === 'function') {
@@ -574,6 +642,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function enviar() {
         var cuerpo;
+        var boton = formulario.querySelector('[type="submit"]');
+        var idSolicitud = null;
 
         if (!validar()) {
             return;
@@ -581,14 +651,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         cuerpo = cuerpoDelFormulario();
 
+        if (boton) {
+            boton.disabled = true;
+        }
+
         apiRequest('solicitudes', { metodo: 'POST', cuerpo: cuerpo })
             .then(function (respuesta) {
                 var solicitud = (respuesta && respuesta.data) || {};
+                var recurso = formulario.getAttribute('data-recurso');
 
                 mostrarAviso(mensaje, respuesta, true);
+                idSolicitud = solicitud.id;
                 cuerpo.id_solicitud = solicitud.id;
-
-                var recurso = formulario.getAttribute('data-recurso');
 
                 if (!recurso) {
                     return respuesta;
@@ -599,18 +673,73 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(function (respuesta) {
                 mostrarAviso(mensaje, respuesta, true);
 
-                if (!formulario.elements.id_provincia && !formulario.elements.valor) {
-                    return respuesta;
-                }
-
-                return apiRequest('domicilios', { metodo: 'POST', cuerpo: cuerpo }).catch(function (error) {
-                    mostrarAviso(mensaje, error);
-                }).then(function () {
-                    return apiRequest('contactos', { metodo: 'POST', cuerpo: cuerpo });
-                });
+                return guardarDomicilioYContacto(cuerpo);
+            })
+            .then(function () {
+                avisarEnvio(idSolicitud);
+                limpiarFormulario();
             })
             .catch(function (error) {
                 mostrarAviso(mensaje, error);
+            })
+            .then(function () {
+                if (boton) {
+                    boton.disabled = false;
+                }
             });
+    }
+
+    function guardarDomicilioYContacto(cuerpo) {
+        var fallo = null;
+        var pedido = Promise.resolve();
+
+        function guardar(pedirGuardado) {
+            pedido = pedido.then(pedirGuardado).catch(function (error) {
+                fallo = fallo || error;
+            });
+        }
+
+        if (cuerpo.id_provincia) {
+            guardar(function () {
+                return apiRequest('domicilios', { metodo: 'PUT', cuerpo: cuerpo })
+                    .catch(function (error) {
+                        if (error && error.status === 404) {
+                            return apiRequest('domicilios', { metodo: 'POST', cuerpo: cuerpo });
+                        }
+
+                        throw error;
+                    });
+            });
+        }
+
+        if (cuerpo.valor) {
+            guardar(function () {
+                return apiRequest('contactos', { metodo: 'POST', cuerpo: cuerpo });
+            });
+        }
+
+        return pedido.then(function () {
+            if (fallo) {
+                throw fallo;
+            }
+        });
+    }
+
+    function avisarEnvio(idSolicitud) {
+        var enviada = document.getElementById('solicitud-enviada');
+        var enlace = enviada && enviada.querySelector('a[data-param]');
+        var url;
+
+        if (!enviada) {
+            return;
+        }
+
+        if (enlace && idSolicitud) {
+            url = new URL(enlace.getAttribute('href'), window.location.href);
+            url.searchParams.set(enlace.getAttribute('data-param'), idSolicitud);
+            enlace.href = url.toString();
+        }
+
+        acceso.setAttribute('data-estado', 'enviada');
     }
 });

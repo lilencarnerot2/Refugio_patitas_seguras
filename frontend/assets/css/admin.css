@@ -1,12 +1,8 @@
-html {
-    scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 .admin-page #panel-solicitudes,
 .admin-page #panel-usuarios,
-.admin-page #panel-mascotas {
-    scroll-margin-top: calc(var(--header-height) + 12px);
-}
+.admin-page #panel-mascotas { scroll-margin-top: calc(var(--header-height) + 12px); }
 
 .admin-page nav > ul {
     display: flex;
@@ -21,10 +17,11 @@ html {
 
 .admin-page .logo-text h1 {
     margin: 0;
+    white-space: nowrap;
 }
 
 .admin-page .logo-icon {
-    background: var(--bg-cream);
+    background: var(--tema-verde-suave);
     border-radius: 50%;
     padding: 8px;
     display: flex;
@@ -41,24 +38,26 @@ html {
 }
 
 .admin-page .logo-text h1,
-.admin-page .logo-text span,
-.admin-page header .menu-toggle,
-.admin-page nav a,
-.admin-page nav summary {
-    color: var(--white);
-}
+.admin-page header .menu-toggle { color: var(--primary-color); }
 
-.admin-page .logo-text span {
-    color: var(--footer-muted);
-}
+.admin-page nav a,
+.admin-page nav summary { color: var(--text-dark); }
+
+.admin-page nav a i,
+.admin-page nav summary i,
+.admin-page nav summary .icono-pata { color: var(--primary-color); }
+
+.admin-page .logo-text span { color: var(--text-soft); }
 
 .admin-page header .btn-outline {
-    border-color: var(--bg-cream);
-    color: var(--bg-cream);
+    border-color: var(--tema-verde);
+    color: var(--primary-color);
 }
 
+.admin-page header .btn-outline:hover { background: var(--tema-verde-suave); }
+
 .admin-page header .btn-primary {
-    background: var(--bg-cream);
+    background: var(--tema-verde-suave);
     color: var(--primary-color);
 }
 
@@ -85,23 +84,19 @@ html {
     padding: 4px;
     display: inline-flex;
     align-items: center;
-    color: var(--white);
+    color: var(--primary-color);
     font-size: 22px;
     cursor: pointer;
 }
 
-.admin-page .menu-cerrar {
-    display: none;
-}
+.admin-page .menu-cerrar { display: none; }
 
 .admin-page:has(#menu-admin-toggle:checked) .menu-abrir {
     display: none;
     pointer-events: none;
 }
 
-.admin-page:has(#menu-admin-toggle:checked) .menu-cerrar {
-    display: inline-flex;
-}
+.admin-page:has(#menu-admin-toggle:checked) .menu-cerrar { display: inline-flex; }
 
 .admin-page header {
     grid-column: 1 / -1;
@@ -116,25 +111,20 @@ html {
     max-width: 100%;
     min-width: 0;
     min-height: var(--header-height);
-    background: var(--primary-color);
-    border-bottom: none;
+    background: var(--white);
+    border-bottom: 1px solid var(--tema-verde-suave);
+    box-shadow: 0 2px 12px rgba(47, 107, 69, 0.06);
     padding-left: 24px;
     padding-right: 24px;
     z-index: 1100;
 }
 
-.admin-page header .menu-botones {
-    justify-self: start;
-}
+.admin-page header .menu-botones { justify-self: start; }
 
 .admin-page .logo-container {
     justify-self: center;
     flex: none;
     min-width: 0;
-}
-
-.admin-page .logo-text h1 {
-    white-space: nowrap;
 }
 
 .admin-page .header-actions {
@@ -149,9 +139,7 @@ html {
 
 .admin-page .header-actions .btn-outline,
 .admin-page .header-actions .btn-primary,
-.admin-page .menu-abrir {
-    display: inline-flex;
-}
+.admin-page .menu-abrir { display: inline-flex; }
 
 .admin-page #menu-admin {
     display: none;
@@ -162,16 +150,15 @@ html {
     grid-row: 2;
     width: 100%;
     scrollbar-width: none;
-    background: color-mix(in srgb, var(--primary-color) 75%, var(--bg-cream));
+    background: var(--white);
     padding: 10px 8px;
     border-bottom: none;
+    border-right: 1px solid var(--border-light);
     box-shadow: none;
     z-index: 1050;
 }
 
-.admin-page #menu-admin::-webkit-scrollbar {
-    display: none;
-}
+.admin-page #menu-admin::-webkit-scrollbar { display: none; }
 
 .admin-page:has(#menu-admin-toggle:checked) #menu-admin {
     display: flex;
@@ -194,13 +181,8 @@ html {
 }
 
 @media (min-width: 993px) {
-    .admin-page {
-        --admin-nav-ancho: 13rem;
-    }
-
-    .admin-page:has(#menu-admin-toggle:checked) {
-        grid-template-columns: var(--admin-nav-ancho) minmax(0, 1fr);
-    }
+    .admin-page { --admin-nav-ancho: 13rem; }
+    .admin-page:has(#menu-admin-toggle:checked) { grid-template-columns: var(--admin-nav-ancho) minmax(0, 1fr); }
 
     .admin-page:has(#menu-admin-toggle:checked) #menu-admin {
         display: flex;
@@ -214,9 +196,7 @@ html {
         z-index: 1080;
     }
 
-    .admin-page:has(#menu-admin-toggle:checked) section {
-        grid-column: 2;
-    }
+    .admin-page:has(#menu-admin-toggle:checked) section { grid-column: 2; }
 }
 
 @media (max-width: 992px) {
@@ -236,57 +216,17 @@ html {
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
     }
 
-    .admin-page:has(#menu-admin-toggle:checked) section {
-        grid-column: 1;
-    }
-
-    .admin-page:has(#menu-admin-toggle:checked) footer {
-        margin-left: 0;
-    }
-
-    .admin-page nav > ul {
-        gap: 0;
-    }
-
-    .admin-page nav > ul > li {
-        border-bottom: 1px solid #eee;
-    }
-
-    .admin-page nav a,
-    .admin-page nav summary {
-        color: var(--text-dark);
-        background: transparent;
-        border-radius: 0;
-        padding: 10px 16px;
-        font-size: 12px;
-        font-weight: 500;
-        letter-spacing: 0.3px;
-        text-transform: uppercase;
-        white-space: normal;
-        overflow-wrap: break-word;
-        word-break: normal;
-    }
-
-    .admin-page nav a.active,
-    .admin-page nav a:hover,
-    .admin-page nav summary.active,
-    .admin-page nav summary:hover {
-        background: #f7f7f7;
-        color: var(--primary-color);
-    }
+    .admin-page:has(#menu-admin-toggle:checked) section { grid-column: 1; }
+    .admin-page:has(#menu-admin-toggle:checked) footer { margin-left: 0; }
+    .admin-page nav > ul { gap: 0; }
 
     .admin-page nav details a {
-        padding: 8px 16px 8px 28px;
         font-size: 12px;
-        background: #f7f7f7;
-        color: var(--text-dark);
         text-transform: none;
     }
 
     .admin-page nav details[open] > a.active,
-    .admin-page nav details a:hover {
-        color: var(--primary-color);
-    }
+    .admin-page nav details a:hover { color: var(--primary-color); }
 
     .admin-page nav > ul > li.nav-sitio,
     .admin-page nav > ul > li.nav-salir {
@@ -298,23 +238,10 @@ html {
     .admin-page nav > ul > li.nav-salir a {
         justify-content: center;
         border: 2px solid var(--primary-color);
-        border-radius: 999px;
-        color: var(--primary-color);
-        background: transparent;
         text-transform: uppercase;
     }
 
-    .admin-page nav > ul > li.nav-salir {
-        padding-bottom: 8px;
-    }
-}
-
-.admin-page #mensaje-panel {
-    margin-top: 0;
-}
-
-.admin-page #mensaje-panel:empty {
-    display: none;
+    .admin-page nav > ul > li.nav-salir { padding-bottom: 8px; }
 }
 
 .admin-page nav > ul > li {
@@ -342,6 +269,7 @@ html {
     white-space: normal;
     overflow-wrap: break-word;
     word-break: keep-all;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
 .admin-page nav summary {
@@ -350,9 +278,7 @@ html {
 }
 
 .admin-page nav summary::-webkit-details-marker,
-.admin-page nav summary::marker {
-    display: none;
-}
+.admin-page nav summary::marker { display: none; }
 
 .admin-page footer {
     grid-column: 1 / -1;
@@ -362,17 +288,18 @@ html {
 }
 
 @media (min-width: 993px) {
-    .admin-page:has(#menu-admin-toggle:checked) footer {
-        margin-left: var(--admin-nav-ancho);
-    }
+    .admin-page:has(#menu-admin-toggle:checked) footer { margin-left: var(--admin-nav-ancho); }
 }
 
 .admin-page nav a.active,
 .admin-page nav a:hover,
+.admin-page nav a:focus-visible,
+.admin-page nav a:active,
 .admin-page nav summary.active,
-.admin-page nav summary:hover {
-    background: var(--primary-color);
-    color: var(--bg-cream);
+.admin-page nav summary:hover,
+.admin-page nav summary:focus-visible {
+    background: var(--tema-verde-suave);
+    color: var(--primary-color);
 }
 
 .admin-page nav details a {
@@ -387,17 +314,31 @@ html {
 }
 
 .admin-page nav > ul > li.nav-sitio,
-.admin-page nav > ul > li.nav-salir {
-    display: none;
-}
+.admin-page nav > ul > li.nav-salir,
+.admin-page .mensaje-formulario:empty { display: none; }
 
 .admin-page .formulario-mascota {
     max-width: 860px;
     margin: 0 auto;
     background: var(--white);
+    border: 1px solid var(--tema-crema-claro-borde);
     border-radius: 15px;
     padding: 28px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--sombra-flotante);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.admin-page .formulario-mascota:focus-within {
+    box-shadow: var(--sombra-flotante-alta);
+    transform: translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-page .formulario-mascota,
+    .admin-page .formulario-mascota:focus-within {
+        transition: none;
+        transform: none;
+    }
 }
 
 .admin-page .formulario-mascota .form-control,
@@ -420,28 +361,12 @@ html {
 .admin-page .mensaje-formulario {
     margin-top: 18px;
     font-size: 14px;
-    color: var(--primary-color);
 }
 
-.admin-page .mensaje-formulario:empty {
-    display: none;
-}
+.admin-page #castracion-estado[data-estado="ok"] { color: var(--primary-color); }
 
-.admin-page .mensaje-formulario.is-ok,
-.admin-page #castracion-estado.is-ok,
-.admin-page .mensaje-formulario[data-estado="ok"],
-.admin-page #castracion-estado[data-estado="ok"] {
-    color: var(--primary-color);
-}
-
-.admin-page .mensaje-formulario.is-error,
-.admin-page #castracion-estado.is-error,
-.admin-page #panel-salud .empty-back-link.is-error,
-.admin-page .mensaje-formulario[data-estado="error"],
 .admin-page #castracion-estado[data-estado="error"],
-.admin-page #panel-salud .empty-back-link[data-estado="error"] {
-    color: var(--bs-danger);
-}
+.admin-page #panel-salud .empty-back-link[data-estado="error"] { color: var(--bs-danger); }
 
 .admin-page .acciones-formulario {
     display: flex;
@@ -457,17 +382,9 @@ html {
     margin: 0 0 28px;
 }
 
-.admin-page .dash-fila-tres {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.admin-page .dash-fila-dos {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.admin-page .dash-fila > .info-card {
-    height: 100%;
-}
+.admin-page .dash-fila-tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.admin-page .dash-fila-dos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.admin-page .dash-fila > .info-card { height: 100%; }
 
 .admin-page .dash-kpi {
     display: flex;
@@ -526,22 +443,10 @@ html {
 .admin-page .dash-torta-seg.seg-6 { stroke: var(--dash-torta-6); }
 .admin-page .dash-torta-seg.seg-7 { stroke: var(--dash-torta-7); }
 .admin-page .dash-torta-seg.seg-8 { stroke: var(--dash-torta-8); }
-
-.admin-page .dash-leyenda [data-leyenda="pct"]::after {
-    content: "%";
-}
-
-.admin-page .dash-leyenda [data-leyenda="cantidad"]::before {
-    content: " (";
-}
-
-.admin-page .dash-leyenda [data-leyenda="cantidad"]::after {
-    content: ")";
-}
-
-.admin-page #panel-dashboard .dash-leyenda li:not([data-cantidad]) {
-    display: none;
-}
+.admin-page .dash-leyenda [data-leyenda="pct"]::after { content: "%"; }
+.admin-page .dash-leyenda [data-leyenda="cantidad"]::before { content: " ("; }
+.admin-page .dash-leyenda [data-leyenda="cantidad"]::after { content: ")"; }
+.admin-page #panel-dashboard .dash-leyenda li:not([data-cantidad]) { display: none; }
 
 .admin-page .dash-torta-caja {
     position: relative;
@@ -550,9 +455,7 @@ html {
     flex-shrink: 0;
 }
 
-.admin-page .dash-torta-caja .dash-torta-svg {
-    display: block;
-}
+.admin-page .dash-torta-caja .dash-torta-svg { display: block; }
 
 .admin-page .dash-torta-caja .dash-kpi-numero {
     position: absolute;
@@ -568,49 +471,22 @@ html {
     stroke-width: 6;
 }
 
-.admin-page #panel-salud .resumen-fichas [id$="-pct"]::after {
-    content: "%";
-}
+.admin-page #panel-salud .resumen-fichas [id$="-pct"]::after,
+.admin-page #panel-salud .dash-kpi-numero #texto-fichas-pct::after { content: "%"; }
 
-.admin-page #panel-salud .dash-kpi-numero #texto-fichas-pct::after {
-    content: "%";
-}
-
-.admin-page .dash-donut-fondo {
-    stroke: var(--icon-bg);
-}
-
-.admin-page .dash-donut-valor {
-    stroke: var(--accent-color);
-}
-
-.admin-page #resumen-solicitudes .info-card:not(:has(h3[data-texto])):nth-child(n+4) {
-    display: none;
-}
-
-.admin-page #resumen-solicitudes .info-card h3 {
-    margin: 0 0 16px;
-}
-
-.admin-page #resumen-solicitudes .info-card h3[data-texto]::before {
-    content: attr(data-texto);
-}
-
-.admin-page #resumen-solicitudes .dash-kpi-numero[data-texto]::after {
-    content: attr(data-texto) "%";
-}
-
-.admin-page #resumen-solicitudes {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-}
+.admin-page .dash-donut-fondo { stroke: var(--icon-bg); }
+.admin-page .dash-donut-valor { stroke: var(--accent-color); }
+.admin-page #resumen-solicitudes .info-card:not(:has(h3[data-texto])):nth-child(n+4) { display: none; }
+.admin-page #resumen-solicitudes .info-card h3 { margin: 0 0 16px; }
+.admin-page #resumen-solicitudes .info-card h3[data-texto]::before { content: attr(data-texto); }
+.admin-page #resumen-solicitudes .dash-kpi-numero[data-texto]::after { content: attr(data-texto) "%"; }
+.admin-page #resumen-solicitudes { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 
 .admin-page #resumen-solicitudes .info-card:nth-child(3n+1) .dash-donut-valor {
     stroke: var(--primary-color);
 }
 
-.admin-page #resumen-solicitudes .info-card:nth-child(3n+2) .dash-donut-valor {
-    stroke: var(--accent-color);
-}
+.admin-page #resumen-solicitudes .info-card:nth-child(3n+2) .dash-donut-valor { stroke: var(--accent-color); }
 
 .admin-page #resumen-solicitudes .info-card:nth-child(3n+3) .dash-donut-valor {
     stroke: color-mix(in srgb, var(--primary-color) 40%, var(--accent-color));
@@ -648,14 +524,7 @@ html {
 .admin-page .dash-leyenda li:nth-child(6)::before { background: var(--dash-torta-6); }
 .admin-page .dash-leyenda li:nth-child(7)::before { background: var(--dash-torta-7); }
 .admin-page .dash-leyenda li:nth-child(8)::before { background: var(--dash-torta-8); }
-
-.admin-page .dash-leyenda li[data-cantidad="0"]::before {
-    background: var(--dash-torta-vacia);
-}
-
-.admin-page #panel-dashboard .info-card {
-    padding: 16px;
-}
+.admin-page .dash-leyenda li[data-cantidad="0"]::before { background: var(--dash-torta-vacia); }
 
 .admin-page #panel-dashboard .lista-scroll-mascotas {
     max-height: 240px;
@@ -733,9 +602,7 @@ html {
     margin-bottom: 8px;
 }
 
-.admin-page .dash-card-cabecera h3 {
-    margin-bottom: 0;
-}
+.admin-page .dash-card-cabecera h3 { margin-bottom: 0; }
 
 .admin-page .dash-card-cabecera .empty-back-link {
     margin-top: 0;
@@ -743,21 +610,10 @@ html {
     font-weight: 500;
 }
 
-.admin-page .dash-card-recientes {
-    padding: 16px 18px;
-}
-
-.admin-page #panel-dashboard .info-card {
-    padding: 18px;
-}
-
-.admin-page #panel-dashboard .dash-fila {
-    gap: 14px;
-}
-
-.admin-page #panel-dashboard #card-solicitudes-lista {
-    grid-column: 1 / -1;
-}
+.admin-page .dash-card-recientes { padding: 16px 18px; }
+.admin-page #panel-dashboard .info-card { padding: 18px; }
+.admin-page #panel-dashboard .dash-fila { gap: 14px; }
+.admin-page #panel-dashboard #card-solicitudes-lista { grid-column: 1 / -1; }
 
 /* Barra lateral para subir/bajar en Solicitudes recientes (CSS + Bootstrap overflow) */
 .admin-page #panel-dashboard #card-solicitudes-lista .lista-scroll-mascotas {
@@ -831,9 +687,7 @@ html {
     white-space: nowrap;
 }
 
-.admin-page #panel-dashboard #card-solicitudes-lista .dash-tabla tbody td {
-    padding: 8px 14px;
-}
+.admin-page #panel-dashboard #card-solicitudes-lista .dash-tabla tbody td { padding: 8px 14px; }
 
 .admin-page #panel-dashboard .dash-kpi {
     justify-content: center;
@@ -850,9 +704,7 @@ html {
     height: 96px;
 }
 
-.admin-page #panel-dashboard .dash-torta-caja .dash-kpi-numero {
-    font-size: 22px;
-}
+.admin-page #panel-dashboard .dash-torta-caja .dash-kpi-numero { font-size: 22px; }
 
 .admin-page #panel-dashboard .dash-kpi-numero {
     font-size: 26px;
@@ -878,89 +730,37 @@ html {
 }
 
 /* Títulos de las tarjetas del dashboard */
-.admin-page #card-solicitudes .dash-card-cabecera h3::before {
-    content: "Tipos de solicitud";
-}
-
-.admin-page #card-pendientes .dash-card-cabecera h3::before {
-    content: "Estados de solicitud";
-}
-
-.admin-page #card-mascotas .dash-card-cabecera h3::before {
-    content: "Mascotas";
-}
-
-.admin-page #card-mascotas-lista .dash-card-cabecera h3::before {
-    content: "Mascotas recientes";
-}
-
-.admin-page #card-donaciones .dash-card-cabecera h3::before {
-    content: "Donaciones";
-}
-
-.admin-page #card-solicitudes-lista .dash-card-cabecera h3::before {
-    content: "Solicitudes recientes";
-}
-
-.admin-page #panel-dashboard .dash-card-cabecera .empty-back-link::after {
-    content: "Ver más";
-}
+.admin-page #card-solicitudes .dash-card-cabecera h3::before { content: "Tipos de solicitud"; }
+.admin-page #card-pendientes .dash-card-cabecera h3::before { content: "Estados de solicitud"; }
+.admin-page #card-mascotas .dash-card-cabecera h3::before { content: "Mascotas"; }
+.admin-page #card-mascotas-lista .dash-card-cabecera h3::before { content: "Mascotas recientes"; }
+.admin-page #card-donaciones .dash-card-cabecera h3::before { content: "Donaciones"; }
+.admin-page #card-solicitudes-lista .dash-card-cabecera h3::before { content: "Solicitudes recientes"; }
+.admin-page #panel-dashboard .dash-card-cabecera .empty-back-link::after { content: "Ver más"; }
 
 /* Solo muestra los colores con datos */
 .admin-page #panel-dashboard .dash-leyenda li:empty,
-.admin-page #panel-dashboard .dash-leyenda li[data-cantidad="0"] {
-    display: none;
-}
+.admin-page #panel-dashboard .dash-leyenda li[data-cantidad="0"] { display: none; }
 
 /* Encabezados de las tablas recientes */
-.admin-page #panel-dashboard thead th[data-campo="id"]::before {
-    content: "Id";
-}
-
-.admin-page #panel-dashboard thead th[data-campo="nombre"]::before {
-    content: "Nombre";
-}
-
-.admin-page #panel-dashboard thead th[data-campo="especie"]::before {
-    content: "Especie";
-}
-
-.admin-page #panel-dashboard thead th[data-campo="raza"]::before {
-    content: "Raza";
-}
+.admin-page #panel-dashboard thead th[data-campo="id"]::before { content: "Id"; }
+.admin-page #panel-dashboard thead th[data-campo="nombre"]::before { content: "Nombre"; }
+.admin-page #panel-dashboard thead th[data-campo="especie"]::before { content: "Especie"; }
+.admin-page #panel-dashboard thead th[data-campo="raza"]::before { content: "Raza"; }
 
 .admin-page #panel-dashboard thead th[data-campo="fecha_nacimiento_estimada"]::before {
     content: "Fecha de nacimiento";
 }
 
-.admin-page #panel-dashboard thead th[data-campo="nombre_usuario"]::before {
-    content: "Nombre";
-}
-
-.admin-page #panel-dashboard thead th[data-campo="apellido_usuario"]::before {
-    content: "Apellido";
-}
-
-.admin-page #panel-dashboard thead th[data-campo="nombre_mascota"]::before {
-    content: "Mascota";
-}
-
-.admin-page #panel-dashboard thead th[data-campo="tipo_solicitud"]::before {
-    content: "Tipo";
-}
-
-.admin-page #panel-dashboard thead th[data-campo="estado_solicitud"]::before {
-    content: "Estado";
-}
-
-.admin-page #panel-dashboard thead th[data-campo="fecha_solicitud"]::before {
-    content: "Fecha";
-}
+.admin-page #panel-dashboard thead th[data-campo="nombre_usuario"]::before { content: "Nombre"; }
+.admin-page #panel-dashboard thead th[data-campo="apellido_usuario"]::before { content: "Apellido"; }
+.admin-page #panel-dashboard thead th[data-campo="nombre_mascota"]::before { content: "Mascota"; }
+.admin-page #panel-dashboard thead th[data-campo="tipo_solicitud"]::before { content: "Tipo"; }
+.admin-page #panel-dashboard thead th[data-campo="estado_solicitud"]::before { content: "Estado"; }
+.admin-page #panel-dashboard thead th[data-campo="fecha_solicitud"]::before { content: "Fecha"; }
 
 /* Tablas recientes legibles */
-.admin-page #panel-dashboard .dash-card-recientes .lista-scroll-mascotas {
-    overflow-x: auto;
-}
+.admin-page #panel-dashboard .dash-card-recientes .lista-scroll-mascotas { overflow-x: auto; }
 
 .admin-page #panel-dashboard .dash-card-recientes .dash-tabla {
     font-size: 12px;
@@ -1018,22 +818,11 @@ html {
 }
 
 .admin-page .dash-foto img:not([src]),
-.admin-page .dash-foto img[src=""] {
-    display: none;
-}
+.admin-page .dash-foto img[src=""] { display: none; }
 
-.admin-page #panel-salud .dash-tabla {
-    width: 100%;
-}
-
-.admin-page #panel-salud .dash-tabla td:last-child .is-error,
-.admin-page #panel-salud .dash-tabla td:last-child a[data-estado="error"] {
-    color: var(--bs-danger);
-}
-
-.admin-page #panel-salud .dash-tabla td:last-child a[data-estado="ok"] {
-    color: var(--primary-color);
-}
+.admin-page #panel-salud .dash-tabla { width: 100%; }
+.admin-page #panel-salud .dash-tabla td:last-child a[data-estado="error"] { color: var(--bs-danger); }
+.admin-page #panel-salud .dash-tabla td:last-child a[data-estado="ok"] { color: var(--primary-color); }
 
 .admin-page #panel-salud .dash-tabla td:last-child {
     white-space: normal;
@@ -1047,9 +836,7 @@ html {
 }
 
 .admin-page #bloques-ficha > .row > [class*="col-"],
-.admin-page #editar > [class*="col-"] {
-    display: flex;
-}
+.admin-page #editar > [class*="col-"] { display: flex; }
 
 .admin-page #bloques-ficha .info-card {
     display: flex;
@@ -1076,15 +863,11 @@ html {
     width: 100%;
 }
 
-.admin-page #editar .row.g-3 {
-    flex: 1;
-}
+.admin-page #editar .row.g-3 { flex: 1; }
 
 .admin-page #bloques-ficha .info-card p:empty,
 .admin-page #bloques-ficha .info-card ul:empty,
-.admin-page #bloques-ficha .info-card p:has(> span:empty) {
-    display: none;
-}
+.admin-page #bloques-ficha .info-card p:has(> span:empty) { display: none; }
 
 .admin-page #datos-mascota,
 .admin-page #ficha-usuario {
@@ -1101,14 +884,10 @@ html {
 }
 
 .admin-page #datos-mascota .dash-card-cabecera,
-.admin-page #ficha-usuario .dash-card-cabecera {
-    margin-bottom: 14px;
-}
+.admin-page #ficha-usuario .dash-card-cabecera { margin-bottom: 14px; }
 
 .admin-page #datos-mascota .pet-detail-meta,
-.admin-page #ficha-usuario .pet-detail-meta {
-    margin: 0;
-}
+.admin-page #ficha-usuario .pet-detail-meta { margin: 0; }
 
 .admin-page #datos-mascota .pet-detail-meta li,
 .admin-page #ficha-usuario .pet-detail-meta li {
@@ -1133,25 +912,11 @@ html {
     display: none;
 }
 
-.admin-page #ficha-usuario .pet-detail-meta li:has(#detalle-estado[data-estado]) {
-    display: grid;
-}
-
-.admin-page #bloques-ficha {
-    margin-top: 8px;
-}
-
-.admin-page #editar {
-    margin-top: 24px;
-}
-
-.admin-page #editar > .col-md-6:has(#formulario-castracion[hidden]) {
-    display: none;
-}
-
-.admin-page #bloque-crear-ficha:not([hidden]) ~ .col-md-6 .acciones-formulario {
-    display: none;
-}
+.admin-page #ficha-usuario .pet-detail-meta li:has(#detalle-estado[data-estado]) { display: grid; }
+.admin-page #bloques-ficha { margin-top: 8px; }
+.admin-page #editar { margin-top: 24px; }
+.admin-page #editar > .col-md-6:has(#formulario-castracion[hidden]) { display: none; }
+.admin-page #bloque-crear-ficha:not([hidden]) ~ .col-md-6 .acciones-formulario { display: none; }
 
 .admin-page #editar:has(#formulario-castracion[hidden]) > .col-md-6:has(#formulario-desparasitacion) {
     flex: 0 0 auto;
@@ -1176,14 +941,10 @@ html {
 }
 
 .admin-page #ficha-foto-vacia,
-.admin-page #usuario-foto-vacia {
-    background: var(--icon-bg);
-}
+.admin-page #usuario-foto-vacia { background: var(--icon-bg); }
 
 .admin-page #datos-mascota h3,
-.admin-page #ficha-usuario h3 {
-    font-size: 22px;
-}
+.admin-page #ficha-usuario h3 { font-size: 22px; }
 
 .admin-page #bloques-ficha .info-card h3 {
     font-size: 16px;
@@ -1191,9 +952,7 @@ html {
 }
 
 .admin-page #bloques-ficha .info-card p,
-.admin-page #bloques-ficha .info-card ul {
-    margin-bottom: 6px;
-}
+.admin-page #bloques-ficha .info-card ul { margin-bottom: 6px; }
 
 .admin-page #bloques-ficha .acciones-formulario {
     margin-top: auto;
@@ -1201,9 +960,7 @@ html {
 }
 
 @media (max-width: 1100px) {
-    .admin-page .acciones-formulario {
-        flex-direction: column;
-    }
+    .admin-page .acciones-formulario { flex-direction: column; }
 
     .admin-page .acciones-formulario .btn-primary,
     .admin-page .acciones-formulario .btn-outline {
@@ -1213,33 +970,20 @@ html {
 }
 
 @media (max-width: 992px) {
-    .admin-page .dash-fila-tres,
-    .admin-page .dash-fila-dos {
-        grid-template-columns: 1fr;
-    }
 
     .admin-page header {
         padding-left: 12px;
         padding-right: 12px;
     }
 
-    .admin-page .logo-text span {
-        display: none;
-    }
-
+    .admin-page .logo-text span,
     .admin-page .header-actions .btn-outline,
-    .admin-page .header-actions .btn-primary {
-        display: none;
-    }
+    .admin-page .header-actions .btn-primary { display: none; }
 
     .admin-page nav > ul > li.nav-sitio,
-    .admin-page nav > ul > li.nav-salir {
-        display: block;
-    }
+    .admin-page nav > ul > li.nav-salir { display: block; }
 
-    .admin-page .formulario-mascota {
-        padding: 20px 16px;
-    }
+    .admin-page .formulario-mascota { padding: 20px 16px; }
 
     .admin-page #datos-mascota,
     .admin-page #ficha-usuario {
@@ -1249,9 +993,7 @@ html {
         padding: 16px 18px;
     }
 
-    .admin-page .ficha-perfil-datos {
-        width: 100%;
-    }
+    .admin-page .ficha-perfil-datos { width: 100%; }
 
     .admin-page .ficha-foto-perfil {
         width: 120px;
@@ -1276,18 +1018,8 @@ html {
         column-gap: 10px;
     }
 
-    .admin-page #bloques-ficha .info-card {
-        height: auto;
-    }
-
-    .admin-page section {
-        padding-left: 16px;
-        padding-right: 16px;
-    }
-
-    .admin-page #panel-salud .dash-tabla td:last-child {
-        max-width: 12rem;
-    }
+    .admin-page #bloques-ficha .info-card { height: auto; }
+    .admin-page #panel-salud .dash-tabla td:last-child { max-width: 12rem; }
 
     .admin-page .info-card,
     .admin-page .formulario-mascota,
@@ -1299,10 +1031,7 @@ html {
     }
 
     .admin-page section .btn-primary,
-    .admin-page section .btn-outline {
-        min-width: 0;
-        max-width: 100%;
-    }
+    .admin-page section .btn-outline { max-width: 100%; }
 
     .admin-page .dash-kpi-numero {
         font-size: clamp(1.4rem, 6vw, 32px);
@@ -1323,17 +1052,9 @@ html {
         flex-shrink: 0;
     }
 
-    .admin-page .logo-text h1 {
-        font-size: clamp(12px, 4.5vw, 14px);
-    }
-
-    .admin-page .formulario-mascota {
-        padding: 16px 12px;
-    }
-
-    .admin-page .page-intro h2 {
-        font-size: 22px;
-    }
+    .admin-page .logo-text h1 { font-size: clamp(12px, 4.5vw, 14px); }
+    .admin-page .formulario-mascota { padding: 16px 12px; }
+    .admin-page .page-intro h2 { font-size: 22px; }
 
     .admin-page #datos-mascota .pet-detail-meta li,
     .admin-page #ficha-usuario .pet-detail-meta li {
@@ -1343,14 +1064,10 @@ html {
     }
 
     .admin-page #datos-mascota h3,
-    .admin-page #ficha-usuario h3 {
-        font-size: 18px;
-    }
+    .admin-page #ficha-usuario h3 { font-size: 18px; }
 
     .admin-page #editar .form-control,
-    .admin-page #editar .form-select {
-        max-width: 100%;
-    }
+    .admin-page #editar .form-select { max-width: 100%; }
 
     .admin-page #panel-salud .dash-tabla th,
     .admin-page #panel-salud .dash-tabla td {
@@ -1358,15 +1075,11 @@ html {
         padding-right: 10px;
     }
 
-    .admin-page #panel-salud .dash-tabla td:last-child {
-        max-width: none;
-    }
+    .admin-page #panel-salud .dash-tabla td:last-child { max-width: none; }
 }
 
 .admin-page .panel-listado .info-card,
-.admin-page #panel-usuario-detalle .info-card {
-    padding: 28px 30px;
-}
+.admin-page #panel-usuario-detalle .info-card { padding: 28px 30px; }
 
 .admin-page .panel-listado .dash-card-cabecera,
 .admin-page #panel-usuario-detalle .dash-card-cabecera {
@@ -1386,21 +1099,10 @@ html {
     margin: 0;
 }
 
-.admin-page #panel-usuarios .dash-card-cabecera h3::before {
-    content: "Usuarios";
-}
-
-.admin-page #panel-solicitudes .dash-card-cabecera h3::before {
-    content: "Solicitudes";
-}
-
-.admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary {
-    margin-left: auto;
-}
-
-.admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary::after {
-    content: "Usuarios";
-}
+.admin-page #panel-usuarios .dash-card-cabecera h3::before { content: "Usuarios"; }
+.admin-page #panel-solicitudes .dash-card-cabecera h3::before { content: "Solicitudes"; }
+.admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary { margin-left: auto; }
+.admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary::after { content: "Usuarios"; }
 
 .admin-page .ficha-usuario-icono {
     width: 56px;
@@ -1436,13 +1138,9 @@ html {
     color: var(--primary-color);
     font-size: 12px;
     letter-spacing: 0.02em;
-    white-space: nowrap;
-    text-align: center;
 }
 
-.admin-page .panel-listado .dash-tabla th:first-child {
-    border-radius: 12px 0 0 12px;
-}
+.admin-page .panel-listado .dash-tabla th:first-child { border-radius: 12px 0 0 12px; }
 
 .admin-page .panel-listado .dash-tabla th:last-child {
     border-radius: 0 12px 12px 0;
@@ -1451,9 +1149,11 @@ html {
 }
 
 .admin-page #columna-usuario-ver,
-.admin-page #columna-solicitud-ver {
-    text-align: center;
-}
+.admin-page #columna-solicitud-ver,
+.admin-page #panel-dashboard .dash-tabla th[data-campo="id"],
+.admin-page #panel-dashboard .dash-tabla td[data-campo="id"],
+.admin-page .panel-listado .dash-tabla th:first-child,
+.admin-page .panel-listado .dash-tabla td[data-campo="id"] { text-align: center; }
 
 .admin-page .panel-listado .dash-tabla th,
 .admin-page .panel-listado .dash-tabla td {
@@ -1465,19 +1165,6 @@ html {
     padding: 14px 16px;
     border-bottom: 1px solid var(--border-light);
     color: var(--text-dark);
-    text-align: center;
-}
-
-.admin-page #panel-dashboard .dash-tabla th[data-campo="id"],
-.admin-page #panel-dashboard .dash-tabla td[data-campo="id"],
-.admin-page .panel-listado .dash-tabla th:first-child,
-.admin-page .panel-listado .dash-tabla td[data-campo="id"] {
-    text-align: center;
-}
-
-.admin-page #panel-dashboard .dash-tabla th,
-.admin-page #panel-dashboard .dash-tabla td {
-    text-align: center;
 }
 
 .admin-page #panel-dashboard .dash-tabla td a {
@@ -1487,85 +1174,46 @@ html {
     text-align: center;
 }
 
-.admin-page .panel-listado .dash-tabla td[data-texto]::after {
-    content: attr(data-texto);
-}
-
-.admin-page .panel-listado tbody tr:not([data-id]) {
-    display: none;
-}
-
+.admin-page .panel-listado .dash-tabla td[data-texto]::after { content: attr(data-texto); }
+.admin-page .panel-listado tbody tr:not([data-id]) { display: none; }
 
 .admin-page #columna-nro::before,
 .admin-page .panel-listado .dash-tabla td[data-campo="id"]::before,
-.admin-page #etiqueta-nro::before {
-    content: "Nro";
-}
+.admin-page #etiqueta-nro::before { content: "Nro"; }
 
 .admin-page #columna-nombre::before,
 .admin-page .panel-listado .dash-tabla td[data-campo="nombre"]::before,
-.admin-page #etiqueta-nombre::before {
-    content: "Nombre";
-}
+.admin-page #etiqueta-nombre::before { content: "Nombre"; }
 
 .admin-page #columna-apellido::before,
 .admin-page .panel-listado .dash-tabla td[data-campo="apellido"]::before,
-.admin-page #etiqueta-apellido::before {
-    content: "Apellido";
-}
+.admin-page #etiqueta-apellido::before { content: "Apellido"; }
 
 .admin-page #columna-nacimiento::before,
 .admin-page .panel-listado .dash-tabla td[data-campo="fecha_nacimiento"]::before,
-.admin-page #etiqueta-nacimiento::before {
-    content: "Fecha de nacimiento";
-}
+.admin-page #etiqueta-nacimiento::before { content: "Fecha de nacimiento"; }
 
 .admin-page #columna-alta::before,
 .admin-page .panel-listado .dash-tabla td[data-campo="fecha_alta"]::before,
-.admin-page #etiqueta-alta::before {
-    content: "Fecha de alta";
-}
+.admin-page #etiqueta-alta::before { content: "Fecha de alta"; }
 
 .admin-page #columna-rol::before,
 .admin-page .panel-listado .dash-tabla td[data-campo="nombre_rol"]::before,
-.admin-page #etiqueta-rol::before {
-    content: "Rol";
-}
+.admin-page #etiqueta-rol::before { content: "Rol"; }
 
 .admin-page #columna-estado::before,
 .admin-page .panel-listado .dash-tabla td[data-campo="estado"]::before,
-.admin-page #etiqueta-estado::before {
-    content: "Estado";
-}
+.admin-page #etiqueta-estado::before { content: "Estado"; }
 
 .admin-page #columna-usuario-ver::before,
-.admin-page #columna-solicitud-ver::before {
-    content: "Ver";
-}
+.admin-page #columna-solicitud-ver::before { content: "Ver"; }
 
-.admin-page #columna-usuario-editar::before {
-    content: "Editar";
-}
-
-.admin-page #columna-usuario-alta::before {
-    content: "Alta";
-}
-
-.admin-page #columna-usuario-baja::before {
-    content: "Baja";
-}
-
-.admin-page .panel-listado .dash-tabla .abm-editar::after {
-    content: "Editar";
-}
-
-.admin-page .panel-listado .dash-tabla .abm-alta::after {
-    content: "Alta";
-}
-
-.admin-page .panel-listado .dash-tabla .abm-baja::after {
-    content: "Baja";
-}
+.admin-page #columna-usuario-editar::before { content: "Editar"; }
+.admin-page #columna-usuario-alta::before { content: "Alta"; }
+.admin-page #columna-usuario-baja::before { content: "Baja"; }
+.admin-page .panel-listado .dash-tabla .abm-editar::after { content: "Editar"; }
+.admin-page .panel-listado .dash-tabla .abm-alta::after { content: "Alta"; }
+.admin-page .panel-listado .dash-tabla .abm-baja::after { content: "Baja"; }
 
 .admin-page .panel-listado .dash-tabla .abm-ver,
 .admin-page .panel-listado .dash-tabla .abm-editar,
@@ -1599,23 +1247,17 @@ html {
     vertical-align: middle;
 }
 
-.admin-page .panel-listado .dash-tabla .abm-baja {
-    background: var(--primary-color);
-}
+.admin-page .panel-listado .dash-tabla .abm-baja { background: var(--primary-color); }
 
 .admin-page .panel-listado .dash-tabla .abm-alta:disabled {
     opacity: 0.55;
     cursor: not-allowed;
 }
 
-.admin-page #panel-usuarios .dash-tabla {
-    font-size: 12px;
-}
+.admin-page #panel-usuarios .dash-tabla { font-size: 12px; }
 
 .admin-page #panel-usuarios .dash-tabla th,
-.admin-page #panel-usuarios .dash-tabla td {
-    padding: 10px 12px;
-}
+.admin-page #panel-usuarios .dash-tabla td { padding: 10px 12px; }
 
 .admin-page .panel-listado .dash-tabla td:first-child {
     font-weight: 600;
@@ -1685,14 +1327,10 @@ html {
 }
 
 .admin-page .panel-listado .listado-buscar input[type="search"]::-webkit-search-cancel-button,
-.admin-page #panel-salud .listado-buscar input[type="search"]::-webkit-search-cancel-button {
-    display: none;
-}
+.admin-page #panel-salud .listado-buscar input[type="search"]::-webkit-search-cancel-button { display: none; }
 
 .admin-page .panel-listado .listado-buscar input[type="search"]::-ms-clear,
-.admin-page #panel-salud .listado-buscar input[type="search"]::-ms-clear {
-    display: none;
-}
+.admin-page #panel-salud .listado-buscar input[type="search"]::-ms-clear { display: none; }
 
 .admin-page .panel-listado .listado-buscar .form-control::placeholder,
 .admin-page .panel-listado .listado-buscar .form-control::-webkit-input-placeholder,
@@ -1714,9 +1352,7 @@ html {
     text-align: center;
 }
 
-.admin-page .panel-listado .listado-buscar span::before {
-    content: "Buscar";
-}
+.admin-page .panel-listado .listado-buscar span::before { content: "Buscar"; }
 
 .admin-page #panel-aportes-admin .listado-buscar .form-control::placeholder,
 .admin-page #panel-aportes-admin .listado-buscar .form-control::-webkit-input-placeholder,
@@ -1727,17 +1363,10 @@ html {
 }
 
 .admin-page .panel-listado .listado-buscar:has(.form-control:not(:placeholder-shown)) span,
-.admin-page .panel-listado .listado-buscar:has(.form-control:focus) span {
-    visibility: hidden;
-}
+.admin-page .panel-listado .listado-buscar:has(.form-control:focus) span { visibility: hidden; }
 
-.admin-page .listado-controles {
-    margin-bottom: 18px;
-}
-
-.admin-page .listado-controles > [class*="col"] {
-    min-width: 0;
-}
+.admin-page .listado-controles { margin-bottom: 18px; }
+.admin-page .listado-controles > [class*="col"] { min-width: 0; }
 
 .admin-page .listado-filtro-grupo {
     position: relative;
@@ -1785,9 +1414,7 @@ html {
     background: #fff;
 }
 
-.admin-page .listado-filtro-grupo .listado-filtro option[value=""] {
-    display: none;
-}
+.admin-page .listado-filtro-grupo .listado-filtro option[value=""] { display: none; }
 
 .admin-page .listado-filtro-grupo .btn {
     flex: 0 0 auto;
@@ -1816,65 +1443,32 @@ html {
     pointer-events: none;
 }
 
-.admin-page .listado-filtro-grupo:has(option:checked:not([value=""]))::before {
-    content: none;
-}
-
-.admin-page #etiqueta-uid::before {
-    content: "Uid";
-}
-
-.admin-page #etiqueta-id-rol::before {
-    content: "Id de rol";
-}
-
-.admin-page #etiqueta-domicilio::before {
-    content: "Id de domicilio";
-}
+.admin-page .listado-filtro-grupo:has(option:checked:not([value=""]))::before { content: none; }
 
 .admin-page #columna-solicitud-id::before,
 .admin-page #bloque-solicitudes .dash-tabla td[data-campo="id"]::before,
-.admin-page .panel-listado .dash-tabla td[data-campo="id"]::before {
-    content: "Id";
-}
+.admin-page .panel-listado .dash-tabla td[data-campo="id"]::before { content: "Id"; }
 
-.admin-page #columna-solicitud-nombre::before,
-.admin-page .panel-listado .dash-tabla td[data-campo="nombre_usuario"]::before {
-    content: "Nombre";
-}
-
-.admin-page #columna-solicitud-apellido::before,
-.admin-page .panel-listado .dash-tabla td[data-campo="apellido_usuario"]::before {
-    content: "Apellido";
-}
+.admin-page .panel-listado .dash-tabla td[data-campo="nombre_usuario"]::before { content: "Nombre"; }
+.admin-page .panel-listado .dash-tabla td[data-campo="apellido_usuario"]::before { content: "Apellido"; }
 
 .admin-page #columna-solicitud-tipo::before,
 .admin-page #bloque-solicitudes .dash-tabla td[data-campo="tipo_solicitud"]::before,
-.admin-page .panel-listado .dash-tabla td[data-campo="tipo_solicitud"]::before {
-    content: "Tipo";
-}
+.admin-page .panel-listado .dash-tabla td[data-campo="tipo_solicitud"]::before { content: "Tipo"; }
 
 .admin-page #columna-solicitud-mascota::before,
 .admin-page #bloque-solicitudes .dash-tabla td[data-campo="nombre_mascota"]::before,
-.admin-page .panel-listado .dash-tabla td[data-campo="nombre_mascota"]::before {
-    content: "Mascota";
-}
+.admin-page .panel-listado .dash-tabla td[data-campo="nombre_mascota"]::before { content: "Mascota"; }
 
 .admin-page #columna-solicitud-solicitante::before,
 .admin-page #bloque-solicitudes .dash-tabla td[data-campo="solicitante"]::before,
-.admin-page .panel-listado .dash-tabla td[data-campo="solicitante"]::before {
-    content: "Solicitante";
-}
+.admin-page .panel-listado .dash-tabla td[data-campo="solicitante"]::before { content: "Solicitante"; }
 
 .admin-page #columna-solicitud-especie::before,
 .admin-page #bloque-solicitudes .dash-tabla td[data-campo="especie"]::before,
-.admin-page .panel-listado .dash-tabla td[data-campo="especie"]::before {
-    content: "Especie";
-}
+.admin-page .panel-listado .dash-tabla td[data-campo="especie"]::before { content: "Especie"; }
 
-.admin-page .panel-listado .dash-tabla td[data-campo="raza"]::before {
-    content: "Raza";
-}
+.admin-page .panel-listado .dash-tabla td[data-campo="raza"]::before { content: "Raza"; }
 
 .admin-page .panel-listado .dash-tabla td[data-campo="fecha_nacimiento_estimada"]::before {
     content: "Fecha de nacimiento";
@@ -1882,15 +1476,11 @@ html {
 
 .admin-page #columna-solicitud-estado::before,
 .admin-page #bloque-solicitudes .dash-tabla td[data-campo="estado_solicitud"]::before,
-.admin-page .panel-listado .dash-tabla td[data-campo="estado_solicitud"]::before {
-    content: "Estado";
-}
+.admin-page .panel-listado .dash-tabla td[data-campo="estado_solicitud"]::before { content: "Estado"; }
 
 .admin-page #columna-solicitud-fecha::before,
 .admin-page #bloque-solicitudes .dash-tabla td[data-campo="fecha_solicitud"]::before,
-.admin-page .panel-listado .dash-tabla td[data-campo="fecha_solicitud"]::before {
-    content: "Fecha";
-}
+.admin-page .panel-listado .dash-tabla td[data-campo="fecha_solicitud"]::before { content: "Fecha"; }
 
 .admin-page section .btn-primary,
 .admin-page section .btn-outline {
@@ -1902,34 +1492,19 @@ html {
     text-align: center;
 }
 
-.admin-page section .acciones-formulario {
-    justify-content: center;
-}
+.admin-page section .acciones-formulario { justify-content: center; }
 
 .admin-page .panel-listado .dash-tabla a.abm-editar,
 .admin-page .panel-listado .dash-tabla a.abm-ver,
-.admin-page .panel-listado .dash-tabla button.abm-alta:not(:disabled) {
-    background-color: var(--primary-color);
-    color: var(--white);
-    opacity: 1;
-}
-
-.admin-page .panel-listado .dash-tabla button.abm-baja:not(:disabled) {
-    background-color: var(--primary-color);
-    color: var(--white);
-    opacity: 1;
-}
-
+.admin-page .panel-listado .dash-tabla button.abm-alta:not(:disabled),
+.admin-page .panel-listado .dash-tabla button.abm-baja:not(:disabled),
 .admin-page .panel-listado .dash-tabla button.abm-alta:disabled {
     background-color: var(--primary-color);
     color: var(--white);
     opacity: 1;
 }
 
-
-.admin-page .panel-listado .dash-tabla .abm-ver::after {
-    content: "Ver";
-}
+.admin-page .panel-listado .dash-tabla .abm-ver::after { content: "Ver"; }
 
 .admin-page .panel-listado .paginador {
     display: flex;
@@ -1938,9 +1513,7 @@ html {
     margin-top: 16px;
 }
 
-.admin-page .panel-listado .paginador[hidden] {
-    display: none;
-}
+.admin-page .panel-listado .paginador[hidden] { display: none; }
 
 .admin-page .panel-listado .paginador .pagination {
     display: flex;
@@ -1954,9 +1527,7 @@ html {
     padding: 0;
 }
 
-.admin-page .panel-listado .paginador .page-item {
-    width: auto;
-}
+.admin-page .panel-listado .paginador .page-item { width: auto; }
 
 .admin-page .panel-listado .paginador .page-item .page-link {
     display: inline-flex;
@@ -1974,6 +1545,13 @@ html {
     box-shadow: none;
 }
 
+/* El paginador es un <nav>: sin esto hereda el verde de los íconos del menú y la flecha desaparece */
+.admin-page .paginador .page-link i {
+    color: inherit;
+    font-size: 15px;
+    line-height: 1;
+}
+
 .admin-page .panel-listado .paginador .page-item .page-link:hover,
 .admin-page .panel-listado .paginador .page-item .page-link:focus,
 .admin-page .panel-listado .paginador .page-item .page-link:active {
@@ -1984,9 +1562,7 @@ html {
 }
 
 .admin-page .panel-listado .paginador .page-item.active .page-link,
-.admin-page .panel-listado .paginador .page-item[data-activa="true"] .page-link {
-    filter: brightness(0.78);
-}
+.admin-page .panel-listado .paginador .page-item[data-activa="true"] .page-link { filter: brightness(0.78); }
 
 .admin-page .panel-listado .paginador .page-item.disabled .page-link,
 .admin-page .panel-listado .paginador .page-item[data-deshabilitado="true"] .page-link {
@@ -2005,26 +1581,14 @@ html {
 .admin-page .panel-listado .dash-tabla .abm-alta:active,
 .admin-page .panel-listado .dash-tabla .abm-baja:hover,
 .admin-page .panel-listado .dash-tabla .abm-baja:focus,
-.admin-page .panel-listado .dash-tabla .abm-baja:active {
-    box-shadow:0;
-}
+.admin-page .panel-listado .dash-tabla .abm-baja:active { box-shadow:0; }
 
 .admin-page .panel-listado .dash-tabla td::before,
-.admin-page #bloque-solicitudes .dash-tabla td::before {
-    display: none;
-}
+.admin-page #bloque-solicitudes .dash-tabla td::before { display: none; }
 
-.admin-page .panel-listado .dash-tabla tr:last-child td {
-    border-bottom: none;
-}
-
-.admin-page .panel-listado .dash-tabla tbody tr[data-id] {
-    cursor: pointer;
-}
-
-.admin-page .panel-listado .dash-tabla tbody td {
-    position: relative;
-}
+.admin-page .panel-listado .dash-tabla tr:last-child td { border-bottom: none; }
+.admin-page .panel-listado .dash-tabla tbody tr[data-id] { cursor: pointer; }
+.admin-page .panel-listado .dash-tabla tbody td { position: relative; }
 
 .admin-page .panel-listado .dash-tabla tbody td > a:not([class*="abm"]) {
     position: absolute;
@@ -2062,10 +1626,7 @@ html {
 }
 
 .admin-page .panel-listado .dash-tabla tbody tr:hover td:first-child,
-.admin-page .panel-listado .dash-tabla tbody tr:focus-within td:first-child {
-    color: var(--primary-color);
-}
-
+.admin-page .panel-listado .dash-tabla tbody tr:focus-within td:first-child,
 .admin-page .panel-listado .dash-tabla tbody tr:hover td[data-estado="true"]::after,
 .admin-page .panel-listado .dash-tabla tbody tr:focus-within td[data-estado="true"]::after,
 .admin-page .panel-listado .dash-tabla tbody tr:hover td[data-estado="t"]::after,
@@ -2080,16 +1641,12 @@ html {
 .admin-page .panel-listado .dash-tabla tbody tr:hover td[data-estado="f"]::after,
 .admin-page .panel-listado .dash-tabla tbody tr:focus-within td[data-estado="f"]::after,
 .admin-page .panel-listado .dash-tabla tbody tr:hover td[data-estado="0"]::after,
-.admin-page .panel-listado .dash-tabla tbody tr:focus-within td[data-estado="0"]::after {
-    color: #a32b21;
-}
+.admin-page .panel-listado .dash-tabla tbody tr:focus-within td[data-estado="0"]::after { color: #a32b21; }
 
 .admin-page .panel-listado .dash-tabla tbody tr:hover td a[class*="abm"],
 .admin-page .panel-listado .dash-tabla tbody tr:focus-within td a[class*="abm"],
 .admin-page .panel-listado .dash-tabla tbody tr:hover td button,
-.admin-page .panel-listado .dash-tabla tbody tr:focus-within td button {
-    color: var(--white);
-}
+.admin-page .panel-listado .dash-tabla tbody tr:focus-within td button { color: var(--white); }
 
 .admin-page .panel-listado .dash-tabla tbody tr:active td {
     background: color-mix(in srgb, var(--primary-color) 16%, var(--white));
@@ -2126,13 +1683,9 @@ html {
 .admin-page #panel-usuario-detalle #ficha-nombre[data-texto]::after,
 .admin-page #panel-usuario-detalle .pet-detail-meta [data-campo][data-texto]::after,
 .admin-page #panel-solicitud-detalle .pet-detail-meta [data-campo][data-texto]::after,
-.admin-page #bloque-solicitudes .dash-tabla td[data-texto]::after {
-    content: attr(data-texto);
-}
+.admin-page #bloque-solicitudes .dash-tabla td[data-texto]::after { content: attr(data-texto); }
 
-.admin-page #bloque-solicitudes tbody tr:not([data-id]) {
-    display: none;
-}
+.admin-page #bloque-solicitudes tbody tr:not([data-id]) { display: none; }
 
 .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta,
 .admin-page #panel-solicitud-detalle #ficha-solicitud .pet-detail-meta {
@@ -2208,9 +1761,7 @@ html {
     padding-bottom: 28px;
 }
 
-.admin-page #panel-solicitud-detalle #campos-formulario {
-    align-items: start;
-}
+.admin-page #panel-solicitud-detalle #campos-formulario { align-items: start; }
 
 .admin-page #panel-solicitud-detalle #ficha-formulario .form-control {
     background: var(--icon-bg);
@@ -2249,13 +1800,8 @@ html {
     font-size: 12px;
 }
 
-.admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li span:last-child {
-    font-size: 15px;
-}
-
-.admin-page #bloque-solicitudes {
-    padding: 28px 30px;
-}
+.admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li span:last-child { font-size: 15px; }
+.admin-page #bloque-solicitudes { padding: 28px 30px; }
 
 .admin-page #bloque-solicitudes > h3 {
     margin: 0 0 18px;
@@ -2265,13 +1811,8 @@ html {
     font-size: 18px;
 }
 
-.admin-page #bloque-solicitudes > h3::before {
-    content: "Solicitudes";
-}
-
-.admin-page #bloque-solicitudes .dash-tabla {
-    width: 100%;
-}
+.admin-page #bloque-solicitudes > h3::before { content: "Solicitudes"; }
+.admin-page #bloque-solicitudes .dash-tabla { width: 100%; }
 
 .admin-page #bloque-solicitudes .dash-tabla th {
     padding: 12px 16px;
@@ -2281,13 +1822,8 @@ html {
     text-align: center;
 }
 
-.admin-page #bloque-solicitudes .dash-tabla th:first-child {
-    border-radius: 12px 0 0 12px;
-}
-
-.admin-page #bloque-solicitudes .dash-tabla th:last-child {
-    border-radius: 0 12px 12px 0;
-}
+.admin-page #bloque-solicitudes .dash-tabla th:first-child { border-radius: 12px 0 0 12px; }
+.admin-page #bloque-solicitudes .dash-tabla th:last-child { border-radius: 0 12px 12px 0; }
 
 .admin-page #bloque-solicitudes .dash-tabla td {
     position: relative;
@@ -2303,9 +1839,7 @@ html {
     z-index: 1;
 }
 
-.admin-page #bloque-solicitudes .dash-tabla tr:last-child td {
-    border-bottom: none;
-}
+.admin-page #bloque-solicitudes .dash-tabla tr:last-child td { border-bottom: none; }
 
 .admin-page #bloque-solicitudes:not(:has(tbody tr[data-id])) .lista-scroll-mascotas::after {
     content: "Sin solicitudes";
@@ -2315,19 +1849,13 @@ html {
 }
 
 .admin-page .panel-listado .mensaje-formulario:empty,
-.admin-page #panel-usuario-detalle .mensaje-formulario:empty {
-    display: none;
-}
+.admin-page #panel-usuario-detalle .mensaje-formulario:empty { display: none; }
 
 @media (max-width: 960px) {
     .admin-page .panel-listado .info-card,
-    .admin-page #panel-usuario-detalle .info-card {
-        padding: 14px 12px;
-    }
+    .admin-page #panel-usuario-detalle .info-card { padding: 14px 12px; }
 
-    .admin-page .panel-listado > .info-card {
-        padding: 14px 10px 10px;
-    }
+    .admin-page .panel-listado > .info-card { padding: 14px 10px 10px; }
 
     .admin-page .panel-listado .dash-card-cabecera {
         justify-content: center;
@@ -2337,13 +1865,8 @@ html {
         padding-bottom: 8px;
     }
 
-    .admin-page .panel-listado .dash-tabla thead {
-        display: none;
-    }
-
-    .admin-page .panel-listado .lista-scroll-mascotas {
-        overflow: visible;
-    }
+    .admin-page .panel-listado .dash-tabla thead { display: none; }
+    .admin-page .panel-listado .lista-scroll-mascotas { overflow: visible; }
 
     /* Paginación en móvil: tarjeta propia para que no flote sobre el contenido */
     .admin-page .panel-listado .paginador {
@@ -2356,9 +1879,7 @@ html {
         box-shadow: 0 4px 18px rgba(46, 80, 46, 0.08);
     }
 
-    .admin-page .panel-listado .paginador .pagination {
-        gap: 6px;
-    }
+    .admin-page .panel-listado .paginador .pagination { gap: 6px; }
 
     .admin-page .panel-listado .paginador .page-item .page-link {
         min-width: 36px;
@@ -2386,22 +1907,15 @@ html {
 
     /* Sin foto no se muestra la celda (evita el recuadro vacío en móvil) */
     .admin-page #panel-salud .dash-tabla td:nth-child(1):has(img:not([src])),
-    .admin-page #panel-salud .dash-tabla td:nth-child(1):has(img[src=""]) {
-        display: none;
-    }
+    .admin-page #panel-salud .dash-tabla td:nth-child(1):has(img[src=""]) { display: none; }
 
     .admin-page #panel-salud .dash-foto {
         flex-shrink: 0;
         overflow: hidden;
     }
 
-    .admin-page #panel-salud .dash-foto img {
-        font-size: 0;
-    }
-
-    .admin-page #panel-salud .dash-tabla thead {
-        display: none;
-    }
+    .admin-page #panel-salud .dash-foto img { font-size: 0; }
+    .admin-page #panel-salud .dash-tabla thead { display: none; }
 
     .admin-page #panel-salud .dash-tabla,
     .admin-page #panel-salud .dash-tabla tbody,
@@ -2423,9 +1937,7 @@ html {
         box-shadow: 0 4px 18px rgba(46, 80, 46, 0.08);
     }
 
-    .admin-page #panel-salud .dash-tabla tbody tr:last-child {
-        margin-bottom: 0;
-    }
+    .admin-page #panel-salud .dash-tabla tbody tr:last-child { margin-bottom: 0; }
 
     .admin-page #panel-salud .dash-tabla td {
         display: flex;
@@ -2439,7 +1951,6 @@ html {
         background: var(--icon-bg);
         border: 0;
         border-radius: 8px;
-        text-align: right;
         white-space: normal;
         overflow-wrap: break-word;
     }
@@ -2451,9 +1962,7 @@ html {
         text-align: center;
     }
 
-    .admin-page #panel-salud .dash-tabla td:last-child {
-        margin-bottom: 0;
-    }
+    .admin-page #panel-salud .dash-tabla td:last-child { margin-bottom: 0; }
 
     .admin-page #panel-salud .dash-tabla td::before {
         display: block;
@@ -2464,22 +1973,12 @@ html {
         text-align: left;
     }
 
-    .admin-page #panel-salud .dash-tabla td:nth-child(2)::before {
-        content: "Nombre";
-    }
-
-    .admin-page #panel-salud .dash-tabla td:nth-child(3)::before {
-        content: "Especie";
-    }
-
-    .admin-page #panel-salud .dash-tabla td:nth-child(4)::before {
-        content: "Nacimiento";
-    }
+    .admin-page #panel-salud .dash-tabla td:nth-child(2)::before { content: "Nombre"; }
+    .admin-page #panel-salud .dash-tabla td:nth-child(3)::before { content: "Especie"; }
+    .admin-page #panel-salud .dash-tabla td:nth-child(4)::before { content: "Nacimiento"; }
 
     .admin-page #panel-salud .dash-tabla td:nth-child(1)::before,
-    .admin-page #panel-salud .dash-tabla td:nth-child(5)::before {
-        content: none;
-    }
+    .admin-page #panel-salud .dash-tabla td:nth-child(5)::before { content: none; }
 
     .admin-page .panel-listado .dash-tabla,
     .admin-page .panel-listado .dash-tabla tbody,
@@ -2501,15 +2000,8 @@ html {
         box-shadow: 0 4px 18px rgba(46, 80, 46, 0.08);
     }
 
-    .admin-page .panel-listado .dash-tabla tbody tr:not([data-id]) {
-        display: none;
-    }
-
-
-
-    .admin-page .panel-listado .dash-tabla tbody tr:last-child {
-        margin-bottom: 0;
-    }
+    .admin-page .panel-listado .dash-tabla tbody tr:not([data-id]) { display: none; }
+    .admin-page .panel-listado .dash-tabla tbody tr:last-child { margin-bottom: 0; }
 
     .admin-page .panel-listado .dash-tabla tbody tr:hover,
     .admin-page .panel-listado .dash-tabla tbody tr:focus-within {
@@ -2548,9 +2040,7 @@ html {
 
     /* En móvil el link vuelve al flujo de la fila para respetar el padding */
     .admin-page .panel-listado .dash-tabla tbody td > a:not([class*="abm"]),
-    .admin-page #bloque-solicitudes .dash-tabla tbody td > a {
-        position: static;
-    }
+    .admin-page #bloque-solicitudes .dash-tabla tbody td > a { position: static; }
 
     /* Celdas de acción sin etiqueta (solo link): contenido centrado */
     .admin-page .panel-listado .dash-tabla td:has(> a):not([data-campo]):not([data-celda]),
@@ -2592,9 +2082,7 @@ html {
         text-align: left;
     }
 
-    .admin-page .panel-listado .dash-tabla td:empty:not([data-texto]):not([data-estado]) {
-        display: none;
-    }
+    .admin-page .panel-listado .dash-tabla td:empty:not([data-texto]):not([data-estado]) { display: none; }
 
     .admin-page .panel-listado .dash-tabla td[data-estado]::after {
         width: max-content;
@@ -2618,9 +2106,7 @@ html {
 
     .admin-page .panel-listado .dash-tabla td:has(> a[class*="abm"])::before,
     .admin-page .panel-listado .dash-tabla td:has(> button)::before,
-    .admin-page .panel-listado .dash-tabla td:has(> form)::before {
-        content: none;
-    }
+    .admin-page .panel-listado .dash-tabla td:has(> form)::before { content: none; }
 
     .admin-page .panel-listado .dash-tabla td:first-child {
         font-size: 14px;
@@ -2649,9 +2135,7 @@ html {
     }
 
     .admin-page #panel-usuarios .dash-tabla td:has(> a[class*="abm"]),
-    .admin-page #panel-usuarios .dash-tabla td:has(> button[class*="abm"]) {
-        overflow: visible;
-    }
+    .admin-page #panel-usuarios .dash-tabla td:has(> button[class*="abm"]) { overflow: visible; }
 
     .admin-page .panel-listado .dash-tabla td:has(> a[class*="abm"]),
     .admin-page .panel-listado .dash-tabla td:has(> button[class*="abm"]) {
@@ -2671,40 +2155,12 @@ html {
         font-size: 12px;
     }
 
-    .admin-page #panel-mascotas .dash-tabla td:nth-child(1)::before {
-        content: "Nro";
-    }
-
-    .admin-page #panel-mascotas .dash-tabla td:nth-child(2)::before {
-        content: "Nombre";
-    }
-
-    .admin-page #panel-mascotas .dash-tabla td:nth-child(3)::before {
-        content: "Especie";
-    }
-
-    .admin-page #panel-mascotas .dash-tabla td:nth-child(4)::before {
-        content: "Raza";
-    }
-
-    .admin-page #panel-mascotas .dash-tabla td:nth-child(5)::before {
-        content: "Sexo";
-    }
-
-    .admin-page #panel-mascotas .dash-tabla td:nth-child(6)::before {
-        content: "Tamaño";
-    }
-
     .admin-page #panel-mascotas .dash-tabla td:nth-child(7)::before,
-    .admin-page #panel-mascotas .dash-tabla td:nth-child(8)::before {
-        content: none;
-    }
+    .admin-page #panel-mascotas .dash-tabla td:nth-child(8)::before { content: none; }
 
 }
 
-.admin-page #panel-aportes-reportes .page-intro {
-    display: block;
-}
+.admin-page #panel-aportes-reportes .page-intro { display: block; }
 
 .admin-page #panel-aportes-reportes .dash-tabla button.abm-editar {
     border: none;
@@ -2718,9 +2174,7 @@ html {
     gap: 8px;
 }
 
-.admin-page .panel-aportes .form-catalogo {
-    margin-bottom: 8px;
-}
+.admin-page .panel-aportes .form-catalogo { margin-bottom: 8px; }
 
 .admin-page #resumen-aportes {
     display: grid;
@@ -2737,9 +2191,7 @@ html {
     text-align: center;
 }
 
-.admin-page #resumen-aportes .dash-kpi-numero {
-    line-height: 1.1;
-}
+.admin-page #resumen-aportes .dash-kpi-numero { line-height: 1.1; }
 
 .admin-page #resumen-aportes .info-card p:last-child {
     margin: 8px 0 0;
@@ -2763,7 +2215,7 @@ html {
 
 .admin-page #panel-aportes-admin.panel-listado .dash-tabla,
 .admin-page #panel-aportes-reportes.panel-listado .dash-tabla {
-    width: max-content;
+    width: 100%;
     min-width: max-content;
     max-width: none;
     table-layout: auto;
@@ -2790,34 +2242,15 @@ html {
     content: "Tipo movimiento";
 }
 
-.admin-page .panel-listado .dash-tabla td[data-campo="tipo_aporte"]::before {
-    content: "Tipo aporte";
-}
-
-.admin-page .panel-listado .dash-tabla td[data-campo="metodo_pago"]::before {
-    content: "Método pago";
-}
-
-.admin-page .panel-listado .dash-tabla td[data-campo="frecuencia_aporte"]::before {
-    content: "Frecuencia";
-}
-
-.admin-page .panel-listado .dash-tabla td[data-campo="fecha"]::before {
-    content: "Fecha";
-}
-
-.admin-page .panel-listado .dash-tabla td[data-campo="monto"]::before {
-    content: "Monto";
-}
-
-.admin-page .panel-listado .dash-tabla td[data-campo="descripcion"]::before {
-    content: "Descripción";
-}
+.admin-page .panel-listado .dash-tabla td[data-campo="tipo_aporte"]::before { content: "Tipo aporte"; }
+.admin-page .panel-listado .dash-tabla td[data-campo="metodo_pago"]::before { content: "Método pago"; }
+.admin-page .panel-listado .dash-tabla td[data-campo="frecuencia_aporte"]::before { content: "Frecuencia"; }
+.admin-page .panel-listado .dash-tabla td[data-campo="fecha"]::before { content: "Fecha"; }
+.admin-page .panel-listado .dash-tabla td[data-campo="monto"]::before { content: "Monto"; }
+.admin-page .panel-listado .dash-tabla td[data-campo="descripcion"]::before { content: "Descripción"; }
 
 @media (max-width: 720px) {
-    .admin-page #resumen-aportes {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+    .admin-page #resumen-aportes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
     .admin-page #panel-aportes-admin.panel-listado .dash-tabla,
     .admin-page #panel-aportes-reportes.panel-listado .dash-tabla {
@@ -2834,26 +2267,17 @@ html {
         overflow-wrap: break-word;
         word-break: normal;
     }
-}
-
-@media (max-width: 720px) {
     .admin-page .panel-listado .info-card,
-    .admin-page #panel-usuario-detalle .info-card {
-        padding: 20px 16px;
-    }
+    .admin-page #panel-usuario-detalle .info-card { padding: 20px 16px; }
 
-    .admin-page #panel-usuario-detalle #ficha-usuario {
-        padding: 22px 16px;
-    }
+    .admin-page #panel-usuario-detalle #ficha-usuario { padding: 22px 16px; }
 
     .admin-page #panel-usuario-detalle .ficha-foto-perfil {
         width: 128px;
         height: 128px;
     }
 
-    .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta {
-        grid-template-columns: 1fr;
-    }
+    .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta { grid-template-columns: 1fr; }
 
     .admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary {
         width: 100%;
@@ -2887,9 +2311,7 @@ html {
         overflow-wrap: anywhere;
     }
 
-    .admin-page .page-intro h2 {
-        font-size: clamp(1.2rem, 6vw, 1.75rem);
-    }
+    .admin-page .page-intro h2 { font-size: clamp(1.2rem, 6vw, 1.75rem); }
 
     .admin-page .dash-fila,
     .admin-page .dash-fila-tres,
@@ -2924,13 +2346,11 @@ html {
     }
 
     .admin-page .lista-scroll-mascotas,
-    .admin-page .dash-tabla {
-        max-width: 100%;
-    }
+    .admin-page .dash-tabla { max-width: 100%; }
 
     .admin-page footer .footer-inner {
         flex-wrap: wrap;
-        gap: 16px;
+        gap: 8px;
         padding-left: 16px;
         padding-right: 16px;
     }
@@ -2958,12 +2378,7 @@ html {
         align-items: center;
     }
 
-    .admin-page section {
-        padding-left: 12px;
-        padding-right: 12px;
-        min-width: 0;
-        max-width: 100%;
-    }
+    .admin-page section { min-width: 0; }
 
     .admin-page .info-card,
     .admin-page #panel-solicitud-detalle .info-card,
@@ -2975,22 +2390,13 @@ html {
         min-width: 0;
     }
 
-    .admin-page #panel-solicitud-detalle #ficha-formulario {
-        max-height: 70vh;
-    }
+    .admin-page #panel-solicitud-detalle #ficha-formulario { max-height: 70vh; }
 
     .admin-page #panel-solicitud-detalle #ficha-solicitud .pet-detail-meta,
-    .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta {
-        grid-template-columns: 1fr;
-    }
+    .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta { grid-template-columns: 1fr; }
 
-    .admin-page #botones-estado {
-        flex-wrap: wrap;
-    }
-
-    .admin-page #botones-estado .btn {
-        flex: 1 1 100%;
-    }
+    .admin-page #botones-estado { flex-wrap: wrap; }
+    .admin-page #botones-estado .btn { flex: 1 1 100%; }
 
     .admin-page .form-seccion .row > [class*="col-"] {
         width: 100%;
@@ -3008,12 +2414,6 @@ html {
         text-align: center;
     }
 
-    .admin-page .panel-listado .dash-card-cabecera,
-    .admin-page .page-intro {
-        justify-content: center;
-        text-align: center;
-    }
-
     .admin-page nav a,
     .admin-page nav summary {
         color: var(--text-dark);
@@ -3023,26 +2423,26 @@ html {
 
     .admin-page nav a:hover,
     .admin-page nav summary:hover {
-        background: #f3f3f3;
+        background: var(--tema-verde-suave);
         color: var(--primary-color);
     }
 
     .admin-page nav summary.active {
-        background: color-mix(in srgb, var(--primary-color) 14%, #fff);
+        background: var(--tema-verde-suave);
         color: var(--primary-color);
         font-weight: 700;
     }
 
     .admin-page nav a.active,
     .admin-page nav details[open] > a.active {
-        background: var(--primary-color);
-        color: var(--bg-cream);
+        background: var(--tema-verde-suave);
+        color: var(--primary-color);
         font-weight: 700;
         border-radius: 0;
     }
 
     .admin-page nav details a {
-        background: #f7f7f7;
+        background: var(--tema-verde-fondo);
         color: var(--text-dark);
     }
 
@@ -3054,9 +2454,7 @@ html {
         font-weight: 600;
     }
 
-    .admin-page .dash-tabla thead {
-        display: none;
-    }
+    .admin-page .dash-tabla thead { display: none; }
 
     .admin-page .dash-tabla,
     .admin-page .dash-tabla tbody {
@@ -3101,9 +2499,9 @@ html {
         margin: 0;
         padding: 7px 10px;
         overflow: hidden;
-        border: 0;
+        border: 1px solid var(--tema-crema-claro-borde);
         border-radius: 10px;
-        background: #e7eee6;
+        background: var(--tema-crema-claro);
         color: var(--text-dark);
         font-size: 12px;
         font-weight: 600;
@@ -3146,9 +2544,7 @@ html {
     }
 
     .admin-page .panel-listado .dash-tabla td:has(> a[class*="abm"])::before,
-    .admin-page .panel-listado .dash-tabla td:has(> button[class*="abm"])::before {
-        content: none;
-    }
+    .admin-page .panel-listado .dash-tabla td:has(> button[class*="abm"])::before { content: none; }
 
     .admin-page .panel-listado .dash-tabla .abm-ver,
     .admin-page .panel-listado .dash-tabla .abm-editar,
@@ -3161,12 +2557,29 @@ html {
         padding: 6px 10px;
         font-size: 12px;
     }
+
+    .admin-page section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .admin-page .panel-listado .dash-tabla td:has(> form)::before { content: none; }
+    .admin-page #panel-mascotas .dash-tabla td[data-celda="nro"]::before { content: "Nro"; }
+    .admin-page #panel-mascotas .dash-tabla td[data-celda="nombre"]::before { content: "Nombre"; }
+    .admin-page #panel-mascotas .dash-tabla td[data-celda="especie"]::before { content: "Especie"; }
+    .admin-page #panel-mascotas .dash-tabla td[data-celda="raza"]::before { content: "Raza"; }
+    .admin-page #panel-mascotas .dash-tabla td[data-celda="sexo"]::before { content: "Sexo"; }
+    .admin-page #panel-mascotas .dash-tabla td[data-celda="tamano"]::before { content: "Tamaño"; }
 }
 
 .admin-page .info-card {
     background: var(--white);
+    border: 1px solid var(--tema-crema-claro-borde);
     border-radius: 16px;
-    box-shadow: 0 4px 18px rgba(46, 80, 46, 0.08);
+    box-shadow: 0 4px 18px rgba(47, 107, 69, 0.06);
 }
 
 .admin-page .panel-listado .dash-tabla th,
@@ -3183,8 +2596,8 @@ html {
     .admin-page nav a.active,
     .admin-page nav summary.active,
     .admin-page nav details[open] > a.active {
-        background: #143314;
-        color: var(--bg-cream);
+        background: var(--tema-verde-suave);
+        color: var(--primary-color);
         font-weight: 600;
     }
 }
@@ -3199,14 +2612,6 @@ html {
         margin-left: auto;
         margin-right: auto;
         box-sizing: border-box;
-    }
-
-    .admin-page section {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding-left: 16px;
-        padding-right: 16px;
     }
 
     .admin-page section > * {
@@ -3242,14 +2647,24 @@ html {
     }
 
     .admin-page .btn-primary,
-    .admin-page .btn-outline {
-        justify-content: center;
-    }
+    .admin-page .btn-outline { justify-content: center; }
 
     .admin-page footer .footer-inner {
         justify-content: center;
         align-items: center;
         text-align: center;
+    }
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id],
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 14px;
+        margin: 0 0 12px;
+        padding: 14px;
+        background: var(--white);
+        border: 1px solid var(--tema-crema-claro-borde);
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(47, 107, 69, 0.06);
     }
 }
 
@@ -3258,5 +2673,158 @@ html {
         flex: 0 0 100%;
         width: 100%;
         max-width: 100%;
+    }
+}
+
+/* Listas en celular: cada fila es una tarjeta con la etiqueta a un lado y el dato al otro */
+@media (max-width: 992px) {
+
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td,
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0;
+        padding: 0;
+        overflow: visible;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        color: var(--text-dark);
+        font-size: 13px;
+        font-weight: 600;
+        text-align: right;
+    }
+
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:not(:has(> [class*="abm"])),
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td:not(:has(> [class*="abm"])) {
+        grid-column: 1 / -1;
+        padding: 8px 0;
+        border-bottom: 1px dashed var(--tema-crema-claro-borde);
+    }
+
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td::before,
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td::before {
+        display: block;
+        flex: none;
+        max-width: 45%;
+        color: var(--text-soft);
+        font-size: 12px;
+        font-weight: 500;
+        text-align: left;
+    }
+
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td[data-texto]::after,
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td[data-estado]::after,
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td[data-texto]::after,
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td[data-estado]::after {
+        align-self: center;
+        margin-left: auto;
+        text-align: right;
+    }
+
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:empty:not([data-texto]):not([data-estado]),
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td:empty:not([data-texto]):not([data-estado]) {
+        display: none;
+    }
+
+    /* El número encabeza la tarjeta */
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:first-child,
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td:first-child {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 0 8px;
+        border-bottom: 1px solid var(--tema-crema-claro-borde);
+        color: var(--primary-color);
+    }
+
+    /* Botones al final, de a dos por fila; si hay uno solo ocupa todo el ancho */
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:has(> [class*="abm"]) {
+        flex-direction: column;
+        align-items: stretch;
+        margin-top: 10px;
+    }
+
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:not(:has(> [class*="abm"])) + td:has(> [class*="abm"]) {
+        grid-column-start: 1;
+    }
+
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:not(:has(> [class*="abm"])) + td:has(> [class*="abm"]):last-child {
+        grid-column: 1 / -1;
+    }
+
+    /* Los textos largos se cortan dentro de la tarjeta en vez de salirse */
+    .admin-page #panel-aportes-admin.panel-listado .dash-tabla,
+    .admin-page #panel-aportes-reportes.panel-listado .dash-tabla {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td,
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td {
+        min-width: 0;
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: normal;
+    }
+
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td::after,
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td::after { max-width: 100%; }
+
+    /* Descripción en su propia fila, entre los datos y los botones */
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td[data-campo="descripcion"] {
+        grid-column: 1 / -1;
+        order: 1;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        margin: 8px 0 0;
+        padding: 8px 10px;
+        text-align: left;
+        background: var(--tema-crema-claro);
+        border: 1px solid var(--tema-crema-claro-borde);
+        border-radius: 10px;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:has(> [class*="abm"]) {
+        order: 2;
+    }
+
+    /* Títulos de las tarjetas: ícono arriba y título centrado en todo el ancho */
+    .admin-page .dash-card-cabecera,
+    .admin-page .panel-listado .dash-card-cabecera,
+    .admin-page #panel-usuario-detalle .dash-card-cabecera,
+    .admin-page #panel-solicitud-detalle .dash-card-cabecera {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .admin-page .dash-card-cabecera h3,
+    .admin-page .panel-listado .dash-card-cabecera h3,
+    .admin-page #panel-usuario-detalle .dash-card-cabecera h3,
+    .admin-page #panel-solicitud-detalle .dash-card-cabecera h3 {
+        flex: none;
+        width: 100%;
+        text-align: center;
+    }
+
+    .admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary { margin-left: 0; }
+}
+
+/* Celulares angostos: la tarjeta pasa a una sola columna */
+@media (max-width: 400px) {
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id],
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 12px;
     }
 }

@@ -354,7 +354,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }).catch(function (error) {
             if (mensaje && !mensaje.textContent) {
-                mensaje.textContent = mensajeDeApi(error);
+                avisoDeApi(mensaje, error);
             }
         });
 
@@ -362,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function () {
             pintarBarras(listaDe(respuesta));
         }).catch(function (error) {
             if (mensaje && !mensaje.textContent) {
-                mensaje.textContent = mensajeDeApi(error);
+                avisoDeApi(mensaje, error);
             }
         });
     }
@@ -373,13 +373,13 @@ document.addEventListener('DOMContentLoaded', function () {
             mostrar();
         }).catch(function (error) {
             if (mensaje && !mensaje.textContent) {
-                mensaje.textContent = mensajeDeApi(error);
+                avisoDeApi(mensaje, error);
             }
         });
     }
 
     if (mensaje) {
-        mensaje.textContent = '';
+        avisoDeApi(mensaje, '');
     }
 
     pedir('tipos_solicitudes', 'tipos', mostrarSolicitudes);

@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!usuario.id) {
             if (mensaje) {
-                mensaje.textContent = mensajeDeApi(respuesta);
+                avisoDeApi(mensaje, respuesta);
             }
 
             return null;
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }).catch(function (error) {
         if (mensaje) {
-            mensaje.textContent = mensajeDeApi(error);
+            avisoDeApi(mensaje, error);
         }
 
         if (listado && error && error.status === 404) {

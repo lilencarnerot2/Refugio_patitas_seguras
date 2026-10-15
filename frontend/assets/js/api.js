@@ -180,6 +180,12 @@ function avisoDeApi(caja, origen) {
   caja.textContent = mensajeDeApi(origen);
   codigo = origen && origen.status;
 
+  if (origen instanceof Error) {
+    caja.setAttribute('data-estado', 'error');
+  } else {
+    caja.removeAttribute('data-estado');
+  }
+
   if (codigo) {
     caja.setAttribute('data-codigo', codigo);
   } else {

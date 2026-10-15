@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function cargarListado() {
         if (mensaje) {
-            mensaje.textContent = '';
+            avisoDeApi(mensaje, '');
         }
 
         return apiRequest('mascotas').then(function (respuesta) {
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dibujar();
 
             if (mensaje) {
-                mensaje.textContent = mensajeDeApi(respuesta);
+                avisoDeApi(mensaje, respuesta);
             }
         });
     }
@@ -293,19 +293,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then(function (respuesta) {
             return cargarListado().then(function () {
                 if (mensaje) {
-                    mensaje.textContent = mensajeDeApi(respuesta);
+                    avisoDeApi(mensaje, respuesta);
                 }
             });
         }).catch(function (error) {
             if (mensaje) {
-                mensaje.textContent = mensajeDeApi(error);
+                avisoDeApi(mensaje, error);
             }
         });
     });
 
     cargarListado().catch(function (error) {
         if (mensaje) {
-            mensaje.textContent = mensajeDeApi(error);
+            avisoDeApi(mensaje, error);
         }
     });
 });

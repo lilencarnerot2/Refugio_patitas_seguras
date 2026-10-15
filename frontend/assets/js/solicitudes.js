@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function cargarListado() {
         if (mensaje) {
-            mensaje.textContent = '';
+            avisoDeApi(mensaje, '');
         }
 
         var especiesPorMascota = {};
@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dibujar();
 
             if (mensaje) {
-                mensaje.textContent = mensajeDeApi(respuesta);
+                avisoDeApi(mensaje, respuesta);
             }
 
             return apiRequest('estados_solicitudes');
@@ -410,7 +410,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     cargarListado().catch(function (error) {
         if (mensaje) {
-            mensaje.textContent = mensajeDeApi(error);
+            avisoDeApi(mensaje, error);
         }
     });
 });
