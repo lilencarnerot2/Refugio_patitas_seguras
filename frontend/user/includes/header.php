@@ -63,6 +63,13 @@ $inicialPerfil = mb_strtoupper(mb_substr($usuarioPerfil['nombre'] ?? '', 0, 1));
         </li>
         <li>
             <label for="menu-perfil-toggle">
+                <a href="#vista-movimientos" data-bs-toggle="tab" data-bs-target="#vista-movimientos"<?php echo $paginaPerfil === 'movimientos' ? ' class="active"' : ''; ?>>
+                    <i class="bi bi-cash-coin"></i> Mis donaciones
+                </a>
+            </label>
+        </li>
+        <li>
+            <label for="menu-perfil-toggle">
                 <a href="#vista-solicitudes" data-bs-toggle="tab" data-bs-target="#vista-solicitudes"<?php echo $paginaPerfil === 'solicitudes' ? ' class="active"' : ''; ?>>
                     <i class="bi bi-file-earmark-text"></i> Mis solicitudes
                 </a>

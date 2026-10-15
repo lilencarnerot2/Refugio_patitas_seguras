@@ -1158,6 +1158,148 @@
         .form-feedback[data-estado="ok"] { color: var(--primary-color); }
         .form-feedback[data-estado="error"] { color: var(--bs-danger, #a32b21); }
 
+        #panel-voluntariado.panel-aportes {
+            padding: 28px 5% 48px;
+        }
+
+        #panel-voluntariado .page-intro {
+            margin-bottom: 40px;
+        }
+
+        #panel-voluntariado .info-card-single,
+        #panel-voluntariado .public-form.public-form-tarjeta {
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #panel-voluntariado .info-card-single {
+            margin-bottom: 32px;
+        }
+
+        #panel-voluntariado .public-form.public-form-tarjeta h3,
+        #panel-voluntariado .public-form.public-form-tarjeta > p {
+            text-align: center;
+        }
+
+        .public-form.public-form-tarjeta {
+            padding: 28px 26px 24px;
+            border: 1px solid var(--tema-crema-claro-borde);
+            border-radius: 18px;
+        }
+
+        #calendario-voluntariado.card,
+        #calendario-voluntariado.card:hover {
+            transform: none;
+            cursor: default;
+        }
+
+        #calendario-voluntariado .calendario-semana {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 0.25rem;
+        }
+
+        #calendario-voluntariado .calendario-celda {
+            min-width: 0;
+            text-align: center;
+        }
+
+        #calendario-voluntariado .calendario-nav {
+            width: 2rem;
+            height: 2rem;
+            padding: 0;
+            line-height: 1;
+        }
+
+        #calendario-voluntariado .calendario-dia-inactivo {
+            color: var(--text-muted);
+            opacity: 0.45;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        #calendario-voluntariado .calendario-dia-fin-semana {
+            background: var(--tema-crema);
+            color: var(--text-dark);
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            min-height: 2rem;
+            box-shadow: none;
+        }
+
+        #calendario-voluntariado .calendario-dia-fin-semana:hover {
+            background: var(--tema-crema-borde);
+            color: var(--primary-color);
+            transform: none;
+        }
+
+        #calendario-voluntariado .calendario-dia-fin-semana:focus,
+        #calendario-voluntariado .calendario-dia-fin-semana:active,
+        #calendario-voluntariado .calendario-nav:focus,
+        #calendario-voluntariado .calendario-nav:active {
+            box-shadow: none;
+            transform: none;
+        }
+
+        #calendario-voluntariado .calendario-dia-fin-semana:focus-visible,
+        #calendario-voluntariado .calendario-nav:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 1px;
+        }
+
+        #calendario-voluntariado .calendario-dia-fin-semana.calendario-dia-elegido,
+        #calendario-voluntariado .calendario-dia-fin-semana.calendario-dia-elegido:hover {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .turno-voluntariado:not(:has(#fecha[value]:not([value=""]))) #rango_horario {
+            pointer-events: none;
+            cursor: not-allowed;
+            opacity: 0.55;
+            background-color: var(--tema-crema);
+            border-color: var(--tema-crema-borde);
+            color: var(--text-muted);
+            box-shadow: none;
+        }
+
+        .turno-voluntariado:has(#fecha[value]:not([value=""])) #rango_horario {
+            pointer-events: auto;
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        .turno-horario-ayuda { min-height: 1.4em; }
+
+        .turno-voluntariado:has(#fecha[value]:not([value=""])) .turno-horario-ayuda {
+            visibility: hidden;
+        }
+
+        #calendario-voluntariado { width: 100%; }
+        #calendario-voluntariado .calendario-nav { flex-shrink: 0; }
+
+        #calendario-voluntariado [data-mes-titulo] {
+            min-width: 0;
+            font-size: clamp(0.85rem, 3.4vw, 1rem);
+        }
+
+        #calendario-voluntariado [data-calendario-grid] {
+            min-height: calc(6 * 2rem + 5 * 0.25rem);
+        }
+
+        @media (max-width: 576px) {
+            #panel-voluntariado.panel-aportes { padding-left: 12px; padding-right: 12px; }
+
+            #panel-voluntariado .public-form.public-form-tarjeta { padding: 16px 12px 18px; }
+
+            #panel-voluntariado .form-seccion { padding: 12px 10px 14px; }
+
+            #calendario-voluntariado .card-header,
+            #calendario-voluntariado .card-body { padding-left: 8px; padding-right: 8px; }
+        }
+
         .empty-back-link {
             display: inline-block;
             margin-top: 16px;
@@ -1350,20 +1492,16 @@
             box-shadow: var(--sombra-flotante);
             max-width: 640px;
             margin: 0 auto;
-            transition: box-shadow 0.25s ease, transform 0.25s ease;
         }
 
-        .public-form:focus-within {
+        .public-form:has(.form-control:focus, .form-select:focus, .form-check-input:focus) {
             box-shadow: var(--sombra-flotante-alta);
-            transform: translateY(-3px);
         }
 
-        @media (prefers-reduced-motion: reduce) {
-            .public-form,
-            .public-form:focus-within {
-                transition: none;
-                transform: none;
-            }
+        .public-form .card,
+        .public-form .card:hover {
+            transform: none;
+            cursor: default;
         }
 
         .form-control:focus,
@@ -1390,7 +1528,14 @@
 
         .public-form .form-label:has(+ [required])::after,
         .public-form .form-label:has(+ * [required])::after,
-        .public-form .form-label:has(+ [data-requerido])::after {
+        .public-form .form-label:has(+ [data-requerido])::after,
+        .public-form .form-label:has(+ [data-a-seleccionar])::after {
+            content: " *";
+            color: #a32b21;
+        }
+
+        .public-form .form-check:has([data-requerido]) > span::after,
+        .public-form .form-check:has([data-requerido]) .form-check-label::after {
             content: " *";
             color: #a32b21;
         }
@@ -1420,7 +1565,6 @@
         }
 
         .public-form .campo-con-x:has(.form-select) .btn-limpiar-campo { right: 1.85rem; }
-        .public-form select option[value=""] { display: none; }
 
         .lista-desplegable {
             position: absolute;
@@ -1635,6 +1779,9 @@
         }
 
         .form-seccion-titulo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-size: 15px;
             font-weight: 700;
             color: var(--primary-color);
@@ -1643,6 +1790,7 @@
         }
 
         #bloque-solicitud .public-form .form-label,
+        .public-form.public-form-tarjeta .form-label,
         #panel-solicitud-detalle .form-label {
             font-size: 13px;
             font-weight: 600;
@@ -1651,6 +1799,8 @@
 
         #bloque-solicitud .public-form .form-control,
         #bloque-solicitud .public-form .form-select,
+        .public-form.public-form-tarjeta .form-control,
+        .public-form.public-form-tarjeta .form-select,
         #panel-solicitud-detalle .form-control {
             border-radius: 10px;
             border-color: var(--border-light);
@@ -1659,6 +1809,7 @@
         }
 
         #bloque-solicitud .public-form .form-check,
+        .public-form.public-form-tarjeta .form-check,
         #panel-solicitud-detalle .form-check {
             display: flex;
             align-items: center;
@@ -1673,6 +1824,7 @@
         }
 
         #bloque-solicitud .public-form .form-check-input,
+        .public-form.public-form-tarjeta .form-check-input,
         #panel-solicitud-detalle .form-check-input {
             position: static;
             float: none;
@@ -1699,7 +1851,8 @@
             border-radius: 12px;
         }
 
-        #bloque-solicitud .public-form .btn-primary {
+        #bloque-solicitud .public-form .btn-primary,
+        .public-form.public-form-tarjeta .btn-primary {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -1878,6 +2031,16 @@
         }
 
         [data-total="0"] .solicitudes-vacio { display: block; }
+
+        .movimientos-donaciones-grupo[data-total="0"] .lista-scroll-mascotas,
+        .movimientos-donaciones-grupo[data-total="0"] [data-paginador] {
+            display: none;
+        }
+
+        .seguimiento-movimientos[data-cargando] .movimientos-donaciones-grupo .lista-scroll-mascotas {
+            opacity: 0.55;
+            pointer-events: none;
+        }
 
         .solicitudes-vacio > i {
             display: block;
@@ -2320,6 +2483,12 @@
             background: var(--tema-crema-claro);
             border: 1px solid var(--tema-crema-claro-borde);
             border-radius: 10px;
+        }
+
+        #panel-mi-perfil .pet-detail-meta li:not(:has(.detalle-label)) {
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
 
         #panel-mi-perfil .pet-detail-meta li:not(:has([data-texto])):not(:has([data-estado])) { display: none; }

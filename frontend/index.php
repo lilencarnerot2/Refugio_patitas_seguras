@@ -25,7 +25,7 @@ require __DIR__ . '/public/includes/header.php';
             <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e" alt="Adoptar cachorro">
             <span class="card-btn">CONOCÉ A LOS RESCATADOS</span>
         </a>
-        <a class="card" href="#modal-voluntariado">
+        <a class="card" href="/public/voluntariado.php">
             <div class="card-body">
                 <h3><i class="bi bi-people-fill"></i> SE VOLUNTARIO</h3>
                 <p>Tu tiempo y tu amor pueden cambiarles la vida.</p>
@@ -113,8 +113,8 @@ require __DIR__ . '/public/includes/header.php';
     <div id="modal-voluntariado" class="modal-overlay">
         <div class="modal-content">
             <h3>Voluntariado</h3>
-            <p>¡Gracias por querer sumarte! Dejanos tu mensaje y nos pondremos en contacto para coordinar las actividades.</p>
-            <a class="close-modal" href="#">Entendido</a>
+            <p>Anotate a un turno desde el formulario. Te llega un mail con los datos, la dirección, las indicaciones y el WhatsApp del refugio.</p>
+            <a class="close-modal" href="/public/voluntariado.php">Ir al formulario</a>
         </div>
     </div>
     <div id="modal-castracion" class="modal-overlay">
