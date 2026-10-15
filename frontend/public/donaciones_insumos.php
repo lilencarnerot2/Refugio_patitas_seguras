@@ -36,7 +36,7 @@ require __DIR__ . '/includes/header.php';
                     </div>
                     <div class="col-12 col-md-6 min-w-0">
                         <label class="form-label" for="fecha">Fecha</label>
-                        <input class="form-control w-100" id="fecha" name="fecha" type="date">
+                        <input class="form-control w-100" id="fecha" name="fecha" type="date" data-min-hoy min="<?php echo date('Y-m-d'); ?>">
                     </div>
                     <div class="col-12 min-w-0">
                         <label class="form-label" for="descripcion">Descripción</label>

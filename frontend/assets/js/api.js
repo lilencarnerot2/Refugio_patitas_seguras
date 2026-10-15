@@ -58,6 +58,23 @@ function borrarCookie(nombre) {
   document.cookie = nombre + '=; path=/; SameSite=Lax; max-age=0';
 }
 
+function valorCookie(nombre) {
+  var partes = document.cookie.split(';');
+  var clave = nombre + '=';
+  var i;
+  var parte;
+
+  for (i = 0; i < partes.length; i++) {
+    parte = partes[i].trim();
+
+    if (parte.indexOf(clave) === 0) {
+      return decodeURIComponent(parte.slice(clave.length));
+    }
+  }
+
+  return '';
+}
+
 function guardarSesion(usuario) {
   usuario = usuario || {};
   guardarCookie('usuario_id', usuario.id);
@@ -113,6 +130,31 @@ function irTrasSesion(origen) {
 function fechaCorta(valor) {
   var texto = (valor === undefined || valor === null) ? '' : String(valor);
   return texto.split(' ')[0];
+}
+
+function fechaDeHoyIso() {
+  var hoy = new Date();
+
+  hoy.setMinutes(hoy.getMinutes() - hoy.getTimezoneOffset());
+
+  return hoy.toISOString().slice(0, 10);
+}
+
+function reservarEspacioCalendario(campo, altoMinimo) {
+  var rect;
+  var falta;
+
+  if (!campo) {
+    return;
+  }
+
+  altoMinimo = altoMinimo || 300;
+  rect = campo.getBoundingClientRect();
+  falta = altoMinimo - (window.innerHeight - rect.bottom);
+
+  if (falta > 0) {
+    window.scrollBy({ top: falta, behavior: 'smooth' });
+  }
 }
 
 function textoDeItem(item) {

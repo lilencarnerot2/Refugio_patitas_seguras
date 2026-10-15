@@ -559,6 +559,74 @@ function actualizarCamposDependientes(formulario) {
     }
 }
 
+function aplicarFechasMinimasFormulario(formulario) {
+    var hoy = fechaDeHoyIso();
+    var origen;
+    var minimo;
+    var dia;
+
+    if (!formulario) {
+        return;
+    }
+
+    formulario.querySelectorAll('input[type="date"][data-min-hoy]').forEach(function (campo) {
+        origen = formulario.elements[campo.getAttribute('data-min-desde') || ''];
+        minimo = hoy;
+
+        if (origen && origen.value) {
+            dia = new Date(origen.value + 'T00:00:00Z');
+            dia.setUTCDate(dia.getUTCDate() + 1);
+            minimo = dia.toISOString().slice(0, 10);
+
+            if (minimo < hoy) {
+                minimo = hoy;
+            }
+        }
+
+        campo.min = minimo;
+
+        if (campo.value && campo.value < minimo) {
+            campo.value = minimo;
+        }
+    });
+}
+
+function enlazarFechasMinimasFormulario(formulario) {
+    if (!formulario) {
+        return;
+    }
+
+    aplicarFechasMinimasFormulario(formulario);
+
+    formulario.querySelectorAll('input[type="date"][data-min-hoy]').forEach(function (campo) {
+        if (campo.getAttribute('data-calendario-enlazado')) {
+            return;
+        }
+
+        campo.setAttribute('data-calendario-enlazado', '1');
+        campo.addEventListener('focus', function () {
+            reservarEspacioCalendario(campo);
+        });
+        campo.addEventListener('click', function () {
+            reservarEspacioCalendario(campo);
+        });
+    });
+
+    formulario.querySelectorAll('input[type="date"][data-min-desde]').forEach(function (campo) {
+        var origenId = campo.getAttribute('data-min-desde');
+        var origen = origenId && formulario.elements[origenId];
+
+        if (!origen || origen.getAttribute('data-min-desde-enlazado')) {
+            return;
+        }
+
+        origen.setAttribute('data-min-desde-enlazado', '1');
+        origen.addEventListener('change', function () {
+            aplicarFechasMinimasFormulario(formulario);
+        });
+    });
+}
+
 function enlazarFormularioMovimiento(formulario, recargar) {
     var origenes;
     var i;
@@ -568,6 +636,7 @@ function enlazarFormularioMovimiento(formulario, recargar) {
     }
 
     actualizarCamposDependientes(formulario);
+    enlazarFechasMinimasFormulario(formulario);
     origenes = formulario.querySelectorAll('select, input');
 
     for (i = 0; i < origenes.length; i++) {
@@ -635,6 +704,18 @@ function validarFormularioMovimiento(formulario, caja) {
         }
     }
 
+    campo = formulario.elements.fecha;
+
+    if (campoVisible(campo) && String(campo.value || '').trim() !== '' && campo.value < fechaDeHoyIso()) {
+        campo.setCustomValidity('La fecha no puede ser anterior a hoy.');
+        if (typeof formulario.reportValidity === 'function') {
+            formulario.reportValidity();
+        }
+        campo.setCustomValidity('');
+        campo.focus();
+        return false;
+    }
+
     return true;
 }
 
@@ -662,6 +743,7 @@ function enviarMovimiento(formulario, recargar) {
         formulario.reset();
         formulario.querySelectorAll('select[data-catalogo]').forEach(seleccionarOpcionUnica);
         actualizarCamposDependientes(formulario);
+        aplicarFechasMinimasFormulario(formulario);
 
         if (recargar) {
             recargar();

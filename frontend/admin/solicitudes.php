@@ -44,10 +44,8 @@ require __DIR__ . '/includes/header.php';
                             <th id="columna-solicitud-id"></th>
                             <th id="columna-solicitud-solicitante"></th>
                             <th id="columna-solicitud-mascota"></th>
-                            <th id="columna-solicitud-especie"></th>
                             <th id="columna-solicitud-tipo"></th>
                             <th id="columna-solicitud-estado"></th>
-                            <th id="columna-solicitud-fecha"></th>
                             <th id="columna-solicitud-ver"></th>
                         </tr>
                     </thead>
@@ -56,10 +54,8 @@ require __DIR__ . '/includes/header.php';
                             <td data-campo="id"></td>
                             <td data-campo="solicitante"></td>
                             <td data-campo="nombre_mascota"></td>
-                            <td data-campo="especie"></td>
                             <td data-campo="tipo_solicitud"></td>
                             <td data-campo="estado_solicitud"></td>
-                            <td data-campo="fecha_solicitud"></td>
                             <td><a class="abm-ver" href="solicitudes_detalle.php" aria-label="Ver"></a></td>
                         </tr>
                     </tbody>
