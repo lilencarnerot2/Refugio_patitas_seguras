@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var mensaje = formulario.querySelector('.campo-obligatorio');
 
         if (mensaje) {
-            mensaje.textContent = '';
+            avisoDeApi(mensaje, '');
         }
 
         boton.disabled = true;
@@ -31,14 +31,14 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(function (respuesta) {
             if (mensaje) {
-                mensaje.textContent = mensajeDeApi(respuesta);
+                avisoDeApi(mensaje, respuesta);
             }
 
             return irTrasSesion(respuesta);
         })
         .catch(function (error) {
             if (mensaje) {
-                mensaje.textContent = mensajeDeApi(error);
+                avisoDeApi(mensaje, error);
             }
         })
         .finally(function () {

@@ -72,21 +72,22 @@ require __DIR__ . '/../public/includes/header.php';
                                 <section class="form-seccion">
                                     <h3 class="form-seccion-titulo">Hogar</h3>
                                     <div class="row g-3">
-                                        <div class="col-md-6 d-flex flex-column gap-2">
-                                            <div>
-                                                <label class="form-label" for="cantidad_integrantes">Cantidad de integrantes</label>
-                                                <input class="form-control" type="number" min="1" id="cantidad_integrantes" name="cantidad_integrantes" required>
-                                            </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="cantidad_integrantes">Cantidad de integrantes</label>
+                                            <input class="form-control" type="number" min="1" id="cantidad_integrantes" name="cantidad_integrantes" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="horas_solo">Horas solo</label>
+                                            <input class="form-control" type="number" min="0" max="24" id="horas_solo" name="horas_solo" aria-describedby="ayuda-horas-solo">
+                                            <div id="ayuda-horas-solo" class="form-text">Coloque un número del 0 al 24.</div>
+                                        </div>
+                                        <div class="col-md-6">
                                             <label class="form-check" for="hay_ninos">
                                                 <input class="form-check-input" type="checkbox" id="hay_ninos" name="hay_ninos">
                                                 <span>Hay niños</span>
                                             </label>
                                         </div>
-                                        <div class="col-md-6 d-flex flex-column gap-2">
-                                            <div>
-                                                <label class="form-label" for="horas_solo">Horas solo</label>
-                                                <input class="form-control" type="number" min="0" max="24" id="horas_solo" name="horas_solo">
-                                            </div>
+                                        <div class="col-md-6">
                                             <label class="form-check" for="tiene_mascotas">
                                                 <input class="form-check-input" type="checkbox" id="tiene_mascotas" name="tiene_mascotas">
                                                 <span>Tiene mascotas</span>

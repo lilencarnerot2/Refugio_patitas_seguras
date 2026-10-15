@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     var caja = document.getElementById('mensaje-perfil') || document.getElementById('mensaje-aportes');
-    var linkPanel = document.querySelector('#menu-perfil .nav-panel');
+    var linkPanel = document.querySelector('.perfil-topbar .nav-panel');
     var menu = document.getElementById('menu-perfil');
     var avisos = {};
     var toggleMenu = document.getElementById('menu-perfil-toggle');
@@ -112,16 +112,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function ponerDato(ul, etiqueta, valor) {
-        if (!ul || asTexto(valor) === '') {
+        if (!ul || asTexto(valor) === '' || valor === false) {
             return;
         }
 
         var li = document.createElement('li');
         var nom = document.createElement('span');
         var val = document.createElement('span');
+        var nombre = asTexto(etiqueta).replace(/_/g, ' ');
+
+        if (valor === true) {
+            val.setAttribute('data-texto', nombre.charAt(0).toUpperCase() + nombre.slice(1));
+            li.appendChild(val);
+            ul.appendChild(li);
+            return;
+        }
 
         nom.className = 'detalle-label';
-        nom.textContent = asTexto(etiqueta).replace(/_/g, ' ');
+        nom.textContent = nombre;
         val.setAttribute('data-texto', asTexto(valor));
 
         li.appendChild(nom);
@@ -146,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
         claves = clavesVisibles(obj);
         for (i = 0; i < claves.length; i++) {
             k = claves[i];
-            if (esId(k)) {
+            if (esId(k) || (k === 'estado' && typeof obj[k] === 'boolean')) {
                 continue;
             }
             if (k.indexOf('fecha') === 0) {
@@ -233,6 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
             avisar(vista, null);
             return res;
         }).catch(function (error) {
+            nodo.setAttribute('data-cargado', '1');
             avisar(vista, error);
             return null;
         });

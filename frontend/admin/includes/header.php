@@ -24,7 +24,7 @@ $esSuperadministrador = esSuperadministrador();
 
     <div class="header-actions">
         <a class="btn-outline" href="/index.php">SITIO</a>
-        <a class="btn-outline" href="<?php echo $salir; ?>">SALIR</a>
+        <a class="btn-outline" href="<?php echo $salir; ?>" role="button" data-bs-toggle="modal" data-bs-target="#modal-salir">SALIR</a>
     </div>
 </header>
 
@@ -99,9 +99,11 @@ $esSuperadministrador = esSuperadministrador();
             </a>
         </li>
         <li class="nav-salir">
-            <a href="<?php echo $salir; ?>">
+            <a href="<?php echo $salir; ?>" role="button" data-bs-toggle="modal" data-bs-target="#modal-salir">
                 <i class="bi bi-box-arrow-right"></i> Salir
             </a>
         </li>
     </ul>
 </nav>
+
+<?php require __DIR__ . '/../../public/includes/modal_salir.php'; ?>
