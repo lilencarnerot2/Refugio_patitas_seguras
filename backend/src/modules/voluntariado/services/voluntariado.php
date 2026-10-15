@@ -1,12 +1,11 @@
 <?php
 
 require_once __DIR__ . '/../../mail/services/mail.php';
+require_once __DIR__ . '/../../notificaciones_wsp/services/whatsapp.php';
 
 
-// ============================================================
+
 // CONFIGURACIÓN
-// ============================================================
-
 const VOLUNTARIADO_TURNOS = [
     'sabado-09-11' => ['dia' => 'Sábado', 'rango' => '09:00 - 11:00', 'horario' => '09:00-11:00'],
     'sabado-14-16' => ['dia' => 'Sábado', 'rango' => '14:00 - 16:00', 'horario' => '14:00-16:00'],
@@ -18,12 +17,8 @@ const VOLUNTARIADO_WHATSAPP = '11 2345 6789';
 const VOLUNTARIADO_DIRECCION = 'Merlo, Buenos Aires, Argentina';
 
 
-// ============================================================
 // VALIDACIONES
-// ============================================================
-
-function validar_fecha_voluntariado(string $fecha): bool
-{
+function validar_fecha_voluntariado(string $fecha): bool {
     $d = DateTime::createFromFormat('Y-m-d', $fecha);
 
     if (!$d || $d->format('Y-m-d') !== $fecha) {
@@ -40,8 +35,7 @@ function validar_fecha_voluntariado(string $fecha): bool
 }
 
 
-function validar_datos_voluntariado(array $datos): void
-{
+function validar_datos_voluntariado(array $datos): void {
     $nombre = trim((string) ($datos['nombre'] ?? ''));
     $apellido = trim((string) ($datos['apellido'] ?? ''));
     $email = trim((string) ($datos['email'] ?? ''));
@@ -112,22 +106,16 @@ function validar_datos_voluntariado(array $datos): void
 }
 
 
-// ============================================================
-// HELPERS
-// ============================================================
 
-function si_no($valor): string
-{
+// HELPERS
+
+function si_no($valor): string {
     return !empty($valor) ? 'Sí' : 'No';
 }
 
 
-// ============================================================
 // REGISTRO
-// ============================================================
-
-function registrar_voluntariado(array $datos): array
-{
+function registrar_voluntariado(array $datos): array {
     validar_datos_voluntariado($datos);
 
     $nombre = trim((string) $datos['nombre']);
@@ -194,9 +182,37 @@ function registrar_voluntariado(array $datos): array
         'voluntariado-usuario-' . md5($email . $fecha . $rango_horario)
     );
 
+
+    // -------- WhatsApp al usuario --------
+    $whatsapp_enviado = false;
+
+    if (!empty($telefono)) {
+
+        try {
+
+            $resultadoWhatsapp = enviar_notificacion_whatsapp(
+                $telefono,
+                'voluntariado_confirmado',
+                $nombre,
+                ''
+            );
+
+            $whatsapp_enviado = $resultadoWhatsapp['success'] ?? true;
+
+        } catch (Throwable $e) {
+
+            error_log(
+                'ERROR NOTIFICACION WHATSAPP VOLUNTARIADO: ' .
+                $e->getMessage()
+            );
+        }
+    }
+
+
     return [
         'mail_refugio_enviado' => $resultadoRefugio['ok'] ?? false,
         'mail_usuario_enviado' => $resultadoUsuario['ok'] ?? false,
+        'whatsapp_enviado' => $whatsapp_enviado,
         'turno' => [
             'fecha' => $fecha,
             'dia' => $dia,

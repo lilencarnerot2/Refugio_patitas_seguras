@@ -2,9 +2,11 @@
 
 require_once __DIR__ . '/../repositories/solicitudes.php';
 require_once __DIR__ . '/../../mail/services/mail.php';
+require_once __DIR__ . '/../../notificaciones_wsp/services/whatsapp.php';
+require_once __DIR__ . '/../../usuarios/services/contactos.php';
 
-function listar_solicitudes(int $id_usuario_actual = 0, bool $es_admin = false): array
-{
+
+function listar_solicitudes(int $id_usuario_actual = 0, bool $es_admin = false): array {
     if ($es_admin || $id_usuario_actual <= 0) {
         return obtener_solicitudes();
     }
@@ -13,16 +15,20 @@ function listar_solicitudes(int $id_usuario_actual = 0, bool $es_admin = false):
 }
 
 
-function buscar_solicitud_por_id(int $id): array|false{
+function buscar_solicitud_por_id(int $id): array|false {
     if ($id <= 0) {
         return false;
     }
 
     return obtener_solicitud_por_id($id);
 }
-  function cambiar_estado_solicitud(
+
+
+function cambiar_estado_solicitud(
     int $id_solicitud,
-    int $id_estado_solicitud): array{
+    int $id_estado_solicitud
+): array {
+
     if ($id_solicitud <= 0 || $id_estado_solicitud <= 0) {
         throw new InvalidArgumentException(
             'Los identificadores no son válidos.'
@@ -69,7 +75,16 @@ function buscar_solicitud_por_id(int $id): array|false{
     // Recargamos la solicitud con TODOS los datos
     $solicitudCompleta = obtener_solicitud_por_id($id_solicitud);
 
-    
+    $nombreAdoptante =
+        $solicitudCompleta['nombre_usuario'] ?? 'adoptante';
+
+    $nombreMascota =
+        $solicitudCompleta['nombre_mascota'] ?? 'la mascota';
+
+    $estadoNuevo =
+        $solicitudCompleta['estado_solicitud'] ?? 'actualizado';
+
+
     // Buscar el email del adoptante en el Padrón
     require_once __DIR__ . '/../../auth/services/integracion_registro.php';
     require_once __DIR__ . '/../../usuarios/services/usuarios.php';
@@ -78,25 +93,81 @@ function buscar_solicitud_por_id(int $id): array|false{
         (int) $solicitudCompleta['id_usuario']
     );
 
+
+    // WHATSAPP
+    $contactos = listar_contactos_usuario(
+        (int) $solicitudCompleta['id_usuario']
+    );
+
+    $telefono_whatsapp = null;
+
+    foreach ($contactos as $contacto) {
+
+        if (
+            isset($contacto['tipo_contacto']) &&
+            $contacto['tipo_contacto'] === 'WhatsApp'
+        ) {
+            $telefono_whatsapp = $contacto['valor'];
+            break;
+        }
+    }
+
+    $estado_normalizado = strtolower(
+        trim($estadoNuevo)
+    );
+
+    $tipo_notificacion = null;
+
+    if ($estado_normalizado === 'aprobado') {
+        $tipo_notificacion = 'solicitud_aprobada';
+    }
+
+    if ($estado_normalizado === 'rechazado') {
+        $tipo_notificacion = 'solicitud_rechazada';
+    }
+
+    if (
+        $tipo_notificacion !== null &&
+        !empty($telefono_whatsapp)
+    ) {
+
+        try {
+
+            enviar_notificacion_whatsapp(
+                $telefono_whatsapp,
+                $tipo_notificacion,
+                $nombreAdoptante,
+                $nombreMascota
+            );
+
+        } catch (Throwable $e) {
+
+            error_log(
+                'ERROR NOTIFICACION WHATSAPP: ' .
+                $e->getMessage()
+            );
+        }
+    }
+
+
+    // MAIL
     if ($usuarioLocal && !empty($usuarioLocal['uid_pp2'])) {
+
         $emailAdoptante = buscarEmailEnPadron(
             (string) $usuarioLocal['uid_pp2']
         );
 
         if ($emailAdoptante) {
-            $nombreAdoptante =
-                $solicitudCompleta['nombre_usuario'] ?? 'adoptante';
-            $nombreMascota =
-                $solicitudCompleta['nombre_mascota'] ?? 'la mascota';
-            $estadoNuevo =
-                $solicitudCompleta['estado_solicitud'] ?? 'actualizado';
 
             enviarMail(
                 $emailAdoptante,
                 "Tu solicitud para $nombreMascota cambió de estado",
                 "Hola $nombreAdoptante, tu solicitud para adoptar a $nombreMascota pasó al estado: $estadoNuevo.",
                 null,
-                'solicitud-' . $id_solicitud . '-estado-' . $id_estado_solicitud
+                'solicitud-' .
+                    $id_solicitud .
+                    '-estado-' .
+                    $id_estado_solicitud
             );
         }
     }
@@ -104,9 +175,12 @@ function buscar_solicitud_por_id(int $id): array|false{
     return $solicitudCompleta;
 }
 
+
 function registrar_solicitud(
     int $id_usuario,
-    array $datos): array{
+    array $datos
+): array {
+
     if ($id_usuario <= 0) {
         throw new InvalidArgumentException(
             'El usuario autenticado no es válido.'
@@ -204,7 +278,7 @@ function registrar_solicitud(
     }
 
     $solicitud_completa = obtener_solicitud_por_id(
-    (int) $solicitud['id']
+        (int) $solicitud['id']
     );
 
     if (!$solicitud_completa) {

@@ -35,6 +35,7 @@ services:
       MAIL_API_URL: ${MAIL_API_URL}
       MAIL_API_KEY: ${MAIL_API_KEY}
       COMPATIBILITY_SERVICE_URL: ${COMPATIBILITY_SERVICE_URL}
+      NOTIFICATION_SERVICE_URL: ${NOTIFICATION_SERVICE_URL}
     networks:
       - patitas_network
 
@@ -42,17 +43,28 @@ services:
     build:
       context: ./microservices/compatibility-service
       dockerfile: Dockerfile
-
     container_name: patitas_compatibility
-
     restart: unless-stopped
-
     ports:
       - "${COMPATIBILITY_PORT}:5000"
-
     networks:
       - patitas_network
     
+  notification-service:
+    build:
+      context: ./microservices/notification-service
+      dockerfile: Dockerfile
+    container_name: patitas_notification
+    restart: unless-stopped
+    ports:
+      - "${NOTIFICATION_PORT}:3000"
+    environment:
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_WHATSAPP_FROM: ${TWILIO_WHATSAPP_FROM}
+      TWILIO_CONTENT_SID: ${TWILIO_CONTENT_SID}
+    networks:
+    - patitas_network
 
 networks:
   patitas_network:

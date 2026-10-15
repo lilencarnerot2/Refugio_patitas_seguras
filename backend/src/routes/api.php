@@ -7,6 +7,8 @@ require_once __DIR__ . '/../modules/auth/controllers/login.php';
 require_once __DIR__ . '/../modules/auth/controllers/registro.php';
 require_once __DIR__ . '/../utils/response.php';
 require_once __DIR__ . '/../middleware/autorizacion.php';
+require_once __DIR__ . '/../modules/voluntariado/controllers/voluntariado.php';
+
 
 function manejarRutas() {
     $recurso = $_GET['recurso'] ?? '';
@@ -348,11 +350,14 @@ function manejarRutas() {
             manejar_movimientos();
             break; 
             
-                case 'reportes_movimientos':
+        case 'reportes_movimientos':
             require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
             manejar_reportes_movimientos();
             break;    
 
+        case 'voluntariado':
+            manejar_voluntariado();
+            break;
 
         case 'auditorias':
             if (!requerir_roles([
