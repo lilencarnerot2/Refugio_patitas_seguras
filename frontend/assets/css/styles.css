@@ -2058,8 +2058,6 @@
             pointer-events: none;
         }
 
-<<<<<<< Updated upstream
-=======
         .movimientos-donaciones-grupo .lista-scroll-mascotas:has(tbody tr[data-id]:nth-child(3)) {
             max-height: 23.5rem;
             overflow-y: auto;
@@ -2083,7 +2081,6 @@
 
         .movimientos-pestanas .nav-link > span i { color: var(--tema-crema-tinta); }
 
->>>>>>> Stashed changes
         .solicitudes-vacio > i {
             display: block;
             margin-bottom: 12px;

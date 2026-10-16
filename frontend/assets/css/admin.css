@@ -1690,6 +1690,7 @@ html { scroll-behavior: smooth; }
 .admin-page #panel-usuario-detalle .pet-detail-meta [data-campo][data-texto]::after,
 .admin-page #panel-solicitud-detalle .pet-detail-meta [data-campo][data-texto]::after,
 .admin-page #panel-solicitud-detalle #lista-contacto-postulante span[data-texto]::after,
+.admin-page #panel-solicitud-detalle #tabla-seguimientos td[data-texto]::after,
 .admin-page #bloque-solicitudes .dash-tabla td[data-texto]::after { content: attr(data-texto); }
 
 .admin-page #bloque-solicitudes tbody tr:not([data-id]) { display: none; }
@@ -1899,6 +1900,273 @@ html { scroll-behavior: smooth; }
     white-space: pre-line;
 }
 
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante .pet-detail-meta,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion .pet-detail-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 14px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta li,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante .pet-detail-meta li,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion .pet-detail-meta li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
+    background: var(--icon-bg);
+    border-radius: 10px;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta li:not(:has([data-texto])),
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante .pet-detail-meta li:not(:has([data-texto])) {
+    display: none;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #evaluacion-resultado .pet-detail-meta [data-campo][data-texto]::after {
+    content: attr(data-texto);
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #evaluacion-espera .evaluacion-placeholder li {
+    display: flex;
+    min-height: 36px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    background: var(--border-light, #e8e8e8);
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #evaluacion-espera .evaluacion-razones-vacia {
+    min-height: 72px;
+    border-radius: 10px;
+    background: var(--border-light, #e8e8e8);
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta li.detalle-meta-ancho {
+    grid-column: 1 / -1;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .mascota-detalle-foto {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 280px;
+    aspect-ratio: 1;
+    min-height: 220px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    border-radius: 14px;
+    background: var(--icon-bg);
+    overflow: hidden;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .mascota-detalle-foto-img,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .mascota-detalle-foto-vacia {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 14px;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .mascota-detalle-foto-img[hidden] {
+    display: none !important;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .mascota-detalle-foto-vacia {
+    display: block;
+    background: var(--icon-bg);
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-panel {
+    height: auto;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-nav-pills {
+    padding: 4px;
+    border-radius: 12px;
+    background: var(--icon-bg);
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-nav-pills .nav-link {
+    flex: 1 1 auto;
+    border: 0;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-soft);
+    text-align: center;
+    white-space: nowrap;
+    background: transparent;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-nav-pills .nav-link.active,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-nav-pills .nav-link:hover {
+    color: var(--primary-color);
+    background: #fff;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-panel-contenido {
+    min-width: 0;
+    padding: 4px 2px 0;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    height: 100%;
+    padding: 10px 12px;
+    background: var(--icon-bg);
+    border-radius: 10px;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item:not(:has([data-texto])) {
+    display: none;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item [data-campo][data-texto]::after {
+    content: attr(data-texto);
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-meta-dos-columnas {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 12px;
+}
+
+@media (max-width: 575.98px) {
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-meta-dos-columnas {
+        grid-template-columns: 1fr;
+    }
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .transito-fila-formulario > [class*="col-"] {
+    display: flex;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .transito-card-par {
+    display: flex;
+    flex-direction: column;
+    min-height: min(360px, 48vh);
+    max-height: min(360px, 48vh);
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario {
+    position: static;
+    width: 100%;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .formulario-detalle-scroll,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .evaluacion-detalle-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-resolucion {
+    width: 100%;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-resolucion[data-compatibilidad-lista="0"] #botones-estado .btn,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-resolucion[data-compatibilidad-cargando="1"] #botones-estado .btn,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #botones-estado[data-compatibilidad-lista="0"] .btn,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #botones-estado .btn-resolucion-bloqueada,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #botones-estado .btn-estado-solicitud:disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    background-color: #e8e8e8 !important;
+    border-color: #d0d0d0 !important;
+    color: #9a9a9a !important;
+    box-shadow: none;
+    opacity: 1 !important;
+    --bs-btn-color: #9a9a9a;
+    --bs-btn-border-color: #d0d0d0;
+    --bs-btn-bg: #e8e8e8;
+    --bs-btn-disabled-color: #9a9a9a;
+    --bs-btn-disabled-bg: #e8e8e8;
+    --bs-btn-disabled-border-color: #d0d0d0;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #botones-estado [data-nombre-estado="Pendiente"] {
+    display: none !important;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #botones-estado [data-nombre-estado="Finalizado"],
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #botones-estado [data-nombre-estado="Finalizada"] {
+    display: none !important;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-resolucion[data-estado-actual="Aprobado"] #botones-estado [data-nombre-estado="Finalizado"],
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-resolucion[data-estado-actual="Aprobado"] #botones-estado [data-nombre-estado="Finalizada"],
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-resolucion[data-estado-actual="Rechazado"] #botones-estado [data-nombre-estado="Finalizado"],
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-resolucion[data-estado-actual="Rechazado"] #botones-estado [data-nombre-estado="Finalizada"] {
+    display: inline-flex !important;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta li.detalle-meta-multilinea [data-campo][data-texto]::after {
+    white-space: pre-line;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-resolucion [data-campo][data-texto]::after,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-solicitud-meta [data-campo][data-texto]::after {
+    content: attr(data-texto);
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .solicitud-meta-datos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    margin-top: 6px;
+    padding-left: 44px;
+    font-size: 14px;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .solicitud-meta-item .detalle-label {
+    margin-right: 4px;
+}
+
+.admin-page #modal-confirmar-estado .modal-confirmar-estado-icono {
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+    color: var(--primary, #0d6efd);
+    background: var(--icon-bg, rgba(13, 110, 253, 0.12));
+}
+
+.admin-page #modal-confirmar-estado .modal-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.admin-page #modal-confirmar-estado #modal-confirmar-estado-destino {
+    color: var(--text-dark);
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .bloque-razones .detalle-razon-item {
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    background: var(--icon-bg);
+    border-radius: 10px;
+    font-size: 13px;
+}
+
 .admin-page #panel-usuario-detalle .detalle-label,
 .admin-page #panel-solicitud-detalle .detalle-label {
     color: var(--text-soft);
@@ -1917,6 +2185,20 @@ html { scroll-behavior: smooth; }
 }
 
 .admin-page #bloque-solicitudes > h3::before { content: "Solicitudes"; }
+
+.admin-page #panel-solicitudes[data-tipo="transito"] #bloque-solicitudes > h3::before {
+    content: "Solicitudes de tránsito";
+}
+
+.admin-page #panel-solicitudes[data-tipo="transito"] #columna-solicitud-especie,
+.admin-page #panel-solicitudes[data-tipo="transito"] #columna-solicitud-tipo,
+.admin-page #panel-solicitudes[data-tipo="transito"] #columna-solicitud-fecha,
+.admin-page #panel-solicitudes[data-tipo="transito"] td[data-campo="especie"],
+.admin-page #panel-solicitudes[data-tipo="transito"] td[data-campo="tipo_solicitud"],
+.admin-page #panel-solicitudes[data-tipo="transito"] td[data-campo="fecha_solicitud"],
+.admin-page #panel-solicitudes[data-tipo="transito"] .listado-filtro-grupo[aria-label="Especie"] {
+    display: none;
+}
 .admin-page #bloque-solicitudes .dash-tabla { width: 100%; }
 
 .admin-page #bloque-solicitudes .dash-tabla th {

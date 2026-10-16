@@ -26,6 +26,24 @@ document.addEventListener('DOMContentLoaded', function () {
         porPagina = 0;
     }
 
+    function esTransito(solicitud) {
+        var tipo = normalizar(solicitud && solicitud.tipo_solicitud);
+
+        return tipo.indexOf('transito') !== -1 || tipo.indexOf('hogar') !== -1 && tipo.indexOf('trans') !== -1;
+    }
+
+    function coincideTipo(solicitud) {
+        if (!tipoPedido) {
+            return true;
+        }
+
+        if (tipoPedido === 'transito') {
+            return esTransito(solicitud);
+        }
+
+        return normalizar(solicitud.tipo_solicitud).indexOf(normalizar(tipoPedido)) !== -1;
+    }
+
     function texto(valor) {
         if (valor === undefined || valor === null) {
             return '';
@@ -39,6 +57,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function urlDetalleSolicitud(solicitud) {
+        if (esTransito(solicitud)) {
+            return 'transito_detalle.php';
+        }
+
         var tipo = normalizar(solicitud && solicitud.tipo_solicitud);
 
         if (tipoPedido === 'adopcion' || tipo.indexOf('adopcion') !== -1) {
@@ -195,6 +217,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 estado_solicitud: texto(solicitud.estado_solicitud)
             };
 
+            if (tipoPedido === 'transito') {
+                delete valores.especie;
+                delete valores.tipo_solicitud;
+                delete valores.fecha_solicitud;
+            }
+
             Object.keys(valores).forEach(function (campo) {
                 var td = tr.querySelector('td[data-campo="' + campo + '"]');
 
@@ -261,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function dibujarResumen(tipos) {
-        if (!resumen) {
+        if (!resumen || tipoPedido) {
             return;
         }
 
@@ -335,13 +363,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 solicitud.especie = especiesPorMascota[String(solicitud.id_mascota)] || '';
 
                 return solicitud;
-            }).filter(function (solicitud) {
-                if (!tipoPedido) {
-                    return true;
-                }
-
-                return normalizar(solicitud.tipo_solicitud).indexOf(normalizar(tipoPedido)) !== -1;
-            });
+            }).filter(coincideTipo);
             dibujar();
 
             if (mensaje) {

@@ -71,6 +71,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function urlDetalleSolicitud(solicitud) {
+        var tipo = texto(solicitud && solicitud.tipo_solicitud).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+        if (tipo.indexOf('transito') !== -1 || tipo.indexOf('hogar') !== -1 && tipo.indexOf('trans') !== -1) {
+            return 'transito_detalle.php';
+        }
+
+        return 'solicitudes_detalle.php';
+    }
+
     function pintarSolicitudes(usuario) {
         if (!cuerpo || !cabecera) {
             return Promise.resolve(null);
@@ -107,8 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     var enlace = td.querySelector('a');
 
                     if (enlace) {
-                        // le agrega el id al href
-                        enlace.setAttribute('href', (enlace.getAttribute('href') || '') + '?id=' + encodeURIComponent(solicitud.id));
+                        enlace.setAttribute('href', urlDetalleSolicitud(solicitud) + '?id=' + encodeURIComponent(solicitud.id));
                         enlace.textContent = valor;
                     } else if (valor !== '') {
                         td.setAttribute('data-texto', valor);

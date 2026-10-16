@@ -28,8 +28,8 @@ $inicialPerfil = mb_strtoupper(mb_substr($usuarioPerfil['nombre'] ?? '', 0, 1));
 
     <div class="header-actions dropdown">
         <button class="btn perfil-usuario dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="perfil-avatar rounded-circle d-inline-flex align-items-center justify-content-center"><?php echo htmlspecialchars($inicialPerfil, ENT_QUOTES, 'UTF-8'); ?></span>
-            <span class="d-none d-sm-inline"><?php echo htmlspecialchars($nombrePerfil, ENT_QUOTES, 'UTF-8'); ?></span>
+            <span class="perfil-avatar rounded-circle d-inline-flex align-items-center justify-content-center"><?php echo $inicialPerfil; ?></span>
+            <span class="d-none d-sm-inline"><?php echo $nombrePerfil; ?></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 p-2">
             <li class="nav-panel" hidden>
@@ -63,22 +63,14 @@ $inicialPerfil = mb_strtoupper(mb_substr($usuarioPerfil['nombre'] ?? '', 0, 1));
         </li>
         <li>
             <label for="menu-perfil-toggle">
-<<<<<<< Updated upstream
-                <a href="#vista-movimientos" data-bs-toggle="tab" data-bs-target="#vista-movimientos"<?php echo $paginaPerfil === 'movimientos' ? ' class="active"' : ''; ?>>
-=======
                 <a href="mis_movimientos.php"<?php echo $paginaPerfil === 'movimientos' ? ' class="active"' : ''; ?>>
->>>>>>> Stashed changes
                     <i class="bi bi-cash-coin"></i> Mis donaciones
                 </a>
             </label>
         </li>
         <li>
             <label for="menu-perfil-toggle">
-<<<<<<< Updated upstream
-                <a href="#vista-solicitudes" data-bs-toggle="tab" data-bs-target="#vista-solicitudes"<?php echo $paginaPerfil === 'solicitudes' ? ' class="active"' : ''; ?>>
-=======
                 <a href="mis_solicitudes.php"<?php echo $paginaPerfil === 'solicitudes' ? ' class="active"' : ''; ?>>
->>>>>>> Stashed changes
                     <i class="bi bi-file-earmark-text"></i> Mis solicitudes
                 </a>
             </label>

@@ -46,13 +46,8 @@ $esSuperadministrador = esSuperadministrador();
             </details>
         </li>
         <li>
-            <a href="solicitudes.php"<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle', 'adopcion_detalle'], true) ? ' class="active"' : ''; ?>>
+            <a href="solicitudes.php"<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle', 'adopcion_detalle', 'hogares_transito', 'transito_detalle'], true) ? ' class="active"' : ''; ?>>
                 <i class="bi bi-file-earmark-text"></i> Solicitudes
-            </a>
-        </li>
-        <li>
-            <a href="hogares_transito.php"<?php echo $paginaAdmin === 'hogares_transito' ? ' class="active"' : ''; ?>>
-                <i class="bi bi-house"></i> Hogares de tránsito
             </a>
         </li>
         <li>
