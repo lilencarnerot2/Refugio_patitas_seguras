@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
         <div class="perfil-bienvenida card border-0 rounded-4 mb-4">
             <div class="card-body p-4 d-flex align-items-center justify-content-between gap-3">
                 <div>
-                    <h2 class="mb-2">¡Hola, <?php echo htmlspecialchars($usuarioPerfil['nombre'] ?? '', ENT_QUOTES, 'UTF-8'); ?>! <i class="fa-solid fa-paw"></i></h2>
+                    <h2 class="mb-2">¡Hola, <?php echo $usuarioPerfil['nombre'] ?? ''; ?>! <i class="fa-solid fa-paw"></i></h2>
                     <p class="mb-0">Gracias por ser parte de Patitas Seguras.<br>Desde acá podés ver tus datos de contacto y domicilio.</p>
                 </div>
                 <div class="perfil-bienvenida-ilustracion d-none d-md-flex align-items-end gap-2" aria-hidden="true">

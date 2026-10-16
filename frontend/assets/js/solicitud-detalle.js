@@ -11,14 +11,277 @@ document.addEventListener('DOMContentLoaded', function () {
     var fichaMascota = document.getElementById('ficha-mascota');
     var fichaPostulante = document.getElementById('ficha-postulante');
     var fichaEvaluacion = document.getElementById('ficha-evaluacion');
+    var fichaResolucion = document.getElementById('ficha-resolucion');
+    var fichaSolicitudMeta = document.getElementById('ficha-solicitud-meta');
     var mensaje = document.getElementById('mensaje-formulario');
     var botones = document.getElementById('botones-estado');
     var id = new URLSearchParams(window.location.search).get('id');
     var listado = panel.getAttribute('data-listado') || '';
     var tipoPedido = panel.getAttribute('data-tipo') || '';
+    var compatibilidadLista = false;
+    var solicitudActual = null;
+
+    function normalizarTipo(valor) {
+        return texto(valor).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    var compatibilidadManual = panel.hasAttribute('data-compatibilidad-manual');
+
+    function estiloBotonResolucion(btn, bloqueado) {
+        btn.disabled = !!bloqueado;
+        btn.classList.toggle('btn-resolucion-bloqueada', !!bloqueado);
+
+        if (bloqueado) {
+            btn.classList.remove('btn-outline-primary', 'btn-primary');
+            btn.classList.add('btn-secondary', 'btn-outline');
+            return;
+        }
+
+        btn.classList.remove('btn-secondary', 'btn-outline-primary', 'btn-primary');
+        btn.classList.add('btn-outline');
+    }
+
+    function evaluacionCompatibilidadHecha() {
+        return !!(fichaEvaluacion && fichaEvaluacion.getAttribute('data-evaluacion-lista') === '1');
+    }
+
+    function actualizarBotonCompatibilidad() {
+        var botonCompat = document.getElementById('boton-compatibilidad');
+
+        if (!botonCompat || !compatibilidadManual) {
+            return;
+        }
+
+        var hecha = evaluacionCompatibilidadHecha();
+
+        botonCompat.disabled = hecha;
+        botonCompat.hidden = hecha;
+    }
+
+    function bloquearBotonesResolucion(bloqueado) {
+        if (!botones) {
+            return;
+        }
+
+        botones.querySelectorAll('.btn-estado-solicitud').forEach(function (btn) {
+            estiloBotonResolucion(btn, bloqueado);
+        });
+    }
+
+    function actualizarVistaResolucion() {
+        var aviso = document.getElementById('resolucion-espera-compatibilidad');
+        var hayBotones = botones && botones.querySelectorAll('.btn-estado-solicitud').length > 0;
+
+        if (!botones) {
+            return;
+        }
+
+        if (compatibilidadLista && hayBotones) {
+            if (aviso) {
+                aviso.hidden = true;
+            }
+
+            botones.hidden = false;
+            bloquearBotonesResolucion(false);
+            return;
+        }
+
+        if (hayBotones) {
+            if (aviso) {
+                aviso.hidden = false;
+            }
+
+            botones.hidden = false;
+            bloquearBotonesResolucion(true);
+            return;
+        }
+
+        if (aviso) {
+            aviso.hidden = false;
+        }
+
+        botones.hidden = true;
+    }
 
     function mostrarAviso(origen, ok) {
         avisoDeApi(mensaje, origen, ok);
+    }
+
+    function marcarCompatibilidadListo(ok) {
+        var avisoResolucion = document.getElementById('resolucion-espera-compatibilidad');
+
+        compatibilidadLista = !!ok;
+
+        if (fichaResolucion) {
+            fichaResolucion.setAttribute('data-compatibilidad-lista', compatibilidadLista ? '1' : '0');
+        }
+
+        if (botones) {
+            botones.setAttribute('data-compatibilidad-lista', compatibilidadLista ? '1' : '0');
+        }
+
+        if (botones && botones.hasAttribute('data-resolver')) {
+            actualizarVistaResolucion();
+            return;
+        }
+
+        if (botones) {
+            botones.hidden = !compatibilidadLista;
+        }
+
+        if (avisoResolucion) {
+            avisoResolucion.hidden = compatibilidadLista;
+        }
+    }
+
+    function mostrarEvaluacionPendiente() {
+        var espera = document.getElementById('evaluacion-espera');
+        var resultado = document.getElementById('evaluacion-resultado');
+        var avisoEval = document.getElementById('aviso-evaluacion');
+
+        if (espera) {
+            espera.hidden = false;
+        }
+
+        if (resultado) {
+            resultado.hidden = true;
+        }
+
+        if (fichaEvaluacion) {
+            fichaEvaluacion.setAttribute('data-cargado', '0');
+            fichaEvaluacion.setAttribute('data-evaluacion-lista', '0');
+        }
+
+        if (avisoEval) {
+            avisoEval.textContent = '';
+        }
+
+        marcarCompatibilidadListo(false);
+        actualizarBotonCompatibilidad();
+    }
+
+    function pintarAvataresCompatibilidad(datosRespuesta, solicitud) {
+        var mascotaApi = datosRespuesta && datosRespuesta.mascota;
+        var foto = document.getElementById('compatibilidad-foto-mascota');
+        var fotoVacia = document.getElementById('compatibilidad-foto-mascota-vacia');
+        var etiquetaMascota = document.querySelector('#compatibilidad-avatar-mascota [data-campo="nombre_mascota"]');
+        var etiquetaPostulante = document.querySelector('#compatibilidad-avatar-postulante [data-campo="nombre_postulante"]');
+        var nombreMascota = texto(mascotaApi && mascotaApi.nombre);
+        var nombrePostulante = [
+            texto(solicitud && solicitud.nombre_usuario),
+            texto(solicitud && solicitud.apellido_usuario)
+        ].join(' ').trim();
+        var urlFoto = texto(mascotaApi && mascotaApi.foto_url);
+
+        if (etiquetaMascota) {
+            if (nombreMascota !== '') {
+                etiquetaMascota.setAttribute('data-texto', nombreMascota);
+            } else {
+                etiquetaMascota.removeAttribute('data-texto');
+            }
+        }
+
+        if (etiquetaPostulante) {
+            if (nombrePostulante !== '') {
+                etiquetaPostulante.setAttribute('data-texto', nombrePostulante);
+            } else {
+                etiquetaPostulante.removeAttribute('data-texto');
+            }
+        }
+
+        if (!foto) {
+            return;
+        }
+
+        if (urlFoto !== '') {
+            foto.src = urlFoto;
+            foto.alt = nombreMascota;
+            foto.hidden = false;
+
+            if (fotoVacia) {
+                fotoVacia.hidden = true;
+            }
+
+            return;
+        }
+
+        foto.removeAttribute('src');
+        foto.hidden = true;
+
+        if (fotoVacia) {
+            fotoVacia.hidden = false;
+        }
+    }
+
+    function pintarRazonesEvaluacion(razones) {
+        var listaRazones = document.getElementById('lista-razones');
+        var modelo = document.getElementById('modelo-razon-evaluacion');
+
+        if (!listaRazones) {
+            return;
+        }
+
+        while (listaRazones.firstChild) {
+            listaRazones.removeChild(listaRazones.firstChild);
+        }
+
+        if (!Array.isArray(razones)) {
+            razones = textoDeItem(razones) ? [razones] : [];
+        }
+
+        razones.forEach(function (razon) {
+            var detalle = textoDeItem(razon);
+            var item;
+
+            if (detalle === '') {
+                return;
+            }
+
+            if (modelo) {
+                item = modelo.cloneNode(true);
+                item.removeAttribute('id');
+                item.textContent = detalle;
+            } else {
+                item = document.createElement('li');
+                item.textContent = detalle;
+            }
+
+            listaRazones.appendChild(item);
+        });
+    }
+
+    function mostrarEvaluacionConDatos(evaluacion, datosRespuesta) {
+        var espera = document.getElementById('evaluacion-espera');
+        var resultado = document.getElementById('evaluacion-resultado');
+        var pct = puntajeCompatibilidadPct(evaluacion);
+        var puntajeApi = evaluacion && evaluacion.puntaje;
+        var corazon = document.getElementById('corazon-compatibilidad');
+
+        if (espera) {
+            espera.hidden = true;
+        }
+
+        if (resultado) {
+            resultado.hidden = false;
+        }
+
+        if (fichaEvaluacion) {
+            pintarCaja(fichaEvaluacion, {
+                puntaje: puntajeApi !== undefined && puntajeApi !== null ? puntajeApi : '',
+                clasificacion: evaluacion.clasificacion
+            });
+            fichaEvaluacion.setAttribute('data-cargado', '1');
+            fichaEvaluacion.setAttribute('data-evaluacion-lista', '1');
+        }
+
+        pintarCorazonCompatibilidad(corazon, pct);
+        pintarAvataresCompatibilidad(
+            datosRespuesta,
+            solicitudActual || (datosRespuesta && datosRespuesta.solicitud)
+        );
+        pintarRazonesEvaluacion(evaluacion.razones);
+        marcarCompatibilidadListo(true);
+        actualizarBotonCompatibilidad();
     }
 
     function texto(valor) {
@@ -105,14 +368,22 @@ document.addEventListener('DOMContentLoaded', function () {
             pintarCaja(ficha, solicitud);
         }
 
-        var estadoResumen = document.querySelector('#ficha-resolucion [data-campo="estado_solicitud"]');
+        if (fichaSolicitudMeta) {
+            pintarCaja(fichaSolicitudMeta, {
+                fecha_solicitud: solicitud.fecha_solicitud
+            });
+        }
 
-        if (estadoResumen) {
-            if (texto(solicitud.estado_solicitud) !== '') {
-                estadoResumen.setAttribute('data-texto', texto(solicitud.estado_solicitud));
-            } else {
-                estadoResumen.removeAttribute('data-texto');
-            }
+        if (fichaResolucion) {
+            fichaResolucion.setAttribute('data-estado-actual', texto(solicitud.estado_solicitud));
+            fichaResolucion.setAttribute('data-id-estado-actual', texto(solicitud.id_estado_solicitud));
+            pintarCaja(fichaResolucion, {
+                estado_solicitud: solicitud.estado_solicitud
+            });
+        }
+
+        if (botones) {
+            botones.setAttribute('data-id-estado-actual', texto(solicitud.id_estado_solicitud));
         }
     }
 
@@ -265,21 +536,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 return null;
             }
 
+            solicitudActual = solicitud;
             pintarFicha(solicitud);
 
-            return Promise.all([
+            var tareas = [
                 traerFormulario(idSolicitud),
                 traerMascota(solicitud.id_mascota),
-                traerEvaluacion(idSolicitud),
                 traerPostulante(solicitud, solicitud.id_usuario)
-            ]).then(function () {
+            ];
+
+            if (!compatibilidadManual) {
+                tareas.push(traerEvaluacion(idSolicitud));
+            }
+
+            return Promise.all(tareas).then(function () {
                 return solicitud;
             });
         });
-    }
-
-    function normalizarTipo(valor) {
-        return texto(valor).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     }
 
     function listaDe(respuesta) {
@@ -301,6 +574,23 @@ document.addEventListener('DOMContentLoaded', function () {
         copia.hidden = false;
 
         return copia;
+    }
+
+    function activarSeccionPostulante(seccionId) {
+        var nav = document.getElementById('nav-postulante');
+
+        if (!nav || !seccionId) {
+            return;
+        }
+
+        nav.querySelectorAll('[data-postulante-seccion]').forEach(function (boton) {
+            boton.classList.toggle('active', boton.getAttribute('data-postulante-seccion') === seccionId);
+        });
+
+        document.querySelectorAll('[data-panel-postulante]').forEach(function (panelSeccion) {
+            var activo = panelSeccion.getAttribute('data-panel-postulante') === seccionId;
+            panelSeccion.classList.toggle('d-none', !activo);
+        });
     }
 
     function pintarContactosPostulante(contactos) {
@@ -334,7 +624,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         if (seccion) {
-            seccion.hidden = lista.children.length === 0;
+            seccion.classList.toggle('postulante-seccion-vacia', lista.children.length === 0);
         }
     }
 
@@ -345,7 +635,15 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        seccionDomicilio.hidden = !seccionDomicilio.querySelector('.pet-detail-meta [data-texto]');
+        seccionDomicilio.querySelectorAll('.pet-detail-meta li').forEach(function (item) {
+            var valor = item.querySelector('[data-campo]');
+
+            if (!valor) {
+                return;
+            }
+
+            item.hidden = !valor.hasAttribute('data-texto');
+        });
     }
 
     function traerPostulante(solicitud, idUsuario) {
@@ -383,7 +681,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             pintarCaja(fichaPostulante, Object.assign({}, domicilio, {
                 nombre: texto(usuario.nombre) || base.nombre,
-                apellido: texto(usuario.apellido) || base.apellido
+                apellido: texto(usuario.apellido) || base.apellido,
+                fecha_nacimiento: usuario.fecha_nacimiento
             }));
             pintarContactosPostulante(contactos);
             ocultarCamposVaciosPostulante();
@@ -418,53 +717,69 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function traerEvaluacion(idSolicitud) {
-        var listaRazones = document.getElementById('lista-razones');
         var avisoEval = document.getElementById('aviso-evaluacion');
+        var botonCompat = document.getElementById('boton-compatibilidad');
 
         if (!fichaEvaluacion) {
             return Promise.resolve();
         }
 
+        if (compatibilidadManual && evaluacionCompatibilidadHecha()) {
+            return Promise.resolve();
+        }
+
+        if (compatibilidadManual) {
+            mostrarEvaluacionPendiente();
+        }
+
+        if (botonCompat) {
+            botonCompat.disabled = true;
+        }
+
+        if (compatibilidadManual) {
+            avisoEsperandoApi(mensaje);
+        }
+
         return apiRequest('compatibilidad', {
             parametros: { id_solicitud: idSolicitud }
         }).then(function (respuesta) {
-            var datos = datosDeRespuesta(respuesta);
-            var info = datos.compatibilidad || datos;
+            var datos = datosCompatibilidadDeRespuesta(respuesta);
+            var evaluacion = datos.compatibilidad || datos;
 
-            pintarCaja(fichaEvaluacion, info);
-            fichaEvaluacion.setAttribute('data-cargado', '1');
+            if (!evaluacionCompatibilidadValida(evaluacion)) {
+                mostrarEvaluacionPendiente();
 
-            if (!listaRazones) {
-                return;
-            }
-
-            while (listaRazones.firstChild) {
-                listaRazones.removeChild(listaRazones.firstChild);
-            }
-
-            var razones = info.razones;
-
-            if (!Array.isArray(razones)) {
-                razones = textoDeItem(razones) ? [razones] : [];
-            }
-
-            razones.forEach(function (razon) {
-                var item = document.createElement('li');
-                var detalle = textoDeItem(razon);
-
-                if (detalle === '') {
-                    return;
+                if (avisoEval) {
+                    avisoEval.textContent = mensajeDeApi(respuesta);
                 }
 
-                item.textContent = detalle;
-                listaRazones.appendChild(item);
-            });
+                mostrarAviso(respuesta, false);
+                return null;
+            }
+
+            mostrarEvaluacionConDatos(evaluacion, datos);
+
+            if (avisoEval) {
+                avisoEval.textContent = '';
+            }
+
+            mostrarAviso(null);
+            return evaluacion;
         }).catch(function (error) {
+            mostrarEvaluacionPendiente();
+
             if (avisoEval) {
                 avisoEval.textContent = mensajeDeApi(error);
             }
 
+            mostrarAviso(error, false);
             return null;
+        }).then(function (resultado) {
+            if (botonCompat) {
+                botonCompat.disabled = false;
+            }
+
+            return resultado;
         });
     }
 
@@ -504,10 +819,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 boton = modelo.cloneNode(false);
                 boton.removeAttribute('id');
+                boton.hidden = false;
                 boton.setAttribute('data-id-estado', texto(estado.id));
+                boton.setAttribute('data-nombre-estado', nombre);
                 boton.textContent = nombre;
 
-                if (clave.indexOf('rechaz') !== -1) {
+                if (botones.hasAttribute('data-resolver')) {
+                    boton.classList.add('btn-estado-solicitud');
+
+                    if (modelo.hasAttribute('data-confirmar-estado')) {
+                        boton.setAttribute('data-confirmar-estado', '1');
+                    }
+
+                    estiloBotonResolucion(boton, !compatibilidadLista);
+                } else if (clave.indexOf('rechaz') !== -1) {
                     boton.className = 'btn btn-outline';
                 } else if (clave.indexOf('aprob') !== -1) {
                     boton.className = 'btn btn-primary';
@@ -515,6 +840,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 botones.appendChild(boton);
             });
+
+            if (botones.hasAttribute('data-resolver')) {
+                actualizarVistaResolucion();
+            }
         });
     }
 
@@ -526,37 +855,114 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    if (botones) {
-        botones.addEventListener('click', function (evento) {
-            var boton = evento.target.closest('[data-id-estado]');
+    var botonCompatibilidad = document.getElementById('boton-compatibilidad');
+
+    if (botonCompatibilidad) {
+        botonCompatibilidad.addEventListener('click', function () {
+            if (!id || evaluacionCompatibilidadHecha()) {
+                return;
+            }
+
+            traerEvaluacion(id);
+        });
+    }
+
+    function enviarCambioEstado(idEstado) {
+        if (!idEstado || (compatibilidadManual && !compatibilidadLista)) {
+            return;
+        }
+
+        avisoEsperandoApi(mensaje);
+
+        apiRequest('solicitudes', {
+            metodo: 'PUT',
+            parametros: { id: id },
+            cuerpo: { id_estado_solicitud: idEstado }
+        }).then(function (respuesta) {
+            return mostrar(id).then(function (solicitud) {
+                mostrarAviso(respuesta, true);
+
+                if (solicitud) {
+                    return cargarEstados(solicitud.id_estado_solicitud);
+                }
+
+                return null;
+            });
+        }).catch(function (error) {
+            mostrarAviso(error);
+        });
+    }
+
+    var navPostulante = document.getElementById('nav-postulante');
+
+    if (navPostulante) {
+        navPostulante.addEventListener('click', function (evento) {
+            var boton = evento.target.closest('[data-postulante-seccion]');
 
             if (!boton) {
                 return;
             }
 
-            avisoEsperandoApi(mensaje);
-
-            apiRequest('solicitudes', {
-                metodo: 'PUT',
-                parametros: { id: id },
-                cuerpo: { id_estado_solicitud: boton.getAttribute('data-id-estado') }
-            }).then(function (respuesta) {
-                var solicitud = (respuesta && respuesta.data) || {};
-
-                if (Array.isArray(solicitud)) {
-                    solicitud = solicitud[0] || {};
-                }
-
-                mostrarAviso(respuesta, true);
-
-                if (solicitud.id) {
-                    pintarFicha(solicitud);
-                    cargarEstados(solicitud.id_estado_solicitud);
-                }
-            }).catch(function (error) {
-                mostrarAviso(error, false);
-            });
+            activarSeccionPostulante(boton.getAttribute('data-postulante-seccion'));
         });
+        activarSeccionPostulante('personal');
+    }
+
+    if (botones) {
+        var modalConfirmarEstado = document.getElementById('modal-confirmar-estado');
+        var modalConfirmarInstancia = modalConfirmarEstado && window.bootstrap
+            ? window.bootstrap.Modal.getOrCreateInstance(modalConfirmarEstado)
+            : null;
+        var botonConfirmarEstado = document.getElementById('modal-confirmar-estado-aceptar');
+        var destinoConfirmarEstado = document.getElementById('modal-confirmar-estado-destino');
+        var idEstadoConfirmar = null;
+
+        botones.addEventListener('click', function (evento) {
+            var boton = evento.target.closest('[data-id-estado]');
+
+            if (!boton || boton.disabled || (compatibilidadManual && !compatibilidadLista)) {
+                return;
+            }
+
+            if (boton.hasAttribute('data-confirmar-estado') && modalConfirmarInstancia) {
+                idEstadoConfirmar = boton.getAttribute('data-id-estado');
+
+                if (destinoConfirmarEstado) {
+                    destinoConfirmarEstado.textContent = boton.textContent;
+                }
+
+                modalConfirmarInstancia.show();
+                return;
+            }
+
+            enviarCambioEstado(boton.getAttribute('data-id-estado'));
+        });
+
+        if (botonConfirmarEstado) {
+            botonConfirmarEstado.addEventListener('click', function () {
+                var idEstado = idEstadoConfirmar;
+
+                idEstadoConfirmar = null;
+
+                if (modalConfirmarInstancia) {
+                    modalConfirmarInstancia.hide();
+                }
+
+                if (idEstado) {
+                    enviarCambioEstado(idEstado);
+                }
+            });
+        }
+
+        if (modalConfirmarEstado) {
+            modalConfirmarEstado.addEventListener('hidden.bs.modal', function () {
+                idEstadoConfirmar = null;
+            });
+        }
+    }
+
+    if (compatibilidadManual) {
+        mostrarEvaluacionPendiente();
     }
 
     mostrar(id).then(function (solicitud) {

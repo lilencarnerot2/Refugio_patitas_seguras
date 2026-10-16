@@ -38,7 +38,7 @@ require __DIR__ . '/includes/header.php';
                 <table class="dash-tabla">
                     <thead>
                         <tr id="cabecera-solicitudes">
-                            <th id="columna-solicitud-id" data-campo="id" data-href="solicitudes_detalle.php"></th>
+                            <th id="columna-solicitud-id" data-campo="id" data-href="adopcion_detalle.php"></th>
                             <th id="columna-solicitud-tipo" data-campo="tipo_solicitud"></th>
                             <th id="columna-solicitud-mascota" data-campo="nombre_mascota"></th>
                             <th id="columna-solicitud-estado" data-campo="estado_solicitud"></th>
@@ -48,7 +48,7 @@ require __DIR__ . '/includes/header.php';
                     <tbody id="cuerpo-solicitudes">
                         <?php for ($i = 0; $i < $filasSolicitudes; $i++) { ?>
                         <tr>
-                            <td data-campo="id"><a href="solicitudes_detalle.php"></a></td>
+                            <td data-campo="id"><a href="adopcion_detalle.php"></a></td>
                             <td data-campo="tipo_solicitud"></td>
                             <td data-campo="nombre_mascota"></td>
                             <td data-campo="estado_solicitud"></td>
@@ -60,6 +60,12 @@ require __DIR__ . '/includes/header.php';
             </div>
         </article>
     </section>
+
+    <div id="modelos-solicitud" hidden aria-hidden="true">
+        <a data-enlace-detalle-tipo href="adopcion_detalle.php" data-id-tipo-solicitud="" tabindex="-1"></a>
+        <a data-enlace-detalle-tipo href="transito_detalle.php" data-id-tipo-solicitud="" tabindex="-1"></a>
+        <a data-enlace-detalle-default href="adopcion_detalle.php" tabindex="-1"></a>
+    </div>
 
 <script src="config.php"></script>
 <script src="../assets/js/api.js"></script>

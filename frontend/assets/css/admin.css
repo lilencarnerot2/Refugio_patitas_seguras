@@ -1957,17 +1957,15 @@ html { scroll-behavior: smooth; }
     display: none;
 }
 
-.admin-page #panel-solicitud-detalle #ficha-formulario {
+.admin-page #panel-solicitud-detalle #ficha-formulario,
+.admin-page #panel-solicitud-detalle #ficha-evaluacion {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    max-height: min(440px, 56vh);
-}
-
-.admin-page #panel-solicitud-detalle[data-tipo="adopcion"] #ficha-formulario {
-    max-height: min(320px, 42vh);
-    height: auto;
-    min-height: 0;
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: min(400px, 52vh);
+    max-height: min(480px, 62vh);
 }
 
 .admin-page #panel-solicitud-detalle[data-tipo="adopcion"] #ficha-postulante {
@@ -2006,26 +2004,8 @@ html { scroll-behavior: smooth; }
         align-items: stretch;
     }
 
-    .admin-page #panel-solicitud-detalle .dash-fila-dos:has(#ficha-formulario) {
-        min-height: min(440px, 56vh);
-    }
-
-    .admin-page #panel-solicitud-detalle .dash-fila-dos #ficha-formulario {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: calc(50% - 8px);
-        max-height: none;
-        height: auto;
-    }
-
-    .admin-page #panel-solicitud-detalle[data-tipo="adopcion"] #ficha-formulario {
-        position: static;
-        width: 100%;
-        max-width: none;
-        margin: 0;
-        max-height: min(320px, 42vh);
+    .admin-page #panel-solicitud-detalle .transito-fila-formulario {
+        align-items: stretch;
     }
 }
 
@@ -2065,6 +2045,120 @@ html { scroll-behavior: smooth; }
     padding-bottom: 28px;
 }
 
+/* Compatibilidad manual (adopción): avatares + corazón con relleno animado */
+.admin-page #panel-solicitud-detalle .compatibilidad-visual {
+    width: 100%;
+    max-width: 28rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.admin-page #panel-solicitud-detalle .compatibilidad-avatar {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 6.5rem;
+    text-align: center;
+}
+
+.admin-page #panel-solicitud-detalle .compatibilidad-avatar-img,
+.admin-page #panel-solicitud-detalle .compatibilidad-avatar-vacio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.25rem;
+    height: 4.25rem;
+    margin: 0 auto 6px;
+    border-radius: 50%;
+    background: var(--icon-bg);
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.admin-page #panel-solicitud-detalle .compatibilidad-avatar-img[hidden] {
+    display: none !important;
+}
+
+.admin-page #panel-solicitud-detalle .compatibilidad-avatar-vacio {
+    font-size: 1.65rem;
+    color: var(--primary-color);
+}
+
+.admin-page #panel-solicitud-detalle .compatibilidad-avatar-etiqueta {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-soft);
+    overflow-wrap: anywhere;
+}
+
+.admin-page #panel-solicitud-detalle .compatibilidad-corazon {
+    --compat-fill: 0%;
+    position: relative;
+    flex: 0 0 auto;
+    width: 4.75rem;
+    height: 4.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-page #panel-solicitud-detalle .compatibilidad-corazon .compatibilidad-corazon-vacio,
+.admin-page #panel-solicitud-detalle .compatibilidad-corazon .compatibilidad-corazon-lleno {
+    position: absolute;
+    font-size: 3.35rem;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.admin-page #panel-solicitud-detalle .compatibilidad-corazon .compatibilidad-corazon-vacio {
+    color: var(--border-light, #dcdcdc);
+}
+
+.admin-page #panel-solicitud-detalle .compatibilidad-corazon .compatibilidad-corazon-lleno {
+    color: var(--primary-color);
+    clip-path: inset(calc(100% - var(--compat-fill, 0%)) 0 0 0);
+    transition: clip-path 0.85s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.admin-page #panel-solicitud-detalle .compatibilidad-corazon.compatibilidad-corazon-animando .compatibilidad-corazon-lleno {
+    animation: compat-corazon-latido 0.95s ease-out;
+}
+
+@keyframes compat-corazon-latido {
+    0% { transform: scale(0.82); opacity: 0.45; }
+    45% { transform: scale(1.12); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.admin-page #panel-solicitud-detalle .compatibilidad-porcentaje {
+    position: relative;
+    z-index: 2;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--primary-color);
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.85);
+}
+
+.admin-page #panel-solicitud-detalle[data-compatibilidad-manual] #ficha-evaluacion[data-evaluacion-lista="1"] #boton-compatibilidad {
+    display: none;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion {
+    background: var(--tema-crema-claro, var(--icon-bg));
+    border: 1px solid var(--tema-crema-claro-borde, var(--border-light));
+    border-radius: 14px;
+    padding: 14px 14px 16px;
+    margin-bottom: 4px;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion-titulo {
+    margin: 0 0 10px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
 .admin-page #panel-solicitud-detalle #campos-formulario { align-items: start; }
 
 .admin-page #panel-solicitud-detalle #ficha-formulario .form-control {
@@ -2084,19 +2178,8 @@ html { scroll-behavior: smooth; }
     border-radius: 12px;
 }
 
-.admin-page #panel-solicitud-detalle #ficha-solicitud .pet-detail-meta li,
-.admin-page #panel-solicitud-detalle[data-tipo="adopcion"] .pet-detail-meta li {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 8px 10px;
-    background: var(--icon-bg);
-    border-radius: 10px;
-}
-
 .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta li:not(:has([data-texto])):not(:has([data-estado])),
-.admin-page #panel-solicitud-detalle #ficha-solicitud .pet-detail-meta li:not(:has([data-texto])),
-.admin-page #panel-solicitud-detalle[data-tipo="adopcion"] .pet-detail-meta li:not(:has([data-texto])) {
+.admin-page #panel-solicitud-detalle #ficha-solicitud .pet-detail-meta li:not(:has([data-texto])) {
     display: none;
 }
 
@@ -2141,9 +2224,9 @@ html { scroll-behavior: smooth; }
     box-sizing: border-box;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante .pet-detail-meta,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion .pet-detail-meta {
+.admin-page #panel-solicitud-detalle #ficha-mascota .pet-detail-meta,
+.admin-page #panel-solicitud-detalle #ficha-postulante .pet-detail-meta,
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .pet-detail-meta {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px 14px;
@@ -2154,9 +2237,9 @@ html { scroll-behavior: smooth; }
     max-width: 100%;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta li,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante .pet-detail-meta li,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion .pet-detail-meta li {
+.admin-page #panel-solicitud-detalle #ficha-mascota .pet-detail-meta li,
+.admin-page #panel-solicitud-detalle #ficha-postulante .pet-detail-meta li,
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .pet-detail-meta li {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -2172,54 +2255,54 @@ html { scroll-behavior: smooth; }
     text-align: left;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta li.detalle-meta-multilinea {
+.admin-page #panel-solicitud-detalle .pet-detail-meta li.detalle-meta-multilinea {
     align-items: flex-start;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta .detalle-label,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta [data-campo],
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta [data-campo][data-texto]::after,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item [data-campo][data-texto]::after,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item .detalle-label {
+.admin-page #panel-solicitud-detalle .pet-detail-meta .detalle-label,
+.admin-page #panel-solicitud-detalle .pet-detail-meta [data-campo],
+.admin-page #panel-solicitud-detalle .pet-detail-meta [data-campo][data-texto]::after,
+.admin-page #panel-solicitud-detalle .postulante-dato-item [data-campo][data-texto]::after,
+.admin-page #panel-solicitud-detalle .postulante-dato-item .detalle-label {
     max-width: 100%;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta .detalle-label {
+.admin-page #panel-solicitud-detalle .pet-detail-meta .detalle-label {
     flex: 0 0 auto;
     margin: 0;
     color: var(--text-soft);
     font-weight: 600;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta [data-campo] {
+.admin-page #panel-solicitud-detalle .pet-detail-meta [data-campo] {
     flex: 1 1 4rem;
     min-width: 0;
     font-weight: 500;
     color: var(--text-soft);
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta li:not(:has([data-texto])),
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante .pet-detail-meta li:not(:has([data-texto])) {
+.admin-page #panel-solicitud-detalle #ficha-mascota .pet-detail-meta li:not(:has([data-texto])),
+.admin-page #panel-solicitud-detalle #ficha-postulante .pet-detail-meta li:not(:has([data-texto])) {
     display: none;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion[data-evaluacion-lista="0"] #evaluacion-resultado {
+.admin-page #panel-solicitud-detalle #ficha-evaluacion[data-evaluacion-lista="0"] #evaluacion-resultado {
     display: none !important;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion[data-evaluacion-lista="1"] #evaluacion-espera {
+.admin-page #panel-solicitud-detalle #ficha-evaluacion[data-evaluacion-lista="1"] #evaluacion-espera {
     display: none !important;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion[data-evaluacion-lista="1"] #evaluacion-resultado .pet-detail-meta [data-campo][data-texto]::after {
+.admin-page #panel-solicitud-detalle #ficha-evaluacion[data-evaluacion-lista="1"] #evaluacion-resultado .pet-detail-meta [data-campo][data-texto]::after {
     content: attr(data-texto);
     font-weight: 500;
     color: var(--text-soft);
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #evaluacion-espera .evaluacion-placeholder li {
+.admin-page #panel-solicitud-detalle #ficha-evaluacion #evaluacion-espera .evaluacion-placeholder li {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -2231,7 +2314,7 @@ html { scroll-behavior: smooth; }
     background: var(--border-light, #e8e8e8);
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #evaluacion-espera .evaluacion-razones-vacia {
+.admin-page #panel-solicitud-detalle #ficha-evaluacion #evaluacion-espera .evaluacion-razones-vacia {
     min-height: 72px;
     border-radius: 10px;
     background: var(--border-light, #e8e8e8);
@@ -2241,23 +2324,22 @@ html { scroll-behavior: smooth; }
     grid-column: 1 / -1;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .mascota-detalle-foto {
+.admin-page #panel-solicitud-detalle #ficha-mascota .mascota-detalle-foto {
     position: relative;
     display: block;
-    width: 100%;
-    max-width: 280px;
+    width: min(168px, 38vw);
+    max-width: 168px;
     aspect-ratio: 1;
-    min-height: 220px;
-    margin-left: auto;
-    margin-right: auto;
+    min-height: 0;
+    margin: 0 auto 12px;
     padding: 0;
-    border-radius: 14px;
+    border-radius: 12px;
     background: var(--icon-bg);
     overflow: hidden;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .mascota-detalle-foto-img,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .mascota-detalle-foto-vacia {
+.admin-page #panel-solicitud-detalle #ficha-mascota .mascota-detalle-foto-img,
+.admin-page #panel-solicitud-detalle #ficha-mascota .mascota-detalle-foto-vacia {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -2267,14 +2349,14 @@ html { scroll-behavior: smooth; }
     margin: 0;
     object-fit: cover;
     object-position: center;
-    border-radius: 14px;
+    border-radius: 12px;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .mascota-detalle-foto-img[hidden] {
+.admin-page #panel-solicitud-detalle #ficha-mascota .mascota-detalle-foto-img[hidden] {
     display: none !important;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .mascota-detalle-foto-vacia {
+.admin-page #panel-solicitud-detalle #ficha-mascota .mascota-detalle-foto-vacia {
     display: block;
     background: var(--icon-bg);
 }
@@ -2302,7 +2384,7 @@ html { scroll-behavior: smooth; }
     transform: none;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-nav-pills {
+.admin-page #panel-solicitud-detalle .postulante-nav-pills {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
@@ -2314,7 +2396,7 @@ html { scroll-behavior: smooth; }
     scrollbar-width: thin;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-nav-pills .nav-link {
+.admin-page #panel-solicitud-detalle .postulante-nav-pills .nav-link {
     flex: 1 1 auto;
     border: 0;
     border-radius: 10px;
@@ -2325,12 +2407,33 @@ html { scroll-behavior: smooth; }
     text-align: center;
     white-space: nowrap;
     background: transparent;
+    --bs-nav-pills-link-active-bg: var(--white);
+    --bs-nav-pills-link-active-color: var(--primary-color);
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-nav-pills .nav-link.active,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-nav-pills .nav-link:hover {
+.admin-page #panel-solicitud-detalle .postulante-nav-pills .nav-link.active,
+.admin-page #panel-solicitud-detalle .postulante-nav-pills .nav-link:hover,
+.admin-page #panel-solicitud-detalle .postulante-nav-pills .nav-link:focus {
     color: var(--primary-color);
-    background: #fff;
+    background: var(--white);
+    box-shadow: none;
+}
+
+.admin-page #panel-solicitud-detalle .postulante-nav-pills .nav-link.active {
+    font-weight: 700;
+}
+
+.admin-page #panel-solicitud-detalle .postulante-nav-pills button.nav-link {
+    appearance: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.admin-page #panel-solicitud-detalle .postulante-nav-pills button.nav-link.active,
+.admin-page #panel-solicitud-detalle .postulante-nav-pills button.nav-link:active {
+    color: var(--primary-color);
+    background-color: var(--white);
+    border-color: transparent;
 }
 
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-panel-contenido {
@@ -2370,13 +2473,13 @@ html { scroll-behavior: smooth; }
     color: var(--text-soft);
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .form-label {
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .form-label {
     color: var(--text-soft);
     font-weight: 600;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .form-control,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion textarea.form-control {
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .form-control,
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion textarea.form-control {
     color: var(--text-soft);
     font-weight: 500;
 }
@@ -2394,7 +2497,7 @@ html { scroll-behavior: smooth; }
     content: attr(data-texto);
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > [class*="col-"] {
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .row > [class*="col-"] {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -2402,27 +2505,27 @@ html { scroll-behavior: smooth; }
     gap: 8px 12px;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > .col-12:has(textarea),
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > .col-12:has([data-lista-valor]),
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > .col-12:has(#lista-mascotas-hogar) {
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .row > .col-12:has(textarea),
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .row > .col-12:has([data-lista-valor]),
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .row > .col-12:has(#lista-mascotas-hogar) {
     align-items: flex-start;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .form-label {
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .form-label {
     flex: 0 0 auto;
     max-width: 42%;
     margin: 0;
     text-align: left;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .form-control,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion textarea.form-control {
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .form-control,
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion textarea.form-control {
     flex: 1 1 8rem;
     min-width: 0;
     width: auto;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .form-check {
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .form-check {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -2431,14 +2534,14 @@ html { scroll-behavior: smooth; }
     margin: 0;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > .col-12:has([data-lista-valor]) > .form-label,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > .col-12:has([data-lista-valor]) > p.form-label {
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .row > .col-12:has([data-lista-valor]) > .form-label,
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .row > .col-12:has([data-lista-valor]) > p.form-label {
     flex: 0 0 100%;
     max-width: none;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion [data-lista-valor],
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion #lista-mascotas-hogar {
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion [data-lista-valor],
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion #lista-mascotas-hogar {
     flex: 1 1 100%;
     min-width: 0;
 }
@@ -2450,38 +2553,33 @@ html { scroll-behavior: smooth; }
 
 @media (max-width: 767.98px) {
     .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta,
-    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion .pet-detail-meta {
+    .admin-page #panel-solicitud-detalle #ficha-evaluacion .pet-detail-meta {
         grid-template-columns: minmax(0, 1fr);
     }
 
-    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-nav-pills .nav-link {
+    .admin-page #panel-solicitud-detalle .postulante-nav-pills .nav-link {
         flex: 1 1 calc(50% - 4px);
         white-space: normal;
         line-height: 1.25;
     }
 
-    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .transito-card-par {
-        min-height: min(260px, 36vh);
-        max-height: min(420px, 58vh);
-    }
-
-    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario {
-        display: flex;
-        flex-direction: column;
-        max-height: min(420px, 58vh);
-        overflow: hidden;
+    .admin-page #panel-solicitud-detalle .transito-card-par,
+    .admin-page #panel-solicitud-detalle #ficha-formulario,
+    .admin-page #panel-solicitud-detalle #ficha-evaluacion {
+        min-height: min(360px, 48vh);
+        max-height: min(480px, 65vh);
     }
 
     .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta,
     .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante .pet-detail-meta,
-    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion .pet-detail-meta,
+    .admin-page #panel-solicitud-detalle #ficha-evaluacion .pet-detail-meta,
     .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-meta-dos-columnas {
         gap: 14px;
     }
 
     .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta li,
     .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante .pet-detail-meta li,
-    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion .pet-detail-meta li,
+    .admin-page #panel-solicitud-detalle #ficha-evaluacion .pet-detail-meta li,
     .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item {
         padding: 10px 12px;
     }
@@ -2490,7 +2588,7 @@ html { scroll-behavior: smooth; }
         --bs-gutter-y: 0.85rem;
     }
 
-    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row {
+    .admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .row {
         --bs-gutter-y: 0.85rem;
     }
 }
@@ -2501,29 +2599,28 @@ html { scroll-behavior: smooth; }
         grid-template-columns: minmax(0, 1fr);
     }
 
-    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-nav-pills .nav-link {
+    .admin-page #panel-solicitud-detalle .postulante-nav-pills .nav-link {
         flex: 1 1 100%;
     }
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .transito-fila-formulario > [class*="col-"] {
+.admin-page #panel-solicitud-detalle .transito-fila-formulario > [class*="col-"] {
     display: flex;
+    align-items: stretch;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .transito-card-par {
+.admin-page #panel-solicitud-detalle .transito-card-par {
     display: flex;
     flex-direction: column;
-    min-height: min(360px, 48vh);
-    max-height: min(360px, 48vh);
-}
-
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario {
-    position: static;
+    flex: 1 1 auto;
     width: 100%;
+    height: 100%;
+    min-height: min(400px, 52vh);
+    max-height: min(480px, 62vh);
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .formulario-detalle-scroll,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .evaluacion-detalle-scroll {
+.admin-page #panel-solicitud-detalle .formulario-detalle-scroll,
+.admin-page #panel-solicitud-detalle .evaluacion-detalle-scroll {
     flex: 1 1 auto;
     min-height: 0;
     overflow-x: hidden;
@@ -2534,11 +2631,11 @@ html { scroll-behavior: smooth; }
     width: 100%;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-resolucion[data-compatibilidad-lista="0"] #botones-estado .btn,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-resolucion[data-compatibilidad-cargando="1"] #botones-estado .btn,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #botones-estado[data-compatibilidad-lista="0"] .btn,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #botones-estado .btn-resolucion-bloqueada,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #botones-estado .btn-estado-solicitud:disabled {
+.admin-page #panel-solicitud-detalle #ficha-resolucion[data-compatibilidad-lista="0"] #botones-estado .btn,
+.admin-page #panel-solicitud-detalle #ficha-resolucion[data-compatibilidad-cargando="1"] #botones-estado .btn,
+.admin-page #panel-solicitud-detalle #botones-estado[data-compatibilidad-lista="0"] .btn,
+.admin-page #panel-solicitud-detalle #botones-estado .btn-resolucion-bloqueada,
+.admin-page #panel-solicitud-detalle #botones-estado .btn-estado-solicitud:disabled {
     pointer-events: none;
     cursor: not-allowed;
     background-color: #e8e8e8 !important;
@@ -2679,7 +2776,8 @@ html { scroll-behavior: smooth; }
     color: var(--text-dark);
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .bloque-razones .detalle-razon-item {
+.admin-page #panel-solicitud-detalle .bloque-razones .detalle-razon-item,
+.admin-page #panel-solicitud-detalle #ficha-evaluacion #lista-razones li {
     padding: 8px 10px;
     margin-bottom: 6px;
     background: var(--icon-bg);
@@ -2757,27 +2855,6 @@ html { scroll-behavior: smooth; }
     text-align: center;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="adopcion"] #ficha-mascota .dash-foto {
-    width: 100%;
-    max-width: 220px;
-    height: 180px;
-    margin: 0 auto 12px;
-    border-radius: 16px;
-    overflow: hidden;
-}
-
-.admin-page #panel-solicitud-detalle[data-tipo="adopcion"] #ficha-mascota .dash-foto img,
-.admin-page #panel-solicitud-detalle[data-tipo="adopcion"] #detalle-foto-vacia {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 16px;
-}
-
-.admin-page #panel-solicitud-detalle[data-tipo="adopcion"] #detalle-foto-vacia {
-    background: var(--icon-bg);
-}
-
 .admin-page #panel-solicitud-detalle[data-tipo="adopcion"] .bloque-razones:not(:has(li)),
 .admin-page #panel-solicitud-detalle #aviso-evaluacion:empty {
     display: none;
@@ -2800,7 +2877,7 @@ html { scroll-behavior: smooth; }
 }
 
 @media (max-width: 767px) {
-    .admin-page #panel-solicitud-detalle[data-tipo="adopcion"] .pet-detail-meta {
+    .admin-page #panel-solicitud-detalle .pet-detail-meta {
         grid-template-columns: 1fr;
     }
 
@@ -3357,7 +3434,7 @@ html { scroll-behavior: smooth; }
         align-items: flex-start;
     }
 
-    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > [class*="col-"] {
+    .admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .row > [class*="col-"] {
         flex-direction: row;
         align-items: center;
     }
@@ -3381,21 +3458,17 @@ html { scroll-behavior: smooth; }
         min-width: 0;
     }
 
-    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario {
-        display: flex;
-        flex-direction: column;
-        max-height: min(400px, 52vh);
-        overflow: hidden;
+    .admin-page #panel-solicitud-detalle #ficha-formulario,
+    .admin-page #panel-solicitud-detalle #ficha-evaluacion,
+    .admin-page #panel-solicitud-detalle .transito-card-par {
+        min-height: min(360px, 48vh);
+        max-height: min(480px, 65vh);
     }
 
-    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .formulario-detalle-scroll {
+    .admin-page #panel-solicitud-detalle .formulario-detalle-scroll,
+    .admin-page #panel-solicitud-detalle .evaluacion-detalle-scroll {
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-    }
-
-    .admin-page #panel-solicitud-detalle[data-tipo="adopcion"] #ficha-formulario {
-        max-height: min(300px, 40vh);
-        height: auto;
     }
 
     .admin-page #panel-solicitud-detalle #ficha-solicitud .pet-detail-meta,

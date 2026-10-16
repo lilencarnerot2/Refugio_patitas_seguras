@@ -127,7 +127,7 @@ $slots = $paginas;
                     <table class="dash-tabla table table-sm align-middle mb-0">
                         <thead>
                             <tr id="cabecera-dashboard-solicitudes">
-                                <th data-campo="id" data-href="solicitudes_detalle.php?id="></th>
+                                <th data-campo="id" data-href="adopcion_detalle.php?id="></th>
                                 <th data-campo="nombre_usuario"></th>
                                 <th data-campo="apellido_usuario"></th>
                                 <th data-campo="nombre_mascota"></th>
@@ -135,15 +135,15 @@ $slots = $paginas;
                                 <th data-campo="estado_solicitud"></th>
                             </tr>
                         </thead>
-                        <tbody id="cuerpo-dashboard-solicitudes">
+                        <tbody id="cuerpo-dashboard-solicitudes" data-enlace-detalle="solicitud">
                             <?php for ($i = 0; $i < $filas; $i++) { ?>
                             <tr>
-                                <td data-campo="id"><a href="solicitudes_detalle.php"></a></td>
-                                <td data-campo="nombre_usuario"><a href="solicitudes_detalle.php"></a></td>
-                                <td data-campo="apellido_usuario"><a href="solicitudes_detalle.php"></a></td>
-                                <td data-campo="nombre_mascota"><a href="solicitudes_detalle.php"></a></td>
-                                <td data-campo="tipo_solicitud"><a href="solicitudes_detalle.php"></a></td>
-                                <td data-campo="estado_solicitud"><a href="solicitudes_detalle.php"></a></td>
+                                <td data-campo="id"><a href="adopcion_detalle.php"></a></td>
+                                <td data-campo="nombre_usuario"><a href="adopcion_detalle.php"></a></td>
+                                <td data-campo="apellido_usuario"><a href="adopcion_detalle.php"></a></td>
+                                <td data-campo="nombre_mascota"><a href="adopcion_detalle.php"></a></td>
+                                <td data-campo="tipo_solicitud"><a href="adopcion_detalle.php"></a></td>
+                                <td data-campo="estado_solicitud"><a href="adopcion_detalle.php"></a></td>
                             </tr>
                             <?php } ?>
                         </tbody>
@@ -152,6 +152,12 @@ $slots = $paginas;
             </article>
         </div>
     </section>
+
+    <div id="modelos-solicitud" hidden aria-hidden="true">
+        <a data-enlace-detalle-tipo href="adopcion_detalle.php" data-id-tipo-solicitud="" tabindex="-1"></a>
+        <a data-enlace-detalle-tipo href="transito_detalle.php" data-id-tipo-solicitud="" tabindex="-1"></a>
+        <a data-enlace-detalle-default href="adopcion_detalle.php" tabindex="-1"></a>
+    </div>
 
 <script src="config.php"></script>
 <script src="../assets/js/api.js"></script>
