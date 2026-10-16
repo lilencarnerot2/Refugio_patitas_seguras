@@ -28,7 +28,7 @@ $esSuperadministrador = esSuperadministrador();
     </div>
 </header>
 
-<nav id="menu-admin" class="position-fixed start-0 overflow-auto">
+<nav id="menu-admin" class="admin-nav-panel overflow-auto" aria-label="Menú administrativo">
     <ul>
         <li>
             <a href="dashboard.php"<?php echo $paginaAdmin === 'dashboard' ? ' class="active"' : ''; ?>>

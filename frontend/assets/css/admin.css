@@ -69,6 +69,7 @@ html { scroll-behavior: smooth; }
     padding-top: 0;
     width: 100%;
     max-width: 100%;
+    overflow-x: clip;
 }
 
 .admin-page .menu-botones {
@@ -132,9 +133,32 @@ html { scroll-behavior: smooth; }
     align-items: center;
     justify-content: flex-end;
     justify-self: end;
-    flex-shrink: 0;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+    max-width: 100%;
     padding-right: 0;
+}
+
+@media (max-width: 1200px) {
+    .admin-page header {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        gap: 8px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .admin-page .logo-text h1 {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        font-size: clamp(13px, 3.2vw, 18px);
+    }
+
+    .admin-page .header-actions .btn-outline,
+    .admin-page .header-actions .btn-primary {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
 }
 
 .admin-page .header-actions .btn-outline,
@@ -143,6 +167,9 @@ html { scroll-behavior: smooth; }
 
 .admin-page #menu-admin {
     display: none;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(-105%);
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
@@ -156,20 +183,32 @@ html { scroll-behavior: smooth; }
     border-right: 1px solid var(--border-light);
     box-shadow: none;
     z-index: 1050;
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: auto;
+    bottom: auto;
+    max-height: calc(100dvh - var(--header-height));
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.admin-page #menu-admin > ul {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 0;
+    flex: 1 1 auto;
 }
 
 .admin-page #menu-admin::-webkit-scrollbar { display: none; }
 
 .admin-page:has(#menu-admin-toggle:checked) #menu-admin {
     display: flex;
-    top: var(--header-height);
-    right: 0;
-    bottom: auto;
-    left: 0;
-    width: 100%;
-    height: auto !important;
-    max-height: calc(100dvh - var(--header-height));
-    z-index: 1080;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(0);
+    z-index: 1200;
 }
 
 .admin-page section {
@@ -200,48 +239,135 @@ html { scroll-behavior: smooth; }
 }
 
 @media (max-width: 992px) {
+    .admin-page .header-actions {
+        display: none;
+    }
+
     .admin-page:has(#menu-admin-toggle:checked) #menu-admin {
         top: var(--header-height);
         right: 0;
         bottom: auto;
         left: 0;
         width: 100%;
-        max-width: 100%;
-        height: auto !important;
-        max-height: calc(100dvh - var(--header-height));
+        max-width: none;
+        height: auto;
+        min-height: 0;
+        max-height: min(78dvh, calc(100dvh - var(--header-height) - 14vh));
+        padding: 0;
+        background: var(--white);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        border-radius: 0;
         overflow-x: hidden;
         overflow-y: auto;
-        padding: 0 0 12px;
-        background: var(--white);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        overscroll-behavior: contain;
+    }
+
+    .admin-page:has(#menu-admin-toggle:checked) section,
+    .admin-page:has(#menu-admin-toggle:checked) footer {
+        visibility: visible;
+        pointer-events: auto;
+        overflow: visible;
+        max-height: none;
     }
 
     .admin-page:has(#menu-admin-toggle:checked) section { grid-column: 1; }
     .admin-page:has(#menu-admin-toggle:checked) footer { margin-left: 0; }
     .admin-page nav > ul { gap: 0; }
 
-    .admin-page nav details a {
-        font-size: 12px;
-        text-transform: none;
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin > ul {
+        min-height: 0;
+        flex: 0 1 auto;
+        justify-content: flex-start;
+        gap: 0;
+        padding: 2px 0 6px;
+    }
+
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin > ul > li:not(.nav-sitio):not(.nav-salir) {
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin > ul > li.nav-sitio {
+        margin-top: 0;
+        padding: 0;
+        border-bottom: none;
+        border-top: 1px solid #f0f0f0;
     }
 
     .admin-page nav details[open] > a.active,
     .admin-page nav details a:hover { color: var(--primary-color); }
 
-    .admin-page nav > ul > li.nav-sitio,
-    .admin-page nav > ul > li.nav-salir {
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin > ul > li.nav-sitio,
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin > ul > li.nav-salir {
         border-bottom: none;
-        padding: 8px 16px 0;
+        padding: 0;
     }
 
-    .admin-page nav > ul > li.nav-sitio a,
-    .admin-page nav > ul > li.nav-salir a {
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin > ul > li.nav-sitio {
+        padding: 6px 14px 0;
+    }
+
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin > ul > li.nav-salir {
+        padding: 6px 14px 10px;
+    }
+
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin > ul > li.nav-sitio a,
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin > ul > li.nav-salir a {
+        display: flex;
         justify-content: center;
+        width: 100%;
         border: 2px solid var(--primary-color);
+        border-radius: 999px;
         text-transform: uppercase;
+        padding: 7px 12px;
+        font-size: 11px;
+        letter-spacing: 0.35px;
+        background: var(--white);
     }
 
-    .admin-page nav > ul > li.nav-salir { padding-bottom: 8px; }
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin a,
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin summary {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 9px 14px;
+        border-radius: 0;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.35px;
+        line-height: 1.35;
+        text-transform: uppercase;
+        text-align: left;
+    }
+
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin a.active,
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin summary.active {
+        background: var(--tema-verde-fondo);
+        color: var(--primary-color);
+    }
+
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin details a {
+        display: none;
+        padding: 8px 14px 8px 26px;
+        font-size: 11px;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        border-radius: 0;
+        background: var(--tema-verde-fondo);
+    }
+
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin details[open] > a {
+        display: flex;
+    }
+
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin a i,
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin summary i,
+    .admin-page:has(#menu-admin-toggle:checked) #menu-admin summary .icono-pata {
+        font-size: 14px;
+        flex-shrink: 0;
+    }
 }
 
 .admin-page nav > ul > li {
@@ -315,7 +441,9 @@ html { scroll-behavior: smooth; }
 
 .admin-page nav > ul > li.nav-sitio,
 .admin-page nav > ul > li.nav-salir,
-.admin-page .mensaje-formulario:empty { display: none; }
+.admin-page .mensaje-formulario:empty:not([data-estado="error"]):not([data-estado="ok"]):not([data-estado="pendiente"]) {
+    display: none;
+}
 
 .admin-page .formulario-mascota {
     max-width: 860px;
@@ -361,6 +489,57 @@ html { scroll-behavior: smooth; }
 .admin-page .mensaje-formulario {
     margin-top: 18px;
     font-size: 14px;
+}
+
+.admin-page .mensaje-formulario:not(:empty) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    background: var(--tema-crema);
+    border: 1px solid var(--tema-crema-borde);
+    border-radius: 12px;
+    color: var(--tema-crema-tinta);
+    box-shadow: 0 8px 22px rgba(154, 116, 54, 0.12);
+    font-weight: 500;
+    line-height: 1.45;
+    text-align: center;
+}
+
+.admin-page .mensaje-formulario[data-estado="error"]:not(:empty) {
+    background: var(--tema-rojo);
+    border-color: var(--tema-rojo-borde);
+    color: var(--tema-rojo-tinta);
+    box-shadow: 0 8px 22px rgba(168, 72, 62, 0.12);
+}
+
+.admin-page .mensaje-formulario[data-estado="ok"]:not(:empty) {
+    background: var(--tema-verde-suave);
+    border-color: var(--tema-verde);
+    color: var(--primary-color);
+}
+
+.admin-page .mensaje-formulario[data-estado="pendiente"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 12px 16px;
+    background: var(--tema-crema);
+    border: 1px solid var(--tema-crema-borde);
+    border-radius: 12px;
+    color: var(--primary-color);
+}
+
+.admin-page #panel-solicitud-detalle > #mensaje-formulario:not(:empty) {
+    position: sticky;
+    top: 8px;
+    z-index: 20;
+    margin-bottom: 8px;
+}
+
+.admin-page #panel-solicitud-detalle > #mensaje-formulario {
+    contain: layout style;
 }
 
 .admin-page #castracion-estado[data-estado="ok"] { color: var(--primary-color); }
@@ -1740,6 +1919,44 @@ html { scroll-behavior: smooth; }
     font-size: 16px;
 }
 
+.admin-page #panel-solicitud-detalle #ficha-mascota .ficha-icono-especie {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    flex-shrink: 0;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-mascota .ficha-icono-especie .icono-especie {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-mascota .ficha-icono-especie .icono-especie::before {
+    font-size: 1.75rem;
+    font-style: normal;
+    line-height: 1;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-mascota .ficha-icono-especie[data-especie-icono="perro"] .icono-especie::before {
+    content: "🐕";
+}
+
+.admin-page #panel-solicitud-detalle #ficha-mascota .ficha-icono-especie[data-especie-icono="gato"] .icono-especie::before {
+    content: "🐈";
+}
+
+.admin-page #panel-solicitud-detalle #ficha-mascota .ficha-icono-especie:not([data-especie-icono="perro"]):not([data-especie-icono="gato"]) {
+    display: none;
+}
+
 .admin-page #panel-solicitud-detalle #ficha-formulario {
     overflow: hidden;
     display: flex;
@@ -1900,26 +2117,87 @@ html { scroll-behavior: smooth; }
     white-space: pre-line;
 }
 
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] {
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .row {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .row > [class*="col-"] {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .info-card {
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta,
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante .pet-detail-meta,
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion .pet-detail-meta {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px 14px;
     list-style: none;
     margin: 0;
     padding: 0;
+    width: 100%;
+    max-width: 100%;
 }
 
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta li,
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante .pet-detail-meta li,
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion .pet-detail-meta li {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px 10px;
+    min-width: 0;
+    max-width: 100%;
     padding: 8px 10px;
     background: var(--icon-bg);
     border-radius: 10px;
+    overflow: hidden;
+    text-align: left;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta li.detalle-meta-multilinea {
+    align-items: flex-start;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta .detalle-label,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta [data-campo],
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta [data-campo][data-texto]::after,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item [data-campo][data-texto]::after,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item .detalle-label {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta .detalle-label {
+    flex: 0 0 auto;
+    margin: 0;
+    color: var(--text-soft);
+    font-weight: 600;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta [data-campo] {
+    flex: 1 1 4rem;
+    min-width: 0;
+    font-weight: 500;
+    color: var(--text-soft);
 }
 
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta li:not(:has([data-texto])),
@@ -1927,16 +2205,28 @@ html { scroll-behavior: smooth; }
     display: none;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #evaluacion-resultado .pet-detail-meta [data-campo][data-texto]::after {
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion[data-evaluacion-lista="0"] #evaluacion-resultado {
+    display: none !important;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion[data-evaluacion-lista="1"] #evaluacion-espera {
+    display: none !important;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion[data-evaluacion-lista="1"] #evaluacion-resultado .pet-detail-meta [data-campo][data-texto]::after {
     content: attr(data-texto);
-    font-weight: 600;
-    color: var(--text-dark);
+    font-weight: 500;
+    color: var(--text-soft);
 }
 
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] #evaluacion-espera .evaluacion-placeholder li {
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
     min-height: 36px;
     margin-bottom: 8px;
+    padding: 8px 10px;
     border-radius: 10px;
     background: var(--border-light, #e8e8e8);
 }
@@ -1993,11 +2283,34 @@ html { scroll-behavior: smooth; }
     height: auto;
 }
 
+.admin-page #nav-postulante.postulante-nav-pills {
+    display: flex !important;
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 4px;
+    background: var(--icon-bg);
+    border: 0;
+    box-shadow: none;
+    z-index: auto;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+}
+
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-nav-pills {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 100%;
     padding: 4px;
     border-radius: 12px;
     background: var(--icon-bg);
-    overflow-x: auto;
+    overflow-x: visible;
     scrollbar-width: thin;
 }
 
@@ -2027,12 +2340,50 @@ html { scroll-behavior: smooth; }
 
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
     height: 100%;
+    min-width: 0;
+    max-width: 100%;
     padding: 10px 12px;
     background: var(--icon-bg);
     border-radius: 10px;
+    overflow: hidden;
+    text-align: left;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item .detalle-label {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item [data-campo] {
+    flex: 1 1 4rem;
+    min-width: 0;
+    font-weight: 500;
+    color: var(--text-soft);
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item .detalle-label {
+    color: var(--text-soft);
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .form-label {
+    color: var(--text-soft);
+    font-weight: 600;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .form-control,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion textarea.form-control {
+    color: var(--text-soft);
+    font-weight: 500;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-datos-grid > [class*="col-"] {
+    min-width: 0;
+    max-width: 100%;
 }
 
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item:not(:has([data-texto])) {
@@ -2043,14 +2394,115 @@ html { scroll-behavior: smooth; }
     content: attr(data-texto);
 }
 
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > [class*="col-"] {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > .col-12:has(textarea),
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > .col-12:has([data-lista-valor]),
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > .col-12:has(#lista-mascotas-hogar) {
+    align-items: flex-start;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .form-label {
+    flex: 0 0 auto;
+    max-width: 42%;
+    margin: 0;
+    text-align: left;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .form-control,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion textarea.form-control {
+    flex: 1 1 8rem;
+    min-width: 0;
+    width: auto;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .form-check {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin: 0;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > .col-12:has([data-lista-valor]) > .form-label,
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > .col-12:has([data-lista-valor]) > p.form-label {
+    flex: 0 0 100%;
+    max-width: none;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion [data-lista-valor],
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion #lista-mascotas-hogar {
+    flex: 1 1 100%;
+    min-width: 0;
+}
+
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-meta-dos-columnas {
     grid-template-columns: 1fr 1fr;
     gap: 10px 12px;
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta,
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion .pet-detail-meta {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-nav-pills .nav-link {
+        flex: 1 1 calc(50% - 4px);
+        white-space: normal;
+        line-height: 1.25;
+    }
+
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .transito-card-par {
+        min-height: min(260px, 36vh);
+        max-height: min(420px, 58vh);
+    }
+
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario {
+        display: flex;
+        flex-direction: column;
+        max-height: min(420px, 58vh);
+        overflow: hidden;
+    }
+
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta,
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante .pet-detail-meta,
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion .pet-detail-meta,
     .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-meta-dos-columnas {
-        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota .pet-detail-meta li,
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante .pet-detail-meta li,
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-evaluacion .pet-detail-meta li,
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item {
+        padding: 10px 12px;
+    }
+
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-datos-grid {
+        --bs-gutter-y: 0.85rem;
+    }
+
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row {
+        --bs-gutter-y: 0.85rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-meta-dos-columnas,
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante .pet-detail-meta {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-nav-pills .nav-link {
+        flex: 1 1 100%;
     }
 }
 
@@ -2122,24 +2574,92 @@ html { scroll-behavior: smooth; }
     white-space: pre-line;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-resolucion [data-campo][data-texto]::after,
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-solicitud-meta [data-campo][data-texto]::after {
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-resolucion [data-campo][data-texto]::after {
     content: attr(data-texto);
     font-weight: 600;
     color: var(--text-dark);
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .solicitud-meta-datos {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px 20px;
-    margin-top: 6px;
-    padding-left: 44px;
-    font-size: 14px;
+.admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera {
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .solicitud-meta-item .detalle-label {
-    margin-right: 4px;
+.admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-fila-principal {
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    min-height: 2.5rem;
+    padding: 0 0.25rem;
+    box-sizing: border-box;
+}
+
+.admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-titulo {
+    flex: 0 1 auto;
+    justify-content: center;
+    max-width: min(100%, 36rem);
+    margin: 0 auto;
+    padding: 0 4.75rem;
+    box-sizing: border-box;
+}
+
+.admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-titulo h3 {
+    width: auto;
+    flex: 0 1 auto;
+    text-align: center;
+}
+
+.admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-volver {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    z-index: 1;
+    margin: 0;
+    min-width: 0;
+    min-height: 0;
+    padding: 0.35rem 0.75rem;
+    font-size: clamp(0.7rem, 2.6vw, 0.875rem);
+    line-height: 1.25;
+    white-space: nowrap;
+    border-radius: 25px;
+    transform: translateY(-50%);
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .solicitud-meta-datos,
+.admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-meta-datos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 24px;
+    margin-top: 0;
+    padding-left: 0;
+    font-size: 14px;
+    text-align: center;
+}
+
+.admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-meta-item {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 4px 6px;
+}
+
+.admin-page #panel-solicitud-detalle[data-tipo="transito"] .solicitud-meta-item .detalle-label,
+.admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-meta-item .detalle-label {
+    margin-right: 0;
+    color: var(--text-soft);
+}
+
+.admin-page #panel-solicitud-detalle #ficha-solicitud-meta [data-campo][data-texto]::after {
+    content: attr(data-texto);
+    font-weight: 500;
+    color: var(--text-soft);
 }
 
 .admin-page #modal-confirmar-estado .modal-confirmar-estado-icono {
@@ -2290,8 +2810,14 @@ html { scroll-behavior: smooth; }
     }
 }
 
-.admin-page .panel-listado .mensaje-formulario:empty,
-.admin-page #panel-usuario-detalle .mensaje-formulario:empty { display: none; }
+.admin-page .mensaje-formulario[data-estado="error"]:empty,
+.admin-page .mensaje-formulario[data-estado="ok"]:empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    text-align: center;
+}
 
 @media (max-width: 960px) {
     .admin-page .panel-listado .info-card,
@@ -2820,6 +3346,29 @@ html { scroll-behavior: smooth; }
         align-items: center;
     }
 
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta li,
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item {
+        text-align: left;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta li.detalle-meta-multilinea {
+        align-items: flex-start;
+    }
+
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario .form-seccion .row > [class*="col-"] {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-panel,
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-mascota,
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-postulante {
+        position: relative;
+        isolation: isolate;
+    }
+
     .admin-page section { min-width: 0; }
 
     .admin-page .info-card,
@@ -2832,7 +3381,17 @@ html { scroll-behavior: smooth; }
         min-width: 0;
     }
 
-    .admin-page #panel-solicitud-detalle #ficha-formulario { max-height: min(400px, 52vh); }
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] #ficha-formulario {
+        display: flex;
+        flex-direction: column;
+        max-height: min(400px, 52vh);
+        overflow: hidden;
+    }
+
+    .admin-page #panel-solicitud-detalle[data-tipo="transito"] .formulario-detalle-scroll {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
 
     .admin-page #panel-solicitud-detalle[data-tipo="adopcion"] #ficha-formulario {
         max-height: min(300px, 40vh);
@@ -3258,13 +3817,46 @@ html { scroll-behavior: smooth; }
     .admin-page .dash-card-cabecera h3,
     .admin-page .panel-listado .dash-card-cabecera h3,
     .admin-page #panel-usuario-detalle .dash-card-cabecera h3,
-    .admin-page #panel-solicitud-detalle .dash-card-cabecera h3 {
+    .admin-page #panel-solicitud-detalle .dash-card-cabecera:not(.solicitud-detalle-cabecera) h3 {
         flex: none;
         width: 100%;
         text-align: center;
     }
 
     .admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary { margin-left: 0; }
+
+    .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-titulo h3 {
+        font-size: clamp(13px, 3.4vw, 16px);
+        line-height: 1.3;
+    }
+
+    .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-titulo {
+        padding: 0 3.85rem;
+    }
+
+    .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-volver {
+        padding: 0.28rem 0.55rem;
+        font-size: clamp(0.65rem, 2.4vw, 0.8rem);
+        border-radius: 8px;
+    }
+
+    .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-meta-datos {
+        gap: 12px 20px;
+    }
+
+    .admin-page #panel-solicitud-detalle #ficha-mascota > .dash-card-cabecera .ficha-icono-especie:not([data-especie-icono="perro"]):not([data-especie-icono="gato"]) {
+        display: none;
+    }
+
+    .admin-page #panel-solicitud-detalle #ficha-mascota > .dash-card-cabecera .ficha-icono-especie[data-especie-icono="perro"],
+    .admin-page #panel-solicitud-detalle #ficha-mascota > .dash-card-cabecera .ficha-icono-especie[data-especie-icono="gato"] {
+        display: flex;
+        margin-bottom: 4px;
+    }
+
+    .admin-page #panel-solicitud-detalle #ficha-mascota > .dash-card-cabecera .ficha-icono-especie .icono-especie::before {
+        font-size: 1.5rem;
+    }
 }
 
 /* Celulares angostos: la tarjeta pasa a una sola columna */

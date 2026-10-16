@@ -2,15 +2,57 @@ var mascotas = [];
 var filtros = document.getElementById('filtros-especies');
 var contenedor = document.getElementById('contenedor-mascotas');
 
-apiRequest('mascotas')
-    .then(function (respuesta) {
-        mascotas = Array.isArray(respuesta.data) ? respuesta.data : [];
-        crearFiltrosEspecies();
-        mostrarMascotas(mascotas);
-    })
-    .catch(function (error) {
-        mostrarAviso(error);
-    });
+function mascotasUnicasPorId(lista) {
+    var vistos = {};
+    var resultado = [];
+    var i;
+    var mascota;
+    var id;
+
+    for (i = 0; i < lista.length; i++) {
+        mascota = lista[i];
+        id = mascota && mascota.id;
+
+        if (id === undefined || id === null || id === '') {
+            resultado.push(mascota);
+            continue;
+        }
+
+        id = String(id);
+
+        if (vistos[id]) {
+            continue;
+        }
+
+        vistos[id] = true;
+        resultado.push(mascota);
+    }
+
+    return resultado;
+}
+
+if (!window.__patitasCatalogoMascotasCargando) {
+    window.__patitasCatalogoMascotasCargando = true;
+
+    apiRequest('mascotas')
+        .then(function (respuesta) {
+            var datos = respuesta.data;
+
+            if (Array.isArray(datos)) {
+                mascotas = mascotasUnicasPorId(datos);
+            } else if (datos && typeof datos === 'object' && datos.id !== undefined) {
+                mascotas = [datos];
+            } else {
+                mascotas = [];
+            }
+
+            crearFiltrosEspecies();
+            mostrarMascotas(mascotas);
+        })
+        .catch(function (error) {
+            mostrarAviso(error);
+        });
+}
 
 if (filtros) {
     filtros.addEventListener('click', function (evento) {

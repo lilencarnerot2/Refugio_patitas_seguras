@@ -6,19 +6,15 @@ require __DIR__ . '/includes/header.php';
 ?>
 
     <section id="panel-solicitud-detalle" class="panel-listado" data-listado="solicitudes.php" data-tipo="adopcion">
-        <p id="mensaje-formulario" class="mensaje-formulario"></p>
+        <p id="mensaje-formulario" class="mensaje-formulario" role="alert" aria-live="assertive" aria-atomic="true"></p>
 
-        <div class="dash-card-cabecera mb-3">
-            <span class="ficha-usuario-icono"><i class="bi bi-heart"></i></span>
-            <h3>Detalle de solicitud de adopción</h3>
-            <a class="btn-outline" href="solicitudes.php">Volver</a>
-        </div>
+<?php require __DIR__ . '/includes/solicitud_detalle_cabecera.php'; ?>
 
         <div class="row g-3 align-items-stretch">
             <div class="col-12 col-lg-6 min-w-0">
                 <article class="info-card h-100" id="ficha-mascota">
                     <div class="dash-card-cabecera">
-                        <span class="ficha-usuario-icono"><i class="bi bi-paw"></i></span>
+                        <span class="ficha-icono-especie" data-especie-icono="" aria-hidden="true"><span class="icono-especie"></span></span>
                         <h3>Mascota</h3>
                     </div>
                     <div class="dash-foto mb-3">

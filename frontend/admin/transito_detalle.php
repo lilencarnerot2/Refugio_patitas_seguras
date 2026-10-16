@@ -6,33 +6,15 @@ require __DIR__ . '/includes/header.php';
 ?>
 
     <section id="panel-solicitud-detalle" class="panel-listado" data-listado="solicitudes.php" data-tipo="transito">
-        <p id="mensaje-formulario" class="mensaje-formulario"></p>
+        <p id="mensaje-formulario" class="mensaje-formulario" role="alert" aria-live="assertive" aria-atomic="true"></p>
 
-        <div class="dash-card-cabecera mb-3">
-            <div class="min-w-0">
-                <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <span class="ficha-usuario-icono"><i class="bi bi-heart"></i></span>
-                    <h3>Detalle de solicitud de tránsito</h3>
-                </div>
-                <div id="ficha-solicitud-meta" class="solicitud-meta-datos">
-                    <span class="solicitud-meta-item">
-                        <span class="detalle-label">Nro. solicitud</span>
-                        <span data-campo="id"></span>
-                    </span>
-                    <span class="solicitud-meta-item">
-                        <span class="detalle-label">Fecha</span>
-                        <span data-campo="fecha_solicitud"></span>
-                    </span>
-                </div>
-            </div>
-            <a class="btn-outline" href="solicitudes.php">Volver</a>
-        </div>
+<?php require __DIR__ . '/includes/solicitud_detalle_cabecera.php'; ?>
 
         <div class="row g-3 align-items-start mb-3">
             <div class="col-12 col-lg-6 min-w-0">
                 <article class="info-card h-100" id="ficha-mascota">
                     <div class="dash-card-cabecera">
-                        <span class="ficha-usuario-icono"><i class="bi bi-paw"></i></span>
+                        <span class="ficha-icono-especie" data-especie-icono="" aria-hidden="true"><span class="icono-especie"></span></span>
                         <h3>Mascota</h3>
                     </div>
                     <div class="mascota-detalle-foto mb-3">
@@ -57,7 +39,7 @@ require __DIR__ . '/includes/header.php';
                         <h3>Postulante</h3>
                     </div>
                     <div class="postulante-layout d-flex flex-column gap-2">
-                        <nav class="nav nav-pills postulante-nav-pills flex-nowrap gap-1" id="nav-postulante" aria-label="Secciones del postulante">
+                        <nav class="nav nav-pills postulante-nav-pills flex-wrap gap-1" id="nav-postulante" aria-label="Secciones del postulante">
                             <button type="button" class="nav-link active" data-postulante-seccion="personal">Datos personales</button>
                             <button type="button" class="nav-link" data-postulante-seccion="contacto">Contacto</button>
                             <button type="button" class="nav-link" data-postulante-seccion="domicilio">Domicilio</button>
@@ -90,7 +72,6 @@ require __DIR__ . '/includes/header.php';
                             </section>
                             <section class="postulante-seccion-panel d-none" data-panel-postulante="domicilio" id="seccion-domicilio-postulante">
                                 <ul class="pet-detail-meta postulante-meta-dos-columnas mb-0">
-                                    <li><span class="detalle-label">Tipo de vivienda</span><span data-campo="tipo_vivienda"></span></li>
                                     <li><span class="detalle-label">Provincia</span><span data-campo="provincia"></span></li>
                                     <li><span class="detalle-label">Comuna o municipio</span><span data-campo="municipio"></span></li>
                                     <li><span class="detalle-label">Localidad</span><span data-campo="localidad"></span></li>
@@ -99,6 +80,11 @@ require __DIR__ . '/includes/header.php';
                                     <li><span class="detalle-label">Altura</span><span data-campo="altura"></span></li>
                                     <li><span class="detalle-label">Piso</span><span data-campo="piso"></span></li>
                                     <li><span class="detalle-label">Departamento</span><span data-campo="departamento"></span></li>
+                                    <li><span class="detalle-label">Ruta</span><span data-campo="ruta_nombre"></span></li>
+                                    <li><span class="detalle-label">Kilómetro</span><span data-campo="kilometro"></span></li>
+                                    <li><span class="detalle-label">Entre calle 1</span><span data-campo="entre_calle_1"></span></li>
+                                    <li><span class="detalle-label">Entre calle 2</span><span data-campo="entre_calle_2"></span></li>
+                                    <li class="detalle-meta-ancho detalle-meta-multilinea"><span class="detalle-label">Indicadores de referencia</span><span data-campo="indicadores_referencia"></span></li>
                                     <li><span class="detalle-label">Código postal</span><span data-campo="codigo_postal"></span></li>
                                 </ul>
                             </section>
@@ -260,7 +246,7 @@ require __DIR__ . '/includes/header.php';
                 </article>
             </div>
             <div class="col-12 col-lg-6 min-w-0 d-flex">
-                <article class="info-card h-100 w-100 transito-card-par" id="ficha-evaluacion">
+                <article class="info-card h-100 w-100 transito-card-par" id="ficha-evaluacion" data-evaluacion-lista="0">
                     <div class="dash-card-cabecera">
                         <span class="ficha-usuario-icono"><i class="bi bi-clipboard2-pulse"></i></span>
                         <h3>Evaluación</h3>
@@ -330,6 +316,6 @@ require __DIR__ . '/includes/header.php';
 
 <script src="config.php"></script>
 <script src="../assets/js/api.js"></script>
-<script src="../assets/js/transito-detalle.js?v=20261016c"></script>
+<script src="../assets/js/transito-detalle.js?v=20261016o"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

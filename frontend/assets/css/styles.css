@@ -49,20 +49,22 @@
             overflow-x: clip;
         }
 
-        html:has(body.admin-page),
-        body.admin-page,
-        html:has(body.pagina-perfil),
-        body.pagina-perfil { overflow-x: visible; }
-
         html { background-color: var(--footer-bg); }
 
         body {
             color: var(--text-dark);
-            padding-top: 72px;
+            padding-top: var(--header-height);
             background-color: var(--tema-crema-claro);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+
+        main {
+            flex: 1 1 auto;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
         }
 
         img,
@@ -146,7 +148,11 @@
         }
 
         /* Menú centrado en el header */
-        nav { justify-self: center; }
+        nav {
+            justify-self: center;
+            min-width: 0;
+            max-width: 100%;
+        }
 
         nav summary::-webkit-details-marker,
         nav summary::marker {
@@ -256,13 +262,20 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            flex-wrap: wrap;
-            gap: 10px;
+            flex-wrap: nowrap;
+            gap: 8px;
             justify-self: end;
             z-index: 2;
             grid-column: 3;
-            flex-shrink: 0;
+            min-width: 0;
+            max-width: 100%;
             padding-right: 0;
+        }
+
+        .header-actions .btn-outline,
+        .header-actions .btn-donate {
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
         /* Checkbox del menú y del ojo de contraseña: oculto a la vista, usable sin JavaScript */
@@ -699,20 +712,8 @@
             color: var(--white);
         }
 
-        /* Ajustes para tablet y celular (hasta 992px) */
-        @media (max-width: 992px) {
-            /* Hero en columna: texto arriba, imagen abajo */
-            .hero {
-                flex-direction: column;
-                text-align: center;
-            }
-            /* Tarjetas de index en una sola columna */
-            .action-cards, .other-ways { grid-template-columns: 1fr; }
-            /* Estadísticas en 2 columnas */
-            .stats-container {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
+        /* Header compacto en pantallas medianas (evita botones apilados y scroll horizontal) */
+        @media (max-width: 1200px) {
             header {
                 grid-template-columns: minmax(0, 1fr) auto;
                 padding: 12px 16px;
@@ -728,7 +729,7 @@
             .header-actions .btn-outline,
             .header-actions .btn-donate { display: none; }
 
-            nav {
+            header > nav:not(.paginador) {
                 display: none;
                 grid-column: 1 / -1;
                 justify-self: stretch;
@@ -742,7 +743,6 @@
                 z-index: 1100;
             }
 
-            /* La paginación también es un <nav>: queda debajo de su lista, no como menú desplegable */
             nav.paginador {
                 display: flex;
                 position: static;
@@ -770,7 +770,7 @@
                 overflow-y: auto;
             }
 
-            nav > ul {
+            header > nav:not(.paginador) > ul {
                 display: flex;
                 flex-direction: column;
                 align-items: stretch;
@@ -778,7 +778,7 @@
                 padding: 8px 0 16px;
             }
 
-            nav > ul > li {
+            header > nav:not(.paginador) > ul > li {
                 display: block;
                 width: 100%;
                 height: auto;
@@ -786,8 +786,8 @@
                 border-bottom: 1px solid #f0f0f0;
             }
 
-            nav > ul > li > a,
-            nav summary {
+            header > nav:not(.paginador) > ul > li > a,
+            header > nav:not(.paginador) summary {
                 display: block;
                 width: 100%;
                 padding: 14px 20px;
@@ -795,8 +795,8 @@
                 text-align: left;
             }
 
-            nav a,
-            nav .dropdown-menu a {
+            header > nav:not(.paginador) a,
+            header > nav:not(.paginador) .dropdown-menu a {
                 display: block;
                 padding: 12px 20px;
                 font-size: 13px;
@@ -804,9 +804,9 @@
                 letter-spacing: 0.4px;
             }
 
-            nav .dropdown-menu a { padding-left: 32px; }
+            header > nav:not(.paginador) .dropdown-menu a { padding-left: 32px; }
 
-            nav .dropdown-menu {
+            header > nav:not(.paginador) .dropdown-menu {
                 position: static;
                 transform: none;
                 display: none;
@@ -818,10 +818,10 @@
                 text-align: left;
             }
 
-            .nav-dropdown:hover .dropdown-menu,
-            .nav-dropdown:focus-within .dropdown-menu { display: none; }
+            header .nav-dropdown:hover .dropdown-menu,
+            header .nav-dropdown:focus-within .dropdown-menu { display: none; }
 
-            .nav-dropdown details[open] .dropdown-menu { display: block; }
+            header .nav-dropdown details[open] .dropdown-menu { display: block; }
 
             .nav-actions {
                 display: flex;
@@ -842,6 +842,47 @@
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
+            }
+        }
+
+        @media (min-width: 1201px) and (max-width: 1400px) {
+            header {
+                grid-template-columns: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
+                column-gap: 12px;
+                padding: 12px 3%;
+            }
+
+            header > nav:not(.paginador) > ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: clamp(10px, 1.2vw, 20px);
+            }
+
+            header > nav:not(.paginador) a,
+            header > nav:not(.paginador) summary {
+                font-size: 12px;
+                letter-spacing: 0.2px;
+            }
+
+            .header-actions .btn-outline,
+            .header-actions .btn-donate {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+
+        /* Ajustes para tablet y celular (hasta 992px) */
+        @media (max-width: 992px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .action-cards, .other-ways { grid-template-columns: 1fr; }
+
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
             }
         }
 
@@ -1702,6 +1743,8 @@
             font-size: 18px;
             margin: 0 0 4px;
             text-align: center;
+            color: var(--text-soft);
+            font-weight: 600;
         }
 
         #bloque-solicitud #ficha-mascota .pet-card-body p {
@@ -1717,7 +1760,8 @@
             background: var(--tema-crema-claro);
             border: 1px solid var(--tema-crema-claro-borde);
             font-size: 13px;
-            color: var(--text-dark);
+            color: var(--text-soft);
+            font-weight: 500;
             text-align: right;
             overflow-wrap: anywhere;
         }
@@ -2300,6 +2344,24 @@
                 width: 100%;
                 margin-left: 0;
                 margin-right: 0;
+                max-height: min(68vh, 680px);
+                overflow-x: hidden;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #bloque-solicitud #ficha-mascota .pet-card-body {
+                gap: 10px;
+            }
+
+            #bloque-solicitud #ficha-mascota .pet-card-body p {
+                padding: 9px 11px;
+                margin-bottom: 2px;
+            }
+
+            #bloque-solicitud #ficha-mascota .pet-card-body p[data-etiqueta]::before {
+                font-weight: 500;
+                color: var(--text-muted);
             }
 
             .detalle-section { padding: 24px 16px; }
@@ -3052,7 +3114,7 @@
         #modal-salir { --bs-modal-zindex: 1210; }
         body:has(#modal-salir.show) .modal-backdrop { --bs-backdrop-zindex: 1200; }
 
-        @media (min-width: 993px) {
+        @media (min-width: 1201px) {
             .pagina-perfil { grid-template-columns: var(--perfil-nav-ancho) minmax(0, 1fr); }
             .pagina-perfil .menu-botones { display: none; }
 
@@ -3122,9 +3184,6 @@
                 flex: 1 1 auto;
                 min-width: 0;
             }
-            html,
-            body { overflow-x: hidden; }
-
             section,
             #panel-mi-perfil,
             #panel-aportes-sitio,
@@ -3221,6 +3280,20 @@
                 padding-left: 16px;
                 padding-right: 16px;
             }
+
+            .header-actions { gap: 4px; }
+        }
+
+        .lista-scroll-mascotas,
+        .table-responsive {
+            max-width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .dash-tabla {
+            width: 100%;
+            max-width: 100%;
         }
 
         /* Mensajes del backend: crema por defecto, rojo pastel si es un error */

@@ -144,20 +144,23 @@ document.addEventListener('DOMContentLoaded', function () {
         var resultado = document.getElementById('evaluacion-resultado');
         var listaRazones = document.getElementById('lista-razones');
 
+        if (fichaEvaluacion) {
+            fichaEvaluacion.setAttribute('data-evaluacion-lista', '0');
+        }
+
         if (espera) {
             espera.hidden = false;
         }
 
         if (resultado) {
             resultado.hidden = true;
+            resultado.querySelectorAll('[data-campo]').forEach(function (nodo) {
+                nodo.removeAttribute('data-texto');
+            });
         }
 
         if (listaRazones) {
             listaRazones.innerHTML = '';
-        }
-
-        if (fichaEvaluacion) {
-            pintarCaja(fichaEvaluacion, {});
         }
     }
 
@@ -185,6 +188,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 listaRazones.appendChild(item);
             });
         }
+
+        fichaEvaluacion.setAttribute('data-evaluacion-lista', '1');
 
         if (espera) {
             espera.hidden = true;
@@ -230,24 +235,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function mostrarAviso(origen, ok) {
-        if (!mensaje) {
-            return;
-        }
-
-        mensaje.textContent = mensajeDeApi(origen);
-
-        if (ok) {
-            mensaje.setAttribute('data-estado', 'ok');
-        } else if (origen) {
-            mensaje.setAttribute('data-estado', 'error');
-        } else {
-            mensaje.removeAttribute('data-estado');
-        }
+        avisoDeApi(mensaje, origen, ok);
     }
 
     function avisoSiError(error) {
         if (error) {
-            mostrarAviso(error);
+            mostrarAviso(error, false);
         }
     }
 
@@ -289,6 +282,34 @@ document.addEventListener('DOMContentLoaded', function () {
         return copia;
     }
 
+    function marcarNodoContenido(nodo) {
+        if (!nodo) {
+            return;
+        }
+
+        nodo.style.maxWidth = '100%';
+        nodo.style.minWidth = '0';
+        nodo.style.overflowWrap = 'anywhere';
+        nodo.style.wordBreak = 'break-word';
+
+        if (nodo.hasAttribute('data-texto') || nodo.tagName === 'INPUT' || nodo.tagName === 'TEXTAREA') {
+            nodo.style.display = 'block';
+        }
+    }
+
+    function contenerDatosDetalle() {
+        if (!panel) {
+            return;
+        }
+
+        panel.querySelectorAll('.info-card, .pet-detail-meta, .postulante-layout, .postulante-panel-contenido, .formulario-detalle-scroll, .evaluacion-detalle-scroll').forEach(function (bloque) {
+            bloque.style.maxWidth = '100%';
+            bloque.style.minWidth = '0';
+        });
+
+        panel.querySelectorAll('[data-campo]').forEach(marcarNodoContenido);
+    }
+
     function pintarCaja(caja, datos) {
         if (!caja || !datos) {
             return;
@@ -321,13 +342,16 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 nodo.removeAttribute('data-texto');
             }
+
+            marcarNodoContenido(nodo);
         });
+
+        contenerDatosDetalle();
     }
 
     function pintarResolucion(solicitud) {
         if (fichaSolicitudMeta) {
             pintarCaja(fichaSolicitudMeta, {
-                id: solicitud.id,
                 fecha_solicitud: solicitud.fecha_solicitud
             });
         }
@@ -427,10 +451,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 marcarCompatibilidadListo(false);
-                mostrarAviso({
-                    success: false,
-                    message: 'La compatibilidad no devolvió datos válidos.'
-                });
+
+                if (mensajeDeApi(respuesta)) {
+                    mostrarAviso(respuesta, false);
+                }
+
                 return false;
             }
 
@@ -446,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             marcarCompatibilidadListo(false);
-            mostrarAviso(error);
+            mostrarAviso(error, false);
 
             return false;
         }).finally(function () {
@@ -512,6 +537,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function pintarMascota(mascota) {
         pintarCaja(fichaMascota, mascota);
+        pintarIconoEspecieMascota(fichaMascota, mascota);
         pintarFotoMascota(mascota);
     }
 
@@ -548,10 +574,12 @@ document.addEventListener('DOMContentLoaded', function () {
             return Promise.resolve();
         }
 
-        pintarCaja(fichaPostulante, {
+        var base = {
             nombre: texto(solicitud.nombre_usuario),
             apellido: texto(solicitud.apellido_usuario)
-        });
+        };
+
+        pintarCaja(fichaPostulante, base);
         pintarContactosPostulante([]);
 
         if (!idUsuario) {
@@ -567,10 +595,11 @@ document.addEventListener('DOMContentLoaded', function () {
             var contactos = listaDe(respuestas[1] || {});
             var domicilio = datosDeRespuesta(respuestas[2] || {});
 
-            pintarCaja(fichaPostulante, Object.assign({
-                nombre: texto(solicitud.nombre_usuario),
-                apellido: texto(solicitud.apellido_usuario)
-            }, domicilio, usuario));
+            pintarCaja(fichaPostulante, Object.assign({}, domicilio, {
+                nombre: texto(usuario.nombre) || base.nombre,
+                apellido: texto(usuario.apellido) || base.apellido,
+                fecha_nacimiento: usuario.fecha_nacimiento
+            }));
             pintarContactosPostulante(contactos);
         });
     }
@@ -589,8 +618,13 @@ document.addEventListener('DOMContentLoaded', function () {
         return apiRequest('mascotas', { parametros: { id: idMascota } }).then(function (respuesta) {
             pintarMascota(datosDeRespuesta(respuesta));
         }).catch(function (error) {
-            pintarMascota(datosMascotaSolicitud(solicitud));
-            avisoSiError(error);
+            var respaldo = datosMascotaSolicitud(solicitud);
+
+            pintarMascota(respaldo);
+
+            if (!texto(respaldo.nombre)) {
+                avisoSiError(error);
+            }
         });
     }
 
@@ -622,6 +656,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var grupoMascotas = document.getElementById('grupo-mascotas-hogar');
         var listaMascotas = document.getElementById('lista-mascotas-hogar');
         var modeloMascota = document.getElementById('modelo-mascota-hogar');
+        var origen = datos || {};
 
         if (!caja) {
             return;
@@ -629,7 +664,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         caja.querySelectorAll('[data-campo]').forEach(function (nodo) {
             var campo = nodo.getAttribute('data-campo');
-            var valor = datoDe(datos, campo);
+            var valor = datoDe(origen, campo);
 
             if (nodo.type === 'checkbox') {
                 nodo.checked = esVerdadero(valor);
@@ -682,18 +717,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function aplicarCambioEstadoEnVista(solicitud) {
+        if (!solicitud || !solicitud.id) {
+            return;
+        }
+
+        pintarResolucion(solicitud);
+        cargarEstados(solicitud.id_estado_solicitud);
+        contenerDatosDetalle();
+    }
+
     function enviarCambioEstado(idEstado) {
+        avisoEsperandoApi(mensaje);
+
         return apiRequest('solicitudes', {
             metodo: 'PUT',
             parametros: { id: id },
             cuerpo: { id_estado_solicitud: idEstado }
         }).then(function (respuesta) {
-            return mostrar(id).then(function (resultado) {
-                mostrarAviso(respuesta, true);
-                return resultado;
-            });
+            mostrarAviso(respuesta, true);
+            aplicarCambioEstadoEnVista(datosDeRespuesta(respuesta));
+            traerEvaluacion(id);
         }).catch(function (error) {
-            mostrarAviso(error);
+            mostrarAviso(error, false);
         });
     }
 
@@ -704,13 +750,15 @@ document.addEventListener('DOMContentLoaded', function () {
             var solicitud = datosDeRespuesta(respuesta);
 
             if (!solicitud.id) {
-                mostrarAviso(respuesta);
+                mostrarAviso(respuesta, false);
                 return null;
             }
 
             pintarResolucion(solicitud);
             marcarCompatibilidadListo(false);
             limpiarBotonesResolucion();
+            mostrarEvaluacionPendiente();
+            marcarCompatibilidadCargando(true);
 
             var avisoCompat = document.getElementById('resolucion-espera-compatibilidad');
 
@@ -718,18 +766,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 avisoCompat.hidden = false;
             }
 
+            traerEvaluacion(idSolicitud);
+
             return Promise.all([
+                cargarEstados(solicitud.id_estado_solicitud),
                 traerMascota(solicitud.id_mascota, solicitud),
                 traerPostulante(solicitud, solicitud.id_usuario),
-                traerFormulario(idSolicitud),
-                traerEvaluacion(idSolicitud)
+                traerFormulario(idSolicitud)
             ]).then(function () {
-                return cargarEstados(solicitud.id_estado_solicitud);
-            }).then(function () {
+                contenerDatosDetalle();
                 return { solicitud: solicitud };
             });
         });
     }
+
+    var redimensionDetalle;
+
+    window.addEventListener('resize', function () {
+        if (redimensionDetalle) {
+            window.cancelAnimationFrame(redimensionDetalle);
+        }
+
+        redimensionDetalle = window.requestAnimationFrame(contenerDatosDetalle);
+    });
 
     if (!id) {
         window.location.href = listado;
@@ -816,16 +875,20 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     mostrar(id).then(function (resultado) {
-        if (!resultado || !resultado.solicitud) {
-            window.location.href = listado;
+        if (resultado && resultado.solicitud) {
             return null;
         }
 
+        if (mensaje && texto(mensaje.textContent).trim() !== '') {
+            return null;
+        }
+
+        window.location.href = listado;
         return null;
     }).catch(function (error) {
-        mostrarAviso(error);
+        mostrarAviso(error, false);
 
-        if (error && error.status === 404) {
+        if (error && error.status === 404 && (!mensaje || texto(mensaje.textContent).trim() === '')) {
             window.location.href = listado;
         }
     });
