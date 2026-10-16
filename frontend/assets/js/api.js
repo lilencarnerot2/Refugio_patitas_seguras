@@ -39,7 +39,20 @@ function apiRequest(recurso, opciones) {
         return null;
       }).then(function (data) {
         if (!response.ok || (data && data.success === false)) {
-          var error = new Error(mensajeDeApi(data));
+          var textoError = mensajeDeApi(data);
+
+          if (!textoError && data && typeof data === 'object') {
+            textoError = mensajeDeApi({ success: false, data: data });
+          }
+
+          if (!textoError && !response.ok && response.statusText) {
+            textoError = mensajeDeApi({
+              success: false,
+              message: response.statusText
+            });
+          }
+
+          var error = new Error(textoError);
           error.status = response.status;
           error.data = data;
           throw error;
@@ -192,8 +205,49 @@ function textoDeItem(item) {
   return '';
 }
 
+function textoMensajeDeCuerpo(cuerpo) {
+  var valor;
+
+  if (!cuerpo || typeof cuerpo !== 'object') {
+    return '';
+  }
+
+  if (cuerpo.message !== undefined && cuerpo.message !== null && cuerpo.message !== '') {
+    return String(cuerpo.message);
+  }
+
+  if (cuerpo.mensaje !== undefined && cuerpo.mensaje !== null && cuerpo.mensaje !== '') {
+    return String(cuerpo.mensaje);
+  }
+
+  if (typeof cuerpo.error === 'string' && cuerpo.error !== '') {
+    return cuerpo.error;
+  }
+
+  if (cuerpo.error && typeof cuerpo.error === 'object') {
+    valor = textoMensajeDeCuerpo(cuerpo.error);
+
+    if (valor) {
+      return valor;
+    }
+  }
+
+  if (Array.isArray(cuerpo.errors) && cuerpo.errors.length) {
+    valor = cuerpo.errors.map(function (item) {
+      return typeof item === 'string' ? item : textoMensajeDeCuerpo(item);
+    }).filter(Boolean).join(' ');
+
+    if (valor) {
+      return valor;
+    }
+  }
+
+  return '';
+}
+
 function mensajeDeApi(origen) {
   var cuerpo;
+  var texto;
 
   if (!origen) {
     return '';
@@ -203,34 +257,163 @@ function mensajeDeApi(origen) {
     return origen;
   }
 
-  cuerpo = origen.data && origen.data.message !== undefined ? origen.data : origen;
+  if (origen instanceof Error) {
+    if (origen.message) {
+      return String(origen.message);
+    }
 
-  if (cuerpo.message === undefined || cuerpo.message === null) {
+    if (origen.data) {
+      texto = mensajeDeApi(origen.data);
+
+      if (texto) {
+        return texto;
+      }
+    }
+
     return '';
   }
 
-  return String(cuerpo.message);
+  texto = textoMensajeDeCuerpo(origen);
+
+  if (texto) {
+    return texto;
+  }
+
+  if (origen.data !== undefined && origen.data !== null) {
+    cuerpo = origen.data;
+
+    if (typeof cuerpo === 'string' && cuerpo !== '') {
+      return cuerpo;
+    }
+
+    texto = textoMensajeDeCuerpo(cuerpo);
+
+    if (texto) {
+      return texto;
+    }
+
+    if (typeof cuerpo === 'object') {
+      texto = mensajeDeApi(cuerpo);
+
+      if (texto) {
+        return texto;
+      }
+    }
+  }
+
+  return '';
 }
 
-function avisoDeApi(caja, origen) {
+function despuesDePintarAviso(tarea) {
+  if (typeof tarea !== 'function') {
+    return;
+  }
+
+  setTimeout(tarea, 0);
+}
+
+function avisoEsperandoApi(caja) {
+  if (!caja) {
+    return;
+  }
+
+  caja.setAttribute('data-estado', 'pendiente');
+  caja.setAttribute('aria-busy', 'true');
+  caja.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+}
+
+function avisoDeApi(caja, origen, ok) {
   var codigo;
+  var textoMsg;
+  var esError;
 
   if (!caja) {
     return;
   }
 
-  caja.textContent = mensajeDeApi(origen);
-  codigo = origen && origen.status;
+  if (origen === '') {
+    caja.textContent = '';
+    caja.removeAttribute('data-estado');
+    caja.removeAttribute('data-codigo');
+    caja.removeAttribute('aria-busy');
+    return;
+  }
 
-  if (origen instanceof Error) {
+  caja.removeAttribute('aria-busy');
+
+  textoMsg = mensajeDeApi(origen);
+
+  if (!textoMsg && origen instanceof Error && origen.data) {
+    textoMsg = mensajeDeApi(origen.data);
+  }
+
+  if (!textoMsg && origen && origen.data && !(origen instanceof Error)) {
+    textoMsg = mensajeDeApi(origen.data);
+  }
+
+  esError = (
+    origen instanceof Error
+    || ok === false
+    || (origen && origen.success === false)
+  );
+
+  if (ok === true) {
+    caja.setAttribute('data-estado', 'ok');
+  } else if (esError) {
     caja.setAttribute('data-estado', 'error');
+  } else if (!origen) {
+    caja.removeAttribute('data-estado');
   } else {
     caja.removeAttribute('data-estado');
   }
+
+  caja.textContent = textoMsg;
+  codigo = origen && origen.status;
 
   if (codigo) {
     caja.setAttribute('data-codigo', codigo);
   } else {
     caja.removeAttribute('data-codigo');
   }
+
+  if (textoMsg && esError && typeof caja.scrollIntoView === 'function') {
+    despuesDePintarAviso(function () {
+      caja.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+    });
+  }
+}
+
+function iconoEspecieMascota(especie) {
+  var nombre = especie === undefined || especie === null ? '' : String(especie).trim().toLowerCase();
+
+  if (nombre.indexOf('gato') !== -1) {
+    return 'gato';
+  }
+
+  if (nombre.indexOf('perro') !== -1) {
+    return 'perro';
+  }
+
+  return 'otro';
+}
+
+function pintarIconoEspecieMascota(contenedor, mascota) {
+  var raiz = contenedor;
+
+  if (!raiz || typeof raiz.querySelector !== 'function') {
+    raiz = typeof contenedor === 'string' ? document.getElementById(contenedor) : null;
+  }
+
+  if (!raiz) {
+    return;
+  }
+
+  var icono = raiz.querySelector('.ficha-icono-especie');
+
+  if (!icono) {
+    return;
+  }
+
+  var tipo = iconoEspecieMascota(mascota && mascota.especie);
+  icono.setAttribute('data-especie-icono', tipo === 'otro' ? '' : tipo);
 }

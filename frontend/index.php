@@ -4,7 +4,7 @@ require __DIR__ . '/public/includes/head.php';
 require __DIR__ . '/public/includes/header.php';
 ?>
 
-    <!-- INICIO / HERO -->
+   
     <section id="inicio" class="hero">
         <div class="hero-content">
             <h2>CAMBIÁ UNA VIDA, <span>GANÁ UN AMIGO.</span></h2>
@@ -15,7 +15,7 @@ require __DIR__ . '/public/includes/header.php';
         </div>
     </section>
 
-    <!-- TARJETAS PRINCIPALES -->
+    
     <section id="adopta" class="action-cards">
         <a class="card" href="/public/mascotas.php#adopcion">
             <div class="card-body">
@@ -43,7 +43,7 @@ require __DIR__ . '/public/includes/header.php';
         </a>
     </section>
 
-    <!-- ESTADÍSTICAS -->
+   
     <section>
         <div class="stats-container">
             <div class="stat-item">
@@ -65,7 +65,6 @@ require __DIR__ . '/public/includes/header.php';
         </div>
     </section>
 
-    <!-- NOSOTROS -->
     <section id="nosotros">
         <div class="nosotros-card">
             <h3>SOBRE NOSOTROS</h3>
@@ -73,7 +72,7 @@ require __DIR__ . '/public/includes/header.php';
         </div>
     </section>
 
-    <!-- OTRAS FORMAS DE AYUDAR -->
+    
     <section id="ayudar">
         <h3 class="ayudar-titulo">OTRAS FORMAS DE AYUDAR</h3>
         <div class="other-ways">
@@ -108,7 +107,7 @@ require __DIR__ . '/public/includes/header.php';
         </div>
     </section>
 
-    <!-- FOOTER / CONTACTO -->
+
 
     <div id="modal-voluntariado" class="modal-overlay">
         <div class="modal-content">

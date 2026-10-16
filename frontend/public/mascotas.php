@@ -44,6 +44,6 @@ require __DIR__ . '/includes/header.php';
 
 <script src="/public/config.php"></script>
 <script src="/assets/js/api.js"></script>
-<script src="/assets/js/mascotas.js"></script>
+<script src="/assets/js/mascotas.js?v=20261016g"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

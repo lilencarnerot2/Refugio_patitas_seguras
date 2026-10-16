@@ -18,19 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var tipoPedido = panel.getAttribute('data-tipo') || '';
 
     function mostrarAviso(origen, ok) {
-        if (!mensaje) {
-            return;
-        }
-
-        mensaje.textContent = mensajeDeApi(origen);
-
-        if (ok) {
-            mensaje.setAttribute('data-estado', 'ok');
-        } else if (origen) {
-            mensaje.setAttribute('data-estado', 'error');
-        } else {
-            mensaje.removeAttribute('data-estado');
-        }
+        avisoDeApi(mensaje, origen, ok);
     }
 
     function texto(valor) {
@@ -265,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (!solicitud.id) {
-                mostrarAviso(respuesta);
+                mostrarAviso(respuesta, false);
                 return null;
             }
 
@@ -413,6 +401,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var vacia = document.getElementById('detalle-foto-vacia');
 
             pintarCaja(fichaMascota, mascota);
+            pintarIconoEspecieMascota(fichaMascota, mascota);
 
             if (foto && texto(mascota.foto_url) !== '') {
                 foto.src = mascota.foto_url;
@@ -545,40 +534,49 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+            avisoEsperandoApi(mensaje);
+
             apiRequest('solicitudes', {
                 metodo: 'PUT',
                 parametros: { id: id },
                 cuerpo: { id_estado_solicitud: boton.getAttribute('data-id-estado') }
             }).then(function (respuesta) {
-                return mostrar(id).then(function (solicitud) {
-                    mostrarAviso(respuesta, true);
+                var solicitud = (respuesta && respuesta.data) || {};
 
-                    if (solicitud) {
-                        return cargarEstados(solicitud.id_estado_solicitud);
-                    }
+                if (Array.isArray(solicitud)) {
+                    solicitud = solicitud[0] || {};
+                }
 
-                    return null;
-                });
+                mostrarAviso(respuesta, true);
+
+                if (solicitud.id) {
+                    pintarFicha(solicitud);
+                    cargarEstados(solicitud.id_estado_solicitud);
+                }
             }).catch(function (error) {
-                mostrarAviso(error);
+                mostrarAviso(error, false);
             });
         });
     }
 
     mostrar(id).then(function (solicitud) {
-        if (!solicitud) {
-            if (listado) {
-                window.location.href = listado;
-            }
+        if (solicitud) {
+            return cargarEstados(solicitud.id_estado_solicitud);
+        }
 
+        if (mensaje && texto(mensaje.textContent).trim() !== '') {
             return null;
         }
 
-        return cargarEstados(solicitud.id_estado_solicitud);
-    }).catch(function (error) {
-        mostrarAviso(error);
+        if (listado) {
+            window.location.href = listado;
+        }
 
-        if (listado && error && error.status === 404) {
+        return null;
+    }).catch(function (error) {
+        mostrarAviso(error, false);
+
+        if (listado && error && error.status === 404 && (!mensaje || texto(mensaje.textContent).trim() === '')) {
             window.location.href = listado;
         }
     });

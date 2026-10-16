@@ -11,7 +11,7 @@ require __DIR__ . '/includes/header.php';
             <p>Completá los datos para dar de alta una mascota en el refugio.</p>
         </div>
 
-        <form id="formulario-mascota" class="formulario-mascota">
+        <form id="formulario-mascota" class="formulario-mascota" data-enviando="0">
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label" for="id_especie">Especie</label>
@@ -81,6 +81,6 @@ require __DIR__ . '/includes/header.php';
 
 <script src="config.php"></script>
 <script src="../assets/js/api.js"></script>
-<script src="../assets/js/mascota-form.js"></script>
+<script src="../assets/js/mascota-form.js?v=20261016g"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

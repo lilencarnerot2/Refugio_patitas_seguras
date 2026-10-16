@@ -58,19 +58,11 @@ require __DIR__ . '/includes/header.php';
                     </tbody>
                 </table>
             </div>
-            <nav class="paginador" data-paginador aria-label="Paginación" hidden>
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" data-pagina-anterior href="#panel-mascotas" aria-label="Página anterior"><i class="bi bi-chevron-left"></i></a>
-                    </li>
-                    <li class="page-item" id="pagina-modelo-mascotas" hidden>
-                        <a class="page-link" href="#panel-mascotas"></a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" data-pagina-siguiente href="#panel-mascotas" aria-label="Página siguiente"><i class="bi bi-chevron-right"></i></a>
-                    </li>
-                </ul>
-            </nav>
+            <?php
+            $paginadorAncla = '#panel-mascotas';
+            $paginadorModeloId = 'pagina-modelo-mascotas';
+            require __DIR__ . '/includes/paginador.php';
+            ?>
             <!-- Modelo oculto con el diseño; el JS lo clona y solo pone datos -->
             <div id="modelos-mascotas" hidden>
                 <option id="opcion-modelo-mascotas"></option>

@@ -28,7 +28,7 @@ $esSuperadministrador = esSuperadministrador();
     </div>
 </header>
 
-<nav id="menu-admin" class="position-fixed start-0 overflow-auto">
+<nav id="menu-admin" class="admin-nav-panel overflow-auto" aria-label="Menú administrativo">
     <ul>
         <li>
             <a href="dashboard.php"<?php echo $paginaAdmin === 'dashboard' ? ' class="active"' : ''; ?>>
@@ -46,13 +46,8 @@ $esSuperadministrador = esSuperadministrador();
             </details>
         </li>
         <li>
-            <a href="solicitudes.php"<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle', 'adopcion_detalle'], true) ? ' class="active"' : ''; ?>>
+            <a href="solicitudes.php"<?php echo in_array($paginaAdmin, ['solicitudes', 'solicitudes_detalle', 'adopcion_detalle', 'hogares_transito', 'transito_detalle'], true) ? ' class="active"' : ''; ?>>
                 <i class="bi bi-file-earmark-text"></i> Solicitudes
-            </a>
-        </li>
-        <li>
-            <a href="hogares_transito.php"<?php echo $paginaAdmin === 'hogares_transito' ? ' class="active"' : ''; ?>>
-                <i class="bi bi-house"></i> Hogares de tránsito
             </a>
         </li>
         <li>
