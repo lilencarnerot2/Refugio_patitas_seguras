@@ -80,7 +80,6 @@ require __DIR__ . '/includes/header.php';
                     <ul class="dash-leyenda"><li><span data-parte="cantidad"></span> / <span data-parte="total"></span></li></ul>
                 </article>
                 <option id="opcion-modelo-solicitud"></option>
-<?php require __DIR__ . '/includes/modelos_enlace_solicitud.php'; ?>
             </div>
         </div>
     </section>

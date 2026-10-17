@@ -26,10 +26,6 @@ $solicitudRecursoFormulario = $esDetalleTransito ? 'formularios_transito' : 'for
 
 <?php require __DIR__ . '/solicitud_detalle_modal_estado.php'; ?>
 
-    <div id="modelos-solicitud" hidden aria-hidden="true">
-<?php require __DIR__ . '/modelos_enlace_solicitud.php'; ?>
-    </div>
-
 <script src="config.php"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/solicitud-detalle.js"></script>

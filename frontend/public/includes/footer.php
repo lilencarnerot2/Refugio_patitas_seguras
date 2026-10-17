@@ -1,5 +1,4 @@
-﻿<?php require __DIR__ . '/../../includes/contacto_refugio.php'; ?>
-    <footer id="contacto">
+﻿    <footer id="contacto">
         <div class="footer-inner">
             <div>
                 <h3>PATITAS SEGURAS</h3>
@@ -11,7 +10,9 @@
                 </div>
             </div>
             <div class="footer-contact">
-                <?php require __DIR__ . '/../../includes/contacto_refugio_bloque.php'; ?>
+                <p><i class="bi bi-telephone"></i> 11 2345 6789</p>
+                <p><i class="bi bi-envelope"></i> profesionalizantes29@gmail.com</p>
+                <p><i class="bi bi-geo-alt"></i> Merlo, Buenos Aires, Argentina</p>
                 <p class="footer-note">Amor que se nota, huellas que quedan. 🐾</p>
             </div>
         </div>

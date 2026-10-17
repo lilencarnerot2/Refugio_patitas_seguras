@@ -667,65 +667,58 @@ function pintarCorazonCompatibilidad(nodo, puntaje) {
   nodo.classList.add('compatibilidad-corazon-animando');
 }
 
-function textoOrdenSolicitud(valor) {
-  return String(valor || '').trim();
+var mapaHrefDetallePorIdTipoSolicitud = {};
+
+function normalizarClaveTipoSolicitud(valor) {
+  return String(valor || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function esTipoSolicitudTransito(valor) {
+  var tipo = normalizarClaveTipoSolicitud(valor);
+
+  return tipo.indexOf('transito') !== -1 || (tipo.indexOf('hogar') !== -1 && tipo.indexOf('trans') !== -1);
+}
+
+function hrefDetallePorNombreTipo(nombre) {
+  return esTipoSolicitudTransito(nombre) ? 'transito_detalle.php' : 'adopcion_detalle.php';
 }
 
 function enlazarModelosDetalleSolicitud(tipos) {
-  var contenedor = document.getElementById('modelos-solicitud');
-  var slots;
-  var lista;
-  var i;
-
-  if (!contenedor) {
-    return;
-  }
-
-  slots = Array.prototype.slice.call(contenedor.querySelectorAll('[data-enlace-detalle-tipo]'));
-  lista = (Array.isArray(tipos) ? tipos.slice() : []).filter(function (item) {
+  var lista = (Array.isArray(tipos) ? tipos : []).filter(function (item) {
     return !!item;
   });
 
-  lista.sort(function (a, b) {
-    return textoOrdenSolicitud(a.nombre_tipo).localeCompare(textoOrdenSolicitud(b.nombre_tipo), 'es');
-  });
+  mapaHrefDetallePorIdTipoSolicitud = {};
 
-  slots.sort(function (a, b) {
-    return textoOrdenSolicitud(a.getAttribute('href')).localeCompare(textoOrdenSolicitud(b.getAttribute('href')), 'es');
-  });
-
-  for (i = 0; i < slots.length; i++) {
-    if (lista[i] && lista[i].id !== undefined && lista[i].id !== null) {
-      slots[i].setAttribute('data-id-tipo-solicitud', String(lista[i].id));
+  lista.forEach(function (tipo) {
+    if (tipo.id !== undefined && tipo.id !== null) {
+      mapaHrefDetallePorIdTipoSolicitud[String(tipo.id)] = hrefDetallePorNombreTipo(tipo.nombre_tipo);
     }
-  }
+  });
 }
 
 function enlaceDetalleSolicitud(solicitud) {
   var panel = document.getElementById('panel-solicitudes');
   var fijo = panel && panel.getAttribute('data-detalle');
-  var contenedor = document.getElementById('modelos-solicitud');
   var idTipo = solicitud && solicitud.id_tipo_solicitud;
-  var enlace;
-  var defecto;
+  var href;
   var filaModelo;
+  var enlace;
 
   if (fijo) {
     return String(fijo).replace(/\?.*$/, '');
   }
 
-  if (contenedor && idTipo !== undefined && idTipo !== null && String(idTipo) !== '') {
-    enlace = contenedor.querySelector('[data-id-tipo-solicitud="' + String(idTipo) + '"]');
+  if (idTipo !== undefined && idTipo !== null && String(idTipo) !== '') {
+    href = mapaHrefDetallePorIdTipoSolicitud[String(idTipo)];
 
-    if (enlace && enlace.getAttribute('href')) {
-      return enlace.getAttribute('href').replace(/\?.*$/, '');
+    if (href) {
+      return href;
     }
   }
 
-  defecto = contenedor && contenedor.querySelector('[data-enlace-detalle-default]');
-
-  if (defecto && defecto.getAttribute('href')) {
-    return defecto.getAttribute('href').replace(/\?.*$/, '');
+  if (solicitud && solicitud.tipo_solicitud) {
+    return hrefDetallePorNombreTipo(solicitud.tipo_solicitud);
   }
 
   filaModelo = document.getElementById('fila-modelo-solicitud');
@@ -735,7 +728,7 @@ function enlaceDetalleSolicitud(solicitud) {
     return enlace.getAttribute('href').replace(/\?.*$/, '');
   }
 
-  return '';
+  return 'adopcion_detalle.php';
 }
 
 function nombreArchivoRutaSolicitud(ruta) {

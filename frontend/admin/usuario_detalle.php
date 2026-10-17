@@ -61,10 +61,6 @@ require __DIR__ . '/includes/header.php';
         </article>
     </section>
 
-    <div id="modelos-solicitud" hidden aria-hidden="true">
-<?php require __DIR__ . '/includes/modelos_enlace_solicitud.php'; ?>
-    </div>
-
 <script src="config.php"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/usuario-detalle.js"></script>
