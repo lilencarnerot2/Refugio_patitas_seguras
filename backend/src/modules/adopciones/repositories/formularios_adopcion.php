@@ -3,12 +3,8 @@
 require_once __DIR__ . '/../../../config/database.php';
 
 
-// ============================================================
 // CATÁLOGOS
-// ============================================================
-
-function obtener_compromisos_adopcion(): array
-{
+function obtener_compromisos_adopcion(): array {
     $conexion = conectarDB();
 
     $sql = "
@@ -25,8 +21,7 @@ function obtener_compromisos_adopcion(): array
 }
 
 
-function obtener_condiciones_especiales(): array
-{
+function obtener_condiciones_especiales(): array {
     $conexion = conectarDB();
 
     $sql = "
@@ -43,8 +38,7 @@ function obtener_condiciones_especiales(): array
 }
 
 
-function obtener_tipos_mascotas(): array
-{
+function obtener_tipos_mascotas(): array {
     $conexion = conectarDB();
 
     $sql = "
@@ -61,12 +55,9 @@ function obtener_tipos_mascotas(): array
 }
 
 
-// ============================================================
-// FORMULARIO DE ADOPCIÓN
-// ============================================================
 
-function obtener_formulario_adopcion_por_id(int $id): array|false
-{
+// FORMULARIO DE ADOPCIÓN
+function obtener_formulario_adopcion_por_id(int $id): array|false {
     $conexion = conectarDB();
 
     $sql = "
@@ -86,7 +77,8 @@ function obtener_formulario_adopcion_por_id(int $id): array|false
             fa.horas_solo,
             fa.tiene_mascotas,
             fa.responsable_principal,
-            fa.motivo_adopcion,
+            fa.id_motivo_adopcion,
+            ma.descripcion AS motivo_adopcion,
             fa.puede_realizar_paseos,
             fa.puede_realizar_traslados,
             fa.cuenta_con_apoyo,
@@ -101,6 +93,8 @@ function obtener_formulario_adopcion_por_id(int $id): array|false
             ON cv.id = fa.id_condicion_vivienda
         INNER JOIN destinos_mascotas dm
             ON dm.id = fa.id_destino_mascota
+        INNER JOIN motivos_adopcion ma
+            ON ma.id = fa.id_motivo_adopcion
         WHERE fa.id = :id
     ";
 
@@ -111,8 +105,7 @@ function obtener_formulario_adopcion_por_id(int $id): array|false
 }
 
 
-function obtener_formulario_adopcion_por_solicitud(int $id_solicitud): array|false
-{
+function obtener_formulario_adopcion_por_solicitud(int $id_solicitud): array|false {
     $conexion = conectarDB();
 
     $sql = "
@@ -132,7 +125,8 @@ function obtener_formulario_adopcion_por_solicitud(int $id_solicitud): array|fal
             fa.horas_solo,
             fa.tiene_mascotas,
             fa.responsable_principal,
-            fa.motivo_adopcion,
+            fa.id_motivo_adopcion,
+            ma.descripcion AS motivo_adopcion,
             fa.puede_realizar_paseos,
             fa.puede_realizar_traslados,
             fa.cuenta_con_apoyo,
@@ -147,6 +141,8 @@ function obtener_formulario_adopcion_por_solicitud(int $id_solicitud): array|fal
             ON cv.id = fa.id_condicion_vivienda
         INNER JOIN destinos_mascotas dm
             ON dm.id = fa.id_destino_mascota
+        INNER JOIN motivos_adopcion ma
+            ON ma.id = fa.id_motivo_adopcion
         WHERE fa.id_solicitud = :id_solicitud
     ";
 
@@ -157,8 +153,7 @@ function obtener_formulario_adopcion_por_solicitud(int $id_solicitud): array|fal
 }
 
 
-function obtener_datos_solicitud(int $id_solicitud): array|false
-{
+function obtener_datos_solicitud(int $id_solicitud): array|false {
     $conexion = conectarDB();
 
     $sql = "
@@ -182,8 +177,7 @@ function obtener_datos_solicitud(int $id_solicitud): array|false
 }
 
 
-function existe_formulario_para_solicitud(int $id_solicitud): bool
-{
+function existe_formulario_para_solicitud(int $id_solicitud): bool {
     $conexion = conectarDB();
 
     $sql = "
@@ -200,8 +194,7 @@ function existe_formulario_para_solicitud(int $id_solicitud): bool
 }
 
 
-function existe_tipo_vivienda(int $id): bool
-{
+function existe_tipo_vivienda(int $id): bool {
     $conexion = conectarDB();
     $sql = "SELECT 1 FROM tipos_vivienda WHERE id = :id AND estado = TRUE LIMIT 1";
     $stmt = $conexion->prepare($sql);
@@ -210,8 +203,7 @@ function existe_tipo_vivienda(int $id): bool
 }
 
 
-function existe_condicion_vivienda(int $id): bool
-{
+function existe_condicion_vivienda(int $id): bool {
     $conexion = conectarDB();
     $sql = "SELECT 1 FROM condiciones_vivienda WHERE id = :id AND estado = TRUE LIMIT 1";
     $stmt = $conexion->prepare($sql);
@@ -220,8 +212,7 @@ function existe_condicion_vivienda(int $id): bool
 }
 
 
-function existe_destino_mascota(int $id): bool
-{
+function existe_destino_mascota(int $id): bool {
     $conexion = conectarDB();
     $sql = "SELECT 1 FROM destinos_mascotas WHERE id = :id AND estado = TRUE LIMIT 1";
     $stmt = $conexion->prepare($sql);
@@ -230,8 +221,7 @@ function existe_destino_mascota(int $id): bool
 }
 
 
-function existe_compromiso_adopcion(int $id): bool
-{
+function existe_compromiso_adopcion(int $id): bool {
     $conexion = conectarDB();
     $sql = "SELECT 1 FROM compromisos_adopcion WHERE id = :id AND estado = TRUE LIMIT 1";
     $stmt = $conexion->prepare($sql);
@@ -240,8 +230,7 @@ function existe_compromiso_adopcion(int $id): bool
 }
 
 
-function existe_condicion_especial(int $id): bool
-{
+function existe_condicion_especial(int $id): bool {
     $conexion = conectarDB();
     $sql = "SELECT 1 FROM condiciones_especiales WHERE id = :id AND estado = TRUE LIMIT 1";
     $stmt = $conexion->prepare($sql);
@@ -250,8 +239,7 @@ function existe_condicion_especial(int $id): bool
 }
 
 
-function existe_tipo_mascota(int $id): bool
-{
+function existe_tipo_mascota(int $id): bool {
     $conexion = conectarDB();
     $sql = "SELECT 1 FROM tipos_mascotas WHERE id = :id AND estado = TRUE LIMIT 1";
     $stmt = $conexion->prepare($sql);
@@ -259,9 +247,24 @@ function existe_tipo_mascota(int $id): bool
     return (bool) $stmt->fetchColumn();
 }
 
+function existe_motivo_adopcion(int $id): bool {
+    $conexion = conectarDB();
+    $sql = "
+        SELECT 1
+        FROM motivos_adopcion
+        WHERE id = :id
+          AND estado = TRUE
+        LIMIT 1
+    ";
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([
+        ':id' => $id
+    ]);
+    return (bool) $stmt->fetchColumn();
+}
 
-function crear_formulario_adopcion(array $datos): array|false
-{
+
+function crear_formulario_adopcion(array $datos): array|false {
     $conexion = conectarDB();
 
     $sql = "
@@ -277,7 +280,7 @@ function crear_formulario_adopcion(array $datos): array|false
             horas_solo,
             tiene_mascotas,
             responsable_principal,
-            motivo_adopcion,
+            id_motivo_adopcion,
             puede_realizar_paseos,
             puede_realizar_traslados,
             cuenta_con_apoyo,
@@ -298,7 +301,7 @@ function crear_formulario_adopcion(array $datos): array|false
             :horas_solo,
             :tiene_mascotas,
             :responsable_principal,
-            :motivo_adopcion,
+            :id_motivo_adopcion,
             :puede_realizar_paseos,
             :puede_realizar_traslados,
             :cuenta_con_apoyo,
@@ -323,7 +326,7 @@ function crear_formulario_adopcion(array $datos): array|false
     $stmt->bindValue(':horas_solo', $datos['horas_solo'], $datos['horas_solo'] === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
     $stmt->bindValue(':tiene_mascotas', $datos['tiene_mascotas'] ? 't' : 'f', PDO::PARAM_STR);
     $stmt->bindValue(':responsable_principal', $datos['responsable_principal'], PDO::PARAM_STR);
-    $stmt->bindValue(':motivo_adopcion', $datos['motivo_adopcion'], $datos['motivo_adopcion'] === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+    $stmt->bindValue(':id_motivo_adopcion', $datos['id_motivo_adopcion'], PDO::PARAM_INT);
     $stmt->bindValue(':puede_realizar_paseos', $datos['puede_realizar_paseos'] ? 't' : 'f', PDO::PARAM_STR);
     $stmt->bindValue(':puede_realizar_traslados', $datos['puede_realizar_traslados'] ? 't' : 'f', PDO::PARAM_STR);
     $stmt->bindValue(':cuenta_con_apoyo', $datos['cuenta_con_apoyo'] ? 't' : 'f', PDO::PARAM_STR);
@@ -345,8 +348,7 @@ function crear_formulario_adopcion(array $datos): array|false
     return $fila ?: false;
 }
 
-function actualizar_formulario_adopcion(int $id, array $datos): array|false
-{
+function actualizar_formulario_adopcion(int $id, array $datos): array|false {
     $conexion = conectarDB();
 
     $sql = "
@@ -362,7 +364,7 @@ function actualizar_formulario_adopcion(int $id, array $datos): array|false
             horas_solo = :horas_solo,
             tiene_mascotas = :tiene_mascotas,
             responsable_principal = :responsable_principal,
-            motivo_adopcion = :motivo_adopcion,
+            id_motivo_adopcion = :id_motivo_adopcion,
             puede_realizar_paseos = :puede_realizar_paseos,
             puede_realizar_traslados = :puede_realizar_traslados,
             cuenta_con_apoyo = :cuenta_con_apoyo,
@@ -387,7 +389,7 @@ function actualizar_formulario_adopcion(int $id, array $datos): array|false
     $stmt->bindValue(':horas_solo', $datos['horas_solo'], $datos['horas_solo'] === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
     $stmt->bindValue(':tiene_mascotas', $datos['tiene_mascotas'] ? 't' : 'f', PDO::PARAM_STR);
     $stmt->bindValue(':responsable_principal', $datos['responsable_principal'], PDO::PARAM_STR);
-    $stmt->bindValue(':motivo_adopcion', $datos['motivo_adopcion'], $datos['motivo_adopcion'] === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+    $stmt->bindValue(':id_motivo_adopcion', $datos['id_motivo_adopcion'], PDO::PARAM_INT);
     $stmt->bindValue(':puede_realizar_paseos', $datos['puede_realizar_paseos'] ? 't' : 'f', PDO::PARAM_STR);
     $stmt->bindValue(':puede_realizar_traslados', $datos['puede_realizar_traslados'] ? 't' : 'f', PDO::PARAM_STR);
     $stmt->bindValue(':cuenta_con_apoyo', $datos['cuenta_con_apoyo'] ? 't' : 'f', PDO::PARAM_STR);
@@ -409,12 +411,9 @@ function actualizar_formulario_adopcion(int $id, array $datos): array|false
     return $fila ?: false;
 }
 
-// ============================================================
-// PIVOTES: COMPROMISOS
-// ============================================================
 
-function guardar_compromisos_formulario(int $id_formulario, array $ids_compromisos): void
-{
+// PIVOTES: COMPROMISOS
+function guardar_compromisos_formulario(int $id_formulario, array $ids_compromisos): void {
     $conexion = conectarDB();
 
     $sql = "
@@ -439,8 +438,7 @@ function guardar_compromisos_formulario(int $id_formulario, array $ids_compromis
 }
 
 
-function eliminar_compromisos_formulario(int $id_formulario): void
-{
+function eliminar_compromisos_formulario(int $id_formulario): void {
     $conexion = conectarDB();
 
     $sql = "
@@ -453,8 +451,7 @@ function eliminar_compromisos_formulario(int $id_formulario): void
 }
 
 
-function obtener_compromisos_de_formulario(int $id_formulario): array
-{
+function obtener_compromisos_de_formulario(int $id_formulario): array {
     $conexion = conectarDB();
 
     $sql = "
@@ -475,12 +472,9 @@ function obtener_compromisos_de_formulario(int $id_formulario): array
 }
 
 
-// ============================================================
-// PIVOTES: CONDICIONES ESPECIALES
-// ============================================================
 
-function guardar_condiciones_formulario(int $id_formulario, array $ids_condiciones): void
-{
+// PIVOTES: CONDICIONES ESPECIALES
+function guardar_condiciones_formulario(int $id_formulario, array $ids_condiciones): void {
     $conexion = conectarDB();
 
     $sql = "
@@ -505,8 +499,7 @@ function guardar_condiciones_formulario(int $id_formulario, array $ids_condicion
 }
 
 
-function eliminar_condiciones_formulario(int $id_formulario): void
-{
+function eliminar_condiciones_formulario(int $id_formulario): void {
     $conexion = conectarDB();
 
     $sql = "
@@ -519,8 +512,7 @@ function eliminar_condiciones_formulario(int $id_formulario): void
 }
 
 
-function obtener_condiciones_de_formulario(int $id_formulario): array
-{
+function obtener_condiciones_de_formulario(int $id_formulario): array {
     $conexion = conectarDB();
 
     $sql = "
@@ -541,12 +533,9 @@ function obtener_condiciones_de_formulario(int $id_formulario): array
 }
 
 
-// ============================================================
-// PIVOTES: MASCOTAS EXISTENTES EN EL HOGAR
-// ============================================================
 
-function guardar_mascotas_hogar(int $id_formulario, array $mascotas): void
-{
+// PIVOTES: MASCOTAS EXISTENTES EN EL HOGAR
+function guardar_mascotas_hogar(int $id_formulario, array $mascotas): void {
     $conexion = conectarDB();
 
     $sql = "
@@ -636,8 +625,7 @@ function guardar_mascotas_hogar(int $id_formulario, array $mascotas): void
 }
 
 
-function eliminar_mascotas_hogar(int $id_formulario): void
-{
+function eliminar_mascotas_hogar(int $id_formulario): void {
     $conexion = conectarDB();
 
     $sql = "
@@ -650,8 +638,7 @@ function eliminar_mascotas_hogar(int $id_formulario): void
 }
 
 
-function obtener_mascotas_de_formulario(int $id_formulario): array
-{
+function obtener_mascotas_de_formulario(int $id_formulario): array {
     $conexion = conectarDB();
 
     $sql = "
@@ -679,8 +666,7 @@ function obtener_mascotas_de_formulario(int $id_formulario): array
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 } 
     
-      function obtener_tipo_solicitud_por_id(int $id): array|false
-{
+function obtener_tipo_solicitud_por_id(int $id): array|false {
     $conexion = conectarDB();
 
     $sql = "
@@ -697,8 +683,7 @@ function obtener_mascotas_de_formulario(int $id_formulario): array
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-function obtener_condiciones_vivienda(): array
-{
+function obtener_condiciones_vivienda(): array {
     $conexion = conectarDB();
 
     $sql = "
@@ -715,8 +700,7 @@ function obtener_condiciones_vivienda(): array
 }
 
 
-function obtener_destinos_mascotas(): array
-{
+function obtener_destinos_mascotas(): array {
     $conexion = conectarDB();
 
     $sql = "
@@ -732,8 +716,7 @@ function obtener_destinos_mascotas(): array
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function obtener_formularios_adopcion_filtrados(array $filtros, ?int $id_usuario_solo_suyos): array
-{
+function obtener_formularios_adopcion_filtrados(array $filtros, ?int $id_usuario_solo_suyos): array {
     $conexion = conectarDB();
 
     $sql = "
@@ -763,7 +746,8 @@ function obtener_formularios_adopcion_filtrados(array $filtros, ?int $id_usuario
             fa.horas_solo,
             fa.tiene_mascotas,
             fa.responsable_principal,
-            fa.motivo_adopcion,
+            fa.id_motivo_adopcion,
+            ma.descripcion AS motivo_adopcion,
             fa.puede_realizar_paseos,
             fa.puede_realizar_traslados,
             fa.cuenta_con_apoyo,

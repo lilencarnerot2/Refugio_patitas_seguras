@@ -3,34 +3,26 @@
 require_once __DIR__ . '/../repositories/formularios_adopcion.php';
 
 
-// ============================================================
-// CATÁLOGOS
-// ============================================================
 
-function listar_compromisos_adopcion(): array
-{
+// CATÁLOGOS
+
+function listar_compromisos_adopcion(): array {
     return obtener_compromisos_adopcion();
 }
 
 
-function listar_condiciones_especiales(): array
-{
+function listar_condiciones_especiales(): array {
     return obtener_condiciones_especiales();
 }
 
 
-function listar_tipos_mascotas(): array
-{
+function listar_tipos_mascotas(): array {
     return obtener_tipos_mascotas();
 }
 
 
-// ============================================================
 // VALIDACIONES AUXILIARES
-// ============================================================
-
-function validar_solicitud_para_formulario(int $id_solicitud, int $id_usuario_actual, bool $es_admin): array
-{
+function validar_solicitud_para_formulario(int $id_solicitud, int $id_usuario_actual, bool $es_admin): array {
     if ($id_solicitud <= 0) {
         throw new InvalidArgumentException(
             'El id de la solicitud no es válido.'
@@ -55,8 +47,7 @@ function validar_solicitud_para_formulario(int $id_solicitud, int $id_usuario_ac
 }
 
 
-function validar_solicitud_pendiente(array $solicitud): void
-{
+function validar_solicitud_pendiente(array $solicitud): void {
     $estado = strtolower(trim((string) $solicitud['estado_solicitud']));
 
     if ($estado !== 'pendiente') {
@@ -67,8 +58,7 @@ function validar_solicitud_pendiente(array $solicitud): void
 }
 
 
-function validar_formulario_datos(array $datos): void
-{
+function validar_formulario_datos(array $datos): void {
     if (empty($datos['id_tipo_vivienda']) || !existe_tipo_vivienda((int) $datos['id_tipo_vivienda'])) {
         throw new InvalidArgumentException('El tipo de vivienda no es válido.');
     }
@@ -122,10 +112,24 @@ function validar_formulario_datos(array $datos): void
         throw new InvalidArgumentException('El responsable principal no puede superar los 60 caracteres.');
     }
 
-    if (isset($datos['motivo_adopcion']) && $datos['motivo_adopcion'] !== null) {
-        if (mb_strlen((string) $datos['motivo_adopcion']) > 250) {
-            throw new InvalidArgumentException('El motivo de adopción no puede superar los 250 caracteres.');
-        }
+    $id_motivo_adopcion = filter_var(
+    $datos['id_motivo_adopcion'] ?? null,
+    FILTER_VALIDATE_INT
+    );
+
+    if (
+        $id_motivo_adopcion === false ||
+        $id_motivo_adopcion <= 0
+    ) {
+        throw new InvalidArgumentException(
+            'El motivo de adopción es obligatorio.'
+        );
+    }
+
+    if (!existe_motivo_adopcion($id_motivo_adopcion)) {
+        throw new InvalidArgumentException(
+            'El motivo de adopción seleccionado no es válido.'
+        );
     }
 
     if (!isset($datos['puede_realizar_paseos']) || !is_bool($datos['puede_realizar_paseos'])) {
@@ -142,8 +146,7 @@ function validar_formulario_datos(array $datos): void
 }
 
 
-function validar_compromisos(array $ids_compromisos): void
-{
+function validar_compromisos(array $ids_compromisos): void {
     if (empty($ids_compromisos) || !is_array($ids_compromisos)) {
         throw new InvalidArgumentException('Debe aceptar los compromisos de adopción.');
     }
@@ -175,8 +178,7 @@ function validar_compromisos(array $ids_compromisos): void
 }
 
 
-function validar_condiciones_especiales(array $ids_condiciones): void
-{
+function validar_condiciones_especiales(array $ids_condiciones): void {
     if (!is_array($ids_condiciones)) {
         throw new InvalidArgumentException('Las condiciones especiales deben ser una lista.');
     }
@@ -191,8 +193,7 @@ function validar_condiciones_especiales(array $ids_condiciones): void
 }
 
 
-function validar_mascotas_hogar(array $mascotas): void
-{
+function validar_mascotas_hogar(array $mascotas): void {
     if (!is_array($mascotas)) {
         throw new InvalidArgumentException('Las mascotas del hogar deben ser una lista.');
     }
@@ -221,12 +222,9 @@ function validar_mascotas_hogar(array $mascotas): void
 }
 
 
-// ============================================================
-// OPERACIONES
-// ============================================================
 
-function obtener_formulario_adopcion(int $id, int $id_usuario_actual, bool $es_admin): array
-{
+// OPERACIONES
+function obtener_formulario_adopcion(int $id, int $id_usuario_actual, bool $es_admin): array {
     if ($id <= 0) {
         throw new InvalidArgumentException('El id del formulario no es válido.');
     }
@@ -251,8 +249,7 @@ function obtener_formulario_adopcion(int $id, int $id_usuario_actual, bool $es_a
 }
 
 
-function obtener_formulario_por_solicitud(int $id_solicitud, int $id_usuario_actual, bool $es_admin): array
-{
+function obtener_formulario_por_solicitud(int $id_solicitud, int $id_usuario_actual, bool $es_admin): array {
     $solicitud = validar_solicitud_para_formulario($id_solicitud, $id_usuario_actual, $es_admin);
 
     $formulario = obtener_formulario_adopcion_por_solicitud($id_solicitud);
@@ -271,8 +268,7 @@ function obtener_formulario_por_solicitud(int $id_solicitud, int $id_usuario_act
 }
 
 
-function registrar_formulario_adopcion(int $id_usuario_actual, array $datos): array
-{
+function registrar_formulario_adopcion(int $id_usuario_actual, array $datos): array {
     $id_solicitud = filter_var($datos['id_solicitud'] ?? null, FILTER_VALIDATE_INT);
 
     if ($id_solicitud === false || $id_solicitud <= 0) {
@@ -305,7 +301,7 @@ function registrar_formulario_adopcion(int $id_usuario_actual, array $datos): ar
         'horas_solo' => isset($datos['horas_solo']) && $datos['horas_solo'] !== null ? (int) $datos['horas_solo'] : null,
         'tiene_mascotas' => (bool) $datos['tiene_mascotas'],
         'responsable_principal' => trim((string) $datos['responsable_principal']),
-        'motivo_adopcion' => !empty($datos['motivo_adopcion']) ? trim((string) $datos['motivo_adopcion']) : null,
+        'id_motivo_adopcion' => (int) $datos['id_motivo_adopcion'],
         'puede_realizar_paseos' => (bool) $datos['puede_realizar_paseos'],
         'puede_realizar_traslados' => (bool) $datos['puede_realizar_traslados'],
         'cuenta_con_apoyo' => (bool) $datos['cuenta_con_apoyo'],
@@ -334,8 +330,7 @@ function registrar_formulario_adopcion(int $id_usuario_actual, array $datos): ar
 }
 
 
-function modificar_formulario_adopcion(int $id_formulario, int $id_usuario_actual, array $datos): array
-{
+function modificar_formulario_adopcion(int $id_formulario, int $id_usuario_actual, array $datos): array {
     if ($id_formulario <= 0) {
         throw new InvalidArgumentException('El id del formulario no es válido.');
     }
@@ -370,7 +365,7 @@ function modificar_formulario_adopcion(int $id_formulario, int $id_usuario_actua
         'horas_solo' => isset($datos['horas_solo']) && $datos['horas_solo'] !== null ? (int) $datos['horas_solo'] : null,
         'tiene_mascotas' => (bool) $datos['tiene_mascotas'],
         'responsable_principal' => trim((string) $datos['responsable_principal']),
-        'motivo_adopcion' => !empty($datos['motivo_adopcion']) ? trim((string) $datos['motivo_adopcion']) : null,
+        'id_motivo_adopcion' => (int) $datos['id_motivo_adopcion'],
         'puede_realizar_paseos' => (bool) $datos['puede_realizar_paseos'],
         'puede_realizar_traslados' => (bool) $datos['puede_realizar_traslados'],
         'cuenta_con_apoyo' => (bool) $datos['cuenta_con_apoyo'],
@@ -399,19 +394,16 @@ function modificar_formulario_adopcion(int $id_formulario, int $id_usuario_actua
 
     return obtener_formulario_adopcion($id_formulario, $id_usuario_actual, false);
 }
-function listar_condiciones_vivienda(): array
-{
+function listar_condiciones_vivienda(): array {
     return obtener_condiciones_vivienda();
 }
 
 
-function listar_destinos_mascotas(): array
-{
+function listar_destinos_mascotas(): array {
     return obtener_destinos_mascotas();
 }
 
-function listar_formularios_adopcion(array $filtros, int $id_usuario_actual, bool $es_admin): array
-{
+function listar_formularios_adopcion(array $filtros, int $id_usuario_actual, bool $es_admin): array {
     $id_usuario_solo_suyos = $es_admin ? null : $id_usuario_actual;
 
     return obtener_formularios_adopcion_filtrados($filtros, $id_usuario_solo_suyos);
