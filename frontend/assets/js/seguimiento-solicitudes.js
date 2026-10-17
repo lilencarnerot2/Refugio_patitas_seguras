@@ -235,7 +235,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var datos = buscar(id);
 
         if (!modal || !datos || !datos.grupo.recurso) {
-            avisar(mensajeDetalle, { message: 'No encontramos el formulario de esta solicitud.' });
+            var textoSinFormulario = modal && modal.getAttribute('data-aviso-sin-formulario');
+
+            avisar(mensajeDetalle, textoSinFormulario ? { success: false, message: textoSinFormulario } : null);
             return;
         }
 
@@ -255,7 +257,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                mezcla = Object.assign({}, datoDe(respuesta), datos.item);
+                mezcla = Object.assign({}, datosFormularioDeRespuesta(respuesta, {
+                    id_solicitud: id,
+                    id_usuario: datos.item && datos.item.id_usuario
+                }) || {}, datos.item);
 
                 if (panelFormulario) {
                     llenarCampos(panelFormulario, mezcla);
@@ -370,20 +375,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function avisar(caja, origen) {
-        var texto;
-
         if (!caja) {
             return;
         }
 
-        texto = origen ? mensajeDeApi(origen) : '';
-        caja.textContent = texto || '';
-
-        if (texto) {
-            caja.setAttribute('data-estado', 'error');
-        } else {
-            caja.removeAttribute('data-estado');
+        if (!origen) {
+            avisoDeApi(caja, '', true);
+            return;
         }
+
+        avisoDeApi(caja, origen, origen.success !== false && !(origen instanceof Error));
     }
 
     function listaDe(respuesta) {

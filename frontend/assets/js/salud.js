@@ -1,15 +1,8 @@
 const mensaje = document.getElementById('mensaje-formulario');
 const cuerpo = document.getElementById('cuerpo-mascotas-salud');
 
-function mostrarMensaje(texto, ok) {
-    mensaje.textContent = texto || '';
-    mensaje.removeAttribute('data-estado');
-
-    if (!texto) {
-        return;
-    }
-
-    mensaje.dataset.estado = ok ? 'ok' : 'error';
+function mostrarMensaje(origen, ok) {
+    avisoDeApi(mensaje, origen, ok);
 }
 
 function listaDe(resultado) {
@@ -453,7 +446,7 @@ apiRequest('mascotas')
         });
     })
     .catch(function (error) {
-        mostrarMensaje(mensajeDeApi(error), false);
+        mostrarMensaje(error, false);
     });
 
 apiRequest('tipos_vacunas')
@@ -464,7 +457,7 @@ apiRequest('tipos_vacunas')
         agregarNombres(tipos, 'nombre_vacuna', document.getElementById('lista-tipos-vacunas'));
     })
     .catch(function (error) {
-        mostrarMensaje(mensajeDeApi(error), false);
+        mostrarMensaje(error, false);
     });
 
 apiRequest('tipos_productos')
@@ -475,5 +468,5 @@ apiRequest('tipos_productos')
         agregarNombres(tipos, 'nombre_tipo', document.getElementById('lista-tipos-productos'));
     })
     .catch(function (error) {
-        mostrarMensaje(mensajeDeApi(error), false);
+        mostrarMensaje(error, false);
     });

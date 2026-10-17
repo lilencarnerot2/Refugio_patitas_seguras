@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.addEventListener('mousedown', function (evento) {
-        var abierta = document.querySelector('.lista-desplegable-abierta');
+        var abierta = document.querySelector('.lista-desplegable[data-abierta="1"]');
 
         if (abierta && !abierta.contains(evento.target) && !evento.target.closest('select')) {
             cerrarLista();
@@ -180,25 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function mostrarAviso(caja, origen, ok) {
-        if (!caja) {
-            return;
-        }
-
-        caja.textContent = typeof origen === 'string' ? origen : mensajeDeApi(origen);
-
-        if (ok) {
-            caja.setAttribute('data-estado', 'ok');
-        } else if (origen) {
-            caja.setAttribute('data-estado', 'error');
-        } else {
-            caja.removeAttribute('data-estado');
-        }
-
-        if (origen && origen.status) {
-            caja.setAttribute('data-codigo', String(origen.status));
-        } else {
-            caja.removeAttribute('data-codigo');
-        }
+        avisoDeApi(caja, origen, ok, formulario);
     }
 
     function pegar(nombre, valor) {
@@ -377,8 +359,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            wrap = document.createElement('div');
-            wrap.className = 'campo-con-x';
+            wrap = document.getElementById('modelo-campo-con-x');
+
+            if (wrap && wrap.content && wrap.content.firstElementChild) {
+                wrap = wrap.content.firstElementChild.cloneNode(false);
+            } else {
+                wrap = document.createElement('div');
+            }
+
             nodo.parentNode.insertBefore(wrap, nodo);
             wrap.appendChild(nodo);
             boton = modelo.cloneNode(true);
@@ -573,7 +561,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function cerrarLista() {
-        var abierta = document.querySelector('.lista-desplegable-abierta');
+        var abierta = document.querySelector('.lista-desplegable[data-abierta="1"]');
 
         if (abierta) {
             abierta.parentNode.removeChild(abierta);
@@ -594,7 +582,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         caja = modeloLista.cloneNode(false);
         caja.removeAttribute('id');
-        caja.className = 'lista-desplegable lista-desplegable-abierta';
+        caja.setAttribute('data-abierta', '1');
 
         Array.prototype.forEach.call(select.options, function (opcion) {
             var item;
@@ -634,35 +622,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function validar() {
-        var lista = document.getElementById('lista-mascotas-hogar');
-        var tieneMascotas = formulario.elements.tiene_mascotas && formulario.elements.tiene_mascotas.checked;
-
-        mostrarAviso(mensaje, '');
-
-        if (tieneMascotas && lista && !lista.children.length) {
-            agregarMascotaHogar();
-        }
-
-        if (typeof formulario.checkValidity === 'function' && !formulario.checkValidity()) {
-            if (typeof formulario.reportValidity === 'function') {
-                formulario.reportValidity();
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
     function enviar() {
         var cuerpo;
         var boton = formulario.querySelector('[type="submit"]');
         var idSolicitud = null;
 
-        if (!validar()) {
+        if (formulario.getAttribute('data-enviando') === '1') {
             return;
         }
+
+        formulario.setAttribute('data-enviando', '1');
+
+        marcarIntentoEnvio(formulario);
+        mostrarAviso(mensaje, '');
 
         cuerpo = cuerpoDelFormulario();
 
@@ -695,12 +667,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 limpiarFormulario();
             })
             .catch(function (error) {
-                mostrarAviso(mensaje, error);
+                mostrarAviso(mensaje, error, false);
             })
-            .then(function () {
+            .finally(function () {
                 if (boton) {
                     boton.disabled = false;
                 }
+
+                formulario.removeAttribute('data-enviando');
             });
     }
 

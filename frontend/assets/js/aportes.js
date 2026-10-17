@@ -6,6 +6,10 @@ function listaDe(respuesta) {
     });
 }
 
+function listaMovimientosDe(respuesta) {
+    return listaDe(respuesta);
+}
+
 function claveTextoDe(item) {
     if (!item) {
         return '';
@@ -45,6 +49,18 @@ function clavesVisibles(item) {
     });
 }
 
+var clavesUsuarioMovimiento = ['nombre_usuario', 'apellido_usuario'];
+
+function movimientoTieneUsuario(item) {
+    var id = item && item.id_usuario;
+
+    return id !== undefined && id !== null && id !== '' && Number(id) > 0;
+}
+
+function esClaveUsuarioMovimiento(clave) {
+    return clavesUsuarioMovimiento.indexOf(clave) !== -1;
+}
+
 function esClaveDeTabla(clave) {
     if (!clave) {
         return false;
@@ -58,11 +74,33 @@ function esClaveDeTabla(clave) {
         return false;
     }
 
+    if (esClaveUsuarioMovimiento(clave)) {
+        return false;
+    }
+
     return true;
 }
 
+function claveVisibleEnTablaMovimientos(clave, items) {
+    if (!esClaveDeTabla(clave) && clave !== 'id') {
+        if (esClaveUsuarioMovimiento(clave)) {
+            return Array.isArray(items) && items.some(movimientoTieneUsuario);
+        }
+
+        return false;
+    }
+
+    return esClaveDeTabla(clave);
+}
+
 function clavesDeTabla(item) {
-    return clavesVisibles(item).filter(esClaveDeTabla);
+    return clavesVisibles(item).filter(function (clave) {
+        if (esClaveUsuarioMovimiento(clave)) {
+            return movimientoTieneUsuario(item);
+        }
+
+        return esClaveDeTabla(clave);
+    });
 }
 
 function clavesDeItems(items) {
@@ -103,6 +141,14 @@ function valorCelda(valor) {
     }
 
     return String(valor);
+}
+
+function valorCeldaMovimiento(clave, valor, item) {
+    if (esClaveUsuarioMovimiento(clave) && !movimientoTieneUsuario(item)) {
+        return '';
+    }
+
+    return valorCelda(valor);
 }
 
 function nombreNormalizado(valor) {
@@ -224,10 +270,7 @@ function cargarCatalogos(raiz) {
             var caja = document.getElementById('mensaje-aportes');
 
             if (caja && !caja.textContent) {
-                caja.textContent = mensajeDeApi(error);
-                caja.setAttribute('data-estado', 'error');
-                caja.classList.remove('alert-success');
-                caja.classList.add('alert-danger');
+                avisoDeApi(caja, error, false);
             }
 
             return [];
@@ -271,6 +314,8 @@ function cuerpoDesdeForm(formulario) {
         }
     }
 
+    delete datos.id_usuario;
+
     return datos;
 }
 
@@ -300,7 +345,9 @@ function pintarTabla(cabecera, cuerpo, items, campos) {
                 return fila && Object.prototype.hasOwnProperty.call(fila, campo);
             });
         })
-        : clavesDeItems(items)).filter(esClaveDeTabla);
+        : clavesDeItems(items)).filter(function (clave) {
+            return claveVisibleEnTablaMovimientos(clave, items);
+        });
 
     if (cabecera) {
         for (i = 0; i < claves.length; i++) {
@@ -321,7 +368,7 @@ function pintarTabla(cabecera, cuerpo, items, campos) {
         for (j = 0; j < claves.length; j++) {
             celda = document.createElement('td');
             celda.setAttribute('data-campo', claves[j]);
-            celda.textContent = valorCelda(item[claves[j]]);
+            celda.textContent = valorCeldaMovimiento(claves[j], item[claves[j]], item);
             fila.appendChild(celda);
         }
 
@@ -477,6 +524,7 @@ function armarPaginador(panel, cantidad, pagina, dibujar) {
         item.removeAttribute('id');
         item.hidden = false;
         item.setAttribute('data-pagina-numero', String(numero));
+        item.dataset.activa = numero === pagina ? 'true' : 'false';
         boton = item.querySelector('.page-link');
         boton.textContent = String(numero);
 
@@ -635,6 +683,12 @@ function enlazarFormularioMovimiento(formulario, recargar) {
         return;
     }
 
+    if (formulario.getAttribute('data-submit-enlazado') === '1') {
+        return;
+    }
+
+    formulario.setAttribute('data-submit-enlazado', '1');
+
     actualizarCamposDependientes(formulario);
     enlazarFechasMinimasFormulario(formulario);
     origenes = formulario.querySelectorAll('select, input');
@@ -651,95 +705,19 @@ function enlazarFormularioMovimiento(formulario, recargar) {
     });
 }
 
-function campoVisible(campo) {
-    return !!(campo && !campo.disabled && !campo.hidden && !campo.closest('[hidden]'));
-}
-
-function validarFormularioMovimiento(formulario, caja) {
-    var campos;
-    var i;
-    var campo;
-    var monto;
+function enviarMovimiento(formulario, recargar) {
+    var caja = document.getElementById('mensaje-aportes');
 
     if (!formulario) {
-        return false;
+        return Promise.resolve();
     }
 
     actualizarCamposDependientes(formulario);
 
-    if (caja) {
-        caja.textContent = '';
-        caja.removeAttribute('data-estado');
-    }
-
-    campos = formulario.querySelectorAll('[required], [data-a-seleccionar]');
-
-    for (i = 0; i < campos.length; i++) {
-        campo = campos[i];
-
-        if (!campoVisible(campo)) {
-            continue;
-        }
-
-        if (String(campo.value || '').trim() === '') {
-            if (typeof formulario.reportValidity === 'function') {
-                formulario.reportValidity();
-            }
-
-            campo.focus();
-            return false;
-        }
-    }
-
-    monto = formulario.elements.monto;
-
-    if (campoVisible(monto)) {
-        if (String(monto.value || '').trim() === '' || isNaN(Number(monto.value)) || Number(monto.value) <= 0) {
-            if (typeof formulario.reportValidity === 'function') {
-                formulario.reportValidity();
-            }
-
-            monto.focus();
-            return false;
-        }
-    }
-
-    campo = formulario.elements.fecha;
-
-    if (campoVisible(campo) && String(campo.value || '').trim() !== '' && campo.value < fechaDeHoyIso()) {
-        campo.setCustomValidity('La fecha no puede ser anterior a hoy.');
-        if (typeof formulario.reportValidity === 'function') {
-            formulario.reportValidity();
-        }
-        campo.setCustomValidity('');
-        campo.focus();
-        return false;
-    }
-
-    return true;
-}
-
-function enviarMovimiento(formulario, recargar) {
-    var caja = document.getElementById('mensaje-aportes');
-    var cuerpo;
-
-    if (!validarFormularioMovimiento(formulario, caja)) {
-        return Promise.resolve();
-    }
-
-    cuerpo = cuerpoDesdeForm(formulario);
-
-    return apiRequest('movimientos', {
+    return enviarFormularioApi(formulario, caja, 'movimientos', {
         metodo: 'POST',
-        cuerpo: cuerpo
-    }).then(function (respuesta) {
-        if (caja) {
-            caja.textContent = mensajeDeApi(respuesta);
-            caja.setAttribute('data-estado', 'ok');
-            caja.classList.remove('alert-danger');
-            caja.classList.add('alert-success');
-        }
-
+        cuerpo: cuerpoDesdeForm(formulario)
+    }).then(function () {
         formulario.reset();
         formulario.querySelectorAll('select[data-catalogo]').forEach(seleccionarOpcionUnica);
         actualizarCamposDependientes(formulario);
@@ -748,13 +726,8 @@ function enviarMovimiento(formulario, recargar) {
         if (recargar) {
             recargar();
         }
-    }).catch(function (error) {
-        if (caja) {
-            caja.textContent = mensajeDeApi(error);
-            caja.setAttribute('data-estado', 'error');
-            caja.classList.remove('alert-success');
-            caja.classList.add('alert-danger');
-        }
+    }).catch(function () {
+        return null;
     });
 }
 
@@ -792,6 +765,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (bloque) {
                 bloque.hidden = true;
             }
+
             return;
         }
 
@@ -879,19 +853,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function cargarListado() {
         apiRequest('movimientos', { parametros: parametrosDeFiltros(panel) }).then(function (respuesta) {
-            lista = ordenarPorId(listaDe(respuesta));
+            lista = ordenarPorId(listaMovimientosDe(respuesta));
             sincronizarAportes();
             dibujar(1);
 
             if (caja && mensajeDeApi(respuesta)) {
-                caja.textContent = mensajeDeApi(respuesta);
-                caja.setAttribute('data-estado', 'ok');
+                avisoDeApi(caja, respuesta, true);
             }
         }).catch(function (error) {
-            if (caja) {
-                caja.textContent = mensajeDeApi(error);
-                caja.setAttribute('data-estado', 'error');
-            }
+            avisoDeApi(caja, error, false);
         });
     }
 
@@ -959,12 +929,7 @@ document.addEventListener('DOMContentLoaded', function () {
     datosListos = false;
 
     function avisar(origen, ok) {
-        if (!caja) {
-            return;
-        }
-
-        caja.textContent = mensajeDeApi(origen);
-        caja.setAttribute('data-estado', ok ? 'ok' : 'error');
+        avisoDeApi(caja, origen, ok, formulario);
     }
 
     function catalogoDeCampo(nombre) {
@@ -1148,7 +1113,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var filtros = parametrosDeFiltros(panel);
 
         return apiRequest('movimientos', { parametros: filtros }).then(function (respuesta) {
-            lista = ordenarPorId(listaDe(respuesta));
+            lista = ordenarPorId(listaMovimientosDe(respuesta));
             datosListos = true;
             armarCampos(lista[0] || modeloDesdeFiltros());
             dibujar(1);
@@ -1172,9 +1137,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var id;
         var opciones;
 
-        if (!validarFormularioMovimiento(formulario, caja)) {
-            return Promise.resolve();
-        }
+        actualizarCamposDependientes(formulario);
 
         id = formulario.querySelector('[name="id"]').value;
         opciones = {
@@ -1186,12 +1149,11 @@ document.addEventListener('DOMContentLoaded', function () {
             opciones.parametros = { id: id };
         }
 
-        return apiRequest('movimientos', opciones).then(function (respuesta) {
-            avisar(respuesta, true);
+        return enviarFormularioApi(formulario, caja, 'movimientos', opciones).then(function () {
             limpiarForm();
             return cargarListado();
-        }).catch(function (error) {
-            avisar(error, false);
+        }).catch(function () {
+            return null;
         });
     }
 

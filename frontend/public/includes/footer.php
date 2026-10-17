@@ -11,7 +11,7 @@
             </div>
             <div class="footer-contact">
                 <p><i class="bi bi-telephone"></i> 11 2345 6789</p>
-                <p><i class="bi bi-envelope"></i> hola@patitaseguras.org</p>
+                <p><i class="bi bi-envelope"></i> profesionalizantes29@gmail.com</p>
                 <p><i class="bi bi-geo-alt"></i> Merlo, Buenos Aires, Argentina</p>
                 <p class="footer-note">Amor que se nota, huellas que quedan. 🐾</p>
             </div>

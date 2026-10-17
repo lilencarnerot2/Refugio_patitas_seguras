@@ -69,7 +69,14 @@ require __DIR__ . '/includes/header.php';
 
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="donaciones-monetaria" role="tabpanel" data-clave="monetaria">
-                    <article class="card solicitudes-grupo movimientos-donaciones-grupo border-0 rounded-4 shadow-sm" data-por-pagina="5" data-total="0">
+                    <article class="card solicitudes-grupo movimientos-donaciones-grupo border-0 rounded-4 shadow-sm" data-por-pagina="5" data-total="0" data-incluir-tipo-aporte="dinero">
+                        <template data-modelo-cabecera-movimientos>
+                            <th scope="col" data-campo="metodo_pago" data-etiqueta="Método pago"></th>
+                            <th scope="col" data-campo="frecuencia_aporte" data-etiqueta="Frecuencia"></th>
+                            <th scope="col" data-campo="fecha" data-etiqueta="Fecha"></th>
+                            <th scope="col" data-campo="monto" data-etiqueta="Monto"></th>
+                            <th scope="col" data-campo="descripcion" data-etiqueta="Descripción"></th>
+                        </template>
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
                                 <h4 class="h5 mb-0 d-flex align-items-center gap-2"><i class="bi bi-folder2"></i> Donaciones monetarias</h4>
@@ -106,7 +113,13 @@ require __DIR__ . '/includes/header.php';
                     </article>
                 </div>
                 <div class="tab-pane fade" id="donaciones-insumos" role="tabpanel" data-clave="insumos">
-                    <article class="card solicitudes-grupo movimientos-donaciones-grupo border-0 rounded-4 shadow-sm" data-por-pagina="5" data-total="0">
+                    <article class="card solicitudes-grupo movimientos-donaciones-grupo border-0 rounded-4 shadow-sm" data-por-pagina="5" data-total="0" data-excluir-tipo-aporte="dinero">
+                        <template data-modelo-cabecera-movimientos>
+                            <th scope="col" data-campo="tipo_aporte" data-etiqueta="Tipo aporte"></th>
+                            <th scope="col" data-campo="frecuencia_aporte" data-etiqueta="Frecuencia"></th>
+                            <th scope="col" data-campo="fecha" data-etiqueta="Fecha"></th>
+                            <th scope="col" data-campo="descripcion" data-etiqueta="Descripción"></th>
+                        </template>
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
                                 <h4 class="h5 mb-0 d-flex align-items-center gap-2"><i class="bi bi-folder2"></i> Donación de insumos</h4>

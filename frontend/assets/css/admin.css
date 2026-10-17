@@ -531,6 +531,16 @@ html { scroll-behavior: smooth; }
     color: var(--primary-color);
 }
 
+.admin-page form[data-intento-envio="1"] .form-control:invalid,
+.admin-page form[data-intento-envio="1"] .form-select:invalid,
+.admin-page form:has(.form-intento:checked) .form-control:invalid,
+.admin-page form:has(.form-intento:checked) .form-select:invalid,
+.admin-page form .form-control[data-campo-estado="error"],
+.admin-page form .form-select[data-campo-estado="error"],
+.admin-page form textarea.form-control[data-campo-estado="error"] {
+    border-color: #a32b21;
+}
+
 .admin-page #panel-solicitud-detalle > #mensaje-formulario:not(:empty) {
     position: sticky;
     top: 8px;
@@ -1868,6 +1878,7 @@ html { scroll-behavior: smooth; }
 .admin-page #panel-usuario-detalle #ficha-nombre[data-texto]::after,
 .admin-page #panel-usuario-detalle .pet-detail-meta [data-campo][data-texto]::after,
 .admin-page #panel-solicitud-detalle .pet-detail-meta [data-campo][data-texto]::after,
+.admin-page #panel-solicitud-detalle .postulante-dato-item [data-campo][data-texto]::after,
 .admin-page #panel-solicitud-detalle #lista-contacto-postulante span[data-texto]::after,
 .admin-page #panel-solicitud-detalle #tabla-seguimientos td[data-texto]::after,
 .admin-page #bloque-solicitudes .dash-tabla td[data-texto]::after { content: attr(data-texto); }
@@ -2320,6 +2331,122 @@ html { scroll-behavior: smooth; }
     background: var(--border-light, #e8e8e8);
 }
 
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-visual {
+    padding: 4px 0 8px;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 72px;
+    max-width: 96px;
+    text-align: center;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-avatar-img,
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-avatar-vacio {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--icon-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: var(--primary-color);
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-avatar-img[hidden] {
+    display: none !important;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-avatar-etiqueta {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-soft);
+    line-height: 1.2;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-avatar-etiqueta[data-texto]::after {
+    content: attr(data-texto);
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-corazon {
+    --compat-fill: 0%;
+    position: relative;
+    width: 88px;
+    height: 88px;
+    flex-shrink: 0;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-corazon i {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4.25rem;
+    line-height: 1;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-corazon-vacio {
+    color: #c8c8c8;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-corazon-lleno {
+    color: #c0392b;
+    clip-path: inset(calc(100% - var(--compat-fill)) 0 0 0);
+    transition: clip-path 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    filter: drop-shadow(0 2px 6px rgba(192, 57, 43, 0.45));
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-corazon-pct {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+    pointer-events: none;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-corazon-pct:not([data-texto]) {
+    display: none;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-corazon-pct[data-texto]::after {
+    content: attr(data-texto) '%';
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-corazon-animando .compatibilidad-corazon-lleno {
+    animation: compat-corazon-pulso 0.75s ease;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-evaluacion .compatibilidad-corazon-animando .compatibilidad-corazon-pct {
+    animation: compat-corazon-pct-aparece 0.75s ease;
+}
+
+@keyframes compat-corazon-pulso {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.14); }
+    100% { transform: scale(1); }
+}
+
+@keyframes compat-corazon-pct-aparece {
+    0% { opacity: 0; transform: scale(0.85); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] .pet-detail-meta li.detalle-meta-ancho {
     grid-column: 1 / -1;
 }
@@ -2434,6 +2561,37 @@ html { scroll-behavior: smooth; }
     color: var(--primary-color);
     background-color: var(--white);
     border-color: transparent;
+}
+
+.admin-page #ficha-postulante .postulante-seccion-panel {
+    display: none;
+}
+
+.admin-page #ficha-postulante[data-seccion-activa="personal"] [data-panel-postulante="personal"],
+.admin-page #ficha-postulante[data-seccion-activa="contacto"] [data-panel-postulante="contacto"],
+.admin-page #ficha-postulante[data-seccion-activa="domicilio"] [data-panel-postulante="domicilio"] {
+    display: block;
+}
+
+.admin-page #panel-solicitud-detalle .info-card,
+.admin-page #panel-solicitud-detalle .pet-detail-meta,
+.admin-page #panel-solicitud-detalle .postulante-layout,
+.admin-page #panel-solicitud-detalle .postulante-panel-contenido,
+.admin-page #panel-solicitud-detalle .formulario-detalle-scroll,
+.admin-page #panel-solicitud-detalle .evaluacion-detalle-scroll {
+    max-width: 100%;
+    min-width: 0;
+}
+
+.admin-page #panel-solicitud-detalle [data-campo] {
+    max-width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.admin-page #panel-solicitud-detalle [data-campo][data-texto] {
+    display: block;
 }
 
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-panel-contenido {
@@ -3398,6 +3556,11 @@ html { scroll-behavior: smooth; }
         gap: 8px;
         padding-left: 16px;
         padding-right: 16px;
+    }
+
+    .admin-page footer .footer-inner-solo-frase {
+        justify-content: center;
+        text-align: center;
     }
 
     .admin-page .row > [class*="col"],

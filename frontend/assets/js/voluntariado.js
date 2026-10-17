@@ -8,11 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var hoy;
     var mesVisible;
     var diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-    var turnos = [
-        { rango_horario: 'sabado-09-11', dia: 'Sábado', rango: '09:00 - 11:00' },
-        { rango_horario: 'sabado-14-16', dia: 'Sábado', rango: '14:00 - 16:00' },
-        { rango_horario: 'domingo-10-12', dia: 'Domingo', rango: '10:00 - 12:00' }
-    ];
+    var turnos = [];
+    var diasHabilitados = [];
+    var turnosListos = false;
 
     if (!formulario) {
         return;
@@ -23,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
     hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
     mesVisible = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+
+    actualizarEnvio();
 
     if (calendario && fecha) {
         calendario.querySelector('[data-mes-anterior]').addEventListener('click', function () {
@@ -41,50 +41,151 @@ document.addEventListener('DOMContentLoaded', function () {
 
     pintarHorarios([]);
 
+    cargarTurnosVoluntariado().then(function (respuesta) {
+        aplicarTurnos(respuesta);
+    }).catch(function (error) {
+        aplicarTurnos(null);
+        avisoDeApi(aviso, error, false);
+    }).finally(function () {
+        turnosListos = true;
+        actualizarEnvio();
+    });
+
+    function cargarTurnosVoluntariado() {
+        return apiRequest('voluntariado_turnos');
+    }
+
+    function numeroDiaSemanaDeTurno(item) {
+        var numero;
+
+        if (!item || item.dia_semana === undefined || item.dia_semana === null || item.dia_semana === '') {
+            return NaN;
+        }
+
+        numero = Number(item.dia_semana);
+
+        return isNaN(numero) ? NaN : numero;
+    }
+
+    function diasHabilitadosDesdeTurnos(lista) {
+        var resultado = [];
+        var i;
+        var numero;
+
+        for (i = 0; i < lista.length; i++) {
+            numero = numeroDiaSemanaDeTurno(lista[i]);
+
+            if (!isNaN(numero) && resultado.indexOf(numero) === -1) {
+                resultado.push(numero);
+            }
+        }
+
+        return resultado;
+    }
+
+    function aplicarTurnos(respuesta) {
+        turnos = respuesta ? turnosVoluntariadoDe(respuesta) : [];
+        diasHabilitados = diasHabilitadosDesdeTurnos(turnos);
+
+        if (calendario && fecha) {
+            pintarCalendario();
+        }
+
+        if (turnos.length && aviso && aviso.getAttribute('data-estado') !== 'error') {
+            avisoDeApi(aviso, '', true);
+        }
+    }
+
+    function actualizarEnvio() {
+        if (!boton) {
+            return;
+        }
+
+        boton.disabled = !turnosListos || !turnos.length;
+    }
+
     formulario.addEventListener('submit', function (evento) {
         evento.preventDefault();
 
-        if (aviso) {
-            aviso.textContent = '';
-            aviso.removeAttribute('data-estado');
-            aviso.classList.remove('alert-success', 'alert-danger');
+        if (boton && boton.disabled) {
+            return;
         }
 
         if (boton) {
             boton.disabled = true;
         }
 
-        apiRequest('voluntariado', {
+        enviarFormularioApi(formulario, aviso, 'voluntariado', {
             metodo: 'POST',
             cuerpo: armarCuerpo()
         }).then(function (respuesta) {
-            pintarAviso(respuesta, true);
+            if (voluntariadoSinMailUsuario(respuesta)) {
+                completarAvisoSinMailUsuario(aviso, respuesta);
+            }
+
             formulario.reset();
             limpiarTurno();
-        }).catch(function (error) {
-            pintarAviso(error, false);
+        }).catch(function () {
+            return null;
         }).finally(function () {
-            if (boton) {
-                boton.disabled = false;
-            }
+            actualizarEnvio();
         });
     });
 
-    function valorCookie(nombre) {
-        var partes = document.cookie.split(';');
-        var clave = nombre + '=';
-        var i;
-        var parte;
+    function voluntariadoSinMailUsuario(respuesta) {
+        var datos;
 
-        for (i = 0; i < partes.length; i++) {
-            parte = partes[i].trim();
+        if (!respuesta || !respuesta.data) {
+            return false;
+        }
 
-            if (parte.indexOf(clave) === 0) {
-                return decodeURIComponent(parte.slice(clave.length));
+        datos = respuesta.data;
+
+        return datos.mail_usuario_enviado === false;
+    }
+
+    function completarAvisoSinMailUsuario(caja, respuesta) {
+        var partes;
+        var extra;
+        var turno;
+        var texto;
+
+        if (!caja) {
+            return;
+        }
+
+        partes = [mensajeDeApi(respuesta).trim()];
+        turno = respuesta && respuesta.data && respuesta.data.turno;
+
+        if (turno) {
+            if (turno.fecha) {
+                partes.push(String(turno.fecha).trim());
+            }
+
+            if (turno.dia) {
+                partes.push(String(turno.dia).trim());
+            }
+
+            if (turno.rango) {
+                partes.push(String(turno.rango).trim());
             }
         }
 
-        return '';
+        extra = caja.getAttribute('data-aviso-exito');
+
+        if (extra) {
+            partes.push(extra.trim());
+        }
+
+        texto = partes.filter(Boolean).join(' ');
+
+        if (!texto) {
+            return;
+        }
+
+        caja.textContent = texto;
+        caja.setAttribute('data-estado', 'ok');
+        caja.removeAttribute('aria-busy');
     }
 
     function pegarDatosSesion() {
@@ -124,14 +225,25 @@ document.addEventListener('DOMContentLoaded', function () {
         return d.getFullYear() + '-' + mes + '-' + dia;
     }
 
-    function esFinDeSemana(fechaLocal) {
+    function esDiaCalendarioHabilitado(fechaLocal) {
         var n = fechaLocal.getDay();
+        var i;
 
-        return n === 0 || n === 6;
+        if (!diasHabilitados.length) {
+            return false;
+        }
+
+        for (i = 0; i < diasHabilitados.length; i++) {
+            if (diasHabilitados[i] === n) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     function esDiaHabilitado(fechaLocal) {
-        return esFinDeSemana(fechaLocal) && aYmd(fechaLocal) >= aYmd(hoy);
+        return esDiaCalendarioHabilitado(fechaLocal) && aYmd(fechaLocal) >= aYmd(hoy);
     }
 
     function sincronizarFechaAttr() {
@@ -160,28 +272,18 @@ document.addEventListener('DOMContentLoaded', function () {
     function turnosParaFecha(valorFecha) {
         var d = new Date(valorFecha + 'T12:00:00');
         var n;
-        var diaEsperado;
-        var i;
-        var lista = [];
 
         if (isNaN(d.getTime())) {
-            return lista;
+            return [];
         }
 
         n = d.getDay();
-        diaEsperado = n === 6 ? 'Sábado' : (n === 0 ? 'Domingo' : '');
 
-        if (!diaEsperado) {
-            return lista;
-        }
+        return turnos.filter(function (item) {
+            var diaSemana = numeroDiaSemanaDeTurno(item);
 
-        for (i = 0; i < turnos.length; i++) {
-            if (turnos[i].dia === diaEsperado) {
-                lista.push(turnos[i]);
-            }
-        }
-
-        return lista;
+            return !isNaN(diaSemana) && diaSemana === n;
+        });
     }
 
     function pintarCabeceraDias() {
@@ -203,10 +305,27 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function etiquetaTurno(item) {
+        var partes = [];
+
+        if (item.dia) {
+            partes.push(String(item.dia).trim());
+        }
+
+        if (item.rango) {
+            partes.push(String(item.rango).trim());
+        } else if (item.horario) {
+            partes.push(String(item.horario).trim());
+        }
+
+        return partes.join(' ');
+    }
+
     function pintarHorarios(items) {
         var i;
         var opcion;
         var lista = Array.isArray(items) ? items : [];
+        var clave;
 
         if (!turno) {
             return;
@@ -215,13 +334,15 @@ document.addEventListener('DOMContentLoaded', function () {
         turno.innerHTML = '<option value="" selected hidden></option>';
 
         for (i = 0; i < lista.length; i++) {
-            if (!lista[i] || !lista[i].rango_horario) {
+            clave = claveTurnoVoluntariado(lista[i]);
+
+            if (!clave) {
                 continue;
             }
 
             opcion = document.createElement('option');
-            opcion.value = lista[i].rango_horario;
-            opcion.textContent = lista[i].dia + ' ' + lista[i].rango;
+            opcion.value = clave;
+            opcion.textContent = etiquetaTurno(lista[i]) || clave;
             turno.appendChild(opcion);
         }
 
@@ -270,7 +391,7 @@ document.addEventListener('DOMContentLoaded', function () {
             col = document.createElement('div');
             col.className = 'calendario-celda';
 
-            if (!esFinDeSemana(fechaLocal) || !esDiaHabilitado(fechaLocal)) {
+            if (!esDiaCalendarioHabilitado(fechaLocal) || !esDiaHabilitado(fechaLocal)) {
                 col.innerHTML = '<span class="calendario-dia-inactivo d-block py-1">' + i + '</span>';
                 grilla.appendChild(col);
                 continue;
@@ -280,11 +401,7 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.type = 'button';
             btn.className = 'btn btn-sm w-100 calendario-dia-fin-semana border-0';
             btn.textContent = String(i);
-
-            if (seleccion === valor) {
-                btn.classList.add('calendario-dia-elegido');
-            }
-
+            btn.setAttribute('aria-pressed', seleccion === valor ? 'true' : 'false');
             btn.setAttribute('aria-label', 'Elegir ' + valor);
             btn.addEventListener('click', function (v) {
                 return function () {
@@ -333,38 +450,4 @@ document.addEventListener('DOMContentLoaded', function () {
         return datos;
     }
 
-    function pintarAviso(origen, ok) {
-        var texto;
-        var infoTurno;
-
-        if (!aviso) {
-            return;
-        }
-
-        texto = mensajeDeApi(origen);
-
-        if (ok) {
-            infoTurno = origen && origen.data && origen.data.turno;
-
-            if (infoTurno && infoTurno.fecha) {
-                texto = texto + ' ' + infoTurno.fecha;
-            }
-
-            if (infoTurno && infoTurno.dia) {
-                texto = texto + ' ' + infoTurno.dia;
-            }
-
-            if (infoTurno && infoTurno.rango) {
-                texto = texto + ' ' + infoTurno.rango;
-            }
-
-            texto = texto + ' Listo! Si no te llega el mail en unos minutos, fijate en spam.';
-        }
-
-        aviso.hidden = false;
-        aviso.textContent = texto || '';
-        aviso.setAttribute('data-estado', ok ? 'ok' : 'error');
-        aviso.classList.toggle('alert-success', ok);
-        aviso.classList.toggle('alert-danger', !ok);
-    }
 });

@@ -1,61 +1,92 @@
 document.addEventListener('DOMContentLoaded', function () {
+    if (window.__patitasMisMovimientosPerfil) {
+        return;
+    }
+
+    window.__patitasMisMovimientosPerfil = true;
+
     var raiz = document.getElementById('seguimiento-movimientos');
     var mensaje;
-    var cabecera;
-    var cuerpo;
-    var grupo;
-    var lista;
-    var cargado;
-    var campos;
-    var titulos;
+    var grupos = [];
+    var lista = [];
+    var cargado = false;
+
+    function normalizarTexto(valor) {
+        return String(valor || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function itemEnGrupo(item, card) {
+        var incluir = normalizarTexto(card.getAttribute('data-incluir-tipo-aporte'));
+        var excluir = normalizarTexto(card.getAttribute('data-excluir-tipo-aporte'));
+        var tipo = normalizarTexto(item && item.tipo_aporte);
+
+        if (incluir && tipo.indexOf(incluir) === -1) {
+            return false;
+        }
+
+        if (excluir && tipo.indexOf(excluir) !== -1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    function columnasDeGrupo(card) {
+        var modelo = card && card.querySelector('template[data-modelo-cabecera-movimientos]');
+        var celdas;
+        var resultado = [];
+        var i;
+        var celda;
+
+        if (!modelo || !modelo.content) {
+            return resultado;
+        }
+
+        celdas = modelo.content.querySelectorAll('[data-campo]');
+
+        for (i = 0; i < celdas.length; i++) {
+            celda = celdas[i];
+            resultado.push({
+                campo: celda.getAttribute('data-campo'),
+                etiqueta: celda.getAttribute('data-etiqueta') || celda.getAttribute('data-campo')
+            });
+        }
+
+        return resultado;
+    }
 
     if (!raiz || !valorCookie('usuario_id')) {
         return;
     }
 
     mensaje = raiz.querySelector('[data-mensaje-movimientos]');
-    cabecera = document.getElementById('cabecera-movimientos-perfil');
-    cuerpo = document.getElementById('cuerpo-movimientos-perfil');
-    grupo = raiz.querySelector('.movimientos-donaciones-grupo');
-    lista = [];
-    cargado = false;
 
-    campos = [
-        'tipo_movimiento',
-        'tipo_aporte',
-        'metodo_pago',
-        'frecuencia_aporte',
-        'fecha',
-        'monto',
-        'descripcion'
-    ];
+    raiz.querySelectorAll('.tab-pane[data-clave]').forEach(function (pane) {
+        var card = pane.querySelector('.movimientos-donaciones-grupo');
 
-    titulos = {
-        tipo_movimiento: 'Tipo movimiento',
-        tipo_aporte: 'Tipo aporte',
-        metodo_pago: 'Método pago',
-        frecuencia_aporte: 'Frecuencia',
-        fecha: 'Fecha',
-        monto: 'Monto',
-        descripcion: 'Descripción'
-    };
+        if (!card) {
+            return;
+        }
 
-    if (document.getElementById('vista-movimientos').classList.contains('active')) {
-        cargar();
-    }
-
-    document.querySelectorAll('[data-bs-target="#vista-movimientos"]').forEach(function (tab) {
-        tab.addEventListener('shown.bs.tab', function () {
-            if (!cargado) {
-                cargar();
-            }
+        grupos.push({
+            clave: pane.getAttribute('data-clave'),
+            card: card,
+            columnas: columnasDeGrupo(card),
+            cabecera: card.querySelector('[data-cabecera-movimientos]'),
+            cuerpo: card.querySelector('[data-cuerpo-movimientos]'),
+            paginador: card.querySelector('[data-paginador]'),
+            cantidad: card.querySelector('[data-cantidad]'),
+            items: [],
+            pagina: 1
         });
     });
 
-    function esDinero(item) {
-        var texto = String(item && item.tipo_aporte || '').toLowerCase();
+    cargar();
 
-        return texto.indexOf('dinero') !== -1;
+    function itemsDeGrupo(grupo) {
+        return lista.filter(function (item) {
+            return itemEnGrupo(item, grupo.card);
+        });
     }
 
     function valorCelda(clave, valor) {
@@ -67,38 +98,33 @@ document.addEventListener('DOMContentLoaded', function () {
             return fechaCorta(valor);
         }
 
-        if (clave === 'monto') {
-            if (valor === 0 || valor === '0') {
-                return '0.00';
-            }
-
-            if (!isNaN(Number(valor))) {
-                return Number(valor).toFixed(2);
-            }
-        }
-
         return String(valor);
     }
 
-    function pintarTablaPerfil(items) {
+    function pintarTabla(grupo, items) {
+        var columnas = grupo.columnas;
         var i;
         var j;
         var fila;
         var celda;
         var item;
+        var col;
 
-        if (!cuerpo) {
+        if (!grupo.cuerpo) {
             return;
         }
 
-        cuerpo.innerHTML = '';
+        grupo.cuerpo.innerHTML = '';
 
-        if (cabecera) {
-            cabecera.innerHTML = '';
-            for (i = 0; i < campos.length; i++) {
+        if (grupo.cabecera) {
+            grupo.cabecera.innerHTML = '';
+
+            for (i = 0; i < columnas.length; i++) {
+                col = columnas[i];
                 celda = document.createElement('th');
-                celda.textContent = titulos[campos[i]] || campos[i];
-                cabecera.appendChild(celda);
+                celda.setAttribute('data-campo', col.campo);
+                celda.textContent = col.etiqueta;
+                grupo.cabecera.appendChild(celda);
             }
         }
 
@@ -110,96 +136,111 @@ document.addEventListener('DOMContentLoaded', function () {
                 fila.setAttribute('data-id', String(item.id));
             }
 
-            for (j = 0; j < campos.length; j++) {
+            for (j = 0; j < columnas.length; j++) {
+                col = columnas[j];
                 celda = document.createElement('td');
-                celda.setAttribute('data-campo', campos[j]);
-                celda.textContent = valorCelda(campos[j], item[campos[j]]);
+                celda.setAttribute('data-campo', col.campo);
+                celda.textContent = valorCelda(col.campo, item[col.campo]);
                 fila.appendChild(celda);
             }
 
-            cuerpo.appendChild(fila);
+            grupo.cuerpo.appendChild(fila);
         }
     }
 
-    function pintarResumen(items) {
-        var total;
-        var dinero;
-        var insumos;
-        var cantidad;
+    function pintarGrupo(grupo, nuevaPagina) {
+        var visibles;
+        var corte;
 
-        total = items.length;
-        dinero = 0;
-        insumos = 0;
+        visibles = itemsDeGrupo(grupo);
+        grupo.items = visibles;
 
-        items.forEach(function (item) {
-            if (esDinero(item)) {
-                dinero += 1;
-            } else {
-                insumos += 1;
-            }
+        if (nuevaPagina) {
+            grupo.pagina = nuevaPagina;
+        }
+
+        corte = armarPaginador(grupo.card, visibles.length, grupo.pagina, function (pagina) {
+            pintarGrupo(grupo, pagina);
         });
 
-        if (grupo) {
-            grupo.setAttribute('data-total', String(total));
+        grupo.pagina = corte.pagina;
+        grupo.card.setAttribute('data-total', String(visibles.length));
+
+        if (grupo.cantidad) {
+            grupo.cantidad.textContent = String(visibles.length);
         }
 
-        cantidad = raiz.querySelector('[data-cantidad]');
-        if (cantidad) {
-            cantidad.textContent = String(total);
+        if (grupo.paginador) {
+            grupo.paginador.hidden = visibles.length <= corte.porPagina;
         }
+
+        pintarTabla(grupo, visibles.slice(corte.desde, corte.hasta));
+    }
+
+    function pintarResumen() {
+        var total;
+        var monetarias;
+        var insumos;
+        var cardMonetaria;
+        var cardInsumos;
+
+        total = lista.length;
+        cardMonetaria = grupos.length ? grupos.find(function (g) {
+            return g.clave === 'monetaria';
+        }) : null;
+        cardInsumos = grupos.length ? grupos.find(function (g) {
+            return g.clave === 'insumos';
+        }) : null;
+        monetarias = cardMonetaria ? itemsDeGrupo(cardMonetaria).length : 0;
+        insumos = cardInsumos ? itemsDeGrupo(cardInsumos).length : 0;
 
         raiz.querySelectorAll('[data-contador-total]').forEach(function (nodo) {
             nodo.textContent = String(total);
         });
-        raiz.querySelectorAll('[data-contador-dinero]').forEach(function (nodo) {
-            nodo.textContent = String(dinero);
+        raiz.querySelectorAll('[data-contador-monetaria]').forEach(function (nodo) {
+            nodo.textContent = String(monetarias);
         });
         raiz.querySelectorAll('[data-contador-insumos]').forEach(function (nodo) {
             nodo.textContent = String(insumos);
         });
     }
 
-    function dibujar(nuevaPagina) {
-        var corte;
-
-        if (!grupo) {
-            return;
-        }
-
-        corte = armarPaginador(grupo, lista.length, nuevaPagina, dibujar);
-        pintarTablaPerfil(lista.slice(corte.desde, corte.hasta));
-    }
-
     function avisar(origen) {
-        var texto;
-
         if (!mensaje) {
             return;
         }
 
-        texto = origen ? mensajeDeApi(origen) : '';
-        mensaje.textContent = texto || '';
-
-        if (texto) {
-            mensaje.setAttribute('data-estado', 'error');
-        } else {
-            mensaje.removeAttribute('data-estado');
+        if (!origen) {
+            avisoDeApi(mensaje, '', true);
+            return;
         }
+
+        avisoDeApi(mensaje, origen, false);
+    }
+
+    function repartirYpintar() {
+        pintarResumen();
+        grupos.forEach(function (grupo) {
+            pintarGrupo(grupo, 1);
+        });
     }
 
     function cargar() {
+        if (cargado) {
+            return Promise.resolve();
+        }
+
         avisar(null);
         raiz.setAttribute('data-cargando', '1');
 
         return apiRequest('movimientos').then(function (respuesta) {
-            lista = listaDe(respuesta);
-            pintarResumen(lista);
-            dibujar(1);
+            lista = listaMovimientosDe(respuesta);
+            repartirYpintar();
             cargado = true;
         }).catch(function (error) {
             avisar(error);
-            pintarResumen([]);
-            dibujar(1);
+            lista = [];
+            repartirYpintar();
             cargado = true;
         }).then(function () {
             raiz.removeAttribute('data-cargando');

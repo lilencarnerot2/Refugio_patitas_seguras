@@ -93,6 +93,6 @@ function mostrarVacio(origen) {
     ficha.hidden = true;
 
     if (parrafo && origen) {
-        parrafo.textContent = mensajeDeApi(origen);
+        avisoDeApi(parrafo, origen, false);
     }
 }

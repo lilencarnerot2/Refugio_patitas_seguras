@@ -1290,8 +1290,8 @@
             outline-offset: 1px;
         }
 
-        #calendario-voluntariado .calendario-dia-fin-semana.calendario-dia-elegido,
-        #calendario-voluntariado .calendario-dia-fin-semana.calendario-dia-elegido:hover {
+        #calendario-voluntariado .calendario-dia-fin-semana[aria-pressed="true"],
+        #calendario-voluntariado .calendario-dia-fin-semana[aria-pressed="true"]:hover {
             background: var(--primary-color);
             color: var(--white);
         }
@@ -1685,7 +1685,16 @@
             font-size: 13px;
         }
 
-        .login-form:has(.form-intento:checked) .form-control:invalid { border-color: #a32b21; }
+        .login-form:has(.form-intento:checked) .form-control:invalid,
+        .public-form[data-intento-envio="1"] .form-control:invalid,
+        .public-form[data-intento-envio="1"] .form-select:invalid,
+        .public-form:has(.form-intento:checked) .form-control:invalid,
+        .public-form:has(.form-intento:checked) .form-select:invalid,
+        .public-form .form-control[data-campo-estado="error"],
+        .public-form .form-select[data-campo-estado="error"],
+        .public-form textarea.form-control[data-campo-estado="error"] {
+            border-color: #a32b21;
+        }
         .login-form .btn-primary { margin-top: 6px; }
         .login-form .mensaje-formulario:empty { display: none; }
 

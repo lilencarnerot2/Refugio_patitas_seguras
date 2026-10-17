@@ -147,7 +147,7 @@ require __DIR__ . '/includes/header.php';
                 </div>
             </div>
     </section>
-    <div class="modal fade" id="modal-detalle-solicitud" tabindex="-1" aria-labelledby="modal-detalle-titulo" aria-hidden="true" data-si="Sí" data-no="No">
+    <div class="modal fade" id="modal-detalle-solicitud" tabindex="-1" aria-labelledby="modal-detalle-titulo" aria-hidden="true" data-si="Sí" data-no="No" data-aviso-sin-formulario="No encontramos el formulario de esta solicitud.">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content border-0 rounded-4">
                 <div class="modal-header border-0 px-4 pt-4">

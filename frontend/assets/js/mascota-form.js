@@ -14,20 +14,6 @@
         return;
     }
 
-    function mostrarMensaje(texto, ok) {
-        if (!mensaje) {
-            return;
-        }
-
-        mensaje.textContent = texto || '';
-        mensaje.removeAttribute('data-estado');
-
-        if (!texto) {
-            return;
-        }
-
-        mensaje.dataset.estado = ok ? 'ok' : 'error';
-    }
 
     function nuevaOpcion(select) {
         var base = select.querySelector('option');
@@ -60,7 +46,7 @@
                 agregarOpciones(selectEspecie, resultado.data || [], 'nombre_especie');
             })
             .catch(function (error) {
-                mostrarMensaje(mensajeDeApi(error), false);
+                avisoDeApi(mensaje, error, false, formulario);
             });
     }
 
@@ -81,7 +67,7 @@
                 agregarOpciones(selectRaza, resultado.data || [], 'nombre_raza');
             })
             .catch(function (error) {
-                mostrarMensaje(mensajeDeApi(error), false);
+                avisoDeApi(mensaje, error, false, formulario);
             });
     }
 
@@ -104,11 +90,6 @@
 
         if (envioEnCurso()) {
             evento.stopImmediatePropagation();
-            return;
-        }
-
-        if (!formulario.checkValidity()) {
-            formulario.reportValidity();
             return;
         }
 
@@ -144,17 +125,16 @@
             datos.foto_url = foto;
         }
 
-        apiRequest('mascotas', {
+        enviarFormularioApi(formulario, mensaje, 'mascotas', {
             metodo: 'POST',
             cuerpo: datos
         })
-            .then(function (resultado) {
-                mostrarMensaje(mensajeDeApi(resultado), true);
+            .then(function () {
                 formulario.reset();
                 vaciarRazas();
             })
-            .catch(function (error) {
-                mostrarMensaje(mensajeDeApi(error), false);
+            .catch(function () {
+                return null;
             })
             .finally(function () {
                 marcarEnvio(false);

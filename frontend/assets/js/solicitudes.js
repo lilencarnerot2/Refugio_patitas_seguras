@@ -167,16 +167,8 @@ document.addEventListener('DOMContentLoaded', function () {
             itemAnterior.dataset.deshabilitado = pagina <= 1 ? 'true' : 'false';
         }
 
-        if (anterior) {
-            anterior.disabled = pagina <= 1;
-        }
-
         if (itemSiguiente) {
             itemSiguiente.dataset.deshabilitado = pagina >= total ? 'true' : 'false';
-        }
-
-        if (siguiente) {
-            siguiente.disabled = pagina >= total;
         }
 
         paginador.hidden = false;
@@ -314,7 +306,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var especiesPorMascota = {};
 
-        return apiRequest('mascotas').then(function (respuestaMascotas) {
+        return apiRequest('tipos_solicitudes').then(function (respuestaTipos) {
+            var tipos = (respuestaTipos && respuestaTipos.data) || [];
+
+            enlazarModelosDetalleSolicitud(Array.isArray(tipos) ? tipos : [tipos]);
+
+            return apiRequest('mascotas');
+        }).then(function (respuestaMascotas) {
             var mascotas = (respuestaMascotas && respuestaMascotas.data) || [];
 
             (Array.isArray(mascotas) ? mascotas : [mascotas]).forEach(function (mascota) {

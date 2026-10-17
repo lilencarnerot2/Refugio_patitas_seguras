@@ -61,12 +61,6 @@ require __DIR__ . '/includes/header.php';
         </article>
     </section>
 
-    <div id="modelos-solicitud" hidden aria-hidden="true">
-        <a data-enlace-detalle-tipo href="adopcion_detalle.php" data-id-tipo-solicitud="" tabindex="-1"></a>
-        <a data-enlace-detalle-tipo href="transito_detalle.php" data-id-tipo-solicitud="" tabindex="-1"></a>
-        <a data-enlace-detalle-default href="adopcion_detalle.php" tabindex="-1"></a>
-    </div>
-
 <script src="config.php"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/usuario-detalle.js"></script>

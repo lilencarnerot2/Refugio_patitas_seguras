@@ -269,6 +269,9 @@ require __DIR__ . '/../public/includes/header.php';
             <option id="modelo-opcion-select" value=""></option>
         </select>
         <button type="button" class="btn-limpiar-campo" id="modelo-limpiar-campo">×</button>
+        <template id="modelo-campo-con-x">
+            <div class="campo-con-x"></div>
+        </template>
         <ul class="lista-desplegable" id="modelo-lista-desplegable">
             <li class="lista-desplegable-item" id="modelo-item-desplegable"></li>
         </ul>

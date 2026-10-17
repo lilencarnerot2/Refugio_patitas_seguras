@@ -20,7 +20,7 @@ require __DIR__ . '/includes/header.php';
             </ul>
         </div>
 
-        <p id="mensaje-voluntariado" class="alert text-center mensaje-formulario form-feedback" role="alert"></p>
+        <p id="mensaje-voluntariado" class="alert text-center mensaje-formulario form-feedback" role="alert" data-aviso-exito="Listo! Si no te llega el mail en unos minutos, fijate en spam."></p>
 
         <form id="form-voluntariado" class="public-form public-form-tarjeta" novalidate autocomplete="off">
             <h3>Inscripción</h3>
@@ -68,8 +68,8 @@ require __DIR__ . '/includes/header.php';
                                     </div>
                                     <div class="card-body pt-0 px-2 pb-2">
                                         <div class="calendario-semana text-center small fw-semibold text-muted mb-1" data-calendario-cabecera></div>
-                                        <div class="calendario-semana text-center" data-calendario-grid role="grid" aria-label="Elegí un sábado o domingo"></div>
-                                        <p class="small text-muted mb-0 mt-2">Tocá un sábado o domingo disponible.</p>
+                                        <div class="calendario-semana text-center" data-calendario-grid role="grid" aria-label="Elegí una fecha disponible"></div>
+                                        <p class="small text-muted mb-0 mt-2">Tocá un día disponible según los turnos del refugio.</p>
                                     </div>
                                 </div>
                             </div>

@@ -1,5 +1,5 @@
             <div class="col-12 col-lg-6 min-w-0">
-                <article class="info-card postulante-panel h-100" id="ficha-postulante">
+                <article class="info-card postulante-panel h-100" id="ficha-postulante" data-postulante-perfil-remoto>
                     <div class="dash-card-cabecera">
                         <span class="ficha-usuario-icono"><i class="bi bi-person"></i></span>
                         <h3>Postulante</h3>

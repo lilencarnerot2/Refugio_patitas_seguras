@@ -122,16 +122,8 @@ document.addEventListener('DOMContentLoaded', function () {
             itemAnterior.dataset.deshabilitado = pagina <= 1 ? 'true' : 'false';
         }
 
-        if (anterior) {
-            anterior.disabled = pagina <= 1;
-        }
-
         if (itemSiguiente) {
             itemSiguiente.dataset.deshabilitado = pagina >= total ? 'true' : 'false';
-        }
-
-        if (siguiente) {
-            siguiente.disabled = pagina >= total;
         }
 
         paginador.hidden = false;

@@ -14,11 +14,9 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleMenu.checked = true;
     }
 
-    accesoDeApi('usuarios').then(function (ok) {
-        if (linkPanel) {
-            linkPanel.hidden = !ok;
-        }
-    });
+    if (linkPanel) {
+        linkPanel.hidden = !valorCookie('usuario_acceso_admin');
+    }
 
     pedirNodos('[data-recurso]');
 
@@ -57,28 +55,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function pintarAviso() {
         var err;
-        var texto;
 
         if (!caja) {
             return;
         }
 
         err = avisos[vistaActual()];
-        texto = mensajeDeApi(err);
 
-        caja.textContent = texto || '';
-
-        if (texto) {
-            caja.setAttribute('data-estado', 'error');
-            if (err && err.status) {
-                caja.setAttribute('data-codigo', String(err.status));
-            } else {
-                caja.removeAttribute('data-codigo');
-            }
-        } else {
-            caja.removeAttribute('data-estado');
-            caja.removeAttribute('data-codigo');
+        if (!err) {
+            avisoDeApi(caja, '', true);
+            return;
         }
+
+        avisoDeApi(caja, err, false);
     }
 
     function avisar(vista, err) {
@@ -207,6 +196,39 @@ document.addEventListener('DOMContentLoaded', function () {
         llenarLista(nodo, datoDeRespuesta(res));
     }
 
+    function perfilSinDatos(error, recurso) {
+        if (!error || error.status !== 404) {
+            return false;
+        }
+
+        return recurso === 'domicilios' || recurso === 'contactos';
+    }
+
+    function avisoVacioDeLista(nodo, origen) {
+        var vacio = nodo && nodo.nextElementSibling;
+        var texto = mensajeDeApi(origen);
+
+        if (!vacio || !vacio.classList.contains('perfil-vacio') || !texto) {
+            return;
+        }
+
+        vacio.textContent = texto;
+    }
+
+    function listaVaciaEnNodo(nodo, res) {
+        var items = listaDe(res);
+
+        if (items.length > 1) {
+            return false;
+        }
+
+        if (items.length === 1) {
+            return !nodo.querySelector('li');
+        }
+
+        return !nodo.querySelector('li');
+    }
+
     function pedirNodo(nodo) {
         var recurso;
         var vista;
@@ -224,13 +246,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
         nodo.setAttribute('data-pedido', '1');
 
-        return apiRequest(recurso).then(function (res) {
-            pintarNodo(nodo, res);
+        return apiRequest(recurso, {
+            parametros: parametrosPerfilUsuario(idUsuarioEnSesion())
+        }).then(function (res) {
+            var resPintar = res;
+
+            if (recurso === 'contactos') {
+                resPintar = {
+                    success: true,
+                    data: listaContactosDePerfil(datosPerfilDeRespuesta(res, idUsuarioEnSesion()))
+                };
+            } else if (recurso === 'domicilios') {
+                resPintar = {
+                    success: true,
+                    data: objetoDomicilioDePerfil(datosPerfilDeRespuesta(res, idUsuarioEnSesion()))
+                };
+            }
+
+            pintarNodo(nodo, resPintar);
             nodo.setAttribute('data-cargado', '1');
+
+            if (listaVaciaEnNodo(nodo, res)) {
+                avisoVacioDeLista(nodo, res);
+            }
+
             avisar(vista, null);
             return res;
         }).catch(function (error) {
             nodo.setAttribute('data-cargado', '1');
+
+            if (perfilSinDatos(error, recurso)) {
+                nodo.innerHTML = '';
+                avisoVacioDeLista(nodo, error);
+                avisar(vista, null);
+                return null;
+            }
+
             avisar(vista, error);
             return null;
         });
