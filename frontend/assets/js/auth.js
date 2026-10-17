@@ -20,13 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var mensaje = (formulario && formulario.querySelector('.mensaje-formulario')) || document.querySelector('.mensaje-formulario');
 
     boton.addEventListener('click', function () {
-        if (mensaje) {
-            avisoDeApi(mensaje, '');
-        }
-
         boton.disabled = true;
 
-        apiRequest('login', {
+        enviarFormularioApi(formulario, mensaje, 'login', {
             metodo: 'POST',
             cuerpo: {
                 email: document.getElementById('correo').value.trim(),
@@ -34,16 +30,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .then(function (respuesta) {
-            if (mensaje) {
-                avisoDeApi(mensaje, respuesta);
-            }
-
             return irTrasSesion(respuesta);
         })
-        .catch(function (error) {
-            if (mensaje) {
-                avisoDeApi(mensaje, error);
-            }
+        .catch(function () {
+            return null;
         })
         .finally(function () {
             boton.disabled = false;

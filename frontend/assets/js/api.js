@@ -41,17 +41,6 @@ function apiRequest(recurso, opciones) {
         if (!response.ok || (data && data.success === false)) {
           var textoError = mensajeDeApi(data);
 
-          if (!textoError && data && typeof data === 'object') {
-            textoError = mensajeDeApi({ success: false, data: data });
-          }
-
-          if (!textoError && !response.ok && response.statusText) {
-            textoError = mensajeDeApi({
-              success: false,
-              message: response.statusText
-            });
-          }
-
           var error = new Error(textoError);
           error.status = response.status;
           error.data = data;
@@ -206,6 +195,31 @@ function textoDeItem(item) {
   return '';
 }
 
+function esMensajeApiTecnico(texto) {
+  var limpio = String(texto || '').trim();
+
+  if (!limpio) {
+    return false;
+  }
+
+  return (
+    /SQLSTATE\[[\w]+\]/i.test(limpio)
+    || /\bERROR:\s+/i.test(limpio)
+    || /\bLINE\s+\d+:/i.test(limpio)
+    || /\bUndefined column:/i.test(limpio)
+  );
+}
+
+function textoMensajeApiPublico(texto) {
+  var limpio = String(texto || '').trim();
+
+  if (!limpio || esMensajeApiTecnico(limpio)) {
+    return '';
+  }
+
+  return limpio;
+}
+
 function textoMensajeDeCuerpo(cuerpo) {
   var valor;
 
@@ -214,15 +228,15 @@ function textoMensajeDeCuerpo(cuerpo) {
   }
 
   if (cuerpo.message !== undefined && cuerpo.message !== null && cuerpo.message !== '') {
-    return String(cuerpo.message);
+    return textoMensajeApiPublico(cuerpo.message);
   }
 
   if (cuerpo.mensaje !== undefined && cuerpo.mensaje !== null && cuerpo.mensaje !== '') {
-    return String(cuerpo.mensaje);
+    return textoMensajeApiPublico(cuerpo.mensaje);
   }
 
   if (typeof cuerpo.error === 'string' && cuerpo.error !== '') {
-    return cuerpo.error;
+    return textoMensajeApiPublico(cuerpo.error);
   }
 
   if (cuerpo.error && typeof cuerpo.error === 'object') {
@@ -255,20 +269,20 @@ function mensajeDeApi(origen) {
   }
 
   if (typeof origen === 'string') {
-    return origen;
+    return textoMensajeApiPublico(origen);
   }
 
   if (origen instanceof Error) {
-    if (origen.message) {
-      return String(origen.message);
-    }
-
     if (origen.data) {
       texto = mensajeDeApi(origen.data);
 
       if (texto) {
         return texto;
       }
+    }
+
+    if (origen.message) {
+      return textoMensajeApiPublico(origen.message);
     }
 
     return '';
@@ -280,21 +294,19 @@ function mensajeDeApi(origen) {
     return texto;
   }
 
+  if (origen.success === false) {
+    return '';
+  }
+
   if (origen.data !== undefined && origen.data !== null) {
     cuerpo = origen.data;
 
     if (typeof cuerpo === 'string' && cuerpo !== '') {
-      return cuerpo;
+      return textoMensajeApiPublico(cuerpo);
     }
 
-    texto = textoMensajeDeCuerpo(cuerpo);
-
-    if (texto) {
-      return texto;
-    }
-
-    if (typeof cuerpo === 'object') {
-      texto = mensajeDeApi(cuerpo);
+    if (cuerpo && typeof cuerpo === 'object' && (cuerpo.message || cuerpo.mensaje || cuerpo.error || cuerpo.errors)) {
+      texto = textoMensajeDeCuerpo(cuerpo);
 
       if (texto) {
         return texto;
@@ -329,24 +341,151 @@ function avisoEsperandoApi(caja, textoEspera) {
   caja.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 }
 
-function avisoDeApi(caja, origen, ok) {
+function marcarIntentoEnvio(formulario) {
+  var intento;
+
+  if (!formulario) {
+    return;
+  }
+
+  intento = formulario.querySelector('.form-intento');
+
+  if (intento) {
+    intento.checked = true;
+  }
+
+  formulario.setAttribute('data-intento-envio', '1');
+}
+
+function limpiarMarcasCampos(formulario) {
+  if (!formulario) {
+    return;
+  }
+
+  formulario.querySelectorAll('[data-campo-estado]').forEach(function (nodo) {
+    nodo.removeAttribute('data-campo-estado');
+  });
+}
+
+function cuerpoDeErrorApi(origen) {
+  if (origen instanceof Error && origen.data) {
+    return origen.data;
+  }
+
+  if (origen && origen.data !== undefined) {
+    return origen.data;
+  }
+
+  return origen;
+}
+
+function agregarNombreCampo(lista, nombre) {
+  if (nombre === undefined || nombre === null || nombre === '') {
+    return;
+  }
+
+  if (lista.indexOf(String(nombre)) === -1) {
+    lista.push(String(nombre));
+  }
+}
+
+function nombresCamposEnError(origen) {
+  var data = cuerpoDeErrorApi(origen);
+  var lista = [];
+  var clave;
+  var i;
+  var item;
+  var nombre;
+
+  if (!data || typeof data !== 'object') {
+    return lista;
+  }
+
+  if (Array.isArray(data.campos)) {
+    for (i = 0; i < data.campos.length; i++) {
+      agregarNombreCampo(lista, data.campos[i]);
+    }
+  }
+
+  if (data.campos && typeof data.campos === 'object' && !Array.isArray(data.campos)) {
+    for (clave in data.campos) {
+      if (Object.prototype.hasOwnProperty.call(data.campos, clave)) {
+        agregarNombreCampo(lista, clave);
+      }
+    }
+  }
+
+  if (Array.isArray(data.errors)) {
+    for (i = 0; i < data.errors.length; i++) {
+      item = data.errors[i];
+
+      if (typeof item === 'string') {
+        continue;
+      }
+
+      if (item && typeof item === 'object') {
+        nombre = item.campo || item.field || item.name || item.clave;
+
+        agregarNombreCampo(lista, nombre);
+      }
+    }
+  }
+
+  return lista;
+}
+
+function marcarCamposDeError(formulario, origen) {
+  var nombres = nombresCamposEnError(origen);
+  var i;
+  var nombre;
+  var nodo;
+
+  if (!formulario || !nombres.length) {
+    return;
+  }
+
+  for (i = 0; i < nombres.length; i++) {
+    nombre = nombres[i];
+    nodo = formulario.elements[nombre];
+
+    if (!nodo) {
+      nodo = formulario.querySelector('[name="' + nombre + '"]');
+    }
+
+    if (nodo) {
+      if (nodo.length && nodo[0]) {
+        nodo[0].setAttribute('data-campo-estado', 'error');
+      } else {
+        nodo.setAttribute('data-campo-estado', 'error');
+      }
+    }
+  }
+}
+
+function avisoDeApi(caja, origen, ok, formulario) {
   var codigo;
   var textoMsg;
   var esError;
 
-  if (!caja) {
+  if (!caja && !formulario) {
     return;
   }
 
   if (origen === '') {
-    caja.textContent = '';
-    caja.removeAttribute('data-estado');
-    caja.removeAttribute('data-codigo');
-    caja.removeAttribute('aria-busy');
+    if (caja) {
+      caja.textContent = '';
+      caja.removeAttribute('data-estado');
+      caja.removeAttribute('data-codigo');
+      caja.removeAttribute('aria-busy');
+    }
+
+    limpiarMarcasCampos(formulario);
     return;
   }
 
-  caja.removeAttribute('aria-busy');
+  if (caja) {
+    caja.removeAttribute('aria-busy');
+  }
 
   textoMsg = mensajeDeApi(origen);
 
@@ -363,6 +502,27 @@ function avisoDeApi(caja, origen, ok) {
     || ok === false
     || (origen && origen.success === false)
   );
+
+  if (formulario) {
+    if (esError) {
+      marcarIntentoEnvio(formulario);
+      marcarCamposDeError(formulario, origen);
+    } else if (ok === true) {
+      limpiarMarcasCampos(formulario);
+    }
+  }
+
+  if (!caja) {
+    return;
+  }
+
+  if (!textoMsg && ok === true) {
+    caja.textContent = '';
+    caja.removeAttribute('data-estado');
+    caja.removeAttribute('data-codigo');
+    caja.removeAttribute('aria-busy');
+    return;
+  }
 
   if (ok === true) {
     caja.setAttribute('data-estado', 'ok');
@@ -388,6 +548,31 @@ function avisoDeApi(caja, origen, ok) {
       caja.scrollIntoView({ block: 'nearest', behavior: 'auto' });
     });
   }
+}
+
+function enviarFormularioApi(formulario, caja, recurso, opciones) {
+  if (formulario && formulario.getAttribute('data-enviando') === '1') {
+    return Promise.reject(new Error(''));
+  }
+
+  if (formulario) {
+    formulario.setAttribute('data-enviando', '1');
+  }
+
+  marcarIntentoEnvio(formulario);
+  avisoDeApi(caja, '', true, formulario);
+
+  return apiRequest(recurso, opciones || {}).then(function (respuesta) {
+    avisoDeApi(caja, respuesta, true, formulario);
+    return respuesta;
+  }).catch(function (error) {
+    avisoDeApi(caja, error, false, formulario);
+    throw error;
+  }).finally(function () {
+    if (formulario) {
+      formulario.removeAttribute('data-enviando');
+    }
+  });
 }
 
 function iconoEspecieMascota(especie) {
@@ -482,6 +667,10 @@ function pintarCorazonCompatibilidad(nodo, puntaje) {
   nodo.classList.add('compatibilidad-corazon-animando');
 }
 
+function textoOrdenSolicitud(valor) {
+  return String(valor || '').trim();
+}
+
 function enlazarModelosDetalleSolicitud(tipos) {
   var contenedor = document.getElementById('modelos-solicitud');
   var slots;
@@ -492,14 +681,21 @@ function enlazarModelosDetalleSolicitud(tipos) {
     return;
   }
 
-  slots = contenedor.querySelectorAll('[data-enlace-detalle-tipo]');
-  lista = Array.isArray(tipos) ? tipos.slice() : [];
-  lista.sort(function (a, b) {
-    return Number(a && a.id) - Number(b && b.id);
+  slots = Array.prototype.slice.call(contenedor.querySelectorAll('[data-enlace-detalle-tipo]'));
+  lista = (Array.isArray(tipos) ? tipos.slice() : []).filter(function (item) {
+    return !!item;
   });
 
-  for (i = 0; i < slots.length && i < lista.length; i++) {
-    if (lista[i].id !== undefined && lista[i].id !== null) {
+  lista.sort(function (a, b) {
+    return textoOrdenSolicitud(a.nombre_tipo).localeCompare(textoOrdenSolicitud(b.nombre_tipo), 'es');
+  });
+
+  slots.sort(function (a, b) {
+    return textoOrdenSolicitud(a.getAttribute('href')).localeCompare(textoOrdenSolicitud(b.getAttribute('href')), 'es');
+  });
+
+  for (i = 0; i < slots.length; i++) {
+    if (lista[i] && lista[i].id !== undefined && lista[i].id !== null) {
       slots[i].setAttribute('data-id-tipo-solicitud', String(lista[i].id));
     }
   }
@@ -540,4 +736,323 @@ function enlaceDetalleSolicitud(solicitud) {
   }
 
   return '';
+}
+
+function nombreArchivoRutaSolicitud(ruta) {
+  var limpia = String(ruta || '').replace(/\?.*$/, '');
+
+  return limpia.split('/').pop() || limpia;
+}
+
+function turnosVoluntariadoDe(respuesta) {
+  var datos;
+  var lista = [];
+  var clave;
+  var item;
+  var turno;
+
+  if (!respuesta || respuesta.data === undefined || respuesta.data === null) {
+    return [];
+  }
+
+  datos = respuesta.data;
+
+  if (Array.isArray(datos)) {
+    return datos.filter(function (entry) {
+      return !!entry;
+    });
+  }
+
+  if (typeof datos === 'object') {
+    if (Array.isArray(datos.turnos)) {
+      return datos.turnos.filter(function (entry) {
+        return !!entry;
+      });
+    }
+
+    if (Array.isArray(datos.items)) {
+      return datos.items.filter(function (entry) {
+        return !!entry;
+      });
+    }
+
+    for (clave in datos) {
+      if (!Object.prototype.hasOwnProperty.call(datos, clave)) {
+        continue;
+      }
+
+      if (clave === 'contacto' || clave === 'email' || clave === 'telefono' || clave === 'whatsapp' || clave === 'direccion' || clave === 'correo') {
+        continue;
+      }
+
+      item = datos[clave];
+
+      if (!item || typeof item !== 'object' || Array.isArray(item)) {
+        continue;
+      }
+
+      turno = Object.assign({}, item);
+
+      if (!turno.rango_horario) {
+        turno.rango_horario = clave;
+      }
+
+      lista.push(turno);
+    }
+
+    if (lista.length) {
+      return lista;
+    }
+  }
+
+  return datos ? [datos] : [];
+}
+
+function claveTurnoVoluntariado(item) {
+  if (!item || typeof item !== 'object') {
+    return '';
+  }
+
+  if (item.rango_horario) {
+    return String(item.rango_horario).trim();
+  }
+
+  if (item.id) {
+    return String(item.id).trim();
+  }
+
+  return '';
+}
+
+function idUsuarioEnSesion() {
+  return String(valorCookie('usuario_id') || '').trim();
+}
+
+function parametrosPerfilUsuario(idUsuario) {
+  var id = String(
+    idUsuario !== undefined && idUsuario !== null ? idUsuario : idUsuarioEnSesion()
+  ).trim();
+
+  if (!id) {
+    return {};
+  }
+
+  return { id_usuario: id };
+}
+
+function idUsuarioEnDatosPerfil(datos) {
+  var muestra;
+  var i;
+
+  if (!datos || typeof datos !== 'object') {
+    return '';
+  }
+
+  if (!Array.isArray(datos) && datos.id_usuario !== undefined && datos.id_usuario !== null) {
+    return String(datos.id_usuario);
+  }
+
+  if (Array.isArray(datos)) {
+    for (i = 0; i < datos.length; i++) {
+      muestra = datos[i];
+
+      if (muestra && muestra.id_usuario !== undefined && muestra.id_usuario !== null) {
+        return String(muestra.id_usuario);
+      }
+    }
+  }
+
+  return '';
+}
+
+function datosPerfilDeRespuesta(respuesta, idEsperado) {
+  var datos;
+  var idSesion;
+  var idDueño;
+
+  if (!respuesta || respuesta.success === false) {
+    return null;
+  }
+
+  idEsperado = String(idEsperado || '').trim();
+
+  if (idEsperado === '') {
+    return null;
+  }
+
+  datos = respuesta.data;
+
+  if (datos === undefined || datos === null) {
+    return null;
+  }
+
+  idDueño = idUsuarioEnDatosPerfil(datos);
+
+  if (idDueño !== '') {
+    return String(idDueño) === idEsperado ? datos : null;
+  }
+
+  idSesion = idUsuarioEnSesion();
+
+  if (idSesion !== '' && idEsperado === idSesion) {
+    return datos;
+  }
+
+  return null;
+}
+
+function usuarioDeRespuestaPerfil(respuesta, idEsperado) {
+  var datos = respuesta && respuesta.data !== undefined ? respuesta.data : respuesta;
+  var usuario;
+
+  if (Array.isArray(datos)) {
+    usuario = datos[0] || {};
+  } else {
+    usuario = datos && typeof datos === 'object' ? datos : {};
+  }
+
+  idEsperado = String(idEsperado || '').trim();
+
+  if (!usuario || String(usuario.id || '') === '') {
+    return {};
+  }
+
+  if (idEsperado !== '' && String(usuario.id) !== idEsperado) {
+    return {};
+  }
+
+  return usuario;
+}
+
+function listaContactosDePerfil(datos) {
+  if (!datos) {
+    return [];
+  }
+
+  if (Array.isArray(datos)) {
+    return datos;
+  }
+
+  if (Array.isArray(datos.contactos)) {
+    return datos.contactos;
+  }
+
+  if (Array.isArray(datos.items)) {
+    return datos.items;
+  }
+
+  return [];
+}
+
+function objetoDomicilioDePerfil(datos) {
+  if (!datos || Array.isArray(datos)) {
+    return {};
+  }
+
+  if (datos.domicilio && typeof datos.domicilio === 'object') {
+    return datos.domicilio;
+  }
+
+  return datos;
+}
+
+function perfilUsuarioEsRemoto(idUsuario) {
+  var id = String(idUsuario || '').trim();
+  var sesion = idUsuarioEnSesion();
+
+  return id !== '' && sesion !== '' && id !== sesion;
+}
+
+function cargarPerfilUsuario(idUsuario, opciones) {
+  var opts = opciones || {};
+  var id = String(idUsuario || '').trim();
+  var paramsPerfil = parametrosPerfilUsuario(id);
+  var tareas;
+
+  if (!id) {
+    return Promise.resolve({
+      usuario: {},
+      contactos: [],
+      domicilio: {}
+    });
+  }
+
+  tareas = [
+    apiRequest('usuarios', { parametros: { id: id } }).catch(function () {
+      return null;
+    })
+  ];
+
+  if (opts.incluirContactosDomicilio) {
+    tareas.push(
+      apiRequest('contactos', { parametros: paramsPerfil }).catch(function () {
+        return null;
+      }),
+      apiRequest('domicilios', { parametros: paramsPerfil }).catch(function () {
+        return null;
+      })
+    );
+  }
+
+  return Promise.all(tareas).then(function (respuestas) {
+    var perfil = {
+      usuario: usuarioDeRespuestaPerfil(respuestas[0], id),
+      contactos: [],
+      domicilio: {}
+    };
+
+    if (opts.incluirContactosDomicilio) {
+      perfil.contactos = listaContactosDePerfil(datosPerfilDeRespuesta(respuestas[1], id));
+      perfil.domicilio = objetoDomicilioDePerfil(datosPerfilDeRespuesta(respuestas[2], id));
+    }
+
+    return perfil;
+  });
+}
+
+function datosFormularioDeRespuesta(respuesta, opciones) {
+  var opts = opciones || {};
+  var idSolicitud = String(opts.id_solicitud || '').trim();
+  var idUsuario = String(opts.id_usuario || '').trim();
+  var idSesion;
+  var datos;
+  var objeto;
+
+  if (!respuesta || respuesta.success === false) {
+    return null;
+  }
+
+  datos = respuesta.data;
+
+  if (datos === undefined || datos === null) {
+    return null;
+  }
+
+  objeto = Array.isArray(datos) ? datos[0] || null : datos;
+
+  if (!objeto || typeof objeto !== 'object') {
+    return null;
+  }
+
+  if (idSolicitud !== '') {
+    if (objeto.id_solicitud !== undefined && objeto.id_solicitud !== null) {
+      if (String(objeto.id_solicitud) !== idSolicitud) {
+        return null;
+      }
+    } else {
+      idSesion = idUsuarioEnSesion();
+
+      if (idUsuario === '' || idSesion === '' || idUsuario !== idSesion) {
+        return null;
+      }
+    }
+  }
+
+  if (idUsuario !== '' && objeto.id_usuario !== undefined && objeto.id_usuario !== null) {
+    if (String(objeto.id_usuario) !== idUsuario) {
+      return null;
+    }
+  }
+
+  return objeto;
 }

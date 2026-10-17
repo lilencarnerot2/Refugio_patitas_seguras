@@ -5,15 +5,8 @@ const selectEspecie = document.getElementById('id_especie');
 const selectRaza = document.getElementById('id_raza');
 const idInicial = new URLSearchParams(window.location.search).get('id');
 
-function mostrarMensaje(texto, ok) {
-    mensaje.textContent = texto || '';
-    mensaje.removeAttribute('data-estado');
-
-    if (!texto) {
-        return;
-    }
-
-    mensaje.dataset.estado = ok ? 'ok' : 'error';
+function mostrarMensaje(origen, ok) {
+    avisoDeApi(mensaje, origen, ok, formulario);
 }
 
 let especies = [];
@@ -62,7 +55,7 @@ function cargarMascotas() {
             agregarOpciones(selectMascota, resultado.data || [], 'nombre');
         })
         .catch(function (error) {
-            mostrarMensaje(mensajeDeApi(error), false);
+            mostrarMensaje(error, false);
         });
 }
 
@@ -74,7 +67,7 @@ function cargarEspecies() {
             agregarOpciones(selectEspecie, especies, 'nombre_especie');
         })
         .catch(function (error) {
-            mostrarMensaje(mensajeDeApi(error), false);
+            mostrarMensaje(error, false);
         });
 }
 
@@ -101,7 +94,7 @@ function cargarRazas(idEspecie, razaSeleccionada) {
             }
         })
         .catch(function (error) {
-            mostrarMensaje(mensajeDeApi(error), false);
+            mostrarMensaje(error, false);
         });
 }
 
@@ -122,7 +115,7 @@ function cargarMascota(id) {
             return cargarRazas(idEspecie, mascota.raza);
         })
         .catch(function (error) {
-            mostrarMensaje(mensajeDeApi(error), false);
+            mostrarMensaje(error, false);
         });
 }
 
@@ -141,7 +134,7 @@ Promise.all([cargarMascotas(), cargarEspecies()]).then(function () {
 });
 
 selectMascota.addEventListener('change', function () {
-    mostrarMensaje('');
+    avisoDeApi(mensaje, '', true, formulario);
 
     cargarMascota(selectMascota.value);
 });
@@ -152,11 +145,6 @@ selectEspecie.addEventListener('change', function () {
 
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
-
-    if (!formulario.checkValidity()) {
-        formulario.reportValidity();
-        return;
-    }
 
     const datos = {
         id_especie: Number(formulario.elements.id_especie.value),
@@ -182,7 +170,7 @@ formulario.addEventListener('submit', function (evento) {
         datos.foto_url = foto;
     }
 
-    apiRequest('mascotas', {
+    enviarFormularioApi(formulario, mensaje, 'mascotas', {
         metodo: 'PUT',
         parametros: { id: selectMascota.value },
         cuerpo: datos
@@ -191,11 +179,10 @@ formulario.addEventListener('submit', function (evento) {
             const mascota = resultado.data || {};
             const nombre = mascota.nombre || '';
 
-            mostrarMensaje(mensajeDeApi(resultado), true);
             formulario.elements.nombre.value = nombre;
             selectMascota.options[selectMascota.selectedIndex].textContent = nombre;
         })
-        .catch(function (error) {
-            mostrarMensaje(mensajeDeApi(error), false);
+        .catch(function () {
+            return null;
         });
 });

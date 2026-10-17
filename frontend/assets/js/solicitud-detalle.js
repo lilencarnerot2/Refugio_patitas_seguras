@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var botones = document.getElementById('botones-estado');
     var id = new URLSearchParams(window.location.search).get('id');
     var listado = panel.getAttribute('data-listado') || '';
-    var tipoPedido = panel.getAttribute('data-tipo') || '';
+    var vistaHref = panel.getAttribute('data-vista-href') || '';
+    var recursoFormulario = panel.getAttribute('data-recurso-formulario') || '';
     var compatibilidadLista = false;
     var solicitudActual = null;
 
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return texto(valor).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     }
 
+    var evaluacionManual = panel.hasAttribute('data-evaluacion-manual');
     var compatibilidadManual = panel.hasAttribute('data-compatibilidad-manual');
 
     function estiloBotonResolucion(btn, bloqueado) {
@@ -317,12 +319,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function siNo(valor) {
+        var etiquetaSi = panel.getAttribute('data-etiqueta-si');
+        var etiquetaNo = panel.getAttribute('data-etiqueta-no');
+
         if (valor === true || valor === 1 || valor === '1' || valor === 't' || valor === 'true') {
-            return 'Sí';
+            return etiquetaSi !== null ? etiquetaSi : texto(valor);
         }
 
         if (valor === false || valor === 0 || valor === '0' || valor === 'f' || valor === 'false') {
-            return 'No';
+            return etiquetaNo !== null ? etiquetaNo : texto(valor);
         }
 
         return texto(valor);
@@ -385,6 +390,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (botones) {
             botones.setAttribute('data-id-estado-actual', texto(solicitud.id_estado_solicitud));
         }
+
+        if (fichaPostulante) {
+            pintarCaja(
+                fichaPostulante.querySelector('[data-panel-postulante="personal"]'),
+                datosPersonalesPostulante({}, solicitud)
+            );
+        }
     }
 
     function datosDeRespuesta(respuesta) {
@@ -398,42 +410,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function traerFormulario(idSolicitud) {
-        var pedido = normalizarTipo(tipoPedido);
-
-        function vacio(error) {
+        function vacio() {
             pintarFormulario({});
-
-            if (error) {
-                mostrarAviso(error);
-            }
         }
 
-        if (pedido.indexOf('transito') !== -1) {
-            return apiRequest('formularios_transito', {
-                parametros: { id_solicitud: idSolicitud }
-            }).then(function (respuesta) {
-                pintarFormulario(datosDeRespuesta(respuesta));
-            }).catch(vacio);
+        if (!recursoFormulario) {
+            pintarFormulario({});
+            return Promise.resolve(null);
         }
 
-        return apiRequest('formularios_adopcion', {
+        return apiRequest(recursoFormulario, {
             parametros: { id_solicitud: idSolicitud }
         }).then(function (respuesta) {
-            pintarFormulario(datosDeRespuesta(respuesta));
-        }).catch(function (errorAdopcion) {
-            if (pedido.indexOf('adopcion') !== -1) {
-                vacio(errorAdopcion);
-                return;
-            }
-
-            return apiRequest('formularios_transito', {
-                parametros: { id_solicitud: idSolicitud }
-            }).then(function (respuesta) {
-                pintarFormulario(datosDeRespuesta(respuesta));
-            }).catch(function (errorTransito) {
-                vacio(errorAdopcion || errorTransito);
+            var idPostulante = solicitudActual && solicitudActual.id_usuario;
+            var datos = datosFormularioDeRespuesta(respuesta, {
+                id_solicitud: idSolicitud,
+                id_usuario: idPostulante
             });
-        });
+
+            pintarFormulario(datos || {});
+        }).catch(vacio);
     }
 
     function pintarFormulario(datos) {
@@ -528,12 +524,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 return null;
             }
 
-            if (tipoPedido && normalizarTipo(solicitud.tipo_solicitud).indexOf(normalizarTipo(tipoPedido)) === -1) {
-                if (listado) {
-                    window.location.href = listado;
-                }
+            if (vistaHref) {
+                var destino = enlaceDetalleSolicitud(solicitud);
 
-                return null;
+                if (destino && nombreArchivoRutaSolicitud(destino) !== nombreArchivoRutaSolicitud(vistaHref)) {
+                    window.location.href = destino + '?id=' + encodeURIComponent(String(idSolicitud));
+                    return null;
+                }
             }
 
             solicitudActual = solicitud;
@@ -545,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 traerPostulante(solicitud, solicitud.id_usuario)
             ];
 
-            if (!compatibilidadManual) {
+            if (!evaluacionManual) {
                 tareas.push(traerEvaluacion(idSolicitud));
             }
 
@@ -604,7 +601,7 @@ document.addEventListener('DOMContentLoaded', function () {
         lista.innerHTML = '';
 
         (contactos || []).forEach(function (item) {
-            var tipo = texto(item.tipo_contacto) || 'Contacto';
+            var tipo = texto(item.tipo_contacto);
             var valor = texto(item.valor);
             var fila;
 
@@ -646,46 +643,65 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function datosPersonalesPostulante(usuario, solicitud) {
+        return {
+            nombre: texto(usuario && usuario.nombre) || texto(solicitud && solicitud.nombre_usuario),
+            apellido: texto(usuario && usuario.apellido) || texto(solicitud && solicitud.apellido_usuario),
+            fecha_nacimiento: usuario && usuario.fecha_nacimiento
+        };
+    }
+
+    function marcarSeccionPostulanteVacia(seccion, vacia) {
+        if (seccion) {
+            seccion.classList.toggle('postulante-seccion-vacia', !!vacia);
+        }
+    }
+
     function traerPostulante(solicitud, idUsuario) {
         if (!fichaPostulante) {
             return Promise.resolve();
         }
 
-        var base = {
-            nombre: texto(solicitud.nombre_usuario),
-            apellido: texto(solicitud.apellido_usuario)
-        };
-
-        pintarCaja(fichaPostulante, base);
+        var panelPersonal = fichaPostulante.querySelector('[data-panel-postulante="personal"]');
+        var panelDomicilio = document.getElementById('seccion-domicilio-postulante');
+        var seccionContacto = document.getElementById('seccion-contacto-postulante');
+        var consultaPerfilRemoto = fichaPostulante.hasAttribute('data-postulante-perfil-remoto');
+        var idConsulta = idUsuario !== undefined && idUsuario !== null && String(idUsuario).trim() !== ''
+            ? String(idUsuario).trim()
+            : '';
+        pintarCaja(panelPersonal, datosPersonalesPostulante({}, solicitud));
         pintarContactosPostulante([]);
         ocultarCamposVaciosPostulante();
+        marcarSeccionPostulanteVacia(seccionContacto, true);
+        marcarSeccionPostulanteVacia(panelDomicilio, true);
 
-        if (!idUsuario) {
+        if (!idConsulta) {
             return Promise.resolve();
         }
 
-        return Promise.all([
-            apiRequest('usuarios', { parametros: { id: idUsuario } }).catch(function () {
-                return null;
-            }),
-            apiRequest('contactos', { parametros: { id_usuario: idUsuario } }).catch(function () {
-                return null;
-            }),
-            apiRequest('domicilios', { parametros: { id_usuario: idUsuario } }).catch(function () {
-                return null;
-            })
-        ]).then(function (respuestas) {
-            var usuario = datosDeRespuesta(respuestas[0] || {});
-            var contactos = listaDe(respuestas[1]);
-            var domicilio = datosDeRespuesta(respuestas[2] || {});
+        return cargarPerfilUsuario(idConsulta, {
+            incluirContactosDomicilio: consultaPerfilRemoto
+        }).then(function (perfil) {
+            var usuario = perfil.usuario || {};
+            var contactos = perfil.contactos || [];
+            var domicilio = perfil.domicilio || {};
 
-            pintarCaja(fichaPostulante, Object.assign({}, domicilio, {
-                nombre: texto(usuario.nombre) || base.nombre,
-                apellido: texto(usuario.apellido) || base.apellido,
-                fecha_nacimiento: usuario.fecha_nacimiento
-            }));
+            pintarCaja(panelPersonal, datosPersonalesPostulante(usuario, solicitud));
+
+            if (panelDomicilio) {
+                pintarCaja(panelDomicilio, domicilio);
+            }
+
             pintarContactosPostulante(contactos);
             ocultarCamposVaciosPostulante();
+            marcarSeccionPostulanteVacia(seccionContacto, contactos.length === 0);
+            marcarSeccionPostulanteVacia(panelDomicilio, !domicilio || !Object.keys(domicilio).some(function (clave) {
+                return texto(domicilio[clave]) !== '';
+            }));
+        }).catch(function (error) {
+            if (error) {
+                mostrarAviso(error, false);
+            }
         });
     }
 
@@ -738,6 +754,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (compatibilidadManual) {
             avisoEsperandoApi(mensaje);
+        } else if (avisoEval) {
+            avisoEsperandoApi(avisoEval);
         }
 
         return apiRequest('compatibilidad', {
@@ -750,37 +768,51 @@ document.addEventListener('DOMContentLoaded', function () {
                 mostrarEvaluacionPendiente();
 
                 if (avisoEval) {
-                    avisoEval.textContent = mensajeDeApi(respuesta);
+                    avisoDeApi(avisoEval, respuesta, false);
                 }
 
-                mostrarAviso(respuesta, false);
                 return null;
             }
 
             mostrarEvaluacionConDatos(evaluacion, datos);
 
             if (avisoEval) {
-                avisoEval.textContent = '';
+                avisoDeApi(avisoEval, '', true);
             }
 
-            mostrarAviso(null);
             return evaluacion;
         }).catch(function (error) {
             mostrarEvaluacionPendiente();
 
             if (avisoEval) {
-                avisoEval.textContent = mensajeDeApi(error);
+                avisoDeApi(avisoEval, error, false);
             }
 
-            mostrarAviso(error, false);
             return null;
         }).then(function (resultado) {
+            if (avisoEval) {
+                avisoEval.removeAttribute('aria-busy');
+                avisoEval.removeAttribute('data-estado');
+            }
+
             if (botonCompat) {
                 botonCompat.disabled = false;
             }
 
             return resultado;
         });
+    }
+
+    function plantillaBotonEstado(clave) {
+        if (clave.indexOf('rechaz') !== -1) {
+            return document.getElementById('boton-modelo-estado-rechaz') || document.getElementById('boton-modelo-estado');
+        }
+
+        if (clave.indexOf('aprob') !== -1) {
+            return document.getElementById('boton-modelo-estado-aprob') || document.getElementById('boton-modelo-estado');
+        }
+
+        return document.getElementById('boton-modelo-estado');
     }
 
     function cargarEstados(idActual) {
@@ -790,7 +822,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return apiRequest('estados_solicitudes').then(function (respuesta) {
             var datos = (respuesta && respuesta.data) || [];
-            var modelo = document.getElementById('boton-modelo-estado');
+            var plantilla;
 
             if (!Array.isArray(datos)) {
                 datos = [datos];
@@ -798,10 +830,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             while (botones.firstChild) {
                 botones.removeChild(botones.firstChild);
-            }
-
-            if (!modelo) {
-                return;
             }
 
             datos.forEach(function (estado) {
@@ -817,25 +845,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                boton = modelo.cloneNode(false);
+                plantilla = plantillaBotonEstado(clave);
+
+                if (!plantilla) {
+                    return;
+                }
+
+                boton = plantilla.cloneNode(false);
                 boton.removeAttribute('id');
                 boton.hidden = false;
+                boton.removeAttribute('disabled');
                 boton.setAttribute('data-id-estado', texto(estado.id));
-                boton.setAttribute('data-nombre-estado', nombre);
                 boton.textContent = nombre;
 
                 if (botones.hasAttribute('data-resolver')) {
                     boton.classList.add('btn-estado-solicitud');
 
-                    if (modelo.hasAttribute('data-confirmar-estado')) {
+                    if (plantilla.hasAttribute('data-confirmar-estado')) {
                         boton.setAttribute('data-confirmar-estado', '1');
                     }
 
                     estiloBotonResolucion(boton, !compatibilidadLista);
-                } else if (clave.indexOf('rechaz') !== -1) {
-                    boton.className = 'btn btn-outline';
-                } else if (clave.indexOf('aprob') !== -1) {
-                    boton.className = 'btn btn-primary';
                 }
 
                 botones.appendChild(boton);
@@ -844,6 +874,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (botones.hasAttribute('data-resolver')) {
                 actualizarVistaResolucion();
             }
+        }).catch(function (error) {
+            mostrarAviso(error, false);
         });
     }
 
@@ -961,11 +993,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    if (compatibilidadManual) {
+    if (evaluacionManual || compatibilidadManual) {
         mostrarEvaluacionPendiente();
     }
 
-    mostrar(id).then(function (solicitud) {
+    function tiposSolicitudDe(respuesta) {
+        var datos = respuesta && respuesta.data;
+
+        if (Array.isArray(datos)) {
+            return datos;
+        }
+
+        return datos ? [datos] : [];
+    }
+
+    apiRequest('tipos_solicitudes').then(function (respuestaTipos) {
+        enlazarModelosDetalleSolicitud(tiposSolicitudDe(respuestaTipos));
+
+        return mostrar(id);
+    }).then(function (solicitud) {
         if (solicitud) {
             return cargarEstados(solicitud.id_estado_solicitud);
         }

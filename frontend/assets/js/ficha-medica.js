@@ -13,15 +13,8 @@ const idMascota = new URLSearchParams(window.location.search).get('id');
 
 let idFicha = '';
 
-function mostrarMensaje(texto, ok) {
-    mensaje.textContent = texto || '';
-    mensaje.removeAttribute('data-estado');
-
-    if (!texto) {
-        return;
-    }
-
-    mensaje.dataset.estado = ok ? 'ok' : 'error';
+function mostrarMensaje(origen, ok, formulario) {
+    avisoDeApi(mensaje, origen, ok, formulario);
 }
 
 function listaDe(resultado) {
@@ -93,11 +86,6 @@ function campoConValor(formulario) {
 
 function enviarSiHayDatos(formulario, enviar) {
     if (!campoConValor(formulario)) {
-        return Promise.resolve();
-    }
-
-    if (!formulario.checkValidity()) {
-        formulario.reportValidity();
         return Promise.resolve();
     }
 
@@ -175,7 +163,7 @@ function cargarControles() {
             mostrarUltimoControl(listaDe(resultado));
         })
         .catch(function (error) {
-            mostrarMensaje(mensajeDeApi(error), false);
+            mostrarMensaje(error, false);
         });
 }
 
@@ -187,7 +175,7 @@ function cargarVacunas() {
             mostrarLista(listaDe(resultado), document.getElementById('lista-vacunas'), 'nombre_vacuna');
         })
         .catch(function (error) {
-            mostrarMensaje(mensajeDeApi(error), false);
+            mostrarMensaje(error, false);
         });
 }
 
@@ -203,7 +191,7 @@ function cargarDesparasitaciones() {
             );
         })
         .catch(function (error) {
-            mostrarMensaje(mensajeDeApi(error), false);
+            mostrarMensaje(error, false);
         });
 }
 
@@ -222,12 +210,11 @@ function cargarCastracion() {
             formularioCastracion.hidden = false;
 
             if (error.status === 404) {
-                estado.textContent = mensajeDeApi(error);
-                estado.dataset.estado = 'error';
+                avisoDeApi(estado, error, false);
                 return;
             }
 
-            mostrarMensaje(mensajeDeApi(error), false);
+            mostrarMensaje(error, false);
         });
 }
 
@@ -247,7 +234,7 @@ function cargarTipos() {
             agregarOpciones(selectProducto, listaDe(resultados[1]), 'nombre_tipo');
         })
         .catch(function (error) {
-            mostrarMensaje(mensajeDeApi(error), false);
+            mostrarMensaje(error, false);
         });
 }
 
@@ -331,51 +318,43 @@ function datosDesparasitacion() {
 }
 
 function enviarControl() {
-    return apiRequest('controles_medicos', {
+    return enviarFormularioApi(formularioControl, mensaje, 'controles_medicos', {
         metodo: 'POST',
         cuerpo: datosControl()
-    })
-        .then(function (resultado) {
-            mostrarMensaje(mensajeDeApi(resultado), true);
-            formularioControl.reset();
-            return cargarControles();
-        });
+    }).then(function () {
+        formularioControl.reset();
+        return cargarControles();
+    });
 }
 
 function enviarVacuna() {
-    return apiRequest('vacunas', {
+    return enviarFormularioApi(formularioVacuna, mensaje, 'vacunas', {
         metodo: 'POST',
         cuerpo: datosVacuna()
-    })
-        .then(function (resultado) {
-            mostrarMensaje(mensajeDeApi(resultado), true);
-            formularioVacuna.reset();
-            return cargarVacunas();
-        });
+    }).then(function () {
+        formularioVacuna.reset();
+        return cargarVacunas();
+    });
 }
 
 function enviarCastracion() {
-    return apiRequest('castraciones', {
+    return enviarFormularioApi(formularioCastracion, mensaje, 'castraciones', {
         metodo: 'POST',
         cuerpo: datosCastracion()
-    })
-        .then(function (resultado) {
-            mostrarMensaje(mensajeDeApi(resultado), true);
-            mostrarCastracion(resultado.data || {});
-            formularioCastracion.reset();
-        });
+    }).then(function (resultado) {
+        mostrarCastracion((resultado && resultado.data) || {});
+        formularioCastracion.reset();
+    });
 }
 
 function enviarDesparasitacion() {
-    return apiRequest('desparasitaciones', {
+    return enviarFormularioApi(formularioDesparasitacion, mensaje, 'desparasitaciones', {
         metodo: 'POST',
         cuerpo: datosDesparasitacion()
-    })
-        .then(function (resultado) {
-            mostrarMensaje(mensajeDeApi(resultado), true);
-            formularioDesparasitacion.reset();
-            return cargarDesparasitaciones();
-        });
+    }).then(function () {
+        formularioDesparasitacion.reset();
+        return cargarDesparasitaciones();
+    });
 }
 
 function enviarRegistrosIniciales() {
@@ -424,7 +403,7 @@ function cargarFicha() {
             mostrarFichaMedica(ficha);
         })
         .catch(function (error) {
-            mostrarMensaje(mensajeDeApi(error), false);
+            mostrarMensaje(error, false);
             mostrarAltaFicha();
         });
 }
@@ -438,7 +417,7 @@ if (idMascota) {
             return cargarFicha();
         })
         .catch(function (error) {
-            mostrarMensaje(mensajeDeApi(error), false);
+            mostrarMensaje(error, false);
         });
 }
 
@@ -454,19 +433,18 @@ formularioCrearFicha.addEventListener('submit', function (evento) {
         datos.observaciones = observaciones;
     }
 
-    apiRequest('fichas_medicas', {
+    enviarFormularioApi(formularioCrearFicha, mensaje, 'fichas_medicas', {
         metodo: 'POST',
         cuerpo: datos
     })
         .then(function (resultado) {
-            var ficha = resultado.data || {};
+            var ficha = (resultado && resultado.data) || {};
 
-            mostrarMensaje(mensajeDeApi(resultado), true);
             idFicha = ficha.id;
 
             return enviarRegistrosIniciales()
                 .catch(function (error) {
-                    mostrarMensaje(mensajeDeApi(error), false);
+                    mostrarMensaje(error, false);
                 })
                 .then(function () {
                     return ficha;
@@ -475,59 +453,39 @@ formularioCrearFicha.addEventListener('submit', function (evento) {
         .then(function (ficha) {
             mostrarFichaMedica(ficha);
         })
-        .catch(function (error) {
-            mostrarMensaje(mensajeDeApi(error), false);
+        .catch(function () {
+            return null;
         });
 });
 
 formularioControl.addEventListener('submit', function (evento) {
     evento.preventDefault();
 
-    if (!formularioControl.checkValidity()) {
-        formularioControl.reportValidity();
-        return;
-    }
-
-    enviarControl().catch(function (error) {
-        mostrarMensaje(mensajeDeApi(error), false);
+    enviarControl().catch(function () {
+        return null;
     });
 });
 
 formularioVacuna.addEventListener('submit', function (evento) {
     evento.preventDefault();
 
-    if (!formularioVacuna.checkValidity()) {
-        formularioVacuna.reportValidity();
-        return;
-    }
-
-    enviarVacuna().catch(function (error) {
-        mostrarMensaje(mensajeDeApi(error), false);
+    enviarVacuna().catch(function () {
+        return null;
     });
 });
 
 formularioCastracion.addEventListener('submit', function (evento) {
     evento.preventDefault();
 
-    if (!formularioCastracion.checkValidity()) {
-        formularioCastracion.reportValidity();
-        return;
-    }
-
-    enviarCastracion().catch(function (error) {
-        mostrarMensaje(mensajeDeApi(error), false);
+    enviarCastracion().catch(function () {
+        return null;
     });
 });
 
 formularioDesparasitacion.addEventListener('submit', function (evento) {
     evento.preventDefault();
 
-    if (!formularioDesparasitacion.checkValidity()) {
-        formularioDesparasitacion.reportValidity();
-        return;
-    }
-
-    enviarDesparasitacion().catch(function (error) {
-        mostrarMensaje(mensajeDeApi(error), false);
+    enviarDesparasitacion().catch(function () {
+        return null;
     });
 });

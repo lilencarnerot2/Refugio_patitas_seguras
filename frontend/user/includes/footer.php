@@ -1,3 +1,4 @@
+<?php require __DIR__ . '/../../includes/contacto_refugio.php'; ?>
     <footer class="perfil-footer">
         <div class="d-flex flex-column flex-lg-row align-items-center justify-content-between gap-2 gap-lg-3 text-center text-lg-start">
             <div class="d-flex align-items-center gap-2">
@@ -9,9 +10,7 @@
             </div>
 
             <ul class="list-unstyled d-flex flex-wrap justify-content-center gap-2 gap-md-3 mb-0 small">
-                <li><i class="bi bi-telephone"></i> 11 2345 6789</li>
-                <li><i class="bi bi-envelope"></i> hola@patitaseguras.org</li>
-                <li><i class="bi bi-geo-alt"></i> Merlo, Buenos Aires</li>
+                <?php require __DIR__ . '/../../includes/contacto_refugio_lista.php'; ?>
             </ul>
 
             <div class="d-flex gap-2">

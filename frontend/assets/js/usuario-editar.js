@@ -53,7 +53,7 @@ function cargarUsuario(id) {
         parametros: { id: id }
     })
         .then(function (respuesta) {
-            mostrarUsuario(respuesta.data || {});
+            mostrarUsuario(usuarioDeRespuestaPerfil(respuesta, id));
         })
         .catch(function (error) {
             if (mensaje) {
@@ -112,15 +112,7 @@ if (formulario && selectUsuario) {
     formulario.addEventListener('submit', function (evento) {
         evento.preventDefault();
 
-        if (mensaje) {
-            avisoDeApi(mensaje, '');
-        }
-
-        if (!selectUsuario.value) {
-            return;
-        }
-
-        apiRequest('usuarios', {
+        enviarFormularioApi(formulario, mensaje, 'usuarios', {
             metodo: 'PUT',
             parametros: { id: selectUsuario.value },
             cuerpo: {
@@ -133,10 +125,6 @@ if (formulario && selectUsuario) {
             }
         })
             .then(function (respuesta) {
-                if (mensaje) {
-                    avisoDeApi(mensaje, respuesta);
-                }
-
                 if (respuesta.data) {
                     mostrarUsuario(respuesta.data);
                 }
@@ -145,10 +133,8 @@ if (formulario && selectUsuario) {
                     window.location.href = listadoEditar;
                 }
             })
-            .catch(function (error) {
-                if (mensaje) {
-                    avisoDeApi(mensaje, error);
-                }
+            .catch(function () {
+                return null;
             });
     });
 }

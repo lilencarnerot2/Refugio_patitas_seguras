@@ -132,11 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
     apiRequest('usuarios', {
         parametros: { id: id }
     }).then(function (respuesta) {
-        var usuario = (respuesta && respuesta.data) || {};
-
-        if (Array.isArray(usuario)) {
-            usuario = usuario[0] || {};
-        }
+        var usuario = usuarioDeRespuestaPerfil(respuesta, id);
 
         if (!usuario.id) {
             if (mensaje) {

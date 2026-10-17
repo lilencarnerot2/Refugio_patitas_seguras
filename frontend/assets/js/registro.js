@@ -14,13 +14,9 @@ document.addEventListener('DOMContentLoaded', function () {
     boton.addEventListener('click', function () {
         var mensaje = formulario.querySelector('.campo-obligatorio');
 
-        if (mensaje) {
-            avisoDeApi(mensaje, '');
-        }
-
         boton.disabled = true;
 
-        apiRequest('registro', {
+        enviarFormularioApi(formulario, mensaje, 'registro', {
             metodo: 'POST',
             cuerpo: {
                 nombre: document.getElementById('nombre').value.trim(),
@@ -30,16 +26,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .then(function (respuesta) {
-            if (mensaje) {
-                avisoDeApi(mensaje, respuesta);
-            }
-
             return irTrasSesion(respuesta);
         })
-        .catch(function (error) {
-            if (mensaje) {
-                avisoDeApi(mensaje, error);
-            }
+        .catch(function () {
+            return null;
         })
         .finally(function () {
             boton.disabled = false;

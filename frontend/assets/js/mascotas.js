@@ -211,6 +211,6 @@ function mostrarAviso(error) {
     }
 
     if (parrafo) {
-        parrafo.textContent = mensajeDeApi(error);
+        avisoDeApi(parrafo, error, false);
     }
 }
