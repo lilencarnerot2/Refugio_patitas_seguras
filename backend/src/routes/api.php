@@ -8,6 +8,7 @@ require_once __DIR__ . '/../modules/auth/controllers/registro.php';
 require_once __DIR__ . '/../utils/response.php';
 require_once __DIR__ . '/../middleware/autorizacion.php';
 require_once __DIR__ . '/../modules/voluntariado/controllers/voluntariado.php';
+require_once __DIR__ . '/../modules/adopciones/controllers/motivos_adopcion.php';
 
 
 function manejarRutas() {
@@ -325,7 +326,11 @@ function manejarRutas() {
             manejar_movimientos_mascotas();
             break;
 
-                        case 'tipos_aportes':
+        case 'motivos_adopcion':
+            manejar_motivos_adopcion();
+            break;
+
+        case 'tipos_aportes':
             require_once __DIR__ . '/../modules/donaciones/controllers/movimientos.php';
             manejar_tipos_aportes();
             break;

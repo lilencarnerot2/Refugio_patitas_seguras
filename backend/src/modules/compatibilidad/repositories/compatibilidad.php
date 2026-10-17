@@ -3,8 +3,7 @@
 require_once __DIR__ . '/../../../config/database.php';
 
 
-function obtener_solicitud_compatibilidad(int $id_solicitud): array|false
-{
+function obtener_solicitud_compatibilidad(int $id_solicitud): array|false {
     $conexion = conectarDB();
 
     $sql = "
@@ -31,8 +30,7 @@ function obtener_solicitud_compatibilidad(int $id_solicitud): array|false
 }
 
 
-function obtener_formulario_adopcion_por_solicitud(int $id_solicitud): array|false
-{
+function obtener_formulario_adopcion_por_solicitud(int $id_solicitud): array|false {
     $conexion = conectarDB();
 
     $sql = "
@@ -49,7 +47,8 @@ function obtener_formulario_adopcion_por_solicitud(int $id_solicitud): array|fal
             fa.horas_solo,
             fa.tiene_mascotas,
             fa.responsable_principal,
-            fa.motivo_adopcion,
+            fa.id_motivo_adopcion,
+            ma.descripcion AS motivo_adopcion,
             fa.puede_realizar_paseos,
             fa.puede_realizar_traslados,
             fa.cuenta_con_apoyo,
@@ -58,6 +57,8 @@ function obtener_formulario_adopcion_por_solicitud(int $id_solicitud): array|fal
             fa.cuenta_con_recursos,
             fa.observaciones
         FROM formularios_adopcion fa
+        INNER JOIN motivos_adopcion ma 
+            ON ma.id = fa.id_motivo_adopcion
         WHERE fa.id_solicitud = :id_solicitud
     ";
 
