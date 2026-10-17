@@ -71,16 +71,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function urlDetalleSolicitud(solicitud) {
-        var tipo = texto(solicitud && solicitud.tipo_solicitud).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-        if (tipo.indexOf('transito') !== -1 || tipo.indexOf('hogar') !== -1 && tipo.indexOf('trans') !== -1) {
-            return 'transito_detalle.php';
-        }
-
-        return 'solicitudes_detalle.php';
-    }
-
     function pintarSolicitudes(usuario) {
         if (!cuerpo || !cabecera) {
             return Promise.resolve(null);
@@ -117,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     var enlace = td.querySelector('a');
 
                     if (enlace) {
-                        enlace.setAttribute('href', urlDetalleSolicitud(solicitud) + '?id=' + encodeURIComponent(solicitud.id));
+                        enlace.setAttribute('href', enlaceDetalleSolicitud(solicitud) + '?id=' + encodeURIComponent(solicitud.id));
                         enlace.textContent = valor;
                     } else if (valor !== '') {
                         td.setAttribute('data-texto', valor);
@@ -159,7 +149,12 @@ document.addEventListener('DOMContentLoaded', function () {
         pintarFicha(usuario);
 
         return pintarRol(usuario).then(function () {
-            return pintarSolicitudes(usuario);
+            return apiRequest('tipos_solicitudes').then(function (respuestaTipos) {
+                var tipos = (respuestaTipos && respuestaTipos.data) || [];
+
+                enlazarModelosDetalleSolicitud(Array.isArray(tipos) ? tipos : [tipos]);
+                return pintarSolicitudes(usuario);
+            });
         });
     }).catch(function (error) {
         if (mensaje) {

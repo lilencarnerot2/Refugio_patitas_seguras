@@ -2,7 +2,6 @@
 $solicitudDetalleTitulo = preg_replace('/\s*-\s*Patitas Seguras\s*$/u', '', $tituloPagina ?? 'Detalle de solicitud');
 $solicitudDetalleVolver = $solicitudDetalleVolver ?? 'solicitudes.php';
 $solicitudDetalleIcono = $solicitudDetalleIcono ?? 'bi-heart';
-$solicitudDetalleMostrarMeta = ($paginaAdmin ?? '') === 'transito_detalle';
 ?>
         <div class="dash-card-cabecera mb-3 solicitud-detalle-cabecera">
             <div class="solicitud-detalle-fila-principal d-flex align-items-center gap-2 w-100">
@@ -12,12 +11,10 @@ $solicitudDetalleMostrarMeta = ($paginaAdmin ?? '') === 'transito_detalle';
                 </div>
                 <a class="btn-outline solicitud-detalle-volver flex-shrink-0" href="<?php echo $solicitudDetalleVolver; ?>">Volver</a>
             </div>
-<?php if ($solicitudDetalleMostrarMeta) { ?>
             <div id="ficha-solicitud-meta" class="solicitud-meta-datos w-100">
                 <span class="solicitud-meta-item">
                     <span class="detalle-label">Fecha de solicitud</span>
                     <span data-campo="fecha_solicitud"></span>
                 </span>
             </div>
-<?php } ?>
         </div>

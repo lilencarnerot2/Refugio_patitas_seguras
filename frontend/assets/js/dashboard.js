@@ -200,10 +200,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (campo === 'id' && destino) {
                     var enlace = td.querySelector('a');
+                    var hrefBase = destino;
+
+                    if (cuerpo.getAttribute('data-enlace-detalle') === 'solicitud') {
+                        hrefBase = enlaceDetalleSolicitud(item) + '?id=';
+                    }
 
                     if (enlace) {
-                        // arma el href con el id
-                        enlace.setAttribute('href', destino + encodeURIComponent(item.id));
+                        enlace.setAttribute('href', hrefBase + encodeURIComponent(item.id));
                         enlace.textContent = valor;
                     } else {
                         td.textContent = valor;
@@ -382,7 +386,10 @@ document.addEventListener('DOMContentLoaded', function () {
         avisoDeApi(mensaje, '');
     }
 
-    pedir('tipos_solicitudes', 'tipos', mostrarSolicitudes);
+    pedir('tipos_solicitudes', 'tipos', function () {
+        enlazarModelosDetalleSolicitud(datos.tipos);
+        mostrarSolicitudes();
+    });
     pedir('estados_solicitudes', 'estados', mostrarPendientes);
     pedir('solicitudes', 'solicitudes', function () {
         mostrarSolicitudes();

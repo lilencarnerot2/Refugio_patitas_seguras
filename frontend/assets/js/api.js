@@ -131,6 +131,7 @@ function irTrasSesion(origen) {
     return accesoDeApi('roles').then(function (esSuper) {
       if (esSuper) {
         guardarCookie('usuario_acceso_superadmin', '1');
+        guardarCookie('usuario_acceso_admin', '1');
       }
 
       if (INICIO_URL) {
@@ -312,13 +313,19 @@ function despuesDePintarAviso(tarea) {
   setTimeout(tarea, 0);
 }
 
-function avisoEsperandoApi(caja) {
+function avisoEsperandoApi(caja, textoEspera) {
   if (!caja) {
     return;
   }
 
   caja.setAttribute('data-estado', 'pendiente');
   caja.setAttribute('aria-busy', 'true');
+
+  if (textoEspera) {
+    caja.textContent = textoEspera;
+    return;
+  }
+
   caja.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 }
 
@@ -416,4 +423,121 @@ function pintarIconoEspecieMascota(contenedor, mascota) {
 
   var tipo = iconoEspecieMascota(mascota && mascota.especie);
   icono.setAttribute('data-especie-icono', tipo === 'otro' ? '' : tipo);
+}
+
+function datosCompatibilidadDeRespuesta(respuesta) {
+  var datos = respuesta && respuesta.data !== undefined ? respuesta.data : respuesta;
+
+  if (Array.isArray(datos)) {
+    datos = datos[0] || {};
+  }
+
+  return datos || {};
+}
+
+function evaluacionCompatibilidadValida(evaluacion) {
+  var puntaje;
+
+  if (!evaluacion || typeof evaluacion !== 'object') {
+    return false;
+  }
+
+  if (String(evaluacion.clasificacion || '').trim() !== '') {
+    return true;
+  }
+
+  puntaje = evaluacion.puntaje;
+
+  return puntaje !== undefined && puntaje !== null && String(puntaje).trim() !== '';
+}
+
+function puntajeCompatibilidadPct(evaluacion) {
+  var raw = evaluacion && evaluacion.puntaje;
+  var numero;
+
+  if (raw === undefined || raw === null || String(raw).trim() === '') {
+    return null;
+  }
+
+  numero = Number(raw);
+
+  if (isNaN(numero)) {
+    return null;
+  }
+
+  return Math.max(0, Math.min(100, numero));
+}
+
+function pintarCorazonCompatibilidad(nodo, puntaje) {
+  var pct = puntaje === null || puntaje === undefined ? 0 : puntaje;
+
+  if (!nodo) {
+    return;
+  }
+
+  nodo.style.setProperty('--compat-fill', pct + '%');
+  nodo.setAttribute('data-puntaje', String(pct));
+  nodo.classList.remove('compatibilidad-corazon-animando');
+  void nodo.offsetWidth;
+  nodo.classList.add('compatibilidad-corazon-animando');
+}
+
+function enlazarModelosDetalleSolicitud(tipos) {
+  var contenedor = document.getElementById('modelos-solicitud');
+  var slots;
+  var lista;
+  var i;
+
+  if (!contenedor) {
+    return;
+  }
+
+  slots = contenedor.querySelectorAll('[data-enlace-detalle-tipo]');
+  lista = Array.isArray(tipos) ? tipos.slice() : [];
+  lista.sort(function (a, b) {
+    return Number(a && a.id) - Number(b && b.id);
+  });
+
+  for (i = 0; i < slots.length && i < lista.length; i++) {
+    if (lista[i].id !== undefined && lista[i].id !== null) {
+      slots[i].setAttribute('data-id-tipo-solicitud', String(lista[i].id));
+    }
+  }
+}
+
+function enlaceDetalleSolicitud(solicitud) {
+  var panel = document.getElementById('panel-solicitudes');
+  var fijo = panel && panel.getAttribute('data-detalle');
+  var contenedor = document.getElementById('modelos-solicitud');
+  var idTipo = solicitud && solicitud.id_tipo_solicitud;
+  var enlace;
+  var defecto;
+  var filaModelo;
+
+  if (fijo) {
+    return String(fijo).replace(/\?.*$/, '');
+  }
+
+  if (contenedor && idTipo !== undefined && idTipo !== null && String(idTipo) !== '') {
+    enlace = contenedor.querySelector('[data-id-tipo-solicitud="' + String(idTipo) + '"]');
+
+    if (enlace && enlace.getAttribute('href')) {
+      return enlace.getAttribute('href').replace(/\?.*$/, '');
+    }
+  }
+
+  defecto = contenedor && contenedor.querySelector('[data-enlace-detalle-default]');
+
+  if (defecto && defecto.getAttribute('href')) {
+    return defecto.getAttribute('href').replace(/\?.*$/, '');
+  }
+
+  filaModelo = document.getElementById('fila-modelo-solicitud');
+  enlace = filaModelo && filaModelo.querySelector('a[href]');
+
+  if (enlace) {
+    return enlace.getAttribute('href').replace(/\?.*$/, '');
+  }
+
+  return '';
 }

@@ -22,7 +22,7 @@ function usuarioAutenticado(): bool
 
 function esPersonalAdmin(): bool
 {
-    return !empty($_COOKIE['usuario_acceso_admin']);
+    return !empty($_COOKIE['usuario_acceso_admin']) || !empty($_COOKIE['usuario_acceso_superadmin']);
 }
 
 function esSuperadministrador(): bool

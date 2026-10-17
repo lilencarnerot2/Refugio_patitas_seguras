@@ -57,17 +57,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function urlDetalleSolicitud(solicitud) {
-        if (esTransito(solicitud)) {
-            return 'transito_detalle.php';
+        var panel = document.getElementById('panel-solicitudes');
+        var detalleListado = panel && panel.getAttribute('data-detalle');
+
+        if (detalleListado) {
+            return detalleListado.replace(/\?.*$/, '');
         }
 
-        var tipo = normalizar(solicitud && solicitud.tipo_solicitud);
-
-        if (tipoPedido === 'adopcion' || tipo.indexOf('adopcion') !== -1) {
-            return 'adopcion_detalle.php';
-        }
-
-        return 'solicitudes_detalle.php';
+        return enlaceDetalleSolicitud(solicitud);
     }
 
     function coincide(solicitud) {
@@ -394,7 +391,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then(function (respuestaTipos) {
             var tipos = (respuestaTipos && respuestaTipos.data) || [];
 
-            dibujarResumen(Array.isArray(tipos) ? tipos : [tipos]);
+            tipos = Array.isArray(tipos) ? tipos : [tipos];
+            enlazarModelosDetalleSolicitud(tipos);
+            dibujarResumen(tipos);
         });
     }
 
