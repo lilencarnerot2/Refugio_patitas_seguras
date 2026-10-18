@@ -195,6 +195,46 @@ function fechaCorta(valor) {
   return texto.split(' ')[0];
 }
 
+function fechaHoraLista(valor) {
+  var bruto = (valor === undefined || valor === null) ? '' : String(valor).trim();
+  var partes;
+  var fechaParte;
+  var horaParte;
+  var d;
+  var h;
+
+  if (!bruto) {
+    return '';
+  }
+
+  bruto = bruto.replace('T', ' ');
+  partes = bruto.split(/\s+/);
+  fechaParte = partes[0] || '';
+  horaParte = partes[1] || '';
+
+  if (fechaParte.indexOf('-') !== -1) {
+    d = fechaParte.split('-');
+
+    if (d.length === 3) {
+      fechaParte = d[2] + '/' + d[1] + '/' + d[0];
+    }
+  }
+
+  if (horaParte.indexOf(':') !== -1) {
+    h = horaParte.split(':');
+
+    if (h.length >= 2) {
+      horaParte = h[0] + ':' + h[1];
+    }
+  }
+
+  if (fechaParte && horaParte) {
+    return fechaParte + ' ' + horaParte;
+  }
+
+  return fechaParte || horaParte;
+}
+
 function fechaDeHoyIso() {
   var hoy = new Date();
 
@@ -764,14 +804,26 @@ function recursoDetalleSolicitudAdmin(tipoDetalle, clave) {
 
   comunes = cfg.comunes || {};
 
-  if (clave === 'solicitud' || clave === 'mascotas' || clave === 'estadosSolicitud' || clave === 'tiposSolicitud') {
+  if (clave === 'solicitud' || clave === 'mascotas' || clave === 'estadosSolicitud' || clave === 'tiposSolicitud' || clave === 'compatibilidad') {
     return nombreRecursoApi(comunes[clave] || '');
   }
 
   tipo = normalizarClaveTipoSolicitud(tipoDetalle);
-  bloque = cfg[tipo] || {};
 
-  return nombreRecursoApi(bloque[clave] || '');
+  if (!tipo) {
+    var panelTipo = panelConfigSolicitudAdmin();
+    tipo = normalizarClaveTipoSolicitud(panelTipo && panelTipo.getAttribute('data-tipo'));
+  }
+
+  bloque = cfg[tipo] || {};
+  var nombre = nombreRecursoApi(bloque[clave] || '');
+
+  if (!nombre && clave === 'formulario') {
+    var panelForm = panelConfigSolicitudAdmin();
+    nombre = nombreRecursoApi(panelForm && panelForm.getAttribute('data-recurso-formulario') || '');
+  }
+
+  return nombre;
 }
 
 function apiSolicitudDetalleAdmin(idSolicitud) {

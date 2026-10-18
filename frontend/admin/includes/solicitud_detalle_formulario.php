@@ -14,24 +14,24 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label class="form-label">Tipo de vivienda</label>
-                                            <input class="form-control" type="text" readonly data-campo="tipo_vivienda">
+                                            <span class="form-control formulario-dato" data-campo="tipo_vivienda"></span>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Condición</label>
-                                            <input class="form-control" type="text" readonly data-campo="condicion_vivienda">
+                                            <span class="form-control formulario-dato" data-campo="condicion_vivienda"></span>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Patio</label>
-                                            <input class="form-control" type="text" readonly data-campo="tiene_patio">
+                                            <span class="form-control formulario-dato" data-campo="tiene_patio"></span>
                                         </div>
                                         <div class="col-md-6" id="grupo-metros-patio" hidden>
                                             <label class="form-label">Metros del patio</label>
-                                            <input class="form-control" type="text" readonly data-campo="metros_cuadrados_patio">
+                                            <span class="form-control formulario-dato" data-campo="metros_cuadrados_patio"></span>
                                         </div>
 <?php if (!$esFormularioTransito) { ?>
                                         <div class="col-md-6">
                                             <label class="form-label">Si no puede criarlo</label>
-                                            <input class="form-control" type="text" readonly data-campo="destino_mascota">
+                                            <span class="form-control formulario-dato" data-campo="destino_mascota"></span>
                                         </div>
 <?php } ?>
                                     </div>
@@ -43,45 +43,45 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label class="form-label">Integrantes</label>
-                                            <input class="form-control" type="text" readonly data-campo="cantidad_integrantes">
+                                            <span class="form-control formulario-dato" data-campo="cantidad_integrantes"></span>
                                         </div>
 <?php if ($esFormularioTransito) { ?>
                                         <div class="col-md-6">
                                             <label class="form-label">Horas sola</label>
-                                            <input class="form-control" type="text" readonly data-campo="horas_solo">
+                                            <span class="form-control formulario-dato" data-campo="horas_solo"></span>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Menores</label>
-                                            <input class="form-control" type="text" readonly data-campo="hay_ninos">
+                                            <span class="form-control formulario-dato" data-campo="hay_ninos"></span>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Otras mascotas</label>
-                                            <input class="form-control" type="text" readonly data-campo="tiene_mascotas">
+                                            <span class="form-control formulario-dato" data-campo="tiene_mascotas"></span>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Cantidad máxima de mascotas</label>
-                                            <input class="form-control" type="text" readonly data-campo="cantidad_maxima_mascotas">
+                                            <span class="form-control formulario-dato" data-campo="cantidad_maxima_mascotas"></span>
                                         </div>
 <?php } else { ?>
                                         <div class="col-md-6">
                                             <label class="form-label">Menores</label>
-                                            <input class="form-control" type="text" readonly data-campo="hay_ninos">
+                                            <span class="form-control formulario-dato" data-campo="hay_ninos"></span>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Horas sola</label>
-                                            <input class="form-control" type="text" readonly data-campo="horas_solo">
+                                            <span class="form-control formulario-dato" data-campo="horas_solo"></span>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Otras mascotas</label>
-                                            <input class="form-control" type="text" readonly data-campo="tiene_mascotas">
+                                            <span class="form-control formulario-dato" data-campo="tiene_mascotas"></span>
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label">Responsable</label>
-                                            <input class="form-control" type="text" readonly data-campo="responsable_principal">
+                                            <span class="form-control formulario-dato" data-campo="responsable_principal"></span>
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label">Motivo</label>
-                                            <textarea class="form-control" rows="2" readonly data-campo="motivo_adopcion"></textarea>
+                                            <span class="form-control formulario-dato formulario-dato-multilinea" data-campo="motivo_adopcion"></span>
                                         </div>
 <?php } ?>
                                     </div>
@@ -94,11 +94,11 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label class="form-label">Desde</label>
-                                            <input class="form-control" type="text" readonly data-campo="disponibilidad_desde">
+                                            <span class="form-control formulario-dato" data-campo="disponibilidad_desde"></span>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Hasta</label>
-                                            <input class="form-control" type="text" readonly data-campo="disponibilidad_hasta">
+                                            <span class="form-control formulario-dato" data-campo="disponibilidad_hasta"></span>
                                         </div>
                                     </div>
                                 </section>
@@ -137,15 +137,15 @@
 <?php if (!$esFormularioTransito) { ?>
                                         <div class="col-md-6">
                                             <label class="form-label">Recursos</label>
-                                            <input class="form-control" type="text" readonly data-campo="cuenta_con_recursos">
+                                            <span class="form-control formulario-dato" data-campo="cuenta_con_recursos"></span>
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label">Limitaciones</label>
-                                            <textarea class="form-control" rows="2" readonly data-campo="limitaciones_cuidado"></textarea>
+                                            <span class="form-control formulario-dato formulario-dato-multilinea" data-campo="limitaciones_cuidado"></span>
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label">Experiencia</label>
-                                            <textarea class="form-control" rows="2" readonly data-campo="experiencia_cuidado"></textarea>
+                                            <span class="form-control formulario-dato formulario-dato-multilinea" data-campo="experiencia_cuidado"></span>
                                         </div>
                                         <div class="col-12">
                                             <p class="form-label">Compromisos</p>
@@ -154,7 +154,7 @@
 <?php } else { ?>
                                         <div class="col-12">
                                             <label class="form-label">Limitaciones</label>
-                                            <textarea class="form-control" rows="2" readonly data-campo="limitaciones_cuidado"></textarea>
+                                            <span class="form-control formulario-dato formulario-dato-multilinea" data-campo="limitaciones_cuidado"></span>
                                         </div>
 <?php } ?>
                                         <div class="col-12">
@@ -167,7 +167,7 @@
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label">Observaciones</label>
-                                            <textarea class="form-control" rows="2" readonly data-campo="observaciones"></textarea>
+                                            <span class="form-control formulario-dato formulario-dato-multilinea" data-campo="observaciones"></span>
                                         </div>
                                     </div>
                                 </section>
@@ -182,20 +182,20 @@
                         <div class="row g-2 mb-2" id="modelo-mascota-hogar">
                             <div class="col-md-4">
                                 <label class="form-label">Tipo</label>
-                                <input class="form-control" type="text" readonly data-campo="tipo_mascota">
+                                <span class="form-control formulario-dato" data-campo="tipo_mascota"></span>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Nombre</label>
-                                <input class="form-control" type="text" readonly data-campo="nombre">
+                                <span class="form-control formulario-dato" data-campo="nombre"></span>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Edad</label>
-                                <input class="form-control" type="text" readonly data-campo="edad_aproximada">
+                                <span class="form-control formulario-dato" data-campo="edad_aproximada"></span>
                             </div>
 <?php if (!$esFormularioTransito) { ?>
                             <div class="col-md-4">
                                 <label class="form-label">Sexo</label>
-                                <input class="form-control" type="text" readonly data-campo="sexo">
+                                <span class="form-control formulario-dato" data-campo="sexo"></span>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-check">
@@ -211,11 +211,11 @@
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Enfermedad o condición</label>
-                                <input class="form-control" type="text" readonly data-campo="enfermedad_condicion">
+                                <span class="form-control formulario-dato" data-campo="enfermedad_condicion"></span>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Descripción</label>
-                                <textarea class="form-control" rows="2" readonly data-campo="descripcion"></textarea>
+                                <span class="form-control formulario-dato formulario-dato-multilinea" data-campo="descripcion"></span>
                             </div>
 <?php } ?>
                         </div>
