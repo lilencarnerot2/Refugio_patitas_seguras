@@ -10,6 +10,7 @@ require_once __DIR__ . '/../middleware/autorizacion.php';
 require_once __DIR__ . '/../modules/voluntariado/controllers/voluntariado.php';
 require_once __DIR__ . '/../modules/adopciones/controllers/motivos_adopcion.php';
 require_once __DIR__ . '/../modules/adopciones/controllers/enfermedades_condiciones.php';
+require_once __DIR__ . '/../modules/seguimientos/controllers/tipos_seguimientos.php';
 
 
 function manejarRutas() {
@@ -333,6 +334,10 @@ function manejarRutas() {
 
         case 'motivos_adopcion':
             manejar_motivos_adopcion();
+            break;
+
+        case 'tipos_seguimientos':
+            manejar_tipos_seguimientos();
             break;
 
         case 'tipos_aportes':
