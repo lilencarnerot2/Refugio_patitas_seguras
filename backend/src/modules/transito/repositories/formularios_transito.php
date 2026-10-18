@@ -3,12 +3,8 @@
 require_once __DIR__ . '/../../../config/database.php';
 
 
-// ============================================================
 // FORMULARIO DE TRÁNSITO
-// ============================================================
-
-function obtener_formulario_transito_por_id(int $id): array|false
-{
+function obtener_formulario_transito_por_id(int $id): array|false {
     $conexion = conectarDB();
 
     $sql = "
@@ -49,8 +45,7 @@ function obtener_formulario_transito_por_id(int $id): array|false
 }
 
 
-function obtener_formulario_transito_por_solicitud_db(int $id_solicitud): array|false
-{
+function obtener_formulario_transito_por_solicitud_db(int $id_solicitud): array|false {
     $conexion = conectarDB();
 
     $sql = "
@@ -91,8 +86,7 @@ function obtener_formulario_transito_por_solicitud_db(int $id_solicitud): array|
 }
 
 
-function existe_formulario_transito_para_solicitud(int $id_solicitud): bool
-{
+function existe_formulario_transito_para_solicitud(int $id_solicitud): bool {
     $conexion = conectarDB();
 
     $sql = "
@@ -108,9 +102,25 @@ function existe_formulario_transito_para_solicitud(int $id_solicitud): bool
     return (bool) $stmt->fetchColumn();
 }
 
+function existe_enfermedad_condicion_transito(int $id): bool {
+    $conexion = conectarDB();
+    $sql = "
+        SELECT 1
+        FROM enfermedades_condiciones
+        WHERE id = :id
+          AND estado = TRUE
+        LIMIT 1
+    ";
 
-function crear_formulario_transito(array $datos): array|false
-{
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([
+        ':id' => $id
+    ]);
+
+    return (bool) $stmt->fetchColumn();
+}
+
+function crear_formulario_transito(array $datos): array|false {
     $conexion = conectarDB();
 
     $sql = "
@@ -214,8 +224,7 @@ function crear_formulario_transito(array $datos): array|false
 }
 
 
-function actualizar_formulario_transito(int $id, array $datos): array|false
-{
+function actualizar_formulario_transito(int $id, array $datos): array|false {
     $conexion = conectarDB();
 
     $sql = "
@@ -299,12 +308,8 @@ function actualizar_formulario_transito(int $id, array $datos): array|false
 }
 
 
-// ============================================================
 // PIVOTES: CONDICIONES ESPECIALES (compartida con adopción)
-// ============================================================
-
-function guardar_condiciones_transito(int $id_formulario, array $ids_condiciones): void
-{
+function guardar_condiciones_transito(int $id_formulario, array $ids_condiciones): void {
     $conexion = conectarDB();
 
     $sql = "
@@ -328,8 +333,7 @@ function guardar_condiciones_transito(int $id_formulario, array $ids_condiciones
 }
 
 
-function eliminar_condiciones_transito(int $id_formulario): void
-{
+function eliminar_condiciones_transito(int $id_formulario): void {
     $conexion = conectarDB();
 
     $sql = "
@@ -342,8 +346,7 @@ function eliminar_condiciones_transito(int $id_formulario): void
 }
 
 
-function obtener_condiciones_de_transito(int $id_formulario): array
-{
+function obtener_condiciones_de_transito(int $id_formulario): array {
     $conexion = conectarDB();
 
     $sql = "
@@ -364,35 +367,32 @@ function obtener_condiciones_de_transito(int $id_formulario): array
 }
 
 
-// ============================================================
+
 // PIVOTES: MASCOTAS EXISTENTES EN EL HOGAR (compartida)
-// ============================================================
-
-function guardar_mascotas_transito(int $id_formulario, array $mascotas): void
-{
+function guardar_mascotas_transito(
+    int $id_formulario,
+    array $mascotas
+): void {
     $conexion = conectarDB();
-
     $sql = "
         INSERT INTO mascotas_existentes_hogar (
             id_formulario_transito,
             id_tipo_mascota,
-            nombre,
             edad_aproximada,
             sexo,
             esterilizada,
             vacunas_al_dia,
-            enfermedad_condicion,
+            id_enfermedad_condicion,
             descripcion
         )
         VALUES (
             :id_formulario,
             :id_tipo_mascota,
-            :nombre,
             :edad_aproximada,
             :sexo,
             :esterilizada,
             :vacunas_al_dia,
-            :enfermedad_condicion,
+            :id_enfermedad_condicion,
             :descripcion
         )
     ";
@@ -400,57 +400,128 @@ function guardar_mascotas_transito(int $id_formulario, array $mascotas): void
     $stmt = $conexion->prepare($sql);
 
     foreach ($mascotas as $m) {
-        $sexo = isset($m['sexo']) && $m['sexo'] !== null
-            ? strtolower(trim((string) $m['sexo']))
-            : null;
+        $sexo =
+            isset($m['sexo']) &&
+            $m['sexo'] !== null
+                ? strtolower(trim((string) $m['sexo']))
+                : null;
 
-        if ($sexo !== null && !in_array($sexo, ['macho', 'hembra'], true)) {
+        if (
+            $sexo !== null &&
+            !in_array(
+                $sexo,
+                ['macho', 'hembra'],
+                true
+            )
+        ) {
             $sexo = null;
         }
 
-        $stmt->bindValue(':id_formulario', $id_formulario, PDO::PARAM_INT);
-        $stmt->bindValue(':id_tipo_mascota', (int) $m['id_tipo_mascota'], PDO::PARAM_INT);
+        $stmt->bindValue(
+            ':id_formulario',
+            $id_formulario,
+            PDO::PARAM_INT
+        );
 
-        if (empty($m['nombre'])) {
-            $stmt->bindValue(':nombre', null, PDO::PARAM_NULL);
-        } else {
-            $stmt->bindValue(':nombre', $m['nombre'], PDO::PARAM_STR);
-        }
+        $stmt->bindValue(
+            ':id_tipo_mascota',
+            (int) $m['id_tipo_mascota'],
+            PDO::PARAM_INT
+        );
 
-        if (!isset($m['edad_aproximada']) || $m['edad_aproximada'] === null) {
-            $stmt->bindValue(':edad_aproximada', null, PDO::PARAM_NULL);
+        if (
+            !isset($m['edad_aproximada']) ||
+            $m['edad_aproximada'] === null
+        ) {
+            $stmt->bindValue(
+                ':edad_aproximada',
+                null,
+                PDO::PARAM_NULL
+            );
         } else {
-            $stmt->bindValue(':edad_aproximada', (int) $m['edad_aproximada'], PDO::PARAM_INT);
+            $stmt->bindValue(
+                ':edad_aproximada',
+                (int) $m['edad_aproximada'],
+                PDO::PARAM_INT
+            );
         }
 
         if ($sexo === null) {
-            $stmt->bindValue(':sexo', null, PDO::PARAM_NULL);
+            $stmt->bindValue(
+                ':sexo',
+                null,
+                PDO::PARAM_NULL
+            );
         } else {
-            $stmt->bindValue(':sexo', $sexo, PDO::PARAM_STR);
+            $stmt->bindValue(
+                ':sexo',
+                $sexo,
+                PDO::PARAM_STR
+            );
         }
 
-        if (!isset($m['esterilizada']) || $m['esterilizada'] === null) {
-            $stmt->bindValue(':esterilizada', null, PDO::PARAM_NULL);
+        if (
+            !isset($m['esterilizada']) ||
+            $m['esterilizada'] === null
+        ) {
+            $stmt->bindValue(
+                ':esterilizada',
+                null,
+                PDO::PARAM_NULL
+            );
         } else {
-            $stmt->bindValue(':esterilizada', $m['esterilizada'] ? 't' : 'f', PDO::PARAM_STR);
+            $stmt->bindValue(
+                ':esterilizada',
+                $m['esterilizada'] ? 't' : 'f',
+                PDO::PARAM_STR
+            );
         }
 
-        if (!isset($m['vacunas_al_dia']) || $m['vacunas_al_dia'] === null) {
-            $stmt->bindValue(':vacunas_al_dia', null, PDO::PARAM_NULL);
+        if (
+            !isset($m['vacunas_al_dia']) ||
+            $m['vacunas_al_dia'] === null
+        ) {
+            $stmt->bindValue(
+                ':vacunas_al_dia',
+                null,
+                PDO::PARAM_NULL
+            );
         } else {
-            $stmt->bindValue(':vacunas_al_dia', $m['vacunas_al_dia'] ? 't' : 'f', PDO::PARAM_STR);
+            $stmt->bindValue(
+                ':vacunas_al_dia',
+                $m['vacunas_al_dia'] ? 't' : 'f',
+                PDO::PARAM_STR
+            );
         }
 
-        if (empty($m['enfermedad_condicion'])) {
-            $stmt->bindValue(':enfermedad_condicion', null, PDO::PARAM_NULL);
+        if (
+            empty($m['id_enfermedad_condicion'])
+        ) {
+            $stmt->bindValue(
+                ':id_enfermedad_condicion',
+                null,
+                PDO::PARAM_NULL
+            );
         } else {
-            $stmt->bindValue(':enfermedad_condicion', $m['enfermedad_condicion'], PDO::PARAM_STR);
+            $stmt->bindValue(
+                ':id_enfermedad_condicion',
+                (int) $m['id_enfermedad_condicion'],
+                PDO::PARAM_INT
+            );
         }
 
         if (empty($m['descripcion'])) {
-            $stmt->bindValue(':descripcion', null, PDO::PARAM_NULL);
+            $stmt->bindValue(
+                ':descripcion',
+                null,
+                PDO::PARAM_NULL
+            );
         } else {
-            $stmt->bindValue(':descripcion', $m['descripcion'], PDO::PARAM_STR);
+            $stmt->bindValue(
+                ':descripcion',
+                $m['descripcion'],
+                PDO::PARAM_STR
+            );
         }
 
         $stmt->execute();
@@ -458,8 +529,7 @@ function guardar_mascotas_transito(int $id_formulario, array $mascotas): void
 }
 
 
-function eliminar_mascotas_transito(int $id_formulario): void
-{
+function eliminar_mascotas_transito(int $id_formulario): void {
     $conexion = conectarDB();
 
     $sql = "
@@ -471,38 +541,40 @@ function eliminar_mascotas_transito(int $id_formulario): void
     $stmt->execute([':id_formulario' => $id_formulario]);
 }
 
-
-function obtener_mascotas_de_transito(int $id_formulario): array
-{
+function obtener_mascotas_de_transito(
+    int $id_formulario
+): array {
     $conexion = conectarDB();
-
     $sql = "
         SELECT
             meh.id,
             meh.id_tipo_mascota,
             tm.descripcion AS tipo_mascota,
-            meh.nombre,
             meh.edad_aproximada,
             meh.sexo,
             meh.esterilizada,
             meh.vacunas_al_dia,
-            meh.enfermedad_condicion,
+            meh.id_enfermedad_condicion,
+            ec.descripcion AS enfermedad_condicion,
             meh.descripcion
         FROM mascotas_existentes_hogar meh
         INNER JOIN tipos_mascotas tm
             ON tm.id = meh.id_tipo_mascota
+        LEFT JOIN enfermedades_condiciones ec
+            ON ec.id = meh.id_enfermedad_condicion
         WHERE meh.id_formulario_transito = :id_formulario
         ORDER BY meh.id
     ";
 
     $stmt = $conexion->prepare($sql);
-    $stmt->execute([':id_formulario' => $id_formulario]);
+    $stmt->execute([
+        ':id_formulario' => $id_formulario
+    ]);
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function obtener_formularios_transito_filtrados(array $filtros, ?int $id_usuario_solo_suyos): array
-{
+function obtener_formularios_transito_filtrados(array $filtros, ?int $id_usuario_solo_suyos): array {
     $conexion = conectarDB();
 
     $sql = "

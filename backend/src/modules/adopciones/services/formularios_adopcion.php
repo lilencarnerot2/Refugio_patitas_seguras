@@ -188,28 +188,50 @@ function validar_condiciones_especiales(array $ids_condiciones): void {
 
 function validar_mascotas_hogar(array $mascotas): void {
     if (!is_array($mascotas)) {
-        throw new InvalidArgumentException('Las mascotas del hogar deben ser una lista.');
+        throw new InvalidArgumentException(
+            'Las mascotas del hogar deben ser una lista.'
+        );
     }
-
     foreach ($mascotas as $m) {
-        if (empty($m['id_tipo_mascota']) || !existe_tipo_mascota((int) $m['id_tipo_mascota'])) {
+        if (
+            empty($m['id_tipo_mascota']) ||
+            !existe_tipo_mascota((int) $m['id_tipo_mascota'])
+        ) {
             throw new InvalidArgumentException(
                 'Una de las mascotas del hogar tiene un tipo inválido.'
             );
         }
 
-        if (isset($m['edad_aproximada']) && $m['edad_aproximada'] !== null) {
-            if ((int) $m['edad_aproximada'] < 0) {
+        if (
+            isset($m['edad_aproximada']) &&
+            $m['edad_aproximada'] !== null
+        ) {
+            $edad = (int) $m['edad_aproximada'];
+
+            if ($edad <= 0 || $edad >= 30) {
                 throw new InvalidArgumentException(
-                    'La edad aproximada de una mascota no puede ser negativa.'
+                    'La edad aproximada de una mascota debe ser mayor a 0 y menor a 30 años.'
                 );
             }
         }
 
-        if (!empty($m['nombre']) && mb_strlen((string) $m['nombre']) > 30) {
-            throw new InvalidArgumentException(
-                'El nombre de una mascota del hogar no puede superar los 30 caracteres.'
-            );
+        if (
+            isset($m['id_enfermedad_condicion']) &&
+            $m['id_enfermedad_condicion'] !== null
+        ) {
+            $id_enfermedad_condicion =
+                (int) $m['id_enfermedad_condicion'];
+
+            if (
+                $id_enfermedad_condicion <= 0 ||
+                !existe_enfermedad_condicion(
+                    $id_enfermedad_condicion
+                )
+            ) {
+                throw new InvalidArgumentException(
+                    'La enfermedad o condición seleccionada no es válida.'
+                );
+            }
         }
     }
 }
