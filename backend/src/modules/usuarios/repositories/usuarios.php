@@ -107,6 +107,7 @@ function crear_usuario_desde_padron(array $datos): array|false{
             id_rol,
             nombre,
             apellido,
+            fecha_nacimiento,
             fecha_alta,
             estado,
             uid_pp2,
@@ -116,6 +117,7 @@ function crear_usuario_desde_padron(array $datos): array|false{
             :id_rol,
             :nombre,
             :apellido,
+            :fecha_nacimiento,
             NOW(),
             TRUE,
             :uid_pp2,
@@ -139,6 +141,7 @@ function crear_usuario_desde_padron(array $datos): array|false{
         ':id_rol' => (int) $datos['id_rol'],
         ':nombre' => $datos['nombre'],
         ':apellido' => $datos['apellido'],
+        ':fecha_nacimiento' => $datos['fecha_nacimiento'],
         ':uid_pp2' => $datos['uid_pp2'],
         ':password' => $password_local
     ]);
@@ -146,9 +149,8 @@ function crear_usuario_desde_padron(array $datos): array|false{
     return $consulta->fetch(PDO::FETCH_ASSOC);
 }
 
-function actualizar_usuario_desde_padron(int $id, array $datos): array|false{
+function actualizar_usuario_desde_padron(int $id, array $datos): array|false {
     $conexion = conectarDB();
-
     $sql = "
         UPDATE usuarios
         SET
@@ -168,7 +170,6 @@ function actualizar_usuario_desde_padron(int $id, array $datos): array|false{
     ";
 
     $consulta = $conexion->prepare($sql);
-
     $consulta->execute([
         ':id' => $id,
         ':nombre' => $datos['nombre'],
