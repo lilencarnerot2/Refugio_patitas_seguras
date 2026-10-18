@@ -4,6 +4,7 @@ $paginaAdmin = 'transito_detalle';
 $solicitudDetalleTipo = 'transito';
 $solicitudDetalleIcono = 'bi-heart';
 $solicitudEvaluacionManual = true;
+$solicitudPostulanteTipoVivienda = true;
 require __DIR__ . '/includes/head.php';
 require __DIR__ . '/includes/header.php';
 require __DIR__ . '/includes/solicitud_detalle_vista.php';

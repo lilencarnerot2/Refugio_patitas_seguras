@@ -86,6 +86,11 @@ $menuSolicitudesActivo = $paginaAdmin === 'solicitudes'
         <?php } ?>
         <?php if ($esSuperadministrador) { ?>
         <li>
+            <a href="auditorias.php"<?php echo in_array($paginaAdmin, ['auditorias', 'auditoria_detalle'], true) ? ' class="active"' : ''; ?>>
+                <i class="bi bi-journal-text"></i> Auditorías
+            </a>
+        </li>
+        <li>
             <a href="configuracion.php"<?php echo $paginaAdmin === 'configuracion' ? ' class="active"' : ''; ?>>
                 <i class="bi bi-gear"></i> Configuración
             </a>

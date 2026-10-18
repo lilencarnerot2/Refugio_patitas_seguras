@@ -7,17 +7,14 @@ $porPaginaSeguimientos = (int) ($porPaginaSeguimientos ?? 5);
         data-recurso="<?php echo htmlspecialchars($recursoSeguimiento, ENT_QUOTES, 'UTF-8'); ?>"
         data-clave-solicitud="<?php echo htmlspecialchars($claveSolicitud, ENT_QUOTES, 'UTF-8'); ?>"
         data-por-pagina="<?php echo $porPaginaSeguimientos; ?>"
-        data-aviso-sin-seguimientos="No hay seguimientos para esta solicitud."
-        data-aviso-sin-tipos-seguimiento="No hay tipos de seguimiento disponibles desde el backend."
-        data-aviso-backend="No se pudo conectar con el backend."
         data-texto-seguimiento-activo="Activo"
         data-texto-seguimiento-realizado="Realizado"
         data-observacion-oculta="Seguimiento generado automáticamente">
         <p id="mensaje-seguimientos" class="mensaje-formulario"></p>
 
-        <div class="seguimientos-toolbar d-flex flex-wrap justify-content-end align-items-center gap-2 mb-3">
-            <a id="seguimientos-volver-solicitud" class="btn-outline btn-sm solicitud-detalle-accion" href="#" hidden>Volver al detalle</a>
-            <button type="button" class="btn btn-primary btn-sm" data-abrir-alta><i class="bi bi-plus-lg"></i> <span>Nuevo seguimiento</span></button>
+        <div class="seguimientos-toolbar admin-barra-acciones d-flex mb-3">
+            <a id="seguimientos-volver-solicitud" class="btn-outline btn-sm solicitud-detalle-accion seguimientos-toolbar-btn" href="#" hidden>Volver al detalle</a>
+            <button type="button" class="btn btn-primary btn-sm seguimientos-toolbar-btn" data-abrir-alta><i class="bi bi-plus-lg" aria-hidden="true"></i> <span class="seguimientos-toolbar-btn-texto">Nuevo seguimiento</span></button>
         </div>
 
         <div class="seguimientos-titulo page-intro text-center mb-3">
@@ -55,8 +52,8 @@ $porPaginaSeguimientos = (int) ($porPaginaSeguimientos ?? 5);
                         <button type="button" class="btn btn-outline-secondary" data-limpiar="filtro-fecha-programada" aria-label="Limpiar fecha programada"><i class="bi bi-x"></i></button>
                     </div>
                 </div>
-                <div class="col-12 col-md-auto d-flex align-items-end">
-                    <button type="button" class="btn btn-outline-secondary btn-sm" data-refrescar><i class="bi bi-arrow-clockwise"></i> Actualizar</button>
+                <div class="col-12 col-md-auto d-grid d-md-flex align-items-md-end">
+                    <button type="button" class="btn btn-outline-secondary btn-sm w-100 w-md-auto" data-refrescar><i class="bi bi-arrow-clockwise"></i> Actualizar</button>
                 </div>
             </div>
         </article>
@@ -101,10 +98,10 @@ $porPaginaSeguimientos = (int) ($porPaginaSeguimientos ?? 5);
     </section>
 
     <div class="modal fade" id="modal-seguimiento-alta" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-seguimiento-form">
             <form class="modal-content" id="form-seguimiento-alta" novalidate>
                 <div class="modal-header">
-                    <h2 class="modal-title fs-5">Nuevo seguimiento</h2>
+                    <h2 class="modal-title fs-5 text-break">Nuevo seguimiento</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body row g-3">
@@ -112,20 +109,20 @@ $porPaginaSeguimientos = (int) ($porPaginaSeguimientos ?? 5);
                         <label class="form-label" for="alta-id-solicitud">Solicitud</label>
                         <select class="form-select" id="alta-id-solicitud" name="id_solicitud" required></select>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-sm-6">
                         <label class="form-label" for="alta-fecha-programada">Fecha programada</label>
                         <input type="date" class="form-control" id="alta-fecha-programada" name="fecha_programada" required>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-sm-6">
                         <label class="form-label" for="alta-id-tipo">Tipo / medio</label>
                         <select class="form-select" id="alta-id-tipo" name="id_tipo_seguimiento" required></select>
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="alta-observaciones">Observaciones</label>
-                        <textarea class="form-control" id="alta-observaciones" name="observaciones" rows="2"></textarea>
+                        <textarea class="form-control" id="alta-observaciones" name="observaciones" rows="3"></textarea>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer justify-content-center gap-2 flex-wrap">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
@@ -134,10 +131,10 @@ $porPaginaSeguimientos = (int) ($porPaginaSeguimientos ?? 5);
     </div>
 
     <div class="modal fade" id="modal-seguimiento-realizar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-seguimiento-form">
             <form class="modal-content" id="form-seguimiento-realizar" novalidate>
                 <div class="modal-header">
-                    <h2 class="modal-title fs-5">Registrar seguimiento realizado</h2>
+                    <h2 class="modal-title fs-5 text-break">Registrar seguimiento realizado</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body row g-3">
@@ -152,7 +149,7 @@ $porPaginaSeguimientos = (int) ($porPaginaSeguimientos ?? 5);
                         <textarea class="form-control" id="realizar-observaciones" name="observaciones" rows="3"></textarea>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer justify-content-center gap-2 flex-wrap">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Confirmar</button>
                 </div>
@@ -191,10 +188,10 @@ $porPaginaSeguimientos = (int) ($porPaginaSeguimientos ?? 5);
     </div>
 
     <div class="modal fade" id="modal-seguimiento-reprogramar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-seguimiento-form">
             <form class="modal-content" id="form-seguimiento-reprogramar" novalidate>
                 <div class="modal-header">
-                    <h2 class="modal-title fs-5">Reprogramar seguimiento</h2>
+                    <h2 class="modal-title fs-5 text-break">Reprogramar seguimiento</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
@@ -202,7 +199,7 @@ $porPaginaSeguimientos = (int) ($porPaginaSeguimientos ?? 5);
                     <label class="form-label" for="reprogramar-fecha">Nueva fecha programada</label>
                     <input type="date" class="form-control" id="reprogramar-fecha" name="fecha_programada" required>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer justify-content-center gap-2 flex-wrap">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>

@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var fichaSolicitudMeta = document.getElementById('ficha-solicitud-meta');
     var mensaje = document.getElementById('mensaje-formulario');
     var botones = document.getElementById('botones-estado');
-    var id = new URLSearchParams(window.location.search).get('id');
+    var paramsDetalle = new URLSearchParams(window.location.search);
+    var id = paramsDetalle.get('id') || paramsDetalle.get('id_solicitud');
     var listado = panel.getAttribute('data-listado') || '';
     var vistaHref = panel.getAttribute('data-vista-href') || '';
     var compatibilidadLista = false;
@@ -369,6 +370,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+            valor = esBooleano(valor) ? siNo(valor) : texto(valor);
+
+            if (campo.indexOf('fecha') === 0 || campo.indexOf('disponibilidad_') === 0) {
+                valor = fechaCorta(valor);
+            }
+
             if (texto(valor) !== '') {
                 nodo.setAttribute('data-texto', texto(valor));
             } else {
@@ -433,6 +440,40 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         pintarCaja(fichaMascota, datos);
+    }
+
+    function pintarFotoMascotaDetalle(mascota) {
+        var foto = document.getElementById('detalle-foto');
+        var vacia = document.getElementById('detalle-foto-vacia');
+        var url = texto(mascota && mascota.foto_url);
+
+        if (!foto) {
+            return;
+        }
+
+        if (url !== '') {
+            foto.src = url;
+            foto.alt = texto(mascota && mascota.nombre);
+            foto.hidden = false;
+
+            if (vacia) {
+                vacia.hidden = true;
+            }
+
+            return;
+        }
+
+        foto.removeAttribute('src');
+        foto.alt = '';
+        foto.hidden = true;
+
+        if (vacia) {
+            vacia.hidden = false;
+        }
+    }
+
+    function mascotaDetalleValida(mascota) {
+        return !!(mascota && typeof mascota === 'object' && (texto(mascota.id) !== '' || texto(mascota.nombre) !== ''));
     }
 
     function estadoPermiteSeguimiento(solicitud) {
@@ -528,31 +569,14 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             if (!datos) {
-                vacio(respuesta && respuesta.success === false ? respuesta : {
-                    success: false,
-                    message: (respuesta && respuesta.message) || 'No se pudo cargar el formulario de la solicitud.'
-                }, false);
+                vacio(respuesta, false);
                 return;
             }
 
             vacio('', true);
             pintarFormulario(datos);
         }).catch(function (error) {
-            var datosError = error && error.data;
-            var tieneMsg = datosError && (datosError.message || datosError.mensaje);
-            var aviso = error;
-
-            if (error && error.status === 404 && !tieneMsg) {
-                aviso = { success: false, message: 'Esta solicitud no tiene formulario guardado todavía.', status: 404 };
-            } else if (error && (error.status === 500 || error.status >= 502) && !tieneMsg) {
-                aviso = {
-                    success: false,
-                    message: 'No se pudo cargar el formulario desde el servidor. Probá recargar en unos minutos.',
-                    status: error.status
-                };
-            }
-
-            vacio(aviso, false);
+            vacio(error && error.data ? error.data : error, false);
         });
     }
 
@@ -621,8 +645,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function mostrar(idSolicitud) {
-        if (typeof apiSolicitudDetalleAdmin !== 'function') {
-            mostrarAviso({ success: false, message: 'No se pudo cargar la solicitud.' }, false);
+        if (!idSolicitud || typeof apiSolicitudDetalleAdmin !== 'function') {
             return Promise.resolve(null);
         }
 
@@ -696,6 +719,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        if (fichaPostulante) {
+            fichaPostulante.setAttribute('data-seccion-activa', seccionId);
+        }
+
         nav.querySelectorAll('[data-postulante-seccion]').forEach(function (boton) {
             boton.classList.toggle('active', boton.getAttribute('data-postulante-seccion') === seccionId);
         });
@@ -732,6 +759,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             fila.querySelector('.detalle-label').textContent = tipo;
+            fila.querySelector('span:last-child').setAttribute('data-campo', 'valor');
             fila.querySelector('span:last-child').setAttribute('data-texto', valor);
             lista.appendChild(fila);
         });
@@ -834,25 +862,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return apiMascotaDetalleAdmin(idMascota).then(function (respuesta) {
             var mascota = datosDeRespuesta(respuesta);
-            var foto = document.getElementById('detalle-foto');
-            var vacia = document.getElementById('detalle-foto-vacia');
+
             actualizarLinkSeguimientos();
+
+            if (!mascotaDetalleValida(mascota)) {
+                pintarMascotaDesdeSolicitud(solicitudActual);
+                pintarFotoMascotaDetalle(null);
+                mostrarAviso(respuesta, false);
+                return null;
+            }
 
             pintarCaja(fichaMascota, mascota);
             pintarIconoEspecieMascota(fichaMascota, mascota);
+            pintarFotoMascotaDetalle(mascota);
 
-            if (foto && texto(mascota.foto_url) !== '') {
-                foto.src = mascota.foto_url;
-                foto.alt = texto(mascota.nombre);
-                foto.hidden = false;
-
-                if (vacia) {
-                    vacia.hidden = true;
-                }
-            }
-        }).catch(function () {
+            return mascota;
+        }).catch(function (error) {
             pintarMascotaDesdeSolicitud(solicitudActual);
+            pintarFotoMascotaDetalle(null);
             actualizarLinkSeguimientos();
+
+            if (error) {
+                mostrarAviso(error, false);
+            }
+
             return null;
         });
     }
@@ -953,6 +986,69 @@ document.addEventListener('DOMContentLoaded', function () {
         return document.getElementById('boton-modelo-estado');
     }
 
+    function idEstadoEnCatalogo(estado) {
+        if (!estado || typeof estado !== 'object') {
+            return '';
+        }
+
+        if (estado.id !== undefined && estado.id !== null && String(estado.id).trim() !== '') {
+            return texto(estado.id);
+        }
+
+        if (estado.id_estado_solicitud !== undefined && estado.id_estado_solicitud !== null) {
+            return texto(estado.id_estado_solicitud);
+        }
+
+        return '';
+    }
+
+    function resolverEstadoActualParaBotones(idActual) {
+        var id = idActual;
+        var nombre = '';
+
+        if (id === undefined || id === null || String(id).trim() === '') {
+            if (botones) {
+                id = botones.getAttribute('data-id-estado-actual') || id;
+            }
+
+            if ((id === undefined || id === null || String(id).trim() === '') && fichaResolucion) {
+                id = fichaResolucion.getAttribute('data-id-estado-actual') || id;
+            }
+        }
+
+        if (fichaResolucion) {
+            nombre = texto(fichaResolucion.getAttribute('data-estado-actual'));
+        }
+
+        if (nombre === '' && solicitudActual) {
+            nombre = texto(solicitudActual.estado_solicitud);
+        }
+
+        return {
+            id: id,
+            nombre: nombre
+        };
+    }
+
+    function esEstadoActualDeSolicitud(estado, estadoActual) {
+        var idEstado = idEstadoEnCatalogo(estado);
+        var idActual = estadoActual && estadoActual.id;
+        var nombreActual = estadoActual && estadoActual.nombre;
+        var nombreEstado = texto(estado && estado.nombre_estado);
+
+        if (idActual !== undefined && idActual !== null && String(idActual).trim() !== '' && idEstado !== '') {
+            if (idEstado === texto(idActual)) {
+                return true;
+            }
+        }
+
+        if (nombreActual !== '' && nombreEstado !== '' && normalizarTipo(nombreEstado) === normalizarTipo(nombreActual)) {
+            return true;
+        }
+
+        return false;
+    }
+
     function cargarEstados(idActual) {
         if (!botones) {
             return Promise.resolve();
@@ -961,6 +1057,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (typeof apiEstadosSolicitudDetalleAdmin !== 'function') {
             return Promise.resolve();
         }
+
+        var estadoActual = resolverEstadoActualParaBotones(idActual);
 
         return apiEstadosSolicitudDetalleAdmin().then(function (respuesta) {
             var datos = (respuesta && respuesta.data) || [];
@@ -979,7 +1077,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 var nombre = texto(estado && estado.nombre_estado);
                 var clave = normalizarTipo(nombre);
 
-                if (!estado || texto(estado.id) === texto(idActual)) {
+                if (!estado || esEstadoActualDeSolicitud(estado, estadoActual)) {
                     return;
                 }
 

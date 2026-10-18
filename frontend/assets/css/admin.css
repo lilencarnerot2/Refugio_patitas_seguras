@@ -565,9 +565,64 @@ html { scroll-behavior: smooth; }
 
 .admin-page .acciones-formulario {
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
+    flex-wrap: nowrap;
+    gap: 0.35rem;
     margin-top: 22px;
+}
+
+/* Barras Volver + acción: misma fila y botones compactos (seguimientos, detalle, formularios) */
+.admin-page .admin-barra-acciones,
+.admin-page .seguimientos-toolbar,
+.admin-page .solicitud-detalle-acciones,
+.admin-page .acciones-formulario {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.admin-page .acciones-formulario {
+    justify-content: center;
+}
+
+.admin-page .admin-barra-acciones > .btn,
+.admin-page .admin-barra-acciones > .btn-primary,
+.admin-page .admin-barra-acciones > .btn-outline,
+.admin-page .admin-barra-acciones > a.btn-outline,
+.admin-page .admin-barra-acciones > .solicitud-detalle-accion,
+.admin-page .seguimientos-toolbar > .btn,
+.admin-page .seguimientos-toolbar > .btn-primary,
+.admin-page .seguimientos-toolbar > .btn-outline,
+.admin-page .seguimientos-toolbar > a.btn-outline,
+.admin-page .seguimientos-toolbar > .solicitud-detalle-accion,
+.admin-page .solicitud-detalle-acciones > .btn,
+.admin-page .solicitud-detalle-acciones > .btn-outline,
+.admin-page .solicitud-detalle-acciones > a.btn-outline,
+.admin-page .solicitud-detalle-acciones > .solicitud-detalle-accion,
+.admin-page .acciones-formulario > .btn,
+.admin-page .acciones-formulario > .btn-primary,
+.admin-page .acciones-formulario > .btn-outline,
+.admin-page .acciones-formulario > a.btn-outline {
+    flex: 0 1 auto;
+    width: auto;
+    min-width: 0;
+    min-height: 0;
+    max-width: none;
+    padding: 0.32rem 0.55rem;
+    font-size: clamp(0.65rem, 2.5vw, 0.8125rem);
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.admin-page .admin-barra-acciones .bi,
+.admin-page .seguimientos-toolbar .bi,
+.admin-page .acciones-formulario .bi {
+    font-size: 0.95em;
+    vertical-align: -0.05em;
 }
 
 .admin-page .dash-fila {
@@ -825,7 +880,7 @@ html { scroll-behavior: smooth; }
     text-align: center;
 }
 
-.admin-page .panel-listado .dash-card-cabecera h3,
+.admin-page .panel-listado .info-card > .dash-card-cabecera:not(:has(> .ficha-usuario-icono, > .ficha-icono-especie)) h3,
 .admin-page #panel-usuario-detalle .dash-card-cabecera h3 {
     flex: none;
     width: 100%;
@@ -1197,16 +1252,6 @@ html { scroll-behavior: smooth; }
     padding-top: 12px;
 }
 
-@media (max-width: 1100px) {
-    .admin-page .acciones-formulario { flex-direction: column; }
-
-    .admin-page .acciones-formulario .btn-primary,
-    .admin-page .acciones-formulario .btn-outline {
-        width: 100%;
-        justify-content: center;
-    }
-}
-
 @media (max-width: 992px) {
 
     .admin-page header {
@@ -1319,8 +1364,9 @@ html { scroll-behavior: smooth; }
 .admin-page .panel-listado .info-card,
 .admin-page #panel-usuario-detalle .info-card { padding: 28px 30px; }
 
-.admin-page .panel-listado .dash-card-cabecera,
-.admin-page #panel-usuario-detalle .dash-card-cabecera {
+.admin-page .panel-listado .info-card > .dash-card-cabecera:not(:has(> .ficha-usuario-icono, > .ficha-icono-especie)),
+.admin-page #panel-usuario-detalle .dash-card-cabecera,
+.admin-page #panel-auditoria-detalle .dash-card-cabecera {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
@@ -1333,7 +1379,7 @@ html { scroll-behavior: smooth; }
     border-bottom: 1px solid var(--border-light);
 }
 
-.admin-page .panel-listado .dash-card-cabecera h3,
+.admin-page .panel-listado .info-card > .dash-card-cabecera:not(:has(> .ficha-usuario-icono, > .ficha-icono-especie)) h3,
 .admin-page #panel-usuario-detalle .dash-card-cabecera h3 {
     flex: none;
     width: 100%;
@@ -1342,7 +1388,41 @@ html { scroll-behavior: smooth; }
     text-align: center;
 }
 
+.admin-page #panel-auditoria-detalle .dash-card-cabecera {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+}
+
+.admin-page #panel-auditoria-detalle .auditoria-detalle-cabecera-titulo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    max-width: 100%;
+}
+
+.admin-page #panel-auditoria-detalle .dash-card-cabecera h3 {
+    flex: none;
+    width: auto;
+    min-width: 0;
+    margin: 0;
+    text-align: left;
+    font-size: clamp(1rem, 2.4vw, 1.125rem);
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--primary-color);
+}
+
+.admin-page #panel-auditoria-detalle .dash-card-cabecera .auditoria-detalle-volver {
+    display: none;
+}
+
 .admin-page #panel-usuarios .dash-card-cabecera h3::before { content: "Usuarios"; }
+.admin-page #panel-auditorias .dash-card-cabecera h3[data-etiqueta]::before {
+    content: attr(data-etiqueta);
+    text-transform: capitalize;
+}
 .admin-page #panel-solicitudes .dash-card-cabecera h3::before { content: "Solicitudes"; }
 
 .admin-page #panel-solicitudes[data-tipo="adopcion"] .dash-card-cabecera h3::before { content: "Adopciones"; }
@@ -1360,6 +1440,71 @@ html { scroll-behavior: smooth; }
     justify-content: center;
     font-size: 22px;
     flex-shrink: 0;
+}
+
+/* Tarjetas con icono + título: icono al lado del título, bloque centrado en la card */
+.admin-page .info-card > .dash-card-cabecera:has(> .ficha-usuario-icono, > .ficha-icono-especie) {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    align-self: stretch;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    gap: 12px;
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.admin-page .info-card > .dash-card-cabecera:has(> .ficha-usuario-icono, > .ficha-icono-especie) > .ficha-usuario-icono,
+.admin-page .info-card > .dash-card-cabecera:has(> .ficha-usuario-icono, > .ficha-icono-especie) > .ficha-icono-especie {
+    flex: none;
+    margin: 0;
+}
+
+.admin-page .info-card > .dash-card-cabecera:has(> .ficha-usuario-icono, > .ficha-icono-especie) > h3 {
+    flex: 0 1 auto;
+    width: auto;
+    min-width: 0;
+    max-width: min(100%, 22rem);
+    margin: 0;
+    text-align: left;
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: clamp(1rem, 2.4vw, 1.125rem);
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-mascota > .dash-card-cabecera:not(:has(> .ficha-icono-especie[data-especie-icono="perro"], > .ficha-icono-especie[data-especie-icono="gato"])) > h3 {
+    max-width: 100%;
+    text-align: center;
+}
+
+.admin-page .info-card > .dash-card-cabecera .ficha-icono-especie {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--icon-bg);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-page .info-card > .dash-card-cabecera .ficha-icono-especie .icono-especie {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
 }
 
 .admin-page .panel-listado .lista-scroll-mascotas {
@@ -1453,6 +1598,609 @@ html { scroll-behavior: smooth; }
 .admin-page #columna-usuario-ver::before,
 .admin-page #columna-solicitud-ver::before { content: "Ver"; }
 
+.admin-page #panel-auditorias .dash-tabla th[data-etiqueta]::before { content: attr(data-etiqueta); }
+
+.admin-page #panel-auditorias .auditoria-filtros label[data-etiqueta]::before {
+    content: attr(data-etiqueta);
+    text-transform: capitalize;
+}
+
+.admin-page #panel-auditorias .dash-tabla .abm-ver[data-etiqueta]::after { content: attr(data-etiqueta); }
+
+@media (max-width: 992px) {
+    .admin-page #panel-auditorias .dash-tabla tbody tr[data-id] > td[data-etiqueta]::before {
+        content: attr(data-etiqueta);
+        text-transform: capitalize;
+    }
+}
+
+.admin-page #panel-auditoria-detalle .detalle-label[data-etiqueta]::before {
+    content: attr(data-etiqueta);
+    text-transform: capitalize;
+}
+
+.admin-page #panel-auditoria-detalle .auditoria-json-titulo[data-etiqueta]::before { content: attr(data-etiqueta); }
+
+.admin-page #panel-auditoria-detalle #auditoria-detalle-titulo[data-etiqueta]::before { content: attr(data-etiqueta); }
+
+.admin-page #panel-auditoria-detalle #auditoria-detalle-titulo[data-campo][data-texto]::after { content: attr(data-texto); }
+
+.admin-page #panel-auditoria-detalle .dash-card-cabecera .btn-primary[data-etiqueta]::after { content: attr(data-etiqueta); }
+
+.admin-page #panel-auditorias .auditoria-filtros .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.admin-page #panel-auditorias .auditoria-listado-ancho {
+    width: 100%;
+    min-width: 0;
+}
+
+.admin-page #panel-auditorias .auditoria-filtros {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px 18px;
+    width: 100%;
+    align-items: end;
+    margin-bottom: 16px;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-col {
+    min-width: 0;
+}
+
+@media (max-width: 991.98px) {
+    .admin-page #panel-auditorias .auditoria-filtros {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo {
+    position: relative;
+    overflow: visible;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo:has(select.is-lista-abierta) {
+    z-index: 30;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo select.form-select.is-lista-abierta {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    max-height: min(280px, 42vh);
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 31;
+    box-shadow: 0 8px 22px color-mix(in srgb, var(--text-dark) 14%, transparent);
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--primary-color) 45%, var(--tema-crema-claro-borde)) var(--tema-crema-claro, #f5f0e8);
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo select.form-select.is-lista-abierta option {
+    padding: 0.35rem 0.5rem;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo select.form-select.is-lista-abierta::-webkit-scrollbar {
+    width: 8px;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo select.form-select.is-lista-abierta::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--primary-color) 45%, var(--tema-crema-claro-borde));
+    border-radius: 8px;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo select.form-select.is-lista-abierta::-webkit-scrollbar-track {
+    background: var(--tema-crema-claro, #f5f0e8);
+    border-radius: 8px;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo .form-control,
+.admin-page #panel-auditorias .auditoria-filtro-campo .form-select {
+    display: block;
+    width: 100%;
+    min-height: 38px;
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
+    font-size: 14px;
+    line-height: 1.25;
+    border: 1px solid var(--tema-crema-claro-borde);
+    border-radius: 8px;
+    background-color: var(--white);
+    box-shadow: none;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo .form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 12 8'%3E%3Cpath fill='%232f6b45' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.65rem center;
+    background-size: 10px 6px;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo .form-select option {
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo .form-control:focus,
+.admin-page #panel-auditorias .auditoria-filtro-campo .form-select:focus,
+.admin-page #panel-auditorias .auditoria-filtro-campo .form-select:focus-visible {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.15rem color-mix(in srgb, var(--primary-color) 18%, transparent);
+    outline: 0;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo:focus-within {
+    outline: 0;
+    box-shadow: none;
+}
+
+.admin-page #panel-auditorias .auditoria-filtros .form-label::before {
+    border: 0;
+    box-shadow: none;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo .form-control {
+    padding-right: 2.4rem;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo:has(.form-select) .form-select {
+    padding-right: 2.85rem;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo .btn-limpiar-campo {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: var(--text-soft);
+    line-height: 1;
+    padding: 0;
+    font-size: 1.05rem;
+    z-index: 2;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo:has(.form-select) .btn-limpiar-campo {
+    right: 1.85rem;
+}
+
+.admin-page #panel-auditorias .auditoria-filtro-campo .btn-limpiar-campo:hover,
+.admin-page #panel-auditorias .auditoria-filtro-campo .btn-limpiar-campo:focus {
+    color: var(--primary-color);
+}
+
+.admin-page #panel-auditorias .lista-scroll-mascotas {
+    max-height: min(520px, 62vh);
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.admin-page #panel-auditorias .lista-scroll-mascotas .dash-tabla {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.admin-page #panel-auditorias .lista-scroll-mascotas::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.admin-page #panel-auditorias .lista-scroll-mascotas::-webkit-scrollbar-track {
+    border-radius: 999px;
+    background: var(--icon-bg);
+}
+
+.admin-page #panel-auditorias .lista-scroll-mascotas::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--primary-color) 55%, var(--white));
+}
+
+.admin-page #panel-auditorias .lista-scroll-mascotas {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--primary-color) 55%, var(--white)) var(--icon-bg);
+}
+
+.admin-page #panel-auditoria-detalle {
+    max-width: min(640px, 100%);
+    margin: 0 auto;
+    padding-top: 8px;
+}
+
+.admin-page #panel-auditoria-detalle .auditoria-detalle-card {
+    padding: 18px 20px 22px;
+    border-radius: 16px;
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--text-main) 10%, transparent);
+}
+
+.admin-page #panel-auditoria-detalle .dash-card-cabecera {
+    margin-bottom: 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.admin-page #panel-auditoria-detalle .auditoria-detalle-meta {
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+}
+
+.admin-page #panel-auditoria-detalle .auditoria-detalle-meta li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.admin-page #panel-auditoria-detalle .auditoria-detalle-meta li:last-child {
+    border-bottom: none;
+}
+
+.admin-page #panel-auditoria-detalle .detalle-label {
+    flex: 0 0 auto;
+    color: var(--text-soft);
+    font-size: 13px;
+}
+
+.admin-page #panel-auditoria-detalle .auditoria-detalle-meta li span:last-child {
+    flex: 1 1 auto;
+    text-align: right;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+    word-break: break-word;
+}
+
+.admin-page #panel-auditoria-detalle .auditoria-detalle-meta [data-campo][data-texto]::after {
+    content: attr(data-texto);
+}
+
+.admin-page #panel-auditoria-detalle .auditoria-detalle-meta [data-formato][data-texto]::after {
+    color: var(--primary-color);
+    white-space: nowrap;
+}
+
+.admin-page #panel-auditoria-detalle .auditoria-detalle-comparacion {
+    margin-top: 0.35rem;
+}
+
+.admin-page #panel-auditoria-detalle .auditoria-json-panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 180px;
+    padding: 0.75rem 0.85rem 0.85rem;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--icon-bg) 45%, var(--white));
+}
+
+.admin-page #panel-auditoria-detalle .auditoria-json-titulo {
+    margin: 0 0 0.5rem;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.admin-page #panel-auditoria-detalle .auditoria-json {
+    flex: 1 1 auto;
+    margin: 0;
+    min-height: 120px;
+    max-height: 220px;
+    padding: 10px 12px;
+    overflow: auto;
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--text-main);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 11px;
+    line-height: 1.45;
+    white-space: pre;
+    word-break: normal;
+    overflow-wrap: normal;
+}
+
+@media (min-width: 992px) {
+    .admin-page:has(#panel-auditoria-detalle) section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100dvh - var(--header-height) - 72px);
+        padding: 20px 28px 28px;
+        box-sizing: border-box;
+        overflow-y: auto;
+    }
+
+    .admin-page:has(#panel-auditoria-detalle) section > #mensaje-formulario {
+        width: 100%;
+        max-width: min(960px, calc(100vw - 48px));
+    }
+
+    .admin-page #panel-auditoria-detalle {
+        width: 100%;
+        max-width: min(960px, calc(100vw - 48px));
+        margin: 0 auto;
+        padding-top: 0;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-card {
+        padding: 16px 24px 20px;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-grid {
+        display: grid;
+        grid-template-columns: minmax(260px, 34%) minmax(0, 1fr);
+        gap: 20px 28px;
+        align-items: start;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-meta {
+        grid-column: 1;
+        grid-row: 1;
+        margin-bottom: 0;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-meta li {
+        padding: 8px 0;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-json-fila {
+        grid-column: 2;
+        grid-row: 1;
+        margin-top: 0;
+        width: 100%;
+        min-width: 0;
+        height: 100%;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-json-fila > [class*="col-"] {
+        display: flex;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-json-panel {
+        min-height: 0;
+        height: 100%;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-json {
+        min-height: 88px;
+        max-height: min(200px, 32vh);
+    }
+}
+
+@media (min-width: 1200px) {
+    .admin-page:has(#panel-auditoria-detalle) section > #mensaje-formulario {
+        max-width: min(1040px, calc(100vw - 64px));
+    }
+
+    .admin-page #panel-auditoria-detalle {
+        max-width: min(1040px, calc(100vw - 64px));
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-grid {
+        grid-template-columns: minmax(300px, 32%) minmax(0, 1fr);
+        gap: 24px 32px;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-meta {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-json {
+        max-height: min(180px, 28vh);
+    }
+}
+
+@media (max-width: 991.98px) {
+    .admin-page:has(#panel-auditoria-detalle) section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 0;
+        padding: 8px 16px 24px;
+        overflow-y: visible;
+    }
+
+    .admin-page #panel-auditoria-detalle {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        margin: 0 auto;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-card {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        column-gap: 12px;
+        row-gap: 0;
+        width: 100%;
+        min-width: 0;
+        padding: 14px;
+        border: 1px solid var(--tema-crema-claro-borde);
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(47, 107, 69, 0.06);
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-grid {
+        display: contents;
+    }
+
+    .admin-page #panel-auditoria-detalle .dash-card-cabecera {
+        display: contents;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-cabecera-titulo {
+        display: contents;
+    }
+
+    .admin-page #panel-auditoria-detalle .dash-card-cabecera .ficha-usuario-icono {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: center;
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .admin-page #panel-auditoria-detalle .dash-card-cabecera h3 {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        margin: 0 0 12px;
+        overflow-wrap: anywhere;
+    }
+
+    .admin-page #panel-auditoria-detalle .dash-card-cabecera .auditoria-detalle-volver {
+        display: inline-flex;
+        grid-column: 1 / -1;
+        grid-row: 3;
+        justify-content: center;
+        margin: 10px 0 0;
+        width: 100%;
+        max-width: none;
+        min-height: 34px;
+        padding: 8px 10px;
+        font-size: 13px;
+        border-radius: 999px;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-json-fila {
+        grid-column: 1 / -1;
+        grid-row: 4;
+        margin-top: 14px;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-meta {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        margin: 0;
+        padding-top: 12px;
+        border-top: 1px solid var(--border-light);
+        width: 100%;
+        padding: 0;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-meta li {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 0;
+        border-bottom: 1px dashed var(--tema-crema-claro-borde);
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-meta li:first-child {
+        padding-top: 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--tema-crema-claro-borde);
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-meta li:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .admin-page #panel-auditoria-detalle .detalle-label {
+        flex: none;
+        max-width: 45%;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-soft);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-meta li span:last-child {
+        flex: 1 1 auto;
+        min-width: 0;
+        text-align: right;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-dark);
+        overflow-wrap: anywhere;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-meta [data-formato][data-texto]::after {
+        color: var(--primary-color);
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-json-fila {
+        width: 100%;
+        min-width: 0;
+        --bs-gutter-x: 0;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-json-fila > [class*="col-"] {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-json-fila > [class*="col-"]:not(:last-child) {
+        margin-bottom: 10px;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-json-panel {
+        min-height: 0;
+        width: 100%;
+        min-width: 0;
+        padding: 10px;
+        border-radius: 10px;
+        background: var(--tema-crema-claro, var(--icon-bg));
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-json {
+        max-width: 100%;
+        max-height: min(200px, 36vh);
+        min-height: 64px;
+        white-space: pre;
+        word-break: normal;
+        background: var(--white);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .admin-page:has(#panel-auditoria-detalle) section {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-detalle-card {
+        padding: 12px;
+    }
+
+    .admin-page #panel-auditoria-detalle .auditoria-json {
+        font-size: 10px;
+        padding: 8px;
+    }
+}
+
 .admin-page #columna-usuario-editar::before { content: "Editar"; }
 .admin-page #columna-usuario-alta::before { content: "Alta"; }
 .admin-page #columna-usuario-baja::before { content: "Baja"; }
@@ -1511,14 +2259,16 @@ html { scroll-behavior: smooth; }
 
 .admin-page .panel-listado .dash-tabla td[data-estado]::after,
 .admin-page #detalle-estado::after {
-    display: inline-flex;
-    align-items: center;
-    padding: 3px 10px;
-    border-radius: 6px;
-    border: 1px solid var(--border-light);
-    font-size: 12px;
-    font-weight: 500;
+    display: inline;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    font-size: inherit;
+    font-weight: 600;
+    line-height: inherit;
     pointer-events: none;
+    cursor: default;
 }
 
 .admin-page .panel-listado .dash-tabla td[data-estado="true"]::after,
@@ -1528,9 +2278,7 @@ html { scroll-behavior: smooth; }
 .admin-page #detalle-estado[data-estado="t"]::after,
 .admin-page #detalle-estado[data-estado="1"]::after {
     content: "Activo";
-    color: var(--primary-color);
-    border-color: var(--primary-color);
-    background: transparent;
+    color: var(--text-dark);
 }
 
 .admin-page .panel-listado .dash-tabla td[data-estado="false"]::after,
@@ -1540,9 +2288,7 @@ html { scroll-behavior: smooth; }
 .admin-page #detalle-estado[data-estado="f"]::after,
 .admin-page #detalle-estado[data-estado="0"]::after {
     content: "Inactivo";
-    color: #a32b21;
-    border-color: #a32b21;
-    background: transparent;
+    color: var(--text-dark);
 }
 
 .admin-page .panel-listado .listado-buscar,
@@ -1774,13 +2520,18 @@ html { scroll-behavior: smooth; }
 .admin-page .panel-listado .dash-tabla td[data-campo="fecha_solicitud"]::before { content: "Fecha"; }
 
 .admin-page section .btn-primary,
-.admin-page section .btn-outline {
+.admin-page section .btn-outline,
+.admin-page section a.btn-outline {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 148px;
-    min-height: 40px;
+    min-width: 0;
+    min-height: 0;
+    padding: 0.32rem 0.65rem;
+    font-size: clamp(0.65rem, 2.5vw, 0.875rem);
+    line-height: 1.2;
     text-align: center;
+    white-space: nowrap;
 }
 
 .admin-page section .acciones-formulario { justify-content: center; }
@@ -1918,22 +2669,9 @@ html { scroll-behavior: smooth; }
 }
 
 .admin-page .panel-listado .dash-tabla tbody tr:hover td:first-child,
-.admin-page .panel-listado .dash-tabla tbody tr:focus-within td:first-child,
-.admin-page .panel-listado .dash-tabla tbody tr:hover td[data-estado="true"]::after,
-.admin-page .panel-listado .dash-tabla tbody tr:focus-within td[data-estado="true"]::after,
-.admin-page .panel-listado .dash-tabla tbody tr:hover td[data-estado="t"]::after,
-.admin-page .panel-listado .dash-tabla tbody tr:focus-within td[data-estado="t"]::after,
-.admin-page .panel-listado .dash-tabla tbody tr:hover td[data-estado="1"]::after,
-.admin-page .panel-listado .dash-tabla tbody tr:focus-within td[data-estado="1"]::after {
+.admin-page .panel-listado .dash-tabla tbody tr:focus-within td:first-child {
     color: var(--primary-color);
 }
-
-.admin-page .panel-listado .dash-tabla tbody tr:hover td[data-estado="false"]::after,
-.admin-page .panel-listado .dash-tabla tbody tr:focus-within td[data-estado="false"]::after,
-.admin-page .panel-listado .dash-tabla tbody tr:hover td[data-estado="f"]::after,
-.admin-page .panel-listado .dash-tabla tbody tr:focus-within td[data-estado="f"]::after,
-.admin-page .panel-listado .dash-tabla tbody tr:hover td[data-estado="0"]::after,
-.admin-page .panel-listado .dash-tabla tbody tr:focus-within td[data-estado="0"]::after { color: #a32b21; }
 
 .admin-page .panel-listado .dash-tabla tbody tr:hover td a[class*="abm"],
 .admin-page .panel-listado .dash-tabla tbody tr:focus-within td a[class*="abm"],
@@ -1976,8 +2714,21 @@ html { scroll-behavior: smooth; }
 .admin-page #panel-usuario-detalle .pet-detail-meta [data-campo][data-texto]::after,
 .admin-page #panel-solicitud-detalle .pet-detail-meta [data-campo][data-texto]::after,
 .admin-page #panel-solicitud-detalle .postulante-dato-item [data-campo][data-texto]::after,
+.admin-page #panel-solicitud-detalle #lista-contacto-postulante [data-campo][data-texto]::after,
 .admin-page #panel-solicitud-detalle #lista-contacto-postulante span[data-texto]::after,
-.admin-page #bloque-solicitudes .dash-tabla td[data-texto]::after { content: attr(data-texto); }
+.admin-page #panel-solicitud-detalle #ficha-formulario .formulario-dato[data-campo][data-texto]::after,
+.admin-page #bloque-solicitudes .dash-tabla td[data-texto]::after {
+    content: attr(data-texto);
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.admin-page #panel-solicitud-detalle .pet-detail-meta [data-campo][data-texto],
+.admin-page #panel-solicitud-detalle .postulante-dato-item [data-campo][data-texto],
+.admin-page #panel-solicitud-detalle #lista-contacto-postulante [data-campo][data-texto],
+.admin-page #panel-solicitud-detalle #ficha-formulario .formulario-dato[data-campo][data-texto] {
+    color: transparent;
+}
 
 .admin-page #bloque-solicitudes tbody tr:not([data-id]) { display: none; }
 
@@ -1993,22 +2744,6 @@ html { scroll-behavior: smooth; }
 
 .admin-page #panel-seguimientos-admin .info-card.mb-3 .listado-controles {
     margin-bottom: 0;
-}
-
-.admin-page #panel-seguimientos-admin .seguimientos-toolbar {
-    width: 100%;
-    max-width: 100%;
-}
-
-.admin-page #panel-seguimientos-admin .seguimientos-toolbar .solicitud-detalle-accion,
-.admin-page #panel-seguimientos-admin .seguimientos-toolbar .btn {
-    min-width: 0;
-    min-height: 0;
-    max-width: 100%;
-    padding: 0.35rem 0.75rem;
-    font-size: clamp(0.7rem, 2.6vw, 0.875rem);
-    line-height: 1.25;
-    white-space: nowrap;
 }
 
 .admin-page #panel-seguimientos-admin .seguimientos-titulo h2 {
@@ -2070,13 +2805,87 @@ html { scroll-behavior: smooth; }
 .admin-page #panel-seguimientos-admin .dash-tabla td[data-campo="tipo_seguimiento"]::before { content: "Tipo"; }
 .admin-page #panel-seguimientos-admin td.seguimientos-acciones::before { content: "Acciones"; }
 
-.admin-page .modal-seguimiento-ver .modal-dialog {
-    max-width: min(420px, calc(100vw - 2rem));
+/* Modales por encima del header sticky (z-index 1100) y con aire bajo el nav */
+.admin-page .modal {
+    --bs-modal-zindex: 1200;
 }
 
-.admin-page .modal-seguimiento-ver .modal-content {
+.admin-page .modal-backdrop {
+    --bs-backdrop-zindex: 1150;
+}
+
+.admin-page .modal.show {
+    align-items: flex-start;
+    justify-content: center;
+    padding: calc(var(--header-height) + 14px) 0.75rem 1.25rem;
+    overflow-y: auto;
+}
+
+.admin-page .modal.show .modal-dialog {
+    margin: 0 auto;
+}
+
+.admin-page .modal.show .modal-dialog.modal-dialog-centered {
+    min-height: 0;
+}
+
+/* Bootstrap admin: anular .modal-content global de styles.css (width 90%, text-align center) */
+.admin-page .modal.fade .modal-content {
+    width: 100%;
+    max-width: none;
+    text-align: left;
+    padding: 0;
+    box-shadow: var(--bs-modal-box-shadow);
+}
+
+.admin-page .modal-dialog.modal-seguimiento-form,
+.admin-page .modal-dialog.modal-seguimiento-ver {
+    width: min(380px, calc(100vw - 2.5rem));
+    max-width: min(380px, calc(100vw - 2.5rem));
+}
+
+.admin-page [id^="modal-seguimiento-"] .modal-content {
     border: 1px solid var(--tema-crema-claro-borde);
     border-radius: 14px;
+    overflow: hidden;
+}
+
+.admin-page [id^="modal-seguimiento-"] .modal-header {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--tema-crema-claro-borde);
+}
+
+.admin-page [id^="modal-seguimiento-"] .modal-title {
+    text-align: left;
+    font-size: 1rem;
+}
+
+.admin-page [id^="modal-seguimiento-"] .modal-body {
+    padding: 0.85rem 1rem 1rem;
+}
+
+.admin-page [id^="modal-seguimiento-"] .modal-body .form-label {
+    text-align: left;
+    margin-bottom: 0.35rem;
+}
+
+.admin-page [id^="modal-seguimiento-"] .modal-body .form-control,
+.admin-page [id^="modal-seguimiento-"] .modal-body .form-select {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    text-align: left;
+}
+
+.admin-page [id^="modal-seguimiento-"] .modal-footer {
+    padding: 0.75rem 1rem 1rem;
+    border-top: 1px solid var(--tema-crema-claro-borde);
+}
+
+.admin-page [id^="modal-seguimiento-"] .modal-footer .btn {
+    margin: 0;
+    flex: 0 1 auto;
+    min-width: 0;
 }
 
 .admin-page .modal-seguimiento-ver .seguimiento-detalle-panel {
@@ -2201,69 +3010,27 @@ html { scroll-behavior: smooth; }
     padding: 16px 18px;
 }
 
-.admin-page #panel-solicitud-detalle .dash-card-cabecera:not(.solicitud-detalle-cabecera) {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 10px;
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.admin-page #panel-solicitud-detalle .dash-card-cabecera h3 {
-    flex: none;
+.admin-page #panel-solicitud-detalle #ficha-evaluacion #evaluacion-espera > .detalle-label,
+.admin-page #panel-solicitud-detalle #ficha-evaluacion #evaluacion-resultado > .detalle-label {
     width: 100%;
-    min-width: 0;
-    margin: 0;
-    font-size: 16px;
     text-align: center;
 }
 
-.admin-page #panel-solicitud-detalle .ficha-usuario-icono {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-}
-
-.admin-page #panel-solicitud-detalle #ficha-mascota .ficha-icono-especie {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: auto;
-    height: auto;
-    margin: 0;
-    padding: 0;
-    border-radius: 0;
-    background: none;
-    flex-shrink: 0;
-}
-
-.admin-page #panel-solicitud-detalle #ficha-mascota .ficha-icono-especie .icono-especie {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-}
-
-.admin-page #panel-solicitud-detalle #ficha-mascota .ficha-icono-especie .icono-especie::before {
+.admin-page #panel-solicitud-detalle #ficha-mascota > .dash-card-cabecera .ficha-icono-especie .icono-especie::before {
     font-size: 1.75rem;
     font-style: normal;
     line-height: 1;
 }
 
-.admin-page #panel-solicitud-detalle #ficha-mascota .ficha-icono-especie[data-especie-icono="perro"] .icono-especie::before {
+.admin-page #panel-solicitud-detalle #ficha-mascota > .dash-card-cabecera .ficha-icono-especie[data-especie-icono="perro"] .icono-especie::before {
     content: "🐕";
 }
 
-.admin-page #panel-solicitud-detalle #ficha-mascota .ficha-icono-especie[data-especie-icono="gato"] .icono-especie::before {
+.admin-page #panel-solicitud-detalle #ficha-mascota > .dash-card-cabecera .ficha-icono-especie[data-especie-icono="gato"] .icono-especie::before {
     content: "🐈";
 }
 
-.admin-page #panel-solicitud-detalle #ficha-mascota .ficha-icono-especie:not([data-especie-icono="perro"]):not([data-especie-icono="gato"]) {
+.admin-page #panel-solicitud-detalle #ficha-mascota > .dash-card-cabecera .ficha-icono-especie:not([data-especie-icono="perro"]):not([data-especie-icono="gato"]) {
     display: none;
 }
 
@@ -2303,6 +3070,8 @@ html { scroll-behavior: smooth; }
     font-weight: 700;
     color: var(--primary-color);
     letter-spacing: 0.02em;
+    width: 100%;
+    text-align: center;
 }
 
 .admin-page #panel-solicitud-detalle[data-tipo="adopcion"] #ficha-postulante .postulante-bloque .pet-detail-meta {
@@ -2473,6 +3242,8 @@ html { scroll-behavior: smooth; }
     font-size: 15px;
     font-weight: 700;
     color: var(--primary-color);
+    text-align: center;
+    width: 100%;
 }
 
 .admin-page #panel-solicitud-detalle #campos-formulario { align-items: start; }
@@ -2582,7 +3353,7 @@ html { scroll-behavior: smooth; }
 .admin-page #panel-solicitud-detalle .postulante-dato-item .detalle-label {
     max-width: 100%;
     overflow-wrap: anywhere;
-    word-break: break-word;
+    word-break: normal;
 }
 
 .admin-page #panel-solicitud-detalle .pet-detail-meta .detalle-label {
@@ -2596,7 +3367,6 @@ html { scroll-behavior: smooth; }
     flex: 1 1 4rem;
     min-width: 0;
     font-weight: 500;
-    color: var(--text-soft);
 }
 
 .admin-page #panel-solicitud-detalle #ficha-mascota .pet-detail-meta li:not(:has([data-texto])),
@@ -2875,7 +3645,7 @@ html { scroll-behavior: smooth; }
 .admin-page #ficha-postulante[data-seccion-activa="personal"] [data-panel-postulante="personal"],
 .admin-page #ficha-postulante[data-seccion-activa="contacto"] [data-panel-postulante="contacto"],
 .admin-page #ficha-postulante[data-seccion-activa="domicilio"] [data-panel-postulante="domicilio"] {
-    display: block;
+    display: block !important;
 }
 
 .admin-page #panel-solicitud-detalle .info-card,
@@ -2929,7 +3699,6 @@ html { scroll-behavior: smooth; }
     flex: 1 1 4rem;
     min-width: 0;
     font-weight: 500;
-    color: var(--text-soft);
 }
 
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item .detalle-label {
@@ -2941,7 +3710,7 @@ html { scroll-behavior: smooth; }
     font-weight: 600;
 }
 
-.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .form-control,
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .form-control:not(.formulario-dato),
 .admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion textarea.form-control {
     color: var(--text-soft);
     font-weight: 500;
@@ -2952,12 +3721,17 @@ html { scroll-behavior: smooth; }
     max-width: 100%;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item:not(:has([data-texto])) {
+.admin-page #panel-solicitud-detalle #ficha-postulante .postulante-dato-item:not(:has([data-texto])) {
     display: none;
 }
 
-.admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-dato-item [data-campo][data-texto]::after {
-    content: attr(data-texto);
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .formulario-dato-multilinea[data-campo][data-texto]::after {
+    display: block;
+    white-space: pre-wrap;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .formulario-dato:not([data-texto]) {
+    min-height: 34px;
 }
 
 .admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .row > [class*="col-"] {
@@ -2969,6 +3743,7 @@ html { scroll-behavior: smooth; }
 }
 
 .admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .row > .col-12:has(textarea),
+.admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .row > .col-12:has(.formulario-dato-multilinea),
 .admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .row > .col-12:has([data-lista-valor]),
 .admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion .row > .col-12:has(#lista-mascotas-hogar) {
     align-items: flex-start;
@@ -3012,6 +3787,74 @@ html { scroll-behavior: smooth; }
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] .postulante-meta-dos-columnas {
     grid-template-columns: 1fr 1fr;
     gap: 10px 12px;
+}
+
+/* Postulante contacto / domicilio: textos largos sin romper la tarjeta */
+.admin-page #panel-solicitud-detalle #ficha-postulante #lista-contacto-postulante.postulante-meta-dos-columnas {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.admin-page #panel-solicitud-detalle #ficha-postulante #lista-contacto-postulante li,
+.admin-page #panel-solicitud-detalle #ficha-postulante #seccion-domicilio-postulante .pet-detail-meta li {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 4px;
+    min-width: 0;
+    overflow: visible;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-postulante #lista-contacto-postulante .detalle-label,
+.admin-page #panel-solicitud-detalle #ficha-postulante #seccion-domicilio-postulante .pet-detail-meta .detalle-label {
+    flex: none;
+    width: 100%;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-postulante #lista-contacto-postulante [data-campo],
+.admin-page #panel-solicitud-detalle #ficha-postulante #seccion-domicilio-postulante .pet-detail-meta [data-campo] {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-postulante #lista-contacto-postulante [data-campo][data-texto]::after,
+.admin-page #panel-solicitud-detalle #ficha-postulante #lista-contacto-postulante span[data-texto]::after,
+.admin-page #panel-solicitud-detalle #ficha-postulante #seccion-domicilio-postulante .pet-detail-meta [data-campo][data-texto]::after {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    white-space: normal;
+    line-height: 1.4;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-postulante .postulante-dato-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    min-width: 0;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-postulante .postulante-dato-item .detalle-label,
+.admin-page #panel-solicitud-detalle #ficha-postulante .postulante-dato-item [data-campo] {
+    width: 100%;
+    flex: none;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-postulante .postulante-dato-item [data-campo][data-texto]::after {
+    display: block;
+    width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    white-space: normal;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-postulante .postulante-panel-contenido,
+.admin-page #panel-solicitud-detalle #ficha-postulante .postulante-detalle-cuerpo {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 @media (max-width: 767.98px) {
@@ -3151,7 +3994,8 @@ html { scroll-behavior: smooth; }
 
 .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-fila-principal {
     position: relative;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
     gap: 0.5rem 0.75rem;
     max-width: 100%;
@@ -3161,8 +4005,12 @@ html { scroll-behavior: smooth; }
 }
 
 .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-titulo {
-    flex: 1 1 0;
+    flex: 1 1 100%;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
+    text-align: center;
     min-width: 0;
     max-width: none;
     margin: 0;
@@ -3171,16 +4019,18 @@ html { scroll-behavior: smooth; }
 }
 
 .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-titulo h3 {
-    width: auto;
-    flex: 0 1 auto;
+    width: 100%;
+    flex: none;
     text-align: center;
 }
 
 .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-acciones {
-    flex: 0 0 auto;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 0.5rem;
+    flex: 1 1 100%;
+    width: 100%;
+    margin-left: 0;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 0.35rem;
     max-width: 100%;
 }
 
@@ -3188,12 +4038,6 @@ html { scroll-behavior: smooth; }
     position: static;
     z-index: auto;
     margin: 0;
-    min-width: 0;
-    min-height: 0;
-    padding: 0.35rem 0.75rem;
-    font-size: clamp(0.7rem, 2.6vw, 0.875rem);
-    line-height: 1.25;
-    white-space: nowrap;
     border-radius: 25px;
     transform: none;
 }
@@ -3353,11 +4197,6 @@ html { scroll-behavior: smooth; }
     margin-bottom: 0.75rem;
 }
 
-.admin-page #panel-solicitud-detalle #ficha-formulario[data-formulario-vacio="1"] #campos-formulario {
-    opacity: 0.45;
-    pointer-events: none;
-}
-
 .admin-page #panel-solicitud-detalle[data-tipo="adopcion"] #lista-razones li {
     padding: 8px 10px;
     margin-bottom: 8px;
@@ -3410,6 +4249,12 @@ html { scroll-behavior: smooth; }
 
     .admin-page .panel-listado .dash-tabla thead { display: none; }
     .admin-page .panel-listado .lista-scroll-mascotas { overflow: visible; }
+
+    .admin-page #panel-auditorias .lista-scroll-mascotas {
+        max-height: min(68vh, 640px);
+        overflow-x: auto;
+        overflow-y: auto;
+    }
 
     /* Paginación en móvil: tarjeta propia para que no flote sobre el contenido */
     .admin-page .panel-listado .paginador {
@@ -3628,10 +4473,13 @@ html { scroll-behavior: smooth; }
     .admin-page .panel-listado .dash-tabla td:empty:not([data-texto]):not([data-estado]) { display: none; }
 
     .admin-page .panel-listado .dash-tabla td[data-estado]::after {
-        width: max-content;
+        width: auto;
         max-width: 100%;
         align-self: center;
-        padding: 4px 12px;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: none;
     }
 
     /* Celdas de acción (Ver/Editar/Alta/Baja): sin caja ni etiqueta, solo el botón centrado */
@@ -4309,6 +5157,10 @@ html { scroll-behavior: smooth; }
     .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] > td[data-texto]::after {
         align-self: center;
         margin-left: auto;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: none;
         text-align: right;
     }
 
@@ -4390,24 +5242,35 @@ html { scroll-behavior: smooth; }
         order: 2;
     }
 
-    /* Títulos de las tarjetas: ícono arriba y título centrado en todo el ancho */
-    .admin-page .dash-card-cabecera,
-    .admin-page .panel-listado .dash-card-cabecera,
+    /* Cabeceras sin par icono+título directo (p. ej. cabecera del detalle de solicitud) */
+    .admin-page .dash-card-cabecera:not(:has(> .ficha-usuario-icono, > .ficha-icono-especie)),
     .admin-page #panel-usuario-detalle .dash-card-cabecera,
-    .admin-page #panel-solicitud-detalle .dash-card-cabecera {
+    .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera {
         flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
     }
 
-    .admin-page .dash-card-cabecera h3,
-    .admin-page .panel-listado .dash-card-cabecera h3,
+    .admin-page .dash-card-cabecera:not(:has(> .ficha-usuario-icono, > .ficha-icono-especie)) h3,
     .admin-page #panel-usuario-detalle .dash-card-cabecera h3,
-    .admin-page #panel-solicitud-detalle .dash-card-cabecera:not(.solicitud-detalle-cabecera) h3 {
+    .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera h3 {
         flex: none;
         width: 100%;
         text-align: center;
+    }
+
+    .admin-page .info-card > .dash-card-cabecera:has(> .ficha-usuario-icono, > .ficha-icono-especie) {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .admin-page .info-card > .dash-card-cabecera:has(> .ficha-usuario-icono, > .ficha-icono-especie) > h3 {
+        width: auto;
+        max-width: min(100%, 22rem);
+        text-align: left;
     }
 
     .admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary { margin-left: 0; }
@@ -4449,7 +5312,6 @@ html { scroll-behavior: smooth; }
     .admin-page #panel-solicitud-detalle #ficha-mascota > .dash-card-cabecera .ficha-icono-especie[data-especie-icono="perro"],
     .admin-page #panel-solicitud-detalle #ficha-mascota > .dash-card-cabecera .ficha-icono-especie[data-especie-icono="gato"] {
         display: flex;
-        margin-bottom: 4px;
     }
 
     .admin-page #panel-solicitud-detalle #ficha-mascota > .dash-card-cabecera .ficha-icono-especie .icono-especie::before {
@@ -4464,6 +5326,50 @@ html { scroll-behavior: smooth; }
     .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] {
         grid-template-columns: minmax(0, 1fr);
         padding: 12px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .admin-page .modal.show {
+        padding-top: calc(var(--header-height) + 10px);
+        padding-left: 0.65rem;
+        padding-right: 0.65rem;
+    }
+
+    .admin-page .modal-dialog.modal-seguimiento-form,
+    .admin-page .modal-dialog.modal-seguimiento-ver {
+        width: min(360px, calc(100vw - 1.5rem));
+        max-width: min(360px, calc(100vw - 1.5rem));
+    }
+
+    .admin-page .modal-seguimiento-ver .pet-detail-meta li {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
+    .admin-page .modal-seguimiento-ver .pet-detail-meta li > span:last-child {
+        text-align: left;
+        width: 100%;
+    }
+
+    .admin-page [id^="modal-seguimiento-"] .modal-footer {
+        padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    .admin-page #panel-seguimientos-admin.panel-seguimientos {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .admin-page #panel-seguimientos-admin .info-card {
+        padding: 14px 12px;
+    }
+
+    .admin-page #panel-seguimientos-admin .listado-filtro-grupo,
+    .admin-page #panel-seguimientos-admin .listado-filtro-grupo .form-select,
+    .admin-page #panel-seguimientos-admin .listado-filtro-grupo .form-control {
+        width: 100%;
+        min-width: 0;
     }
 }
 
@@ -4491,16 +5397,20 @@ html { scroll-behavior: smooth; }
         text-align: left;
     }
 
-    .admin-page #panel-seguimientos-admin .seguimientos-toolbar {
-        justify-content: stretch !important;
-    }
-
-    .admin-page #panel-seguimientos-admin .seguimientos-toolbar > .solicitud-detalle-accion,
-    .admin-page #panel-seguimientos-admin .seguimientos-toolbar > .btn {
-        flex: 1 1 calc(50% - 0.25rem);
-        min-width: 0;
-        padding: 0.3rem 0.45rem;
-        font-size: clamp(0.62rem, 3vw, 0.8125rem);
+    .admin-page .admin-barra-acciones > .btn,
+    .admin-page .admin-barra-acciones > .btn-primary,
+    .admin-page .admin-barra-acciones > .btn-outline,
+    .admin-page .admin-barra-acciones > a.btn-outline,
+    .admin-page .seguimientos-toolbar > .btn,
+    .admin-page .seguimientos-toolbar > .btn-primary,
+    .admin-page .seguimientos-toolbar > a.btn-outline,
+    .admin-page .solicitud-detalle-acciones > .solicitud-detalle-accion,
+    .admin-page .acciones-formulario > .btn,
+    .admin-page .acciones-formulario > .btn-primary,
+    .admin-page .acciones-formulario > .btn-outline,
+    .admin-page .acciones-formulario > a.btn-outline {
+        padding: 0.28rem 0.45rem;
+        font-size: clamp(0.6rem, 2.7vw, 0.75rem);
     }
 
     .admin-page #panel-seguimientos-admin .listado-controles > .col-md-auto {

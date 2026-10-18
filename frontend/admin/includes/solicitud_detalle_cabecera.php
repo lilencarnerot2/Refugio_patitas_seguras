@@ -11,7 +11,7 @@ $solicitudDetalleIcono = $solicitudDetalleIcono ?? '';
                     <?php } ?>
                     <h3 class="mb-0 min-w-0"><?php echo $solicitudDetalleTitulo; ?></h3>
                 </div>
-                <div class="solicitud-detalle-acciones d-flex flex-wrap flex-shrink-0 ms-auto">
+                <div class="solicitud-detalle-acciones admin-barra-acciones d-flex flex-shrink-0 ms-auto">
                     <a id="link-seguimientos-solicitud" class="btn-outline solicitud-detalle-accion" href="#" hidden>Seguimiento</a>
                     <?php if ($solicitudDetalleVolver !== '') { ?>
                     <a class="btn-outline solicitud-detalle-accion solicitud-detalle-volver" href="<?php echo $solicitudDetalleVolver; ?>">Volver</a>

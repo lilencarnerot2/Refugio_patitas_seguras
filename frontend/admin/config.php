@@ -11,6 +11,7 @@ echo 'window.APP_CONFIG = ' . json_encode([
             'mascotas' => 'mascotas',
             'estadosSolicitud' => 'estados_solicitudes',
             'tiposSolicitud' => 'tipos_solicitudes',
+            'compatibilidad' => 'compatibilidad',
         ],
         'adopcion' => [
             'formulario' => 'formularios_adopcion',
@@ -25,5 +26,8 @@ echo 'window.APP_CONFIG = ' . json_encode([
             'seguimientosAdopcion' => 'seguimientos_adopcion.php',
             'seguimientosTransito' => 'seguimientos_transito.php',
         ],
+    ],
+    'seguimientos' => [
+        'tipos' => 'tipos_seguimientos',
     ],
 ], JSON_UNESCAPED_UNICODE) . ';';

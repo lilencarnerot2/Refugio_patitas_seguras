@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var recurso = panel.getAttribute('data-recurso') || '';
     var claveSol = panel.getAttribute('data-clave-solicitud') || '';
+    var cfgSeguimientos = window.APP_CONFIG && window.APP_CONFIG.seguimientos;
+    var recursoTipos = cfgSeguimientos && cfgSeguimientos.tipos ? String(cfgSeguimientos.tipos) : '';
     var mensaje = document.getElementById('mensaje-seguimientos');
     var cuerpo = document.getElementById('cuerpo-seguimientos');
     var filtroTipo = document.getElementById('filtro-tipo-seguimiento');
@@ -25,6 +27,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var lista = [];
     var ultimaRealizacionPorSol = {};
     var tipos = {};
+    var catalogoTipos = [];
+    var respuestaTiposCatalogo = null;
+    var tiposCatalogoInhabilitado = false;
     var solicitudContexto = null;
     var pagina = 1;
     var porPagina = parseInt(panel.getAttribute('data-por-pagina'), 10);
@@ -335,8 +340,10 @@ document.addEventListener('DOMContentLoaded', function () {
         return p;
     }
 
-    function paramsListadoRealizadosBackend() {
-        return { estado: 'false' };
+    function itemsRealizadosDe(items) {
+        return (items || []).filter(function (item) {
+            return item && !seguimientoActivo(item.estado);
+        });
     }
 
     function limpiarCampoFiltro(campo) {
@@ -371,6 +378,24 @@ document.addEventListener('DOMContentLoaded', function () {
         return '';
     }
 
+    function registrarTiposDesdeCatalogo(items) {
+        (items || []).forEach(function (item) {
+            var idTipo;
+            var etiqueta;
+
+            if (!item || item.id === undefined || item.id === null) {
+                return;
+            }
+
+            idTipo = String(item.id);
+            etiqueta = t(item.descripcion);
+
+            if (etiqueta !== '') {
+                tipos[idTipo] = etiqueta;
+            }
+        });
+    }
+
     function registrarTiposDesdeSeguimientos(items) {
         items.forEach(function (item) {
             var idTipo;
@@ -386,6 +411,44 @@ document.addEventListener('DOMContentLoaded', function () {
             if (etiqueta !== '') {
                 tipos[idTipo] = etiqueta;
             }
+        });
+    }
+
+    function reconstruirMapaTipos(itemsSeguimientos, itemsRealizados) {
+        tipos = {};
+        registrarTiposDesdeCatalogo(catalogoTipos);
+        registrarTiposDesdeSeguimientos(itemsRealizados || []);
+        registrarTiposDesdeSeguimientos(itemsSeguimientos || []);
+    }
+
+    function cargarTiposSeguimiento() {
+        if (!recursoTipos || tiposCatalogoInhabilitado) {
+            catalogoTipos = [];
+            return Promise.resolve([]);
+        }
+
+        return apiRequest(recursoTipos).then(function (res) {
+            respuestaTiposCatalogo = res;
+
+            if (res && res.success === false) {
+                catalogoTipos = [];
+
+                if (res.status === 404) {
+                    tiposCatalogoInhabilitado = true;
+                }
+
+                return Promise.reject(res);
+            }
+
+            catalogoTipos = listaDe(res);
+            return catalogoTipos;
+        }).catch(function (err) {
+            if (err && err.status === 404) {
+                tiposCatalogoInhabilitado = true;
+            }
+
+            catalogoTipos = [];
+            return Promise.reject(err);
         });
     }
 
@@ -568,7 +631,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function dibujar() {
         var cantidad = itemsFiltrados().length;
         var visibles = listaVisible();
-        var avisoVacio = panel.getAttribute('data-aviso-sin-seguimientos');
 
         dibujarPaginador(cantidad);
 
@@ -584,13 +646,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        if (idSolicitudUrl && avisoVacio) {
-            if (visibles.length === 0) {
-                aviso({ success: false, message: avisoVacio }, false);
-            } else if (mensaje && t(mensaje.textContent) === avisoVacio) {
-                aviso('', true);
-            }
-        }
     }
 
     function hayTiposSeguimientoDisponibles() {
@@ -604,18 +659,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         aviso('', true);
 
-        var peticionLista = apiRequest(recurso, { parametros: paramsFiltro() });
-        var peticionRealizados = apiRequest(recurso, { parametros: paramsListadoRealizadosBackend() });
+        return apiRequest(recurso, { parametros: paramsFiltro() }).then(function (resultado) {
+            lista = listaDe(resultado);
+            recalcularUltimaRealizacionPorSolicitud(itemsDeSolicitudActual(itemsRealizadosDe(lista)));
 
-        return Promise.all([peticionLista, peticionRealizados]).then(function (resultados) {
-            lista = listaDe(resultados[0]);
-            recalcularUltimaRealizacionPorSolicitud(itemsDeSolicitudActual(listaDe(resultados[1])));
-            registrarTiposDesdeSeguimientos(listaDe(resultados[1]));
-            registrarTiposDesdeSeguimientos(lista);
-            pintarSelectTipos(filtroTipo, true);
-            pintarSelectTipos(selectTipoAlta, false);
-            dibujar();
-            aviso('', true);
+            return cargarTiposSeguimiento().catch(function () {
+                return null;
+            }).then(function () {
+                reconstruirMapaTipos(lista, itemsRealizadosDe(lista));
+                pintarSelectTipos(filtroTipo, true);
+                pintarSelectTipos(selectTipoAlta, false);
+                dibujar();
+                aviso('', true);
+            });
         }).catch(function (err) {
             lista = [];
             ultimaRealizacionPorSol = {};
@@ -845,18 +901,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
     panel.querySelector('[data-abrir-alta]').addEventListener('click', function () {
         llenarSolicitudes().then(function () {
-            pintarSelectTipos(selectTipoAlta, false);
+            return cargarTiposSeguimiento().catch(function (err) {
+                catalogoTipos = [];
+                return err;
+            }).then(function (errTipos) {
+                reconstruirMapaTipos(lista, itemsRealizadosDe(lista));
+                pintarSelectTipos(selectTipoAlta, false);
 
-            if (!hayTiposSeguimientoDisponibles()) {
-                avisoPanel('data-aviso-sin-tipos-seguimiento');
-                return;
-            }
+                if (!hayTiposSeguimientoDisponibles()) {
+                    if (errTipos) {
+                        aviso(errTipos.data || errTipos, false);
+                    } else if (respuestaTiposCatalogo && respuestaTiposCatalogo.success === false) {
+                        aviso(respuestaTiposCatalogo, false);
+                    }
 
-            var m = modalDe(modalAlta);
+                    return;
+                }
 
-            if (m) {
-                m.show();
-            }
+                aviso('', true);
+                modalDe(modalAlta).show();
+            });
         });
     });
 
@@ -1008,7 +1072,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (!API_URL) {
-        avisoPanel('data-aviso-backend');
         return;
     }
 
