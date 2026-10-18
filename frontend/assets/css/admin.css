@@ -411,6 +411,12 @@ html { scroll-behavior: smooth; }
     grid-row: 3;
     position: relative;
     z-index: 1;
+    width: 100%;
+    background-color: var(--footer-bg);
+    border-top: 1px solid var(--tema-verde);
+    color: var(--text-dark);
+    padding: 14px 5% 12px;
+    margin-top: auto;
 }
 
 @media (min-width: 993px) {
@@ -792,6 +798,49 @@ html { scroll-behavior: smooth; }
 }
 
 .admin-page .dash-card-cabecera h3 { margin-bottom: 0; }
+
+.admin-page .page-intro,
+.admin-page .seguimientos-titulo,
+.admin-page #bloque-solicitudes > h3 {
+    text-align: center;
+}
+
+.admin-page .page-intro h2,
+.admin-page .page-intro p {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.admin-page .dash-card-cabecera:not(.solicitud-detalle-cabecera) {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.admin-page .dash-card-cabecera:not(.solicitud-detalle-cabecera) h3 {
+    flex: none;
+    width: 100%;
+    text-align: center;
+}
+
+.admin-page .panel-listado .dash-card-cabecera h3,
+.admin-page #panel-usuario-detalle .dash-card-cabecera h3 {
+    flex: none;
+    width: 100%;
+    text-align: center;
+}
+
+.admin-page #panel-usuario-detalle .dash-card-cabecera .btn-primary {
+    margin-left: 0;
+}
+
+.admin-page #panel-salud .info-card > h3,
+.admin-page #panel-dashboard .info-card > h3 {
+    text-align: center;
+    width: 100%;
+}
 
 .admin-page .dash-card-cabecera .empty-back-link {
     margin-top: 0;
@@ -1274,7 +1323,10 @@ html { scroll-behavior: smooth; }
 .admin-page #panel-usuario-detalle .dash-card-cabecera {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    text-align: center;
     gap: 14px 16px;
     margin-bottom: 22px;
     padding-bottom: 18px;
@@ -1283,9 +1335,11 @@ html { scroll-behavior: smooth; }
 
 .admin-page .panel-listado .dash-card-cabecera h3,
 .admin-page #panel-usuario-detalle .dash-card-cabecera h3 {
-    flex: 1 1 auto;
+    flex: none;
+    width: 100%;
     min-width: 0;
     margin: 0;
+    text-align: center;
 }
 
 .admin-page #panel-usuarios .dash-card-cabecera h3::before { content: "Usuarios"; }
@@ -1636,6 +1690,48 @@ html { scroll-behavior: smooth; }
 
 .admin-page .listado-filtro-grupo:has(option:checked:not([value=""]))::before { content: none; }
 
+.admin-page .listado-filtro-grupo .listado-filtro-fecha {
+    position: relative;
+    z-index: 2;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+    height: 36px;
+    padding: 0 0.35rem;
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+    color: var(--text-dark);
+    font-size: 13px;
+    text-align: center;
+}
+
+.admin-page .listado-filtro-grupo-fecha:not([data-con-valor="true"]) .listado-filtro-fecha {
+    color: transparent;
+}
+
+.admin-page .listado-filtro-grupo-fecha:not([data-con-valor="true"]) .listado-filtro-fecha::-webkit-datetime-edit,
+.admin-page .listado-filtro-grupo-fecha:not([data-con-valor="true"]) .listado-filtro-fecha::-webkit-datetime-edit-fields-wrapper {
+    color: transparent;
+}
+
+.admin-page .listado-filtro-grupo-fecha:focus-within::before {
+    content: none;
+}
+
+.admin-page .listado-filtro-grupo-fecha:focus-within .listado-filtro-fecha {
+    color: var(--text-dark);
+}
+
+.admin-page .listado-filtro-grupo-fecha:focus-within .listado-filtro-fecha::-webkit-datetime-edit,
+.admin-page .listado-filtro-grupo-fecha:focus-within .listado-filtro-fecha::-webkit-datetime-edit-fields-wrapper {
+    color: var(--text-dark);
+}
+
+.admin-page .listado-filtro-grupo-fecha[data-con-valor="true"]::before {
+    content: none;
+}
+
 .admin-page #columna-solicitud-id::before,
 .admin-page #bloque-solicitudes .dash-tabla td[data-campo="id"]::before { content: "Nro"; }
 
@@ -1691,6 +1787,7 @@ html { scroll-behavior: smooth; }
 
 .admin-page .panel-listado .dash-tabla a.abm-editar,
 .admin-page .panel-listado .dash-tabla a.abm-ver,
+.admin-page .panel-listado .dash-tabla button.abm-ver,
 .admin-page .panel-listado .dash-tabla button.abm-alta:not(:disabled),
 .admin-page .panel-listado .dash-tabla button.abm-baja:not(:disabled),
 .admin-page .panel-listado .dash-tabla button.abm-alta:disabled {
@@ -1880,10 +1977,207 @@ html { scroll-behavior: smooth; }
 .admin-page #panel-solicitud-detalle .pet-detail-meta [data-campo][data-texto]::after,
 .admin-page #panel-solicitud-detalle .postulante-dato-item [data-campo][data-texto]::after,
 .admin-page #panel-solicitud-detalle #lista-contacto-postulante span[data-texto]::after,
-.admin-page #panel-solicitud-detalle #tabla-seguimientos td[data-texto]::after,
 .admin-page #bloque-solicitudes .dash-tabla td[data-texto]::after { content: attr(data-texto); }
 
 .admin-page #bloque-solicitudes tbody tr:not([data-id]) { display: none; }
+
+.admin-page #panel-seguimientos-admin .tabla-seguimientos th,
+.admin-page #panel-seguimientos-admin .tabla-seguimientos td[data-campo] {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.admin-page #panel-seguimientos-admin .tabla-seguimientos td[data-campo][data-texto]::after {
+    content: attr(data-texto);
+}
+
+.admin-page #panel-seguimientos-admin .info-card.mb-3 .listado-controles {
+    margin-bottom: 0;
+}
+
+.admin-page #panel-seguimientos-admin .seguimientos-toolbar {
+    width: 100%;
+    max-width: 100%;
+}
+
+.admin-page #panel-seguimientos-admin .seguimientos-toolbar .solicitud-detalle-accion,
+.admin-page #panel-seguimientos-admin .seguimientos-toolbar .btn {
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    padding: 0.35rem 0.75rem;
+    font-size: clamp(0.7rem, 2.6vw, 0.875rem);
+    line-height: 1.25;
+    white-space: nowrap;
+}
+
+.admin-page #panel-seguimientos-admin .seguimientos-titulo h2 {
+    color: var(--primary-color);
+}
+
+.admin-page #panel-seguimientos-admin tbody tr:not([data-id]) { display: none; }
+
+.admin-page #panel-seguimientos-admin tbody tr[data-id] { cursor: default; }
+
+.admin-page #panel-seguimientos-admin .tabla-seguimientos th:last-child,
+.admin-page #panel-seguimientos-admin td.seguimientos-acciones {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.admin-page #panel-seguimientos-admin td.seguimientos-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.admin-page #panel-seguimientos-admin .seguimientos-acciones,
+.admin-page #bloque-solicitudes .acciones-solicitud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.admin-page #panel-seguimientos-admin .seguimientos-acciones .abm-alta::after { content: "Registrar"; }
+.admin-page #panel-seguimientos-admin .seguimientos-acciones .abm-editar::after { content: "Reprogramar"; }
+
+.admin-page #panel-seguimientos-admin .seguimientos-acciones .abm-editar {
+    width: auto;
+    min-width: 118px;
+    max-width: none;
+    padding: 8px 16px;
+}
+
+.admin-page #panel-seguimientos-admin .seguimientos-acciones .abm-alta {
+    width: auto;
+    min-width: 88px;
+    max-width: none;
+    padding: 8px 12px;
+}
+
+.admin-page #panel-seguimientos-admin .dash-tabla td[data-campo="responsable"]::before { content: "Responsable"; }
+.admin-page #panel-seguimientos-admin .dash-tabla td[data-campo="fecha_programada"]::before { content: "Próxima fecha"; }
+.admin-page #panel-seguimientos-admin .dash-tabla td[data-campo="situacion"]::before { content: "Estado"; }
+
+.admin-page #panel-seguimientos-admin .dash-tabla td[data-campo="situacion"][data-texto]::after {
+    text-transform: capitalize;
+}
+.admin-page #panel-seguimientos-admin .dash-tabla td[data-campo="ultimo_realizado"]::before { content: "Último realizado"; }
+.admin-page #panel-seguimientos-admin .dash-tabla td[data-campo="tipo_seguimiento"]::before { content: "Tipo"; }
+.admin-page #panel-seguimientos-admin td.seguimientos-acciones::before { content: "Acciones"; }
+
+.admin-page .modal-seguimiento-ver .modal-dialog {
+    max-width: min(420px, calc(100vw - 2rem));
+}
+
+.admin-page .modal-seguimiento-ver .modal-content {
+    border: 1px solid var(--tema-crema-claro-borde);
+    border-radius: 14px;
+}
+
+.admin-page .modal-seguimiento-ver .seguimiento-detalle-panel {
+    padding: 18px 20px;
+}
+
+.admin-page .modal-seguimiento-ver .pet-detail-meta li {
+    display: grid;
+    grid-template-columns: minmax(7.5em, 42%) minmax(0, 1fr);
+    column-gap: 12px;
+    align-items: baseline;
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.admin-page .modal-seguimiento-ver .pet-detail-meta li > span:first-child {
+    color: var(--text-soft);
+    font-weight: 500;
+}
+
+.admin-page .modal-seguimiento-ver .pet-detail-meta li > span:last-child {
+    min-width: 0;
+    font-weight: 600;
+    color: var(--text-dark);
+    text-align: left;
+    overflow-wrap: anywhere;
+}
+
+.admin-page .modal-seguimiento-ver .pet-detail-meta li > span:last-child:empty::before {
+    content: "—";
+    color: var(--text-soft);
+    font-weight: 400;
+}
+
+.admin-page .modal-seguimiento-ver .pet-detail-meta li.seguimiento-detalle-observaciones {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--tema-crema-claro-borde);
+}
+
+.admin-page .modal-seguimiento-ver .pet-detail-meta li.seguimiento-detalle-observaciones > span:last-child {
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--white);
+    border: 1px solid var(--tema-crema-claro-borde);
+    white-space: pre-wrap;
+    font-weight: 500;
+}
+
+.admin-page #panel-seguimientos-admin .seguimiento-detalle-situacion {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: capitalize;
+}
+
+.admin-page #panel-seguimientos-admin .seguimiento-detalle-situacion[data-situacion="pendiente"] {
+    background: rgba(255, 193, 7, 0.2);
+    color: #856404;
+}
+
+.admin-page #panel-seguimientos-admin .seguimiento-detalle-situacion[data-situacion="vencido"] {
+    background: rgba(220, 53, 69, 0.15);
+    color: var(--bs-danger, #dc3545);
+}
+
+.admin-page #panel-seguimientos-admin .seguimiento-detalle-situacion[data-situacion="realizado"] {
+    background: rgba(25, 135, 84, 0.15);
+    color: var(--bs-success, #198754);
+}
+
+.admin-page #panel-seguimientos-admin tr[data-situacion="vencido"] {
+    background: rgba(220, 53, 69, 0.08);
+    box-shadow: inset 4px 0 0 var(--bs-danger, #dc3545);
+}
+
+.admin-page #panel-seguimientos-admin tr[data-situacion="vencido"] [data-campo="situacion"] {
+    color: var(--bs-danger);
+    font-weight: 600;
+}
+
+.admin-page #panel-seguimientos-admin tr[data-situacion="pendiente"] {
+    background: rgba(255, 193, 7, 0.1);
+    box-shadow: inset 4px 0 0 rgba(255, 193, 7, 0.85);
+}
+
+.admin-page #panel-seguimientos-admin tr[data-situacion="pendiente"] [data-campo="situacion"] {
+    color: #856404;
+    font-weight: 600;
+}
+
+.admin-page #panel-seguimientos-admin tr[data-situacion="realizado"] {
+    background: rgba(25, 135, 84, 0.05);
+}
+
+.admin-page #panel-seguimientos-admin tr[data-situacion="realizado"] [data-campo="situacion"] {
+    color: var(--bs-success, #198754);
+    font-weight: 600;
+}
 
 .admin-page #panel-usuario-detalle #ficha-usuario .pet-detail-meta,
 .admin-page #panel-solicitud-detalle #ficha-solicitud .pet-detail-meta,
@@ -1907,10 +2201,13 @@ html { scroll-behavior: smooth; }
     padding: 16px 18px;
 }
 
-.admin-page #panel-solicitud-detalle .dash-card-cabecera {
+.admin-page #panel-solicitud-detalle .dash-card-cabecera:not(.solicitud-detalle-cabecera) {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    text-align: center;
     gap: 10px;
     margin-bottom: 12px;
     padding-bottom: 10px;
@@ -1918,10 +2215,12 @@ html { scroll-behavior: smooth; }
 }
 
 .admin-page #panel-solicitud-detalle .dash-card-cabecera h3 {
-    flex: 1 1 auto;
+    flex: none;
+    width: 100%;
     min-width: 0;
     margin: 0;
     font-size: 16px;
+    text-align: center;
 }
 
 .admin-page #panel-solicitud-detalle .ficha-usuario-icono {
@@ -2151,8 +2450,14 @@ html { scroll-behavior: smooth; }
     text-shadow: 0 0 6px rgba(255, 255, 255, 0.85);
 }
 
-.admin-page #panel-solicitud-detalle[data-compatibilidad-manual] #ficha-evaluacion[data-evaluacion-lista="1"] #boton-compatibilidad {
-    display: none;
+.admin-page #panel-solicitud-detalle #ficha-evaluacion[data-evaluacion-lista="1"] #boton-compatibilidad {
+    pointer-events: none;
+    --bs-btn-color: #9a9a9a;
+    --bs-btn-border-color: #d0d0d0;
+    --bs-btn-bg: #e8e8e8;
+    --bs-btn-disabled-color: #9a9a9a;
+    --bs-btn-disabled-bg: #e8e8e8;
+    --bs-btn-disabled-border-color: #d0d0d0;
 }
 
 .admin-page #panel-solicitud-detalle #ficha-formulario .form-seccion {
@@ -2846,8 +3151,9 @@ html { scroll-behavior: smooth; }
 
 .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-fila-principal {
     position: relative;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    gap: 0.5rem 0.75rem;
     max-width: 100%;
     min-height: 2.5rem;
     padding: 0 0.25rem;
@@ -2855,11 +3161,12 @@ html { scroll-behavior: smooth; }
 }
 
 .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-titulo {
-    flex: 0 1 auto;
+    flex: 1 1 0;
     justify-content: center;
-    max-width: min(100%, 36rem);
-    margin: 0 auto;
-    padding: 0 4.75rem;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    padding: 0 0.35rem;
     box-sizing: border-box;
 }
 
@@ -2869,11 +3176,17 @@ html { scroll-behavior: smooth; }
     text-align: center;
 }
 
-.admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-volver {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    z-index: 1;
+.admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-acciones {
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    max-width: 100%;
+}
+
+.admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-acciones .solicitud-detalle-accion {
+    position: static;
+    z-index: auto;
     margin: 0;
     min-width: 0;
     min-height: 0;
@@ -2882,7 +3195,11 @@ html { scroll-behavior: smooth; }
     line-height: 1.25;
     white-space: nowrap;
     border-radius: 25px;
-    transform: translateY(-50%);
+    transform: none;
+}
+
+.admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-acciones #link-seguimientos-solicitud[hidden] {
+    display: none;
 }
 
 .admin-page #panel-solicitud-detalle[data-tipo="transito"] .solicitud-meta-datos,
@@ -2963,7 +3280,17 @@ html { scroll-behavior: smooth; }
 .admin-page #bloque-solicitudes > h3::before { content: "Solicitudes"; }
 
 .admin-page #panel-solicitudes[data-tipo="transito"] #bloque-solicitudes > h3::before {
-    content: "Solicitudes de tránsito";
+    content: "Hogares de tránsito";
+}
+
+.admin-page #panel-solicitudes[data-tipo="transito"] #columna-solicitud-solicitante::before,
+.admin-page #panel-solicitudes[data-tipo="transito"] .dash-tabla td[data-campo="solicitante"]::before {
+    content: "Usuario";
+}
+
+.admin-page #panel-solicitudes[data-tipo="transito"] #columna-solicitud-id,
+.admin-page #panel-solicitudes[data-tipo="transito"] td[data-campo="id"] {
+    display: none;
 }
 
 .admin-page #panel-solicitudes[data-tipo="transito"] #columna-solicitud-especie,
@@ -3014,8 +3341,21 @@ html { scroll-behavior: smooth; }
 }
 
 .admin-page #panel-solicitud-detalle[data-tipo="adopcion"] .bloque-razones:not(:has(li)),
-.admin-page #panel-solicitud-detalle #aviso-evaluacion:empty {
+.admin-page #panel-solicitud-detalle #aviso-formulario:empty:not([data-estado="error"]):not([data-estado="ok"]),
+.admin-page #panel-solicitud-detalle #aviso-evaluacion:empty:not([data-estado="error"]):not([data-estado="ok"]) {
     display: none;
+}
+
+.admin-page #panel-solicitud-detalle #aviso-formulario[data-estado="error"] {
+    display: block;
+    color: var(--bs-danger, #a32b21);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+.admin-page #panel-solicitud-detalle #ficha-formulario[data-formulario-vacio="1"] #campos-formulario {
+    opacity: 0.45;
+    pointer-events: none;
 }
 
 .admin-page #panel-solicitud-detalle[data-tipo="adopcion"] #lista-razones li {
@@ -3897,7 +4237,8 @@ html { scroll-behavior: smooth; }
         text-align: center;
     }
     .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id],
-    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] {
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id],
+    .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 0 14px;
@@ -3922,7 +4263,8 @@ html { scroll-behavior: smooth; }
 @media (max-width: 992px) {
 
     .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td,
-    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td {
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td,
+    .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] > td {
         display: flex;
         flex-direction: row;
         align-items: flex-start;
@@ -3940,15 +4282,17 @@ html { scroll-behavior: smooth; }
         text-align: right;
     }
 
-    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:not(:has(> [class*="abm"])),
-    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td:not(:has(> [class*="abm"])) {
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:not(:has(> [class*="abm"])):not(.seguimientos-acciones),
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td:not(:has(> [class*="abm"])),
+    .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] > td:not(.seguimientos-acciones):not(:has(> [class*="abm"])) {
         grid-column: 1 / -1;
         padding: 8px 0;
         border-bottom: 1px dashed var(--tema-crema-claro-borde);
     }
 
     .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td::before,
-    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td::before {
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td::before,
+    .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] > td::before {
         display: block;
         flex: none;
         max-width: 45%;
@@ -3961,20 +4305,23 @@ html { scroll-behavior: smooth; }
     .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td[data-texto]::after,
     .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td[data-estado]::after,
     .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td[data-texto]::after,
-    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td[data-estado]::after {
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td[data-estado]::after,
+    .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] > td[data-texto]::after {
         align-self: center;
         margin-left: auto;
         text-align: right;
     }
 
     .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:empty:not([data-texto]):not([data-estado]),
-    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td:empty:not([data-texto]):not([data-estado]) {
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td:empty:not([data-texto]):not([data-estado]),
+    .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] > td:empty:not([data-texto]) {
         display: none;
     }
 
     /* El número encabeza la tarjeta */
     .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:first-child,
-    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td:first-child {
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td:first-child,
+    .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] > td:first-child {
         grid-column: 1 / -1;
         flex-direction: row;
         align-items: center;
@@ -3985,17 +4332,20 @@ html { scroll-behavior: smooth; }
     }
 
     /* Botones al final, de a dos por fila; si hay uno solo ocupa todo el ancho */
-    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:has(> [class*="abm"]) {
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:has(> [class*="abm"]),
+    .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] > td.seguimientos-acciones {
         flex-direction: column;
         align-items: stretch;
         margin-top: 10px;
     }
 
-    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:not(:has(> [class*="abm"])) + td:has(> [class*="abm"]) {
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:not(:has(> [class*="abm"])) + td:has(> [class*="abm"]),
+    .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] > td:not(.seguimientos-acciones) + td.seguimientos-acciones {
         grid-column-start: 1;
     }
 
-    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:not(:has(> [class*="abm"])) + td:has(> [class*="abm"]):last-child {
+    .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td:not(:has(> [class*="abm"])) + td:has(> [class*="abm"]):last-child,
+    .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] > td.seguimientos-acciones:last-child {
         grid-column: 1 / -1;
     }
 
@@ -4007,7 +4357,8 @@ html { scroll-behavior: smooth; }
     }
 
     .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id] > td,
-    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td {
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] > td,
+    .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] > td {
         min-width: 0;
         max-width: 100%;
         white-space: normal;
@@ -4066,11 +4417,22 @@ html { scroll-behavior: smooth; }
         line-height: 1.3;
     }
 
-    .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-titulo {
-        padding: 0 3.85rem;
+    .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-fila-principal {
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
-    .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-volver {
+    .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-titulo {
+        flex: 1 1 100%;
+        padding: 0 0.25rem;
+    }
+
+    .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-acciones {
+        flex: 1 1 100%;
+        justify-content: center;
+    }
+
+    .admin-page #panel-solicitud-detalle > .solicitud-detalle-cabecera .solicitud-detalle-acciones .solicitud-detalle-accion {
         padding: 0.28rem 0.55rem;
         font-size: clamp(0.65rem, 2.4vw, 0.8rem);
         border-radius: 8px;
@@ -4098,8 +4460,71 @@ html { scroll-behavior: smooth; }
 /* Celulares angostos: la tarjeta pasa a una sola columna */
 @media (max-width: 400px) {
     .admin-page .panel-listado:not(#panel-dashboard) .dash-tabla tbody tr[data-id],
-    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id] {
+    .admin-page #bloque-solicitudes .dash-tabla tbody tr[data-id],
+    .admin-page #panel-seguimientos-admin .dash-tabla tbody tr[data-id] {
         grid-template-columns: minmax(0, 1fr);
         padding: 12px;
+    }
+}
+
+@media (max-width: 992px) {
+    .admin-page #panel-seguimientos-admin td.seguimientos-acciones {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        justify-content: center;
+        grid-column: 1 / -1;
+        gap: 8px;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid var(--tema-crema-claro-borde);
+        background: transparent;
+    }
+
+    .admin-page #panel-seguimientos-admin td.seguimientos-acciones::before {
+        display: block;
+        width: 100%;
+        margin-bottom: 4px;
+        color: var(--text-soft);
+        font-size: 12px;
+        font-weight: 500;
+        text-align: left;
+    }
+
+    .admin-page #panel-seguimientos-admin .seguimientos-toolbar {
+        justify-content: stretch !important;
+    }
+
+    .admin-page #panel-seguimientos-admin .seguimientos-toolbar > .solicitud-detalle-accion,
+    .admin-page #panel-seguimientos-admin .seguimientos-toolbar > .btn {
+        flex: 1 1 calc(50% - 0.25rem);
+        min-width: 0;
+        padding: 0.3rem 0.45rem;
+        font-size: clamp(0.62rem, 3vw, 0.8125rem);
+    }
+
+    .admin-page #panel-seguimientos-admin .listado-controles > .col-md-auto {
+        justify-content: center !important;
+        width: 100%;
+    }
+
+    .admin-page #panel-seguimientos-admin .listado-controles [data-refrescar] {
+        width: auto;
+        min-width: 0;
+        max-width: 100%;
+        padding: 0.32rem 0.65rem;
+        font-size: clamp(0.68rem, 2.8vw, 0.8125rem);
+    }
+
+    .admin-page #panel-seguimientos-admin td.seguimientos-acciones .abm-ver,
+    .admin-page #panel-seguimientos-admin td.seguimientos-acciones .abm-alta,
+    .admin-page #panel-seguimientos-admin td.seguimientos-acciones .abm-editar {
+        width: auto;
+        min-width: 0;
+        max-width: calc(50% - 4px);
+        flex: 1 1 auto;
+        min-height: 32px;
+        padding: 6px 10px;
+        font-size: clamp(0.65rem, 2.6vw, 0.8125rem);
     }
 }

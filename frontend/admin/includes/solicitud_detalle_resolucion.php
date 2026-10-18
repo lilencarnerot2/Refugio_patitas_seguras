@@ -1,5 +1,5 @@
 <?php
-$solicitudResolucionAviso = $solicitudResolucionAviso ?? 'Esperando compatibilidad para resolver.';
+$solicitudResolucionAviso = isset($solicitudResolucionAviso) ? trim((string) $solicitudResolucionAviso) : '';
 ?>
         <article class="info-card mb-3" id="ficha-resolucion" data-compatibilidad-lista="0">
             <div class="dash-card-cabecera">
@@ -11,7 +11,11 @@ $solicitudResolucionAviso = $solicitudResolucionAviso ?? 'Esperando compatibilid
                     <p class="mb-0 solicitud-estado-actual"><span class="detalle-label">Estado actual:</span> <strong data-campo="estado_solicitud"></strong></p>
                 </div>
                 <div class="col-12">
+                    <?php if ($solicitudResolucionAviso !== '') { ?>
                     <p id="resolucion-espera-compatibilidad" class="mb-2 text-body-secondary small"><?php echo $solicitudResolucionAviso; ?></p>
+                    <?php } else { ?>
+                    <p id="resolucion-espera-compatibilidad" class="mb-2 text-body-secondary small" hidden></p>
+                    <?php } ?>
                     <div id="botones-estado" class="d-flex gap-2 flex-wrap" data-resolver data-compatibilidad-lista="0" hidden></div>
                 </div>
             </div>

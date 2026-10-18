@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var id = new URLSearchParams(window.location.search).get('id');
     var listado = panel.getAttribute('data-listado') || '';
     var vistaHref = panel.getAttribute('data-vista-href') || '';
-    var recursoFormulario = panel.getAttribute('data-recurso-formulario') || '';
     var compatibilidadLista = false;
     var solicitudActual = null;
 
@@ -50,14 +49,20 @@ document.addEventListener('DOMContentLoaded', function () {
     function actualizarBotonCompatibilidad() {
         var botonCompat = document.getElementById('boton-compatibilidad');
 
-        if (!botonCompat || !compatibilidadManual) {
+        if (!botonCompat || !evaluacionManual) {
             return;
         }
 
         var hecha = evaluacionCompatibilidadHecha();
 
         botonCompat.disabled = hecha;
-        botonCompat.hidden = hecha;
+        botonCompat.classList.toggle('evaluacion-compatibilidad-hecha', hecha);
+
+        if (hecha) {
+            botonCompat.setAttribute('aria-disabled', 'true');
+        } else {
+            botonCompat.removeAttribute('aria-disabled');
+        }
     }
 
     function bloquearBotonesResolucion(bloqueado) {
@@ -319,18 +324,22 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function siNo(valor) {
-        var etiquetaSi = panel.getAttribute('data-etiqueta-si');
-        var etiquetaNo = panel.getAttribute('data-etiqueta-no');
+        var etiquetaSi = panel.getAttribute('data-etiqueta-si') || panel.getAttribute('data-si');
+        var etiquetaNo = panel.getAttribute('data-etiqueta-no') || panel.getAttribute('data-no');
 
         if (valor === true || valor === 1 || valor === '1' || valor === 't' || valor === 'true') {
-            return etiquetaSi !== null ? etiquetaSi : texto(valor);
+            return etiquetaSi || '';
         }
 
         if (valor === false || valor === 0 || valor === '0' || valor === 'f' || valor === 'false') {
-            return etiquetaNo !== null ? etiquetaNo : texto(valor);
+            return etiquetaNo || '';
         }
 
         return texto(valor);
+    }
+
+    function tipoDetallePagina() {
+        return normalizarTipo(panel.getAttribute('data-tipo') || '');
     }
 
     function pintarCaja(caja, datos) {
@@ -397,6 +406,75 @@ document.addEventListener('DOMContentLoaded', function () {
                 datosPersonalesPostulante({}, solicitud)
             );
         }
+
+        if (fichaMascota) {
+            pintarMascotaDesdeSolicitud(solicitud);
+        }
+
+        actualizarLinkSeguimientos();
+    }
+
+    function datosMascotaDesdeSolicitud(solicitud) {
+        if (!solicitud) {
+            return null;
+        }
+
+        return {
+            id: solicitud.id_mascota,
+            nombre: solicitud.nombre_mascota || ''
+        };
+    }
+
+    function pintarMascotaDesdeSolicitud(solicitud) {
+        var datos = datosMascotaDesdeSolicitud(solicitud);
+
+        if (!fichaMascota || !datos || texto(datos.nombre) === '') {
+            return;
+        }
+
+        pintarCaja(fichaMascota, datos);
+    }
+
+    function estadoPermiteSeguimiento(solicitud) {
+        if (typeof estadoSolicitudPermiteSeguimiento === 'function') {
+            return estadoSolicitudPermiteSeguimiento(solicitud && solicitud.estado_solicitud);
+        }
+
+        return normalizarTipo(solicitud && solicitud.estado_solicitud).indexOf('aprob') !== -1;
+    }
+
+    function actualizarLinkSeguimientos() {
+        var linkSeg = document.getElementById('link-seguimientos-solicitud');
+        var hrefSeg = typeof hrefSeguimientosPorTipoDetalle === 'function'
+            ? hrefSeguimientosPorTipoDetalle(tipoDetallePagina())
+            : '';
+        var solicitud = solicitudActual;
+
+        if (!linkSeg) {
+            return;
+        }
+
+        linkSeg.hidden = true;
+        linkSeg.removeAttribute('href');
+
+        if (!hrefSeg || !solicitud || texto(solicitud.id) === '') {
+            return;
+        }
+
+        if (!estadoPermiteSeguimiento(solicitud) || !solicitud.id_mascota) {
+            return;
+        }
+
+        linkSeg.href = hrefSeg + '?id_solicitud=' + encodeURIComponent(String(solicitud.id));
+        linkSeg.hidden = false;
+    }
+
+    function limpiarAvisoSeccion(idCaja) {
+        var caja = document.getElementById(idCaja);
+
+        if (caja) {
+            caja.textContent = '';
+        }
     }
 
     function datosDeRespuesta(respuesta) {
@@ -410,30 +488,77 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function traerFormulario(idSolicitud) {
-        function vacio() {
+        var avisoFormulario = document.getElementById('aviso-formulario');
+
+        function vacio(origen, ok) {
+            var fichaForm = document.getElementById('ficha-formulario');
+
             pintarFormulario({});
+
+            if (fichaForm) {
+                if (ok === false) {
+                    fichaForm.setAttribute('data-formulario-vacio', '1');
+                } else {
+                    fichaForm.removeAttribute('data-formulario-vacio');
+                }
+            }
+
+            if (!avisoFormulario) {
+                return;
+            }
+
+            if (typeof avisoDeApi === 'function') {
+                avisoDeApi(avisoFormulario, origen === undefined ? '' : origen, ok !== false);
+            } else {
+                limpiarAvisoSeccion('aviso-formulario');
+            }
         }
 
-        if (!recursoFormulario) {
-            pintarFormulario({});
+        if (typeof apiFormularioSolicitudDetalleAdmin !== 'function') {
+            vacio('', true);
             return Promise.resolve(null);
         }
 
-        return apiRequest(recursoFormulario, {
-            parametros: { id_solicitud: idSolicitud }
-        }).then(function (respuesta) {
+        return apiFormularioSolicitudDetalleAdmin(tipoDetallePagina(), idSolicitud).then(function (respuesta) {
             var idPostulante = solicitudActual && solicitudActual.id_usuario;
             var datos = datosFormularioDeRespuesta(respuesta, {
                 id_solicitud: idSolicitud,
-                id_usuario: idPostulante
+                id_usuario: idPostulante,
+                omitirValidacionUsuario: true
             });
 
-            pintarFormulario(datos || {});
-        }).catch(vacio);
+            if (!datos) {
+                vacio(respuesta && respuesta.success === false ? respuesta : {
+                    success: false,
+                    message: (respuesta && respuesta.message) || 'No se pudo cargar el formulario de la solicitud.'
+                }, false);
+                return;
+            }
+
+            vacio('', true);
+            pintarFormulario(datos);
+        }).catch(function (error) {
+            var datosError = error && error.data;
+            var tieneMsg = datosError && (datosError.message || datosError.mensaje);
+            var aviso = error;
+
+            if (error && error.status === 404 && !tieneMsg) {
+                aviso = { success: false, message: 'Esta solicitud no tiene formulario guardado todavía.', status: 404 };
+            } else if (error && (error.status === 500 || error.status >= 502) && !tieneMsg) {
+                aviso = {
+                    success: false,
+                    message: 'No se pudo cargar el formulario desde el servidor. Probá recargar en unos minutos.',
+                    status: error.status
+                };
+            }
+
+            vacio(aviso, false);
+        });
     }
 
     function pintarFormulario(datos) {
         var caja = document.getElementById('campos-formulario');
+        var fichaForm = document.getElementById('ficha-formulario');
         var grupoMetros = document.getElementById('grupo-metros-patio');
         var grupoMascotas = document.getElementById('grupo-mascotas-hogar');
         var listaMascotas = document.getElementById('lista-mascotas-hogar');
@@ -443,16 +568,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        caja.querySelectorAll('[data-campo]').forEach(function (nodo) {
-            var valor = datos[nodo.getAttribute('data-campo')];
+        if (fichaForm) {
+            fichaForm.removeAttribute('data-formulario-vacio');
+        }
 
-            if (nodo.type === 'checkbox') {
-                nodo.checked = esVerdadero(valor);
-                return;
-            }
-
-            nodo.value = esBooleano(valor) ? siNo(valor) : texto(valor);
-        });
+        pintarCaja(caja, datos);
 
         if (grupoMetros) {
             grupoMetros.hidden = !esVerdadero(datos.tiene_patio);
@@ -472,16 +592,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 var fila = modeloMascota.cloneNode(true);
 
                 fila.removeAttribute('id');
-                fila.querySelectorAll('[data-campo]').forEach(function (nodo) {
-                    var valor = mascota[nodo.getAttribute('data-campo')];
-
-                    if (nodo.type === 'checkbox') {
-                        nodo.checked = esVerdadero(valor);
-                        return;
-                    }
-
-                    nodo.value = texto(valor);
-                });
+                pintarCaja(fila, mascota);
                 listaMascotas.appendChild(fila);
             });
         }
@@ -510,9 +621,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function mostrar(idSolicitud) {
-        return apiRequest('solicitudes', {
-            parametros: { id: idSolicitud }
-        }).then(function (respuesta) {
+        if (typeof apiSolicitudDetalleAdmin !== 'function') {
+            mostrarAviso({ success: false, message: 'No se pudo cargar la solicitud.' }, false);
+            return Promise.resolve(null);
+        }
+
+        return apiSolicitudDetalleAdmin(idSolicitud).then(function (respuesta) {
             var solicitud = (respuesta && respuesta.data) || {};
 
             if (Array.isArray(solicitud)) {
@@ -537,13 +651,15 @@ document.addEventListener('DOMContentLoaded', function () {
             pintarFicha(solicitud);
 
             var tareas = [
-                traerFormulario(idSolicitud),
+                traerFormulario(String(solicitud.id)),
                 traerMascota(solicitud.id_mascota),
                 traerPostulante(solicitud, solicitud.id_usuario)
             ];
 
-            if (!evaluacionManual) {
-                tareas.push(traerEvaluacion(idSolicitud));
+            if (fichaEvaluacion && !evaluacionManual) {
+                tareas.push(traerEvaluacion(String(solicitud.id)));
+            } else if (fichaEvaluacion && evaluacionManual) {
+                actualizarBotonCompatibilidad();
             }
 
             return Promise.all(tareas).then(function () {
@@ -706,14 +822,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function traerMascota(idMascota) {
+        actualizarLinkSeguimientos();
+
         if (!fichaMascota || !idMascota) {
             return Promise.resolve();
         }
 
-        return apiRequest('mascotas', { parametros: { id: idMascota } }).then(function (respuesta) {
+        if (typeof apiMascotaDetalleAdmin !== 'function') {
+            return Promise.resolve();
+        }
+
+        return apiMascotaDetalleAdmin(idMascota).then(function (respuesta) {
             var mascota = datosDeRespuesta(respuesta);
             var foto = document.getElementById('detalle-foto');
             var vacia = document.getElementById('detalle-foto-vacia');
+            actualizarLinkSeguimientos();
 
             pintarCaja(fichaMascota, mascota);
             pintarIconoEspecieMascota(fichaMascota, mascota);
@@ -728,6 +851,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         }).catch(function () {
+            pintarMascotaDesdeSolicitud(solicitudActual);
+            actualizarLinkSeguimientos();
             return null;
         });
     }
@@ -740,27 +865,34 @@ document.addEventListener('DOMContentLoaded', function () {
             return Promise.resolve();
         }
 
-        if (compatibilidadManual && evaluacionCompatibilidadHecha()) {
+        if (evaluacionCompatibilidadHecha()) {
+            actualizarBotonCompatibilidad();
             return Promise.resolve();
-        }
-
-        if (compatibilidadManual) {
-            mostrarEvaluacionPendiente();
         }
 
         if (botonCompat) {
             botonCompat.disabled = true;
         }
 
-        if (compatibilidadManual) {
-            avisoEsperandoApi(mensaje);
-        } else if (avisoEval) {
+        if (avisoEval) {
             avisoEsperandoApi(avisoEval);
         }
 
-        return apiRequest('compatibilidad', {
-            parametros: { id_solicitud: idSolicitud }
-        }).then(function (respuesta) {
+        if (typeof apiCompatibilidadDetalleAdmin !== 'function') {
+            mostrarEvaluacionPendiente();
+
+            if (avisoEval) {
+                avisoDeApi(avisoEval, '', true);
+            }
+
+            return Promise.resolve(null);
+        }
+
+        var tipoCompat = solicitudActual && solicitudActual.tipo_solicitud
+            ? (typeof esTipoSolicitudTransito === 'function' && esTipoSolicitudTransito(solicitudActual.tipo_solicitud) ? 'transito' : 'adopcion')
+            : tipoDetallePagina();
+
+        return apiCompatibilidadDetalleAdmin(tipoCompat, idSolicitud).then(function (respuesta) {
             var datos = datosCompatibilidadDeRespuesta(respuesta);
             var evaluacion = datos.compatibilidad || datos;
 
@@ -785,7 +917,11 @@ document.addEventListener('DOMContentLoaded', function () {
             mostrarEvaluacionPendiente();
 
             if (avisoEval) {
-                avisoDeApi(avisoEval, error, false);
+                if (evaluacionManual && error && error.status === 404) {
+                    avisoDeApi(avisoEval, '', true);
+                } else {
+                    avisoDeApi(avisoEval, error, false);
+                }
             }
 
             return null;
@@ -795,7 +931,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 avisoEval.removeAttribute('data-estado');
             }
 
-            if (botonCompat) {
+            actualizarBotonCompatibilidad();
+
+            if (botonCompat && !evaluacionCompatibilidadHecha()) {
                 botonCompat.disabled = false;
             }
 
@@ -820,7 +958,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return Promise.resolve();
         }
 
-        return apiRequest('estados_solicitudes').then(function (respuesta) {
+        if (typeof apiEstadosSolicitudDetalleAdmin !== 'function') {
+            return Promise.resolve();
+        }
+
+        return apiEstadosSolicitudDetalleAdmin().then(function (respuesta) {
             var datos = (respuesta && respuesta.data) || [];
             var plantilla;
 
@@ -841,7 +983,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                if (botones.hasAttribute('data-resolver') && clave.indexOf('aprob') === -1 && clave.indexOf('rechaz') === -1) {
+                if (botones.hasAttribute('data-resolver')
+                    && clave.indexOf('aprob') === -1
+                    && clave.indexOf('rechaz') === -1
+                    && clave.indexOf('finaliz') === -1) {
                     return;
                 }
 
@@ -856,6 +1001,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 boton.hidden = false;
                 boton.removeAttribute('disabled');
                 boton.setAttribute('data-id-estado', texto(estado.id));
+                boton.setAttribute('data-nombre-estado', nombre);
                 boton.textContent = nombre;
 
                 if (botones.hasAttribute('data-resolver')) {
@@ -906,11 +1052,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         avisoEsperandoApi(mensaje);
 
-        apiRequest('solicitudes', {
-            metodo: 'PUT',
-            parametros: { id: id },
-            cuerpo: { id_estado_solicitud: idEstado }
-        }).then(function (respuesta) {
+        if (typeof apiActualizarEstadoSolicitudDetalleAdmin !== 'function') {
+            mostrarAviso({ success: false, message: 'No se pudo actualizar el estado.' }, false);
+            return;
+        }
+
+        apiActualizarEstadoSolicitudDetalleAdmin(id, idEstado).then(function (respuesta) {
             return mostrar(id).then(function (solicitud) {
                 mostrarAviso(respuesta, true);
 
@@ -993,10 +1140,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    if (evaluacionManual || compatibilidadManual) {
-        mostrarEvaluacionPendiente();
-    }
-
     function tiposSolicitudDe(respuesta) {
         var datos = respuesta && respuesta.data;
 
@@ -1007,9 +1150,15 @@ document.addEventListener('DOMContentLoaded', function () {
         return datos ? [datos] : [];
     }
 
-    apiRequest('tipos_solicitudes').then(function (respuestaTipos) {
-        enlazarModelosDetalleSolicitud(tiposSolicitudDe(respuestaTipos));
+    var cadenaInicio = typeof apiTiposSolicitudDetalleAdmin === 'function'
+        ? apiTiposSolicitudDetalleAdmin().then(function (respuestaTipos) {
+            enlazarModelosDetalleSolicitud(tiposSolicitudDe(respuestaTipos));
+        }).catch(function () {
+            return null;
+        })
+        : Promise.resolve();
 
+    cadenaInicio.then(function () {
         return mostrar(id);
     }).then(function (solicitud) {
         if (solicitud) {

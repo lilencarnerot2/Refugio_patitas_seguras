@@ -15,14 +15,6 @@ $solicitudEvaluacionManual = !empty($solicitudEvaluacionManual);
                             </ul>
                             <p class="detalle-label mt-3 mb-2">Razones</p>
                             <div class="evaluacion-razones-vacia" aria-hidden="true"></div>
-<?php if ($solicitudEvaluacionManual) { ?>
-                            <div class="text-center mt-3 pt-1">
-                                <button type="button" class="btn btn-primary" id="boton-compatibilidad">
-                                    <i class="bi bi-heart-pulse" aria-hidden="true"></i>
-                                    <span>Evaluar compatibilidad</span>
-                                </button>
-                            </div>
-<?php } ?>
                         </div>
                         <div id="evaluacion-resultado" class="<?php echo $solicitudEvaluacionManual ? 'evaluacion-compatibilidad-resultado' : ''; ?>" hidden>
 <?php if ($solicitudEvaluacionManual) { ?>
@@ -56,6 +48,14 @@ $solicitudEvaluacionManual = !empty($solicitudEvaluacionManual);
                                 <ul class="list-unstyled mb-0" id="lista-razones"></ul>
                             </div>
                         </div>
+<?php if ($solicitudEvaluacionManual) { ?>
+                        <div id="evaluacion-accion" class="text-center mt-3 pt-1">
+                            <button type="button" class="btn btn-primary" id="boton-compatibilidad">
+                                <i class="bi bi-heart-pulse" aria-hidden="true"></i>
+                                <span>Evaluar compatibilidad</span>
+                            </button>
+                        </div>
+<?php } ?>
                         <p class="small text-muted mb-0 mt-2" id="aviso-evaluacion" role="status"></p>
                         <ul id="modelos-evaluacion" hidden>
                             <li id="modelo-razon-evaluacion"></li>

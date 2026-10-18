@@ -220,10 +220,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            var enlace = tr.querySelector('a');
+            var ver = tr.querySelector('.abm-ver');
 
-            if (enlace) {
-                enlace.setAttribute('href', urlDetalleSolicitud(solicitud) + '?id=' + encodeURIComponent(solicitud.id));
+            if (ver) {
+                ver.setAttribute('href', urlDetalleSolicitud(solicitud) + '?id=' + encodeURIComponent(solicitud.id));
             }
 
             cuerpo.appendChild(tr);
@@ -359,39 +359,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 return solicitud;
             }).filter(coincideTipo);
-            dibujar();
 
             if (mensaje) {
                 avisoDeApi(mensaje, respuesta);
             }
 
-            return apiRequest('estados_solicitudes');
-        }).then(function (respuestaEstados) {
-            var estados = (respuestaEstados && respuestaEstados.data) || [];
+            return apiRequest('estados_solicitudes').then(function (respuestaEstados) {
+                var estados = (respuestaEstados && respuestaEstados.data) || [];
 
-            if (filtroEstado) {
-                while (filtroEstado.options.length > 1) {
-                    filtroEstado.remove(1);
+                if (filtroEstado) {
+                    while (filtroEstado.options.length > 1) {
+                        filtroEstado.remove(1);
+                    }
+
+                    (Array.isArray(estados) ? estados : [estados]).forEach(function (estado) {
+                        if (estado) {
+                            agregarOpcion(filtroEstado, texto(estado.nombre_estado));
+                        }
+                    });
                 }
 
-                (Array.isArray(estados) ? estados : [estados]).forEach(function (estado) {
-                    if (estado) {
-                        agregarOpcion(filtroEstado, texto(estado.nombre_estado));
-                    }
-                });
-            }
+                return apiRequest('tipos_solicitudes');
+            }).then(function (respuestaTipos) {
+                var tipos = (respuestaTipos && respuestaTipos.data) || [];
 
-            if (!resumen) {
-                return;
-            }
+                tipos = Array.isArray(tipos) ? tipos : [tipos];
+                enlazarModelosDetalleSolicitud(tipos);
 
-            return apiRequest('tipos_solicitudes');
-        }).then(function (respuestaTipos) {
-            var tipos = (respuestaTipos && respuestaTipos.data) || [];
+                if (resumen) {
+                    dibujarResumen(tipos);
+                }
 
-            tipos = Array.isArray(tipos) ? tipos : [tipos];
-            enlazarModelosDetalleSolicitud(tipos);
-            dibujarResumen(tipos);
+                dibujar();
+            });
         });
     }
 

@@ -56,7 +56,9 @@ require __DIR__ . '/includes/header.php';
                             <td data-campo="nombre_mascota"></td>
                             <td data-campo="tipo_solicitud"></td>
                             <td data-campo="estado_solicitud"></td>
-                            <td><a class="abm-ver" href="adopcion_detalle.php" aria-label="Ver"></a></td>
+                            <td class="acciones-solicitud">
+                                <a class="abm-ver" href="#" aria-label="Ver solicitud"></a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

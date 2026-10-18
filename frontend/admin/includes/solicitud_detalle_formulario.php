@@ -5,6 +5,7 @@
                         <span class="ficha-usuario-icono"><i class="bi bi-ui-checks"></i></span>
                         <h3>Formulario</h3>
                     </div>
+                    <p id="aviso-formulario" class="small text-muted mb-2" role="status"></p>
                     <div id="cuerpo-formulario" class="formulario-detalle-scroll overflow-auto">
                         <div id="campos-formulario" class="row g-3">
                             <div class="col-12">

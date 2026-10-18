@@ -2,6 +2,9 @@
 $paginaAdmin = $paginaAdmin ?? '';
 $salir = '/public/login.php?salir=1';
 $esSuperadministrador = esSuperadministrador();
+$menuSolicitudesActivo = $paginaAdmin === 'solicitudes'
+    || substr($paginaAdmin, -8) === '_detalle'
+    || strpos($paginaAdmin, 'seguimientos_') === 0;
 ?>
 <header>
     <div class="menu-botones">
@@ -46,7 +49,7 @@ $esSuperadministrador = esSuperadministrador();
             </details>
         </li>
         <li>
-            <a href="solicitudes.php"<?php echo in_array($paginaAdmin, ['solicitudes', 'adopcion_detalle', 'hogares_transito', 'transito_detalle'], true) ? ' class="active"' : ''; ?>>
+            <a href="solicitudes.php"<?php echo $menuSolicitudesActivo ? ' class="active"' : ''; ?>>
                 <i class="bi bi-file-earmark-text"></i> Solicitudes
             </a>
         </li>

@@ -98,8 +98,10 @@ require __DIR__ . '/../public/includes/header.php';
                                             <input class="form-control" type="text" id="responsable_principal" name="responsable_principal" maxlength="60" required>
                                         </div>
                                         <div class="col-12">
-                                            <label class="form-label" for="motivo_adopcion">Motivo de adopción</label>
-                                            <textarea class="form-control" id="motivo_adopcion" name="motivo_adopcion" rows="2" maxlength="250"></textarea>
+                                            <label class="form-label" for="id_motivo_adopcion">Motivo de adopción</label>
+                                            <select class="form-select" id="id_motivo_adopcion" name="id_motivo_adopcion" data-catalogo="motivos_adopcion" required>
+                                                <option value="" selected disabled></option>
+                                            </select>
                                         </div>
                                     </div>
                                 </section>
