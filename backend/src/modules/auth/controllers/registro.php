@@ -4,24 +4,53 @@ require_once __DIR__ . '/../services/integracion_registro.php';
 require_once __DIR__ . '/../../usuarios/services/usuarios.php';
 require_once __DIR__ . '/../../usuarios/services/roles.php';
 require_once __DIR__ . '/../../../utils/response.php';
+require_once __DIR__ . '/../../usuarios/services/contactos.php';
 
 
-function registroController($datos)
-{
+function registroController($datos) {
     
     // 1. Validar entrada
     $nombre = trim($datos['nombre'] ?? '');
     $apellido = trim($datos['apellido'] ?? '');
     $email = trim($datos['email'] ?? '');
     $password = $datos['password'] ?? '';
+    $fecha_nacimiento = trim($datos['fecha_nacimiento'] ?? '');
+    $telefono = trim($datos['telefono'] ?? '');
 
-    if ($nombre === '' || $apellido === '' || $email === '' || $password === '') {
-        return responderJson(false, 'Todos los campos son obligatorios', null, 400);
+    if ($nombre === '' || $apellido === '' || $email === '' || $password === '' || $fecha_nacimiento === '' || $telefono === '') {
+        return responderJson(
+            false,
+            'Todos los campos son obligatorios',
+            null,
+            400
+        );
     }
 
     // 1.5. Validar formato de email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         return responderJson(false, 'El email no tiene un formato válido', null, 400);
+    }
+
+    $fecha = DateTime::createFromFormat(
+    'Y-m-d',
+    $fecha_nacimiento
+    );
+    if (!$fecha || $fecha->format('Y-m-d') !== $fecha_nacimiento) {
+        return responderJson(
+            false,
+            'La fecha de nacimiento no es válida',
+            null,
+            400
+        );
+    }
+    $hoy = new DateTime();
+    if ($fecha > $hoy) {
+        return responderJson(
+            false,
+            'La fecha de nacimiento no puede ser futura',
+            null,
+            400
+        );
     }
 
     // 2. Normalizar email
@@ -59,20 +88,34 @@ function registroController($datos)
     // 5. Buscar si ya existe el usuario local
     $usuarioLocal = buscar_usuario_por_uid_pp2($uid_pp2);
 
-    if ($usuarioLocal === false) {
-        $usuarioLocal = crear_usuario_local_desde_padron([
-            'id_rol' => (int) $rol_usuario['id'],
+    if (!$usuarioLocal) {
+        $usuarioLocal = crear_usuario_local_desde_padron(
+            [
+                'id_rol' => (int) $rol_usuario['id'],
+                'nombre' => $nombre,
+                'apellido' => $apellido,
+                'fecha_nacimiento' => $fecha_nacimiento,
+                'uid_pp2' => $uid_pp2,
+                'password' => $password
+            ]
+        );
+    } else {
+        $usuarioLocal = actualizar_usuario_local_desde_padron((int) $usuarioLocal['id'],
+            [
             'nombre' => $nombre,
             'apellido' => $apellido,
-            'uid_pp2' => $uid_pp2,
-            'password' => $password
-        ]);
-    } else {
-        $usuarioLocal = actualizar_usuario_local_desde_padron((int) $usuarioLocal['id'], [
-            'nombre' => $nombre,
-            'apellido' => $apellido
-        ]);
+            'fecha_nacimiento' => $fecha_nacimiento
+            ]
+        );
     }
+
+    registrar_contacto_usuario((int) $usuarioLocal['id'],
+        [
+            'id_tipo_contacto' => 2,
+            'valor' => $telefono,
+            'es_principal' => true
+        ]
+    );
 
     // 6. Verificar que esté habilitado
     if (!$usuarioLocal['estado']) {

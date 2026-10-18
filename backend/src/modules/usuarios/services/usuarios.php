@@ -60,42 +60,34 @@ function modificar_usuario(
             'El id del usuario no es válido.'
         );
     }
-
     $usuario = obtener_usuario_por_id($id);
-
     if (!$usuario) {
         return false;
     }
-
     $nombre = trim($datos['nombre'] ?? '');
     $apellido = trim($datos['apellido'] ?? '');
     $fecha_nacimiento = trim(
         $datos['fecha_nacimiento'] ?? ''
     );
-
     if ($nombre === '') {
         throw new InvalidArgumentException(
             'El nombre es obligatorio.'
         );
     }
-
     if ($apellido === '') {
         throw new InvalidArgumentException(
             'El apellido es obligatorio.'
         );
     }
-
     if ($fecha_nacimiento === '') {
         throw new InvalidArgumentException(
             'La fecha de nacimiento es obligatoria.'
         );
     }
-
     $fecha = DateTime::createFromFormat(
         'Y-m-d',
         $fecha_nacimiento
     );
-
     if (
         !$fecha ||
         $fecha->format('Y-m-d') !== $fecha_nacimiento
@@ -104,7 +96,6 @@ function modificar_usuario(
             'La fecha de nacimiento no es válida.'
         );
     }
-
     $usuario_actualizado = actualizar_usuario(
         $id,
         [
@@ -113,7 +104,6 @@ function modificar_usuario(
             'fecha_nacimiento' => $fecha_nacimiento
         ]
     );
-
     if (!$usuario_actualizado) {
         return false;
     }
@@ -132,19 +122,15 @@ function eliminar_usuario(
             'El id del usuario no es válido.'
         );
     }
-
     if ($id === $id_usuario_actual) {
         throw new InvalidArgumentException(
             'No podés deshabilitar tu propio usuario.'
         );
     }
-
     $usuario = obtener_usuario_por_id($id);
-
     if (!$usuario) {
         return false;
     }
-
     if (
         $rol_usuario_actual === 'Administrador' &&
         $usuario['nombre_rol'] !== 'Usuario'
@@ -153,16 +139,12 @@ function eliminar_usuario(
             'Un Administrador solo puede deshabilitar usuarios comunes.'
         );
     }
-
     $eliminado = desactivar_usuario($id);
-
     if (!$eliminado) {
         return false;
     }
-
     $usuario_desactivado = $usuario;
     $usuario_desactivado['estado'] = false;
-
     
     return true;
 }
@@ -184,27 +166,21 @@ function cambiar_rol_usuario(
             'El id del rol no es válido.'
         );
     }
-
     if ($id_usuario === $id_usuario_actual) {
         throw new InvalidArgumentException(
             'No podés cambiar tu propio rol.'
         );
     }
-
     $usuario = obtener_usuario_por_id($id_usuario);
-
     if (!$usuario) {
         return false;
     }
-
     $rol = obtener_rol_por_id($id_rol);
-
     if (!$rol) {
         throw new InvalidArgumentException(
             'El rol seleccionado no existe.'
         );
     }
-
     if (
         isset($rol['estado']) &&
         !$rol['estado']
@@ -213,19 +189,55 @@ function cambiar_rol_usuario(
             'El rol seleccionado está deshabilitado.'
         );
     }
-
     $actualizado = actualizar_rol_usuario(
         $id_usuario,
         $id_rol
     );
-
     if (!$actualizado) {
     return false;
     }
-
     $usuario_actualizado = obtener_usuario_por_id(
         $id_usuario
     );
-
     return true;
+}
+
+function validar_usuario_mayor_de_edad(int $id_usuario): void {
+    if ($id_usuario <= 0) {
+        throw new InvalidArgumentException(
+            'El usuario no es válido.'
+        );
+    }
+
+    $usuario = obtener_usuario_por_id($id_usuario);
+    if (!$usuario) {
+        throw new InvalidArgumentException(
+            'El usuario no existe.'
+        );
+    }
+    $fecha_nacimiento = $usuario['fecha_nacimiento'] ?? null;
+    if (empty($fecha_nacimiento)) {
+        throw new InvalidArgumentException(
+            'Debe tener una fecha de nacimiento registrada para postularse.'
+        );
+    }
+    $fecha = DateTime::createFromFormat(
+        'Y-m-d',
+        $fecha_nacimiento
+    );
+    if (
+        !$fecha ||
+        $fecha->format('Y-m-d') !== $fecha_nacimiento
+    ) {
+        throw new InvalidArgumentException(
+            'La fecha de nacimiento del usuario no es válida.'
+        );
+    }
+    $hoy = new DateTime();
+    $edad = $hoy->diff($fecha)->y;
+    if ($edad < 18) {
+        throw new InvalidArgumentException(
+            'Debés tener 18 años o más para postularte.'
+        );
+    }
 }

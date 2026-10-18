@@ -1,8 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../repositories/formularios_adopcion.php';
-
-
+require_once __DIR__ . '/../../usuarios/services/usuarios.php';
 
 // CATÁLOGOS
 
@@ -10,11 +9,9 @@ function listar_compromisos_adopcion(): array {
     return obtener_compromisos_adopcion();
 }
 
-
 function listar_condiciones_especiales(): array {
     return obtener_condiciones_especiales();
 }
-
 
 function listar_tipos_mascotas(): array {
     return obtener_tipos_mascotas();
@@ -28,15 +25,12 @@ function validar_solicitud_para_formulario(int $id_solicitud, int $id_usuario_ac
             'El id de la solicitud no es válido.'
         );
     }
-
     $solicitud = obtener_datos_solicitud($id_solicitud);
-
     if (!$solicitud) {
         throw new InvalidArgumentException(
             'La solicitud no existe.'
         );
     }
-
     if (!$es_admin && (int) $solicitud['id_usuario'] !== $id_usuario_actual) {
         throw new InvalidArgumentException(
             'No podés operar sobre una solicitud que no es tuya.'
@@ -49,7 +43,6 @@ function validar_solicitud_para_formulario(int $id_solicitud, int $id_usuario_ac
 
 function validar_solicitud_pendiente(array $solicitud): void {
     $estado = strtolower(trim((string) $solicitud['estado_solicitud']));
-
     if ($estado !== 'pendiente') {
         throw new InvalidArgumentException(
             'Solo se puede crear o modificar el formulario mientras la solicitud está pendiente.'
@@ -222,7 +215,6 @@ function validar_mascotas_hogar(array $mascotas): void {
 }
 
 
-
 // OPERACIONES
 function obtener_formulario_adopcion(int $id, int $id_usuario_actual, bool $es_admin): array {
     if ($id <= 0) {
@@ -269,6 +261,7 @@ function obtener_formulario_por_solicitud(int $id_solicitud, int $id_usuario_act
 
 
 function registrar_formulario_adopcion(int $id_usuario_actual, array $datos): array {
+    validar_usuario_mayor_de_edad($id_usuario_actual);
     $id_solicitud = filter_var($datos['id_solicitud'] ?? null, FILTER_VALIDATE_INT);
 
     if ($id_solicitud === false || $id_solicitud <= 0) {
