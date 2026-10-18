@@ -9,6 +9,7 @@ require_once __DIR__ . '/../utils/response.php';
 require_once __DIR__ . '/../middleware/autorizacion.php';
 require_once __DIR__ . '/../modules/voluntariado/controllers/voluntariado.php';
 require_once __DIR__ . '/../modules/adopciones/controllers/motivos_adopcion.php';
+require_once __DIR__ . '/../modules/adopciones/controllers/enfermedades_condiciones.php';
 
 
 function manejarRutas() {
@@ -301,6 +302,10 @@ function manejarRutas() {
         case 'formularios_adopcion':
             require_once __DIR__ . '/../modules/adopciones/controllers/formularios_adopcion.php';
             manejar_formularios_adopcion();
+            break;
+
+        case 'enfermedades_condiciones':
+            manejar_enfermedades_condiciones();
             break;
 
         case 'tipos_movimientos_mascotas':
