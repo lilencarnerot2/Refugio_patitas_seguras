@@ -1,12 +1,16 @@
 <?php
-$esDetalleTransito = ($solicitudDetalleTipo ?? '') === 'transito';
-$solicitudDetalleVariante = $esDetalleTransito ? 'transito' : 'adopcion';
+$tipoDetalle = trim((string) ($solicitudDetalleTipo ?? ''));
+$solicitudDetalleHref = basename($_SERVER['SCRIPT_NAME'] ?? '');
+$solicitudDetalleListado = $solicitudDetalleListado ?? 'solicitudes.php';
 $atributoCompatibilidadManual = empty($solicitudCompatibilidadManual) ? '' : ' data-compatibilidad-manual';
 $atributoEvaluacionManual = !empty($solicitudEvaluacionManual) ? ' data-evaluacion-manual' : '';
-$solicitudDetalleHref = $solicitudDetalleHref ?? ($esDetalleTransito ? 'transito_detalle.php' : 'adopcion_detalle.php');
-$solicitudRecursoFormulario = $esDetalleTransito ? 'formularios_transito' : 'formularios_adopcion';
 ?>
-    <section id="panel-solicitud-detalle" class="panel-listado" data-listado="solicitudes.php" data-tipo="<?php echo htmlspecialchars($solicitudDetalleVariante, ENT_QUOTES, 'UTF-8'); ?>" data-vista-href="<?php echo htmlspecialchars($solicitudDetalleHref, ENT_QUOTES, 'UTF-8'); ?>" data-recurso-formulario="<?php echo htmlspecialchars($solicitudRecursoFormulario, ENT_QUOTES, 'UTF-8'); ?>" data-etiqueta-si="Sí" data-etiqueta-no="No"<?php echo $atributoEvaluacionManual . $atributoCompatibilidadManual; ?>>
+    <section id="panel-solicitud-detalle" class="panel-listado"
+        data-listado="<?php echo htmlspecialchars($solicitudDetalleListado, ENT_QUOTES, 'UTF-8'); ?>"
+        data-tipo="<?php echo htmlspecialchars($tipoDetalle, ENT_QUOTES, 'UTF-8'); ?>"
+        data-vista-href="<?php echo htmlspecialchars($solicitudDetalleHref, ENT_QUOTES, 'UTF-8'); ?>"
+        data-si="Sí"
+        data-no="No"<?php echo $atributoEvaluacionManual . $atributoCompatibilidadManual; ?>>
         <p id="mensaje-formulario" class="mensaje-formulario" role="alert" aria-live="assertive" aria-atomic="true"></p>
 
 <?php require __DIR__ . '/solicitud_detalle_cabecera.php'; ?>
@@ -26,6 +30,6 @@ $solicitudRecursoFormulario = $esDetalleTransito ? 'formularios_transito' : 'for
 
 <?php require __DIR__ . '/solicitud_detalle_modal_estado.php'; ?>
 
-<script src="config.php"></script>
-<script src="../assets/js/api.js"></script>
-<script src="../assets/js/solicitud-detalle.js"></script>
+<script src="config.php?v=<?php echo (int) @filemtime(__DIR__ . '/../config.php'); ?>"></script>
+<script src="../assets/js/api.js?v=<?php echo (int) @filemtime(__DIR__ . '/../../assets/js/api.js'); ?>"></script>
+<script src="../assets/js/solicitud-detalle.js?v=<?php echo (int) @filemtime(__DIR__ . '/../../assets/js/solicitud-detalle.js'); ?>"></script>

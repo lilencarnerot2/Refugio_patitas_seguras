@@ -1712,12 +1712,15 @@
 
         #bloque-solicitud {
             display: grid;
-            grid-template-columns: 1fr;
-            grid-template-rows: auto auto;
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-rows: auto auto auto;
             align-items: start;
+            justify-items: center;
+            gap: 0 0;
             width: 100%;
-            max-width: none;
+            max-width: min(980px, 100%);
             min-width: 0;
+            margin: 0 auto;
         }
 
         #bloque-solicitud .solicitud-formulario { display: contents; }
@@ -1725,11 +1728,12 @@
         #bloque-solicitud #ficha-mascota {
             grid-row: 2;
             grid-column: 1;
-            justify-self: start;
+            justify-self: center;
             align-self: start;
-            width: 280px;
+            width: min(280px, 100%);
             max-width: 280px;
             height: auto;
+            margin-bottom: 24px;
             border: 1px solid var(--tema-crema-claro-borde);
         }
 
@@ -1816,7 +1820,7 @@
         #bloque-solicitud .page-intro h2 { text-align: center; }
 
         #bloque-solicitud .public-form {
-            grid-row: 2;
+            grid-row: 3;
             grid-column: 1;
             justify-self: center;
             width: min(640px, 100%);
@@ -1826,6 +1830,35 @@
             text-align: left;
             border: 1px solid var(--tema-crema-claro-borde);
             border-radius: 18px;
+        }
+
+        @media (min-width: 993px) {
+            #bloque-solicitud {
+                grid-template-columns: 280px minmax(0, 640px);
+                grid-template-rows: auto minmax(0, auto);
+                justify-content: center;
+                column-gap: 32px;
+            }
+
+            #bloque-solicitud .page-intro {
+                grid-column: 1 / -1;
+            }
+
+            #bloque-solicitud #ficha-mascota {
+                grid-row: 2;
+                grid-column: 1;
+                justify-self: start;
+                margin-bottom: 0;
+            }
+
+            #bloque-solicitud .public-form {
+                grid-row: 2;
+                grid-column: 2;
+                justify-self: stretch;
+                width: 100%;
+                max-width: 640px;
+                margin: 0;
+            }
         }
 
         .form-seccion {
@@ -2335,10 +2368,15 @@
             .pet-detail-body { padding: 24px 18px; }
             .public-form { padding: 20px 16px; }
             #acceso-solicitud { padding: 20px 16px 36px; }
-            #bloque-solicitud { grid-template-rows: auto auto auto; }
+
+            #bloque-solicitud {
+                grid-template-columns: minmax(0, 1fr);
+                grid-template-rows: auto auto auto;
+            }
 
             #bloque-solicitud #ficha-mascota {
                 grid-row: 2;
+                grid-column: 1;
                 min-width: 0;
                 margin: 0 auto 36px;
             }
@@ -2350,7 +2388,9 @@
 
             #bloque-solicitud .public-form {
                 grid-row: 3;
+                grid-column: 1;
                 width: 100%;
+                max-width: 100%;
                 margin-left: 0;
                 margin-right: 0;
                 max-height: min(68vh, 680px);

@@ -3,26 +3,86 @@ var API_URL = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) || '';
 var INICIO_URL = (window.APP_CONFIG && window.APP_CONFIG.inicioUrl) || '';
 var PANEL_URL = (window.APP_CONFIG && window.APP_CONFIG.panelUrl) || '';
 
-function apiRequest(recurso, opciones) {
-  if (!API_URL) {
-    return Promise.reject(new Error(''));
+function apiBaseUrl() {
+  var base = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) || API_URL || '';
+
+  return String(base).trim();
+}
+
+function nombreRecursoApi(recurso) {
+  var nombre = String(recurso === undefined || recurso === null ? '' : recurso).trim();
+
+  if (!nombre || !/^[a-z0-9_]+$/i.test(nombre)) {
+    return '';
   }
 
-  var url = API_URL;
+  return nombre;
+}
 
-  var params = new URLSearchParams();
-  params.set('recurso', recurso);
+function urlSolicitudApi(recurso, parametros) {
+  var base = apiBaseUrl();
+  var nombre = nombreRecursoApi(recurso);
+  var url;
+  var separador;
+  var clave;
+  var val;
 
-  var opts = opciones || {};
-  var extra = opts.parametros || {};
-  Object.keys(extra).forEach(function (key) {
-    var val = extra[key];
+  if (!base || !nombre) {
+    return '';
+  }
+
+  base = base.split('#')[0].split('?')[0];
+
+  if (/^https?:\/\//i.test(base)) {
+    url = base + '?recurso=' + encodeURIComponent(nombre);
+  } else {
+    url = base.replace(/\/?$/, '') + '?recurso=' + encodeURIComponent(nombre);
+
+    if (url.charAt(0) !== '/') {
+      url = '/' + url.replace(/^\/+/, '');
+    }
+
+    try {
+      url = new URL(url, window.location.origin).toString().split('#')[0];
+    } catch (e) {
+      return '';
+    }
+  }
+
+  Object.keys(parametros || {}).forEach(function (key) {
+    clave = String(key || '').trim();
+
+    if (!clave) {
+      return;
+    }
+
+    val = parametros[key];
+
     if (val !== undefined && val !== null && val !== '') {
-      params.set(key, val);
+      separador = url.indexOf('?') >= 0 ? '&' : '?';
+      url += separador + encodeURIComponent(clave) + '=' + encodeURIComponent(val);
     }
   });
 
-  var config = {
+  return url;
+}
+
+function apiRequest(recurso, opciones) {
+  var url;
+  var opts = opciones || {};
+  var config;
+
+  if (!apiBaseUrl()) {
+    return Promise.reject(new Error(''));
+  }
+
+  url = urlSolicitudApi(recurso, opts.parametros || {});
+
+  if (!url) {
+    return Promise.reject(new Error(''));
+  }
+
+  config = {
     method: opts.metodo || 'GET',
     headers: {},
     credentials: opts.credentials || 'include'
@@ -33,7 +93,7 @@ function apiRequest(recurso, opciones) {
     config.body = JSON.stringify(opts.cuerpo);
   }
 
-  return fetch(url + '?' + params.toString(), config)
+  return fetch(url, config)
     .then(function (response) {
       return response.json().catch(function () {
         return null;
@@ -679,8 +739,159 @@ function esTipoSolicitudTransito(valor) {
   return tipo.indexOf('transito') !== -1 || (tipo.indexOf('hogar') !== -1 && tipo.indexOf('trans') !== -1);
 }
 
+function panelConfigSolicitudAdmin() {
+  return document.getElementById('panel-solicitudes')
+    || document.getElementById('panel-solicitud-detalle')
+    || document.getElementById('panel-seguimientos-admin')
+    || null;
+}
+
+function configDetalleSolicitudAdmin() {
+  var cfg = window.APP_CONFIG && window.APP_CONFIG.detalleSolicitud;
+
+  return cfg && typeof cfg === 'object' ? cfg : null;
+}
+
+function recursoDetalleSolicitudAdmin(tipoDetalle, clave) {
+  var cfg = configDetalleSolicitudAdmin();
+  var comunes;
+  var tipo;
+  var bloque;
+
+  if (!cfg || !clave) {
+    return '';
+  }
+
+  comunes = cfg.comunes || {};
+
+  if (clave === 'solicitud' || clave === 'mascotas' || clave === 'estadosSolicitud' || clave === 'tiposSolicitud') {
+    return nombreRecursoApi(comunes[clave] || '');
+  }
+
+  tipo = normalizarClaveTipoSolicitud(tipoDetalle);
+  bloque = cfg[tipo] || {};
+
+  return nombreRecursoApi(bloque[clave] || '');
+}
+
+function apiSolicitudDetalleAdmin(idSolicitud) {
+  var recurso = recursoDetalleSolicitudAdmin('', 'solicitud');
+
+  if (!recurso) {
+    return Promise.reject(new Error(''));
+  }
+
+  return apiRequest(recurso, {
+    parametros: { id: idSolicitud }
+  });
+}
+
+function apiFormularioSolicitudDetalleAdmin(tipoDetalle, idSolicitud) {
+  var recurso = recursoDetalleSolicitudAdmin(tipoDetalle, 'formulario');
+
+  if (!recurso) {
+    return Promise.reject(new Error(''));
+  }
+
+  return apiRequest(recurso, {
+    parametros: { id_solicitud: idSolicitud }
+  });
+}
+
+function apiMascotaDetalleAdmin(idMascota) {
+  var recurso = recursoDetalleSolicitudAdmin('', 'mascotas');
+
+  if (!recurso) {
+    return Promise.reject(new Error(''));
+  }
+
+  return apiRequest(recurso, {
+    parametros: { id: idMascota }
+  });
+}
+
+function apiCompatibilidadDetalleAdmin(tipoDetalle, idSolicitud) {
+  var recurso = recursoDetalleSolicitudAdmin(tipoDetalle, 'compatibilidad');
+
+  if (!recurso) {
+    return Promise.reject(new Error(''));
+  }
+
+  return apiRequest(recurso, {
+    parametros: { id_solicitud: idSolicitud }
+  });
+}
+
+function apiEstadosSolicitudDetalleAdmin() {
+  var recurso = recursoDetalleSolicitudAdmin('', 'estadosSolicitud');
+
+  if (!recurso) {
+    return Promise.reject(new Error(''));
+  }
+
+  return apiRequest(recurso);
+}
+
+function apiTiposSolicitudDetalleAdmin() {
+  var recurso = recursoDetalleSolicitudAdmin('', 'tiposSolicitud');
+
+  if (!recurso) {
+    return Promise.reject(new Error(''));
+  }
+
+  return apiRequest(recurso);
+}
+
+function apiActualizarEstadoSolicitudDetalleAdmin(idSolicitud, idEstado) {
+  var recurso = recursoDetalleSolicitudAdmin('', 'solicitud');
+
+  if (!recurso) {
+    return Promise.reject(new Error(''));
+  }
+
+  return apiRequest(recurso, {
+    metodo: 'PUT',
+    parametros: { id: idSolicitud },
+    cuerpo: { id_estado_solicitud: idEstado }
+  });
+}
+
+function vistasDetalleAdmin() {
+  var cfg = configDetalleSolicitudAdmin();
+
+  return cfg && cfg.vistas && typeof cfg.vistas === 'object' ? cfg.vistas : null;
+}
+
+function hrefDetallePorTransito(esTransito) {
+  var vistas = vistasDetalleAdmin();
+  var href = vistas ? (esTransito ? vistas.transito : vistas.adopcion) : '';
+
+  return href ? String(href).replace(/\?.*$/, '') : '';
+}
+
+function hrefSeguimientosPorTransito(esTransito) {
+  var vistas = vistasDetalleAdmin();
+  var href = vistas ? (esTransito ? vistas.seguimientosTransito : vistas.seguimientosAdopcion) : '';
+
+  return href ? String(href).replace(/\?.*$/, '') : '';
+}
+
+function hrefSeguimientosPorTipoDetalle(tipoDetalle) {
+  var clave = normalizarClaveTipoSolicitud(tipoDetalle);
+
+  if (clave === 'transito') {
+    return hrefSeguimientosPorTransito(true);
+  }
+
+  if (clave === 'adopcion') {
+    return hrefSeguimientosPorTransito(false);
+  }
+
+  return '';
+}
+
 function hrefDetallePorNombreTipo(nombre) {
-  return esTipoSolicitudTransito(nombre) ? 'transito_detalle.php' : 'adopcion_detalle.php';
+  return hrefDetallePorTransito(esTipoSolicitudTransito(nombre));
 }
 
 function enlazarModelosDetalleSolicitud(tipos) {
@@ -728,7 +939,17 @@ function enlaceDetalleSolicitud(solicitud) {
     return enlace.getAttribute('href').replace(/\?.*$/, '');
   }
 
-  return 'adopcion_detalle.php';
+  return hrefDetallePorTransito(false);
+}
+
+function esValorVerdaderoApi(valor) {
+  return valor === true || valor === 1 || valor === '1' || valor === 't' || valor === 'true';
+}
+
+function estadoSolicitudPermiteSeguimiento(nombreEstado) {
+  var clave = normalizarClaveTipoSolicitud(nombreEstado);
+
+  return clave.indexOf('aprob') !== -1;
 }
 
 function nombreArchivoRutaSolicitud(ruta) {
@@ -1027,7 +1248,7 @@ function datosFormularioDeRespuesta(respuesta, opciones) {
     return null;
   }
 
-  if (idSolicitud !== '') {
+  if (idSolicitud !== '' && !opts.omitirValidacionUsuario) {
     if (objeto.id_solicitud !== undefined && objeto.id_solicitud !== null) {
       if (String(objeto.id_solicitud) !== idSolicitud) {
         return null;
@@ -1041,11 +1262,30 @@ function datosFormularioDeRespuesta(respuesta, opciones) {
     }
   }
 
-  if (idUsuario !== '' && objeto.id_usuario !== undefined && objeto.id_usuario !== null) {
+  if (!opts.omitirValidacionUsuario && idUsuario !== '' && objeto.id_usuario !== undefined && objeto.id_usuario !== null) {
     if (String(objeto.id_usuario) !== idUsuario) {
       return null;
     }
   }
 
   return objeto;
+}
+
+if (typeof window !== 'undefined') {
+  window.esTipoSolicitudTransito = esTipoSolicitudTransito;
+  window.esValorVerdaderoApi = esValorVerdaderoApi;
+  window.estadoSolicitudPermiteSeguimiento = estadoSolicitudPermiteSeguimiento;
+  window.enlazarModelosDetalleSolicitud = enlazarModelosDetalleSolicitud;
+  window.enlaceDetalleSolicitud = enlaceDetalleSolicitud;
+  window.nombreArchivoRutaSolicitud = nombreArchivoRutaSolicitud;
+  window.datosFormularioDeRespuesta = datosFormularioDeRespuesta;
+  window.hrefSeguimientosPorTransito = hrefSeguimientosPorTransito;
+  window.hrefSeguimientosPorTipoDetalle = hrefSeguimientosPorTipoDetalle;
+  window.apiSolicitudDetalleAdmin = apiSolicitudDetalleAdmin;
+  window.apiFormularioSolicitudDetalleAdmin = apiFormularioSolicitudDetalleAdmin;
+  window.apiMascotaDetalleAdmin = apiMascotaDetalleAdmin;
+  window.apiCompatibilidadDetalleAdmin = apiCompatibilidadDetalleAdmin;
+  window.apiEstadosSolicitudDetalleAdmin = apiEstadosSolicitudDetalleAdmin;
+  window.apiTiposSolicitudDetalleAdmin = apiTiposSolicitudDetalleAdmin;
+  window.apiActualizarEstadoSolicitudDetalleAdmin = apiActualizarEstadoSolicitudDetalleAdmin;
 }
