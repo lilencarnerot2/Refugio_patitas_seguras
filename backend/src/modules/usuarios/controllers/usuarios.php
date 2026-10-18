@@ -95,6 +95,49 @@ function manejar_usuarios(): void{
                 );
                 return;
             }
+
+            $accion = $_GET['accion'] ?? '';
+
+            if ($accion === 'activar') {
+                $id_usuario_actual = (int) $_SESSION['usuario_id'];
+
+            $usuario_actual =
+            buscar_usuario_por_id($id_usuario_actual);
+
+            if (!$usuario_actual) {
+                responderJson(
+                    false,
+                    'Usuario autenticado no encontrado.',
+                    null,
+                    401
+                );
+                return;
+            }
+
+            $activado = habilitar_usuario(
+            $id,
+            $id_usuario_actual,
+            $usuario_actual['nombre_rol']
+            );
+
+                if (!$activado) {
+                    responderJson(
+                        false,
+                        'Usuario no encontrado o ya habilitado.',
+                        null,
+                        404
+                    );
+                    return;
+                }
+                responderJson(
+                    true,
+                    'Usuario activado correctamente.',
+                    null,
+                    200
+                );
+                return;
+            }
+
             $datos = json_decode(
                 file_get_contents('php://input'),
                 true
