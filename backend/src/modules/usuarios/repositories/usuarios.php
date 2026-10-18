@@ -259,3 +259,20 @@ function desactivar_usuario(int $id): bool{
 
     return $consulta->rowCount() > 0;
 }
+
+function activar_usuario(int $id): bool{
+    $conexion = conectarDB();
+    $sql = "
+        UPDATE usuarios
+        SET estado = TRUE
+        WHERE id = :id
+          AND estado = FALSE
+    ";
+
+    $consulta = $conexion->prepare($sql);
+    $consulta->execute([
+        ':id' => $id
+    ]);
+
+    return $consulta->rowCount() > 0;
+}

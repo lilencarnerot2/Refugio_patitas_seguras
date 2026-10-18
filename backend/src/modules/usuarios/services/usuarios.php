@@ -149,6 +149,40 @@ function eliminar_usuario(
     return true;
 }
 
+function habilitar_usuario(
+    int $id,
+    int $id_usuario_actual,
+    string $rol_usuario_actual
+): bool {
+    if ($id <= 0) {
+        throw new InvalidArgumentException(
+            'El id del usuario no es válido.'
+        );
+    }
+    if ($id === $id_usuario_actual) {
+        throw new InvalidArgumentException(
+            'No podés modificar el estado de tu propio usuario.'
+        );
+    }
+    $usuario = obtener_usuario_por_id($id);
+    if (!$usuario) {
+        return false;
+    }
+    if (
+        $rol_usuario_actual === 'Administrador' &&
+        $usuario['nombre_rol'] !== 'Usuario'
+    ) {
+        throw new InvalidArgumentException(
+            'Un Administrador solo puede habilitar usuarios comunes.'
+        );
+    }
+    $activado = activar_usuario($id);
+    if (!$activado) {
+        return false;
+    }
+
+    return true;
+}
 
 function cambiar_rol_usuario(
     int $id_usuario,
