@@ -13,6 +13,7 @@ require_once __DIR__ . '/../modules/adopciones/controllers/enfermedades_condicio
 require_once __DIR__ . '/../modules/seguimientos/controllers/tipos_seguimientos.php';
 
 
+
 function manejarRutas() {
     $recurso = $_GET['recurso'] ?? '';
 
@@ -99,6 +100,17 @@ function manejarRutas() {
                 }
             }
             manejarMascotas();
+            break;
+
+        case 'foto_mascota':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
+            require_once __DIR__ . '/../modules/mascotas/controllers/fotos_mascotas.php';
+            manejarFotoMascota();
             break;
 
         case 'login':
