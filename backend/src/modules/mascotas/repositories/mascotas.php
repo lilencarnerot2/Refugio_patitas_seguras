@@ -190,3 +190,19 @@ function desactivarMascota($id){
 
     return $consulta->fetch(PDO::FETCH_ASSOC);
 }
+function desactivar_mascota_por_id(int $id): bool
+{
+    $conexion = conectarDB();
+
+    $sql = "
+        UPDATE mascotas
+        SET estado = FALSE
+        WHERE id = :id
+          AND estado = TRUE
+    ";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([':id' => $id]);
+
+    return $stmt->rowCount() > 0;
+}

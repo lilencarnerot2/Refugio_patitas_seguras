@@ -20,6 +20,24 @@ function loginController($datos)
         );
     }
 
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return responderJson(
+            false,
+            'El email no tiene un formato válido',
+            null,
+            400
+        );
+    }
+
+    if (strlen($password) < 8) {
+        return responderJson(
+            false,
+            'La contraseña debe tener al menos 8 caracteres',
+            null,
+            400
+        );
+    }
+
     // 2. Normalizar email
     $email = strtolower($email);
 
