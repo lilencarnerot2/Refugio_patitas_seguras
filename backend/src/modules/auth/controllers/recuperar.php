@@ -26,6 +26,9 @@ function solicitar_reset_controller($datos)
     }
 
     $email = strtolower($email);
+//buscamos si el usuario existe en la base de datos local a traves del padron
+   require_once __DIR__ . '/../../usuarios/repositories/usuarios.php';
+   require_once __DIR__ . '/../../usuarios/repositories/usuarios.php';
 
     $resultado = solicitarResetEnPadron($email);
 
@@ -75,6 +78,14 @@ function manejar_solicitar_cambio_password()
 
     if (!requerir_autenticacion()) {
         return;
+    }
+
+    //VALIDACION , para asegurarnos de que el usuario esté habilitado antes de permitir el cambio de contraseña
+     require_once __DIR__ . '/../../usuarios/services/usuarios.php';
+    $usuario_actual = buscar_usuario_por_id((int)$_SESSION['usuario_id']);
+    
+    if (!$usuario_actual || !$usuario_actual['estado']) {
+        return responderJson(false, 'Usuario deshabilitado. Contactá al administrador.', null, 403);
     }
 
     $body = file_get_contents('php://input');
