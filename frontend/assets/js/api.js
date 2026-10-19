@@ -12,7 +12,7 @@ function apiBaseUrl() {
 function nombreRecursoApi(recurso) {
   var nombre = String(recurso === undefined || recurso === null ? '' : recurso).trim();
 
-  if (!nombre || !/^[a-z0-9_]+$/i.test(nombre)) {
+  if (!nombre || !/^[a-z0-9_-]+$/i.test(nombre)) {
     return '';
   }
 
@@ -67,6 +67,17 @@ function urlSolicitudApi(recurso, parametros) {
   return url;
 }
 
+function urlFotoMascota(valor) {
+  var ruta = String(valor === undefined || valor === null ? '' : valor).trim();
+  var base = apiBaseUrl().split('#')[0].split('?')[0];
+
+  if (ruta === '' || !base || ruta.charAt(0) !== '/' || ruta.charAt(1) === '/') {
+    return ruta;
+  }
+
+  return base + '?archivo=' + encodeURIComponent(ruta);
+}
+
 function apiRequest(recurso, opciones) {
   var url;
   var opts = opciones || {};
@@ -88,7 +99,9 @@ function apiRequest(recurso, opciones) {
     credentials: opts.credentials || 'include'
   };
 
-  if (opts.cuerpo !== undefined) {
+  if (opts.cuerpo !== undefined && typeof FormData !== 'undefined' && opts.cuerpo instanceof FormData) {
+    config.body = opts.cuerpo;
+  } else if (opts.cuerpo !== undefined) {
     config.headers['Content-Type'] = 'application/json';
     config.body = JSON.stringify(opts.cuerpo);
   }
@@ -256,6 +269,8 @@ function fechaHoraLista(valor) {
 
   return fechaParte || horaParte;
 }
+
+var barrioSinDato = 'Sin barrio';
 
 function fechaDeHoyIso() {
   var hoy = new Date();
@@ -477,6 +492,41 @@ function marcarIntentoEnvio(formulario) {
   }
 
   formulario.setAttribute('data-intento-envio', '1');
+}
+
+function formatosValidos(formulario, caja) {
+  var invalidos = [];
+  var avisos = [];
+
+  avisoDeApi(caja, '', true, formulario);
+
+  formulario.querySelectorAll('input[pattern]').forEach(function (campo) {
+    if (campo.disabled || campo.value === '') {
+      return;
+    }
+
+    if (campo.validity.patternMismatch) {
+      invalidos.push(campo);
+
+      if (campo.title && avisos.indexOf(campo.title) === -1) {
+        avisos.push(campo.title);
+      }
+    }
+  });
+
+  if (!invalidos.length) {
+    return true;
+  }
+
+  marcarIntentoEnvio(formulario);
+
+  invalidos.forEach(function (campo) {
+    campo.setAttribute('data-campo-estado', 'error');
+  });
+
+  avisoDeApi(caja, avisos.join(' '), false);
+
+  return false;
 }
 
 function limpiarMarcasCampos(formulario) {

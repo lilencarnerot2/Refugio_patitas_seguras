@@ -4,6 +4,8 @@ require __DIR__ . '/../public/includes/head.php';
 require __DIR__ . '/../public/includes/header.php';
 ?>
 
+
+
     <section id="acceso-solicitud">
         <div id="mensaje-solicitud" class="alert alert-danger text-center" role="alert"></div>
 
@@ -84,7 +86,7 @@ require __DIR__ . '/../public/includes/header.php';
                                         <div class="col-md-6">
                                             <label class="form-label" for="horas_solo">Horas solo</label>
                                             <input class="form-control" type="number" min="0" max="8" id="horas_solo" name="horas_solo" aria-describedby="ayuda-horas-solo">
-                                            <div id="ayuda-horas-solo" class="form-text">Coloque un número del 0 al 8 (máximo de 8 horas).</div>
+                                            <div id="ayuda-horas-solo" class="form-text">Horas al día que la mascota quedaría sola (0 a 8).</div>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-check" for="hay_ninos">
@@ -174,33 +176,33 @@ require __DIR__ . '/../public/includes/header.php';
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label class="form-label" for="id_provincia">Provincia</label>
-                                            <select class="form-select" id="id_provincia" name="id_provincia" data-catalogo="provincias" data-carga="id_comuna_municipio">
+                                            <select class="form-select" id="id_provincia" name="id_provincia" data-catalogo="provincias" data-carga="id_comuna_municipio" required>
                                                 <option value="" selected disabled></option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="id_comuna_municipio">Comuna o municipio</label>
-                                            <select class="form-select" id="id_comuna_municipio" name="id_comuna_municipio" data-catalogo="comunas_municipios" data-param="id_provincia" data-carga="id_localidad">
+                                            <select class="form-select" id="id_comuna_municipio" name="id_comuna_municipio" data-catalogo="comunas_municipios" data-param="id_provincia" data-carga="id_localidad" required>
                                                 <option value="" selected disabled></option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="id_localidad">Localidad</label>
-                                            <select class="form-select" id="id_localidad" name="id_localidad" data-catalogo="localidades" data-param="id_comuna_municipio" data-carga="id_barrio_zona">
+                                            <select class="form-select" id="id_localidad" name="id_localidad" data-catalogo="localidades" data-param="id_comuna_municipio" required>
                                                 <option value="" selected disabled></option>
                                             </select>
                                         </div>
-                                        <div class="col-md-6" id="grupo-barrio-zona">
-                                            <label class="form-label" for="id_barrio_zona">Barrio o zona <span class="text-muted fw-normal">(opcional)</span></label>
-                                            <select class="form-select" id="id_barrio_zona" name="id_barrio_zona" data-carga="id_barrio_zona" required></select>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="nombre_barrio">Barrio o zona</label>
+                                            <input class="form-control" type="text" id="nombre_barrio" name="nombre_barrio">
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="calle">Calle</label>
-                                            <input class="form-control" type="text" id="calle" name="calle">
+                                            <input class="form-control" type="text" id="calle" name="calle" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="altura">Altura</label>
-                                            <input class="form-control" type="text" id="altura" name="altura">
+                                            <input class="form-control" type="text" id="altura" name="altura" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="piso">Piso</label>
@@ -232,7 +234,7 @@ require __DIR__ . '/../public/includes/header.php';
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="codigo_postal">Código postal</label>
-                                            <input class="form-control" type="text" id="codigo_postal" name="codigo_postal">
+                                            <input class="form-control" type="text" id="codigo_postal" name="codigo_postal" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="telefono">Teléfono</label>

@@ -84,7 +84,7 @@ function esClaveDeTabla(clave) {
 function claveVisibleEnTablaMovimientos(clave, items) {
     if (!esClaveDeTabla(clave) && clave !== 'id') {
         if (esClaveUsuarioMovimiento(clave)) {
-            return Array.isArray(items) && items.some(movimientoTieneUsuario);
+            return Array.isArray(items) && items.length > 0;
         }
 
         return false;
@@ -96,7 +96,7 @@ function claveVisibleEnTablaMovimientos(clave, items) {
 function clavesDeTabla(item) {
     return clavesVisibles(item).filter(function (clave) {
         if (esClaveUsuarioMovimiento(clave)) {
-            return movimientoTieneUsuario(item);
+            return true;
         }
 
         return esClaveDeTabla(clave);
@@ -145,7 +145,7 @@ function valorCelda(valor) {
 
 function valorCeldaMovimiento(clave, valor, item) {
     if (esClaveUsuarioMovimiento(clave) && !movimientoTieneUsuario(item)) {
-        return '';
+        return clave === 'nombre_usuario' ? 'Donador anónimo' : '';
     }
 
     return valorCelda(valor);
@@ -705,12 +705,79 @@ function enlazarFormularioMovimiento(formulario, recargar) {
     });
 }
 
+function ponerFechaDeHoy(formulario) {
+    var campo = formulario.querySelector('input[data-fecha-hoy]');
+
+    if (campo) {
+        campo.value = fechaDeHoyIso();
+    }
+}
+
+function nombreDeCampoMovimiento(formulario, campo) {
+    var etiqueta = campo.id ? formulario.querySelector('label[for="' + campo.id + '"]') : null;
+
+    return etiqueta ? etiqueta.textContent.replace(/\s+/g, ' ').trim() : campo.name;
+}
+
+function movimientoValido(formulario, caja) {
+    var vacios = [];
+    var nombres = [];
+    var avisos = [];
+    var campoMonto = formulario.querySelector('[name="monto"]');
+    var montoInvalido = false;
+
+    avisoDeApi(caja, '', true, formulario);
+
+    Array.prototype.forEach.call(formulario.elements, function (campo) {
+        if (!campo.name || !campo.required || campo.disabled || campo.type === 'hidden' || campo.closest('[hidden]')) {
+            return;
+        }
+
+        if (String(campo.value || '').trim() === '') {
+            vacios.push(campo);
+            nombres.push(nombreDeCampoMovimiento(formulario, campo));
+        }
+    });
+
+    if (campoMonto && String(campoMonto.value || '').trim() !== '' && !(Number(campoMonto.value) > 0)) {
+        montoInvalido = true;
+    }
+
+    if (!vacios.length && !montoInvalido) {
+        return true;
+    }
+
+    if (vacios.length) {
+        avisos.push('Completá los campos obligatorios: ' + nombres.join(', ') + '.');
+    }
+
+    if (montoInvalido) {
+        campoMonto.setAttribute('data-campo-estado', 'error');
+        avisos.push('El monto tiene que ser mayor a 0.');
+    }
+
+    vacios.forEach(function (campo) {
+        campo.setAttribute('data-campo-estado', 'error');
+    });
+
+    marcarIntentoEnvio(formulario);
+    avisoDeApi(caja, avisos.join(' '), false);
+
+    return false;
+}
+
 function enviarMovimiento(formulario, recargar) {
     var caja = document.getElementById('mensaje-aportes');
 
     if (!formulario) {
         return Promise.resolve();
     }
+
+    if (formulario.getAttribute('data-enviando') !== '1' && !movimientoValido(formulario, caja)) {
+        return Promise.resolve();
+    }
+
+    ponerFechaDeHoy(formulario);
 
     actualizarCamposDependientes(formulario);
 
@@ -719,6 +786,7 @@ function enviarMovimiento(formulario, recargar) {
         cuerpo: cuerpoDesdeForm(formulario)
     }).then(function () {
         formulario.reset();
+        formulario.removeAttribute('data-intento-envio');
         formulario.querySelectorAll('select[data-catalogo]').forEach(seleccionarOpcionUnica);
         actualizarCamposDependientes(formulario);
         aplicarFechasMinimasFormulario(formulario);
@@ -865,7 +933,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    cargarCatalogos(panel).then(cargarListado);
+    cargarCatalogos(panel).then(function () {
+        cargarListado();
+        enlazarFormularioMovimiento(document.getElementById('form-egreso'), cargarListado);
+    });
 
     if (filtroTipo) {
         filtroTipo.addEventListener('change', function () {

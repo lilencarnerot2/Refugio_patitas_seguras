@@ -142,7 +142,7 @@ function armarTarjeta(mascota) {
     tarjeta.removeAttribute('id');
 
     if (mascota.foto_url) {
-        imagen.src = mascota.foto_url;
+        imagen.src = urlFotoMascota(mascota.foto_url);
         imagen.alt = mascota.nombre || '';
         imagen.hidden = false;
         vacia.hidden = true;

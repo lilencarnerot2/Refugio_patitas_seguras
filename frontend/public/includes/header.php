@@ -22,14 +22,14 @@ $donar = '/public/donaciones.php';
         <nav>
             <ul>
                 <li><a href="<?php echo $esInicio ? '#inicio' : $inicio; ?>">INICIO</a></li>
-                <li><a href="<?php echo $inicio; ?>#nosotros">NOSOTROS</a></li>
+                <li><a href="/public/nosotros.php">NOSOTROS</a></li>
                 <li class="nav-dropdown">
                     <details>
                         <summary>SUMATE</summary>
                         <ul class="dropdown-menu">
+                            <li><a href="<?php echo $requisitos; ?>">REQUISITOS</a></li>
                             <li><a href="<?php echo $catalogo; ?>#adopcion">ADOPTÁ</a></li>
                             <li><a href="<?php echo $catalogo; ?>">HOGAR DE TRÁNSITO</a></li>
-                            <li><a href="<?php echo $requisitos; ?>">REQUISITOS</a></li>
                             <li><a href="/public/voluntariado.php">SE VOLUNTARIO</a></li>
                         </ul>
                     </details>
@@ -38,14 +38,12 @@ $donar = '/public/donaciones.php';
                     <details>
                         <summary>CÓMO AYUDAR</summary>
                         <ul class="dropdown-menu">
-                            <li><a href="/public/donaciones_monetarias.php">DONACIÓN MONETARIA</a></li>
-                            <li><a href="/public/donaciones_insumos.php">DONACIÓN DE INSUMOS</a></li>
-                            <li><a href="<?php echo $inicio; ?>#modal-castracion">CASTRACIÓN</a></li>
-                            <li><a href="<?php echo $inicio; ?>#modal-maltrato">DENUNCIA MALTRATO</a></li>
+                            <li><a href="<?php echo $donar; ?>">DONACIÓN</a></li>
+                            <li><a href="/public/denuncia_maltrato.php">DENUNCIA MALTRATO</a></li>
                         </ul>
                     </details>
                 </li>
-                <li><a href="<?php echo $inicio; ?>#contacto">CONTACTO</a></li>
+                <li><a href="/public/contacto.php">CONTACTO</a></li>
                 <li class="nav-actions">
                     <?php if (!$autenticado) { ?>
                     <a class="btn-outline" href="<?php echo $login; ?>">INGRESAR</a>

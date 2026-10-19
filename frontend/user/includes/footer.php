@@ -1,3 +1,4 @@
+<?php $refugio = require __DIR__ . '/../../public/includes/datos_refugio.php'; ?>
     <footer class="perfil-footer">
         <div class="d-flex flex-column flex-lg-row align-items-center justify-content-between gap-2 gap-lg-3 text-center text-lg-start">
             <div class="d-flex align-items-center gap-2">
@@ -9,9 +10,9 @@
             </div>
 
             <ul class="list-unstyled d-flex flex-wrap justify-content-center gap-2 gap-md-3 mb-0 small">
-                <li><i class="bi bi-telephone"></i> 11 2345 6789</li>
-                <li><i class="bi bi-envelope"></i> profesionalizantes29@gmail.com</li>
-                <li><i class="bi bi-geo-alt"></i> Merlo, Buenos Aires, Argentina</li>
+                <li><i class="bi bi-telephone"></i> <?php echo($refugio['telefono'], ENT_QUOTES, 'UTF-8'); ?></li>
+                <li><i class="bi bi-envelope"></i> <?php echo($refugio['email'], ENT_QUOTES, 'UTF-8')); ?></li>
+                <li><i class="bi bi-geo-alt"></i> <?php echo($refugio['direccion'], ENT_QUOTES, 'UTF-8')); ?></li>
             </ul>
 
             <div class="d-flex gap-2">

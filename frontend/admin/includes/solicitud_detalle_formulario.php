@@ -75,14 +75,10 @@
                                             <label class="form-label">Otras mascotas</label>
                                             <span class="form-control formulario-dato" data-campo="tiene_mascotas"></span>
                                         </div>
-<<<<<<< Updated upstream
                                         <div class="col-12">
                                             <label class="form-label">Responsable</label>
                                             <span class="form-control formulario-dato" data-campo="responsable_principal"></span>
                                         </div>
-=======
-
->>>>>>> Stashed changes
                                         <div class="col-12">
                                             <label class="form-label">Motivo</label>
                                             <span class="form-control formulario-dato formulario-dato-multilinea" data-campo="motivo_adopcion"></span>

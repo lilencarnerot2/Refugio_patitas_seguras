@@ -39,14 +39,9 @@ $menuSolicitudesActivo = $paginaAdmin === 'solicitudes'
             </a>
         </li>
         <li>
-            <details>
-                <summary<?php echo in_array($paginaAdmin, ['mascotas', 'mascota_form', 'mascota_editar'], true) ? ' class="active"' : ''; ?>>
-                    <span class="icono-pata"></span> Mascotas
-                </summary>
-                <a href="mascotas.php"<?php echo $paginaAdmin === 'mascotas' ? ' class="active"' : ''; ?>>Listado</a>
-                <a href="mascota_form.php"<?php echo $paginaAdmin === 'mascota_form' ? ' class="active"' : ''; ?>>Nueva mascota</a>
-                <a href="mascota_editar.php"<?php echo $paginaAdmin === 'mascota_editar' ? ' class="active"' : ''; ?>>Editar mascota</a>
-            </details>
+            <a href="mascotas.php"<?php echo $paginaAdmin === 'mascotas' ? ' class="active"' : ''; ?>>
+                <span class="icono-pata"></span> Mascotas
+            </a>
         </li>
         <li>
             <a href="solicitudes.php"<?php echo $menuSolicitudesActivo ? ' class="active"' : ''; ?>>

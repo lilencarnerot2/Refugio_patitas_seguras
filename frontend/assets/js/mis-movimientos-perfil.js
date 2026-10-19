@@ -15,6 +15,11 @@ document.addEventListener('DOMContentLoaded', function () {
         return String(valor || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     }
 
+    function esDonacionPropia(item) {
+        return String(item && item.id_usuario) === String(valorCookie('usuario_id'))
+            && normalizarTexto(item.tipo_movimiento).indexOf('egreso') === -1;
+    }
+
     function itemEnGrupo(item, card) {
         var incluir = normalizarTexto(card.getAttribute('data-incluir-tipo-aporte'));
         var excluir = normalizarTexto(card.getAttribute('data-excluir-tipo-aporte'));
@@ -74,7 +79,6 @@ document.addEventListener('DOMContentLoaded', function () {
             columnas: columnasDeGrupo(card),
             cabecera: card.querySelector('[data-cabecera-movimientos]'),
             cuerpo: card.querySelector('[data-cuerpo-movimientos]'),
-            paginador: card.querySelector('[data-paginador]'),
             cantidad: card.querySelector('[data-cantidad]'),
             items: [],
             pagina: 1
@@ -170,10 +174,6 @@ document.addEventListener('DOMContentLoaded', function () {
             grupo.cantidad.textContent = String(visibles.length);
         }
 
-        if (grupo.paginador) {
-            grupo.paginador.hidden = visibles.length <= corte.porPagina;
-        }
-
         pintarTabla(grupo, visibles.slice(corte.desde, corte.hasta));
     }
 
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
         raiz.setAttribute('data-cargando', '1');
 
         return apiRequest('movimientos').then(function (respuesta) {
-            lista = listaMovimientosDe(respuesta);
+            lista = listaMovimientosDe(respuesta).filter(esDonacionPropia);
             repartirYpintar();
             cargado = true;
         }).catch(function (error) {

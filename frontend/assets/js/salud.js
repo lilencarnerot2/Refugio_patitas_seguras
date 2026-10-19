@@ -232,7 +232,7 @@ function mostrarMascotas(mascotas, estados) {
         imagen.alt = mascota.nombre || '';
 
         if (mascota.foto_url) {
-            imagen.src = mascota.foto_url;
+            imagen.src = urlFotoMascota(mascota.foto_url);
         } else {
             imagen.removeAttribute('src');
         }
