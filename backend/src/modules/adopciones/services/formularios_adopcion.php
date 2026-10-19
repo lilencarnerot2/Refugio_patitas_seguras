@@ -196,6 +196,7 @@ function validar_mascotas_hogar(array $mascotas): void {
             'Las mascotas del hogar deben ser una lista.'
         );
     }
+    
     foreach ($mascotas as $m) {
         if (
             empty($m['id_tipo_mascota']) ||
@@ -206,6 +207,7 @@ function validar_mascotas_hogar(array $mascotas): void {
             );
         }
 
+        // Validar edad: mayor a 0 y menor a 30
         if (
             isset($m['edad_aproximada']) &&
             $m['edad_aproximada'] !== null
@@ -219,23 +221,14 @@ function validar_mascotas_hogar(array $mascotas): void {
             }
         }
 
+        // Validar que la enfermedad sea un ID válido del catálogo
         if (
-            isset($m['id_enfermedad_condicion']) &&
-            $m['id_enfermedad_condicion'] !== null
+            empty($m['id_enfermedad_condicion']) ||
+            !existe_enfermedad_condicion((int) $m['id_enfermedad_condicion'])
         ) {
-            $id_enfermedad_condicion =
-                (int) $m['id_enfermedad_condicion'];
-
-            if (
-                $id_enfermedad_condicion <= 0 ||
-                !existe_enfermedad_condicion(
-                    $id_enfermedad_condicion
-                )
-            ) {
-                throw new InvalidArgumentException(
-                    'La enfermedad o condición seleccionada no es válida.'
-                );
-            }
+            throw new InvalidArgumentException(
+                'La enfermedad o condición de la mascota no es válida.'
+            );
         }
     }
 }

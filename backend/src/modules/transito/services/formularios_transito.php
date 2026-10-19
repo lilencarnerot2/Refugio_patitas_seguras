@@ -168,24 +168,30 @@ function validar_condiciones_transito(array $ids_condiciones): void {
 function validar_mascotas_transito(
     array $mascotas,
     bool $tiene_mascotas
-): void {
+ ): void {
     if (!is_array($mascotas)) {
         throw new InvalidArgumentException(
             'Las mascotas del hogar deben ser una lista.'
         );
     }
+    
     if ($tiene_mascotas === true && count($mascotas) === 0) {
         throw new InvalidArgumentException(
             'Si indicaste que tenés mascotas, debés declarar al menos una.'
         );
     }
+    
     foreach ($mascotas as $m) {
-        if (empty($m['id_tipo_mascota']) || !existe_tipo_mascota((int) $m['id_tipo_mascota'])) {
+        if (
+            empty($m['id_tipo_mascota']) ||
+            !existe_tipo_mascota((int) $m['id_tipo_mascota'])
+        ) {
             throw new InvalidArgumentException(
                 'Una de las mascotas del hogar tiene un tipo inválido.'
             );
         }
 
+        // Validar edad: mayor a 0 y menor a 30
         if (isset($m['edad_aproximada']) && $m['edad_aproximada'] !== null) {
             $edad = (int) $m['edad_aproximada'];
             if ($edad <= 0 || $edad >= 30) {
@@ -195,14 +201,14 @@ function validar_mascotas_transito(
             }
         }
 
-        if (isset($m['id_enfermedad_condicion']) && $m['id_enfermedad_condicion'] !== null) {
-            $id_enfermedad_condicion = (int) $m['id_enfermedad_condicion'];
-
-            if ($id_enfermedad_condicion <= 0 || !existe_enfermedad_condicion_transito($id_enfermedad_condicion)) {
-                throw new InvalidArgumentException(
-                    'La enfermedad o condición seleccionada no es válida.'
-                );
-            }
+        // Validar que la enfermedad sea un ID válido del catálogo de tránsito
+        if (
+            empty($m['id_enfermedad_condicion']) ||
+            !existe_enfermedad_condicion_transito((int) $m['id_enfermedad_condicion'])
+        ) {
+            throw new InvalidArgumentException(
+                'La enfermedad o condición de la mascota no es válida.'
+            );
         }
     }
 }
