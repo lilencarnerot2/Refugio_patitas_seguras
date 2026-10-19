@@ -25,6 +25,10 @@ function registroController($datos) {
             400
         );
     }
+        
+    if (strlen($password) < 8 || strlen($password) > 12) {
+        return responderJson(false, 'La contraseña debe tener entre 8 y 12 caracteres.', null, 400);
+    }
 
     // 1.5. Validar formato de email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
