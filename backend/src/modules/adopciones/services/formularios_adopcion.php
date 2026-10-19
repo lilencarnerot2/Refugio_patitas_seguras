@@ -85,10 +85,10 @@ function validar_formulario_datos(array $datos): void {
         throw new InvalidArgumentException('Debe indicar si hay niños en el hogar.');
     }
 
-    if (isset($datos['horas_solo']) && $datos['horas_solo'] !== null) {
+       if (isset($datos['horas_solo']) && $datos['horas_solo'] !== null) {
         $horas = (int) $datos['horas_solo'];
-        if ($horas < 0 || $horas > 24) {
-            throw new InvalidArgumentException('Las horas que la mascota quedaría sola deben estar entre 0 y 24.');
+        if ($horas < 0 || $horas > 8) {
+            throw new InvalidArgumentException('Las horas que la mascota quedaría sola deben estar entre 0 y 8.');
         }
     }
 
@@ -96,15 +96,7 @@ function validar_formulario_datos(array $datos): void {
         throw new InvalidArgumentException('Debe indicar si tiene mascotas.');
     }
 
-    if (empty($datos['responsable_principal'])) {
-        throw new InvalidArgumentException('El responsable principal es obligatorio.');
-    }
-
-    $responsable = trim((string) $datos['responsable_principal']);
-    if (mb_strlen($responsable) > 60) {
-        throw new InvalidArgumentException('El responsable principal no puede superar los 60 caracteres.');
-    }
-
+    
     $id_motivo_adopcion = filter_var(
     $datos['id_motivo_adopcion'] ?? null,
     FILTER_VALIDATE_INT
@@ -299,6 +291,16 @@ function registrar_formulario_adopcion(int $id_usuario_actual, array $datos): ar
         );
     }
 
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $responsable_principal_auto = trim(
+        ($_SESSION['usuario_nombre'] ?? '') . ' ' . ($_SESSION['usuario_apellido'] ?? '')
+    );
+    if ($responsable_principal_auto === '') {
+        $responsable_principal_auto = 'Usuario';
+    }
+
     validar_formulario_datos($datos);
     validar_compromisos($datos['compromisos'] ?? []);
     validar_condiciones_especiales($datos['condiciones_especiales'] ?? []);
@@ -315,7 +317,7 @@ function registrar_formulario_adopcion(int $id_usuario_actual, array $datos): ar
         'hay_ninos' => (bool) $datos['hay_ninos'],
         'horas_solo' => isset($datos['horas_solo']) && $datos['horas_solo'] !== null ? (int) $datos['horas_solo'] : null,
         'tiene_mascotas' => (bool) $datos['tiene_mascotas'],
-        'responsable_principal' => trim((string) $datos['responsable_principal']),
+        'responsable_principal' => $responsable_principal_auto,
         'id_motivo_adopcion' => (int) $datos['id_motivo_adopcion'],
         'puede_realizar_paseos' => (bool) $datos['puede_realizar_paseos'],
         'puede_realizar_traslados' => (bool) $datos['puede_realizar_traslados'],
@@ -369,6 +371,17 @@ function modificar_formulario_adopcion(int $id_formulario, int $id_usuario_actua
     validar_condiciones_especiales($datos['condiciones_especiales'] ?? []);
     validar_mascotas_hogar($datos['mascotas_hogar'] ?? []);
 
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $responsable_principal_auto = trim(
+        ($_SESSION['usuario_nombre'] ?? '') . ' ' . ($_SESSION['usuario_apellido'] ?? '')
+    );
+    if ($responsable_principal_auto === '') {
+        $responsable_principal_auto = 'Usuario';
+    }
+
+
     $datosUpdate = [
         'id_tipo_vivienda' => (int) $datos['id_tipo_vivienda'],
         'id_condicion_vivienda' => (int) $datos['id_condicion_vivienda'],
@@ -379,7 +392,7 @@ function modificar_formulario_adopcion(int $id_formulario, int $id_usuario_actua
         'hay_ninos' => (bool) $datos['hay_ninos'],
         'horas_solo' => isset($datos['horas_solo']) && $datos['horas_solo'] !== null ? (int) $datos['horas_solo'] : null,
         'tiene_mascotas' => (bool) $datos['tiene_mascotas'],
-        'responsable_principal' => trim((string) $datos['responsable_principal']),
+        'responsable_principal' => $responsable_principal_auto,
         'id_motivo_adopcion' => (int) $datos['id_motivo_adopcion'],
         'puede_realizar_paseos' => (bool) $datos['puede_realizar_paseos'],
         'puede_realizar_traslados' => (bool) $datos['puede_realizar_traslados'],

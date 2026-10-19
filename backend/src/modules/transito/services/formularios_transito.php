@@ -82,8 +82,8 @@ function validar_formulario_transito_datos(array $datos): void {
 
     if (isset($datos['horas_solo']) && $datos['horas_solo'] !== null) {
         $horas = (int) $datos['horas_solo'];
-        if ($horas < 0 || $horas > 24) {
-            throw new InvalidArgumentException('Las horas que la mascota quedaría sola deben estar entre 0 y 24.');
+        if ($horas < 0 || $horas > 8) {
+            throw new InvalidArgumentException('Las horas que la mascota quedaría sola deben estar entre 0 y 8.');
         }
     }
 
