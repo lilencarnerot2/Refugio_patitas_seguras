@@ -5,8 +5,7 @@ require_once __DIR__ . '/../../../utils/response.php';
 require_once __DIR__ . '/../../../middleware/autenticacion.php';
 
 
-function es_admin_actual(): bool
-{
+function es_admin_actual(): bool {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -20,8 +19,7 @@ function es_admin_actual(): bool
 }
 
 
-function manejar_compromisos_adopcion(): void
-{
+function manejar_compromisos_adopcion(): void {
     try {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             responderJson(false, 'Método no permitido.', null, 405);
@@ -39,8 +37,7 @@ function manejar_compromisos_adopcion(): void
 }
 
 
-function manejar_condiciones_especiales(): void
-{
+function manejar_condiciones_especiales(): void {
     try {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             responderJson(false, 'Método no permitido.', null, 405);
@@ -58,8 +55,7 @@ function manejar_condiciones_especiales(): void
 }
 
 
-function manejar_tipos_mascotas(): void
-{
+function manejar_tipos_mascotas(): void {
     try {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             responderJson(false, 'Método no permitido.', null, 405);
@@ -77,8 +73,7 @@ function manejar_tipos_mascotas(): void
 }
 
 
-function manejar_formularios_adopcion(): void
-{
+function manejar_formularios_adopcion(): void {
     $metodo = $_SERVER['REQUEST_METHOD'];
 
     if (!requerir_autenticacion()) {
@@ -187,8 +182,7 @@ function manejar_formularios_adopcion(): void
     }
 }
 
-function manejar_condiciones_vivienda(): void
-{
+function manejar_condiciones_vivienda(): void {
     try {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             responderJson(false, 'Método no permitido.', null, 405);
@@ -206,8 +200,7 @@ function manejar_condiciones_vivienda(): void
 }
 
 
-function manejar_destinos_mascotas(): void
-{
+function manejar_destinos_mascotas(): void {
     try {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             responderJson(false, 'Método no permitido.', null, 405);

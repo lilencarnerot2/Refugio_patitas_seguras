@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../modules/usuarios/repositories/usuarios.php';
 
 function responderJson(
     $success,
@@ -24,4 +25,19 @@ function responderJson(
         $respuesta,
         JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
     );
+}
+
+function usuarioEsMayorDeEdad($idUsuario): bool {
+    $usuario = obtener_usuario_por_id($idUsuario);
+
+    if (!$usuario || empty($usuario['fecha_nacimiento'])) {
+        return false;
+    }
+
+    $fechaNacimiento = new DateTime($usuario['fecha_nacimiento']);
+    $hoy = new DateTime();
+
+    $edad = $hoy->diff($fechaNacimiento)->y;
+
+    return $edad >= 18;
 }

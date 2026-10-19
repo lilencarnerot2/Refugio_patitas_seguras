@@ -140,13 +140,13 @@ function registroController($datos) {
     
 
     // 8. Devolver OK
-        // 8. Devolver OK
     return responderJson(true, 'Usuario registrado correctamente', [
         'usuario' => [
             'id' => $usuarioLocal['id'],
             'nombre' => $usuarioLocal['nombre'],
             'apellido' => $usuarioLocal['apellido'],
             'email' => $email,
+            'fecha_nacimiento' => $usuarioLocal['fecha_nacimiento'],
             'id_rol' => $usuarioLocal['id_rol']
         ]
     ], 201);

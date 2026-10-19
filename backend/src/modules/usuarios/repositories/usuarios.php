@@ -151,31 +151,63 @@ function crear_usuario_desde_padron(array $datos): array|false{
 
 function actualizar_usuario_desde_padron(int $id, array $datos): array|false {
     $conexion = conectarDB();
-    $sql = "
-        UPDATE usuarios
-        SET
-            nombre = :nombre,
-            apellido = :apellido
-        WHERE id = :id
-        RETURNING
-            id,
-            id_rol,
-            id_domicilio,
-            nombre,
-            apellido,
-            fecha_nacimiento,
-            fecha_alta,
-            estado,
-            uid_pp2
-    ";
 
-    $consulta = $conexion->prepare($sql);
-    $consulta->execute([
-        ':id' => $id,
-        ':nombre' => $datos['nombre'],
-        ':apellido' => $datos['apellido']
-    ]);
+    if (isset($datos['fecha_nacimiento'])) {
 
+        $sql = "
+            UPDATE usuarios
+            SET
+                nombre = :nombre,
+                apellido = :apellido,
+                fecha_nacimiento = :fecha_nacimiento
+            WHERE id = :id
+            RETURNING
+                id,
+                id_rol,
+                id_domicilio,
+                nombre,
+                apellido,
+                fecha_nacimiento,
+                fecha_alta,
+                estado,
+                uid_pp2
+        ";
+
+        $consulta = $conexion->prepare($sql);
+        $consulta->execute([
+            ':id' => $id,
+            ':nombre' => $datos['nombre'],
+            ':apellido' => $datos['apellido'],
+            ':fecha_nacimiento' => $datos['fecha_nacimiento']
+        ]);
+
+    } else {
+
+        $sql = "
+            UPDATE usuarios
+            SET
+                nombre = :nombre,
+                apellido = :apellido
+            WHERE id = :id
+            RETURNING
+                id,
+                id_rol,
+                id_domicilio,
+                nombre,
+                apellido,
+                fecha_nacimiento,
+                fecha_alta,
+                estado,
+                uid_pp2
+        ";
+
+        $consulta = $conexion->prepare($sql);
+        $consulta->execute([
+            ':id' => $id,
+            ':nombre' => $datos['nombre'],
+            ':apellido' => $datos['apellido']
+        ]);
+    }
     return $consulta->fetch(PDO::FETCH_ASSOC);
 }
 

@@ -5,8 +5,7 @@ require_once __DIR__ . '/../../usuarios/services/usuarios.php';
 require_once __DIR__ . '/../../usuarios/services/roles.php';
 require_once __DIR__ . '/../../../utils/response.php';
 
-function loginController($datos)
-{
+function loginController($datos) {
     // 1. Validar entrada
     $email = trim($datos['email'] ?? '');
     $password = $datos['password'] ?? '';
@@ -19,7 +18,6 @@ function loginController($datos)
             400
         );
     }
-
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         return responderJson(
             false,
@@ -28,7 +26,6 @@ function loginController($datos)
             400
         );
     }
-
     if (strlen($password) < 8) {
         return responderJson(
             false,
@@ -40,10 +37,8 @@ function loginController($datos)
 
     // 2. Normalizar email
     $email = strtolower($email);
-
     // 3. Validar credenciales contra el Padrón PP2
     $resultado = loginEnPadron($email, $password);
-
     // TEMPORAL: para debug
     error_log('DEBUG loginEnPadron: ' . print_r($resultado, true));
     
@@ -128,6 +123,7 @@ function loginController($datos)
                 'nombre' => $usuarioLocal['nombre'],
                 'apellido' => $usuarioLocal['apellido'],
                 'email' => $email,
+                'fecha_nacimiento' => $usuarioLocal['fecha_nacimiento'],
                 'id_rol' => $usuarioLocal['id_rol']
             ]
         ],
@@ -135,8 +131,7 @@ function loginController($datos)
     );
 }
 
-function manejarLogin()
-{
+function manejarLogin() {
     // 1. Verificar método HTTP
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         return responderJson(

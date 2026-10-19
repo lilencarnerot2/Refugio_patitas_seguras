@@ -6,8 +6,7 @@
  * que provee la cátedra.
  */
 
-function loginEnPadron($email, $password)
-{
+function loginEnPadron($email, $password) {
     $url = getenv('PP2_API_URL');
     $token = getenv('PP2_API_KEY');
 
@@ -64,8 +63,7 @@ function loginEnPadron($email, $password)
     ];
 }
 
-function registrarEnPadron($datos)
-{
+function registrarEnPadron($datos) {
     $url = getenv('PP2_API_URL');
     $token = getenv('PP2_API_KEY');
 
@@ -129,8 +127,7 @@ function registrarEnPadron($datos)
  * Busca el email de un usuario en el Padrón PP2 por su uid_pp2.
  * Devuelve el email (string) o null si no lo encuentra.
  */
-function buscarEmailEnPadron(string $uid_pp2): ?string
-{
+function buscarEmailEnPadron(string $uid_pp2): ?string {
     $url = getenv('PP2_API_URL');
     $token = getenv('PP2_API_KEY');
 
@@ -172,8 +169,7 @@ function buscarEmailEnPadron(string $uid_pp2): ?string
  * El Padrón responde 200 si la contraseña se actualizó,
  * 400 si el token no sirve o venció, 422 si la contraseña está fuera de largo.
  */
-function confirmarResetEnPadron(string $token, string $password): array
-{
+function confirmarResetEnPadron(string $token, string $password): array {
     $url = getenv('PP2_API_URL');
     $apiKey = getenv('PP2_API_KEY');
 
@@ -230,8 +226,7 @@ function confirmarResetEnPadron(string $token, string $password): array
     ];
 }
 
-function solicitarResetEnPadron(string $email): array
-{
+function solicitarResetEnPadron(string $email): array {
     $url = getenv('PP2_API_URL');
     $token = getenv('PP2_API_KEY');
 

@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../repositories/formularios_transito.php';
 require_once __DIR__ . '/../../adopciones/repositories/formularios_adopcion.php';
 require_once __DIR__ . '/../../usuarios/services/usuarios.php';
+require_once __DIR__ . '/../../../utils/edad.php';
 
 // VALIDACIONES AUXILIARES
 function validar_solicitud_para_transito(int $id_solicitud, int $id_usuario_actual, bool $es_admin): array {

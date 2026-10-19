@@ -2,9 +2,9 @@
 
 require_once __DIR__ . '/../repositories/formularios_adopcion.php';
 require_once __DIR__ . '/../../usuarios/services/usuarios.php';
+require_once __DIR__ . '/../../../utils/edad.php';
 
 // CATÁLOGOS
-
 function listar_compromisos_adopcion(): array {
     return obtener_compromisos_adopcion();
 }
