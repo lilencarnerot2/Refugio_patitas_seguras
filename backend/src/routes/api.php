@@ -102,15 +102,9 @@ function manejarRutas() {
             manejarMascotas();
             break;
 
-        case 'foto_mascota':
-            if (!requerir_roles([
-                'Administrador',
-                'Super Administrador'
-            ])) {
-            break;
-            }
+        case 'fotos_mascota':
             require_once __DIR__ . '/../modules/mascotas/controllers/fotos_mascotas.php';
-            manejarFotoMascota();
+            manejarFotosMascota();
             break;
 
         case 'login':
