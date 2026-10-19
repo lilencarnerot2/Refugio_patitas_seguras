@@ -3373,3 +3373,36 @@
             color: var(--tema-rojo-tinta);
             box-shadow: 0 8px 22px rgba(168, 72, 62, 0.12);
         }
+
+/* ------------------------------------------
+   Center forms and align pet card
+   ------------------------------------------ */
+#bloque-solicitud {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px; /* adjust as needed */
+    margin: 0 auto;
+    gap: 1rem;
+}
+
+/* Ensure the form container takes full width within the block */
+#bloque-solicitud .solicitud-formulario {
+    width: 100%;
+    order: 1; /* appears before pet card */
+}
+
+/* Pet card styling and positioning */
+#bloque-solicitud .pet-card {
+    order: 2;
+    width: 100%;
+    max-width: 300px; /* optional fixed width for card */
+    margin-top: 0.5rem;
+}
+
+/* Center the title text */
+#bloque-solicitud .page-intro {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
+}

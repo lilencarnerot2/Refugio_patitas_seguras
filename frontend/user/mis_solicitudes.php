@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $tituloPagina = 'Mis solicitudes - Patitas Seguras';
 $cuerpoClase = 'pagina-perfil';
 $paginaPerfil = 'solicitudes';
@@ -188,7 +188,7 @@ require __DIR__ . '/includes/header.php';
                         <div><dt>Tiene mascotas</dt><dd data-campo="tiene_mascotas"></dd></div>
                         <div><dt>Mascotas del hogar</dt><dd data-campo="mascotas_hogar"></dd></div>
                         <div><dt>Cantidad máxima de mascotas</dt><dd data-campo="cantidad_maxima_mascotas"></dd></div>
-                        <div><dt>Responsable principal</dt><dd data-campo="responsable_principal"></dd></div>
+
                         <div><dt>Puede realizar paseos</dt><dd data-campo="puede_realizar_paseos"></dd></div>
                         <div><dt>Puede realizar traslados</dt><dd data-campo="puede_realizar_traslados"></dd></div>
                         <div><dt>Puede administrar medicación</dt><dd data-campo="puede_administrar_medicacion"></dd></div>
