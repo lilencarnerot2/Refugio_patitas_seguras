@@ -60,7 +60,7 @@ function mostrarFicha(mascota) {
     ponerDestino('detalle-transito', mascota.id);
 
     if (mascota.foto_url) {
-        foto.src = mascota.foto_url;
+        foto.src = urlFotoMascota(mascota.foto_url);
         foto.alt = mascota.nombre || '';
         foto.hidden = false;
         fotoVacia.hidden = true;

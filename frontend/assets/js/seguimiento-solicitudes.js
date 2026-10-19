@@ -5,24 +5,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var mensajeDetalle = modal && modal.querySelector('[data-mensaje-detalle]');
     var btnFormulario = modal && modal.querySelector('[data-ver-formulario]');
     var panelFormulario = modal && modal.querySelector('[data-formulario-completado]');
-    var grupos = [];
+    var grupo = raiz && raiz.querySelector('[data-grupo]');
+    var lista = grupo && grupo.querySelector('[data-lista]');
+    var modelo = raiz && raiz.querySelector('template[data-modelo]');
+    var solicitudes = [];
     var abierta = null;
 
     if (!raiz || !valorCookie('usuario_id')) {
         return;
     }
-
-    raiz.querySelectorAll('[data-clave]').forEach(function (pane) {
-        grupos.push({
-            pane: pane,
-            clave: normalizar(pane.getAttribute('data-clave')),
-            recurso: pane.getAttribute('data-recurso-formulario'),
-            lista: pane.querySelector('[data-lista]'),
-            modelo: pane.querySelector('template[data-modelo]'),
-            idTipo: null,
-            items: []
-        });
-    });
 
     cargar().then(abrirDesdeUrl);
 
@@ -53,29 +44,20 @@ document.addEventListener('DOMContentLoaded', function () {
         avisar(mensaje, null);
         raiz.setAttribute('data-cargando', '1');
 
-        return Promise.all([apiRequest('tipos_solicitudes'), apiRequest('solicitudes')])
-            .then(function (respuestas) {
-                var tipos = listaDe(respuestas[0]);
+        return apiRequest('solicitudes')
+            .then(function (respuesta) {
                 var usuario = valorCookie('usuario_id');
-                var propias = listaDe(respuestas[1]).filter(function (item) {
+
+                solicitudes = listaDe(respuesta).filter(function (item) {
                     return item && String(item.id_usuario) === usuario;
-                });
+                }).map(function (item) {
+                    return Object.assign({ clave: claveDeTipo(item) }, item);
+                }).sort(ordenarPorFecha);
 
-                grupos.forEach(function (grupo) {
-                    var tipo = tipos.filter(function (item) {
-                        return item && normalizar(item.nombre_tipo).indexOf(grupo.clave) !== -1;
-                    })[0];
-
-                    grupo.idTipo = tipo ? String(tipo.id) : null;
-                    grupo.items = propias.filter(function (item) {
-                        return grupo.idTipo !== null && String(item.id_tipo_solicitud) === grupo.idTipo;
-                    });
-                });
-
-                return sumarMascotas(propias);
+                return sumarMascotas(solicitudes);
             })
             .then(function () {
-                grupos.forEach(pintarGrupo);
+                pintarLista();
                 pintarContadores();
             })
             .catch(function (error) {
@@ -86,10 +68,20 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    function sumarMascotas(solicitudes) {
+    function claveDeTipo(solicitud) {
+        return esTipoSolicitudTransito(solicitud.tipo_solicitud) ? 'transito' : 'adopcion';
+    }
+
+    function ordenarPorFecha(a, b) {
+        var porFecha = String(b.fecha_solicitud || '').localeCompare(String(a.fecha_solicitud || ''));
+
+        return porFecha !== 0 ? porFecha : Number(b.id) - Number(a.id);
+    }
+
+    function sumarMascotas(lista) {
         var ids = [];
 
-        solicitudes.forEach(function (item) {
+        lista.forEach(function (item) {
             var id = item.id_mascota;
 
             if (id !== undefined && id !== null && ids.indexOf(String(id)) === -1) {
@@ -112,76 +104,69 @@ document.addEventListener('DOMContentLoaded', function () {
                 porId[id] = mascotas[i] || {};
             });
 
-            grupos.forEach(function (grupo) {
-                grupo.items = grupo.items.map(function (item) {
-                    var mascota = porId[String(item.id_mascota)] || {};
+            solicitudes = solicitudes.map(function (item) {
+                var mascota = porId[String(item.id_mascota)] || {};
 
-                    return Object.assign({
-                        foto_url: mascota.foto_url,
-                        especie: mascota.especie,
-                        raza: mascota.raza,
-                        'tamaño': mascota['tamaño']
-                    }, item);
-                });
+                return Object.assign({
+                    foto_url: mascota.foto_url,
+                    especie: mascota.especie,
+                    raza: mascota.raza,
+                    'tamaño': mascota['tamaño']
+                }, item);
             });
         });
     }
 
-    function pintarGrupo(grupo) {
-        var cantidad = grupo.pane.querySelector('[data-cantidad]');
+    function pintarLista() {
+        var cantidad = grupo && grupo.querySelector('[data-cantidad]');
 
-        if (grupo.lista && grupo.modelo) {
-            grupo.lista.innerHTML = '';
+        if (lista && modelo) {
+            lista.innerHTML = '';
 
-            grupo.items.forEach(function (item) {
-                var copia = grupo.modelo.content.cloneNode(true);
+            solicitudes.forEach(function (item) {
+                var copia = modelo.content.cloneNode(true);
                 var fila = copia.firstElementChild;
 
                 fila.setAttribute('data-id', String(item.id));
+                fila.setAttribute('data-tipo', item.clave);
                 llenarCampos(fila, item);
-                grupo.lista.appendChild(copia);
+                lista.appendChild(copia);
             });
         }
 
-        grupo.pane.setAttribute('data-total', String(grupo.items.length));
+        if (grupo) {
+            grupo.setAttribute('data-total', String(solicitudes.length));
+        }
 
         if (cantidad) {
-            cantidad.textContent = String(grupo.items.length);
+            cantidad.textContent = String(solicitudes.length);
         }
     }
 
     function pintarContadores() {
         raiz.querySelectorAll('[data-contador]').forEach(function (nodo) {
-            var clave = normalizar(nodo.getAttribute('data-contar-clave'));
             var estado = normalizar(nodo.getAttribute('data-contar-estado'));
-            var total = 0;
 
-            grupos.forEach(function (grupo) {
-                if (clave && grupo.clave !== clave) {
-                    return;
-                }
-
-                total += grupo.items.filter(function (item) {
-                    return !estado || normalizar(item.estado_solicitud) === estado;
-                }).length;
-            });
-
-            nodo.textContent = String(total);
+            nodo.textContent = String(solicitudes.filter(function (item) {
+                return !estado || normalizar(item.estado_solicitud) === estado;
+            }).length);
         });
     }
 
     function buscar(id) {
         var encontrada = null;
 
-        grupos.forEach(function (grupo) {
-            grupo.items.forEach(function (item) {
-                if (String(item.id) === String(id)) {
-                    encontrada = { grupo: grupo, item: item };
-                }
-            });
+        solicitudes.forEach(function (item) {
+            if (String(item.id) === String(id)) {
+                encontrada = item;
+            }
         });
 
         return encontrada;
+    }
+
+    function recursoDeFormulario(item) {
+        return item.clave === 'transito' ? 'formularios_transito' : 'formularios_adopcion';
     }
 
     function prepararModal(id) {
@@ -201,11 +186,11 @@ document.addEventListener('DOMContentLoaded', function () {
         resumen = modal.querySelector('.seguimiento-estado');
 
         if (encabezado) {
-            llenarCampos(encabezado, datos.item);
+            llenarCampos(encabezado, datos);
         }
 
         if (resumen) {
-            llenarCampos(resumen, datos.item);
+            llenarCampos(resumen, datos);
         }
     }
 
@@ -234,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function cargarFormularioCompletado(id) {
         var datos = buscar(id);
 
-        if (!modal || !datos || !datos.grupo.recurso) {
+        if (!modal || !datos) {
             var textoSinFormulario = modal && modal.getAttribute('data-aviso-sin-formulario');
 
             avisar(mensajeDetalle, textoSinFormulario ? { success: false, message: textoSinFormulario } : null);
@@ -249,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         modal.setAttribute('data-cargando', '1');
 
-        apiRequest(datos.grupo.recurso, { parametros: { id_solicitud: id } })
+        apiRequest(recursoDeFormulario(datos), { parametros: { id_solicitud: id } })
             .then(function (respuesta) {
                 var mezcla;
 
@@ -259,8 +244,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 mezcla = Object.assign({}, datosFormularioDeRespuesta(respuesta, {
                     id_solicitud: id,
-                    id_usuario: datos.item && datos.item.id_usuario
-                }) || {}, datos.item);
+                    id_usuario: datos.id_usuario
+                }) || {}, datos);
 
                 if (panelFormulario) {
                     llenarCampos(panelFormulario, mezcla);
@@ -296,24 +281,18 @@ document.addEventListener('DOMContentLoaded', function () {
         var param = raiz.getAttribute('data-param-detalle');
         var id = param && new URLSearchParams(window.location.search).get(param);
         var datos = id && buscar(id);
-        var pestana;
         var boton;
 
-        if (!datos || !modal || !window.bootstrap) {
+        if (!datos || !lista || !modal || !window.bootstrap) {
             return;
         }
 
-        pestana = raiz.querySelector('[data-bs-target="#' + datos.grupo.pane.id + '"]');
-        boton = datos.grupo.lista.querySelector('[data-id="' + datos.item.id + '"] [data-bs-target="#' + modal.id + '"]');
-
-        if (pestana) {
-            bootstrap.Tab.getOrCreateInstance(pestana).show();
-        }
+        boton = lista.querySelector('[data-id="' + datos.id + '"] [data-bs-target="#' + modal.id + '"]');
 
         bootstrap.Modal.getOrCreateInstance(modal).show(boton);
 
         if (boton) {
-            abrirDetalle(datos.item.id);
+            abrirDetalle(datos.id);
         }
     }
 
@@ -323,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (nodo.tagName === 'IMG') {
                 if (valor) {
-                    nodo.setAttribute('src', valor);
+                    nodo.setAttribute('src', urlFotoMascota(valor));
                     nodo.setAttribute('alt', datos.nombre_mascota || '');
                     nodo.addEventListener('error', function () {
                         nodo.removeAttribute('src');

@@ -11,4 +11,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 
 EXPOSE 8080
 
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "/var/www/html"]
+CMD ["php", "-d", "upload_max_filesize=6M", "-d", "post_max_size=8M", "-d", "display_startup_errors=0", "-S", "0.0.0.0:8080", "-t", "/var/www/html"]

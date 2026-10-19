@@ -105,7 +105,7 @@ function mostrarMascota(mascota) {
     document.getElementById('ficha-historial').textContent = mascota.historial || '';
 
     if (mascota.foto_url) {
-        foto.src = mascota.foto_url;
+        foto.src = urlFotoMascota(mascota.foto_url);
         foto.alt = mascota.nombre || '';
         foto.hidden = false;
         fotoVacia.hidden = true;

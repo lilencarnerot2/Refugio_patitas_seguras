@@ -1,4 +1,5 @@
-﻿    <footer id="contacto">
+<?php $refugio = require __DIR__ . '/datos_refugio.php'; ?>
+    <footer id="contacto">
         <div class="footer-inner">
             <div>
                 <h3>PATITAS SEGURAS</h3>
@@ -10,10 +11,10 @@
                 </div>
             </div>
             <div class="footer-contact">
-                <p><i class="bi bi-telephone"></i> 11 2345 6789</p>
-                <p><i class="bi bi-envelope"></i> profesionalizantes29@gmail.com</p>
-                <p><i class="bi bi-geo-alt"></i> Merlo, Buenos Aires, Argentina</p>
-                <p class="footer-note">Amor que se nota, huellas que quedan. 🐾</p>
+                <p><i class="bi bi-telephone"></i> <?php echo htmlspecialchars($refugio['telefono'], ENT_QUOTES, 'UTF-8'); ?></p>
+                <p><i class="bi bi-envelope"></i> <?php echo htmlspecialchars($refugio['email'], ENT_QUOTES, 'UTF-8'); ?></p>
+                <p><i class="bi bi-geo-alt"></i> <?php echo htmlspecialchars($refugio['direccion'], ENT_QUOTES, 'UTF-8'); ?></p>
+                <p class="footer-note"><?php echo htmlspecialchars($refugio['lema'], ENT_QUOTES, 'UTF-8'); ?></p>
             </div>
         </div>
     </footer>

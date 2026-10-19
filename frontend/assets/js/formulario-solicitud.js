@@ -39,13 +39,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         if (nodo.tagName === 'IMG') {
                             if (valor) {
-                                nodo.src = valor;
+                                nodo.src = urlFotoMascota(valor);
                                 nodo.hidden = false;
                             }
                             return;
                         }
 
-                        nodo.textContent = valor || '';
+                        if (nodo.getAttribute('data-campo') && String(nodo.getAttribute('data-campo')).indexOf('fecha') !== -1) {
+                            nodo.textContent = typeof fechaCorta === 'function' ? fechaCorta(valor) : (valor || '');
+                        } else {
+                            nodo.textContent = valor || '';
+                        }
                     });
                 });
             }
@@ -53,7 +57,9 @@ document.addEventListener('DOMContentLoaded', function () {
             return null;
         })
         .then(cargarCatalogos)
+        .then(cargarTiposContacto)
         .then(cargarListas)
+        .then(rellenarDesdeDatosPrevios)
         .then(function () {
             var idMascota = formulario.elements.id_mascota && formulario.elements.id_mascota.value;
 
@@ -171,6 +177,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    function quitarMarcaDeCampo(evento) {
+        if (evento.target && evento.target.removeAttribute) {
+            evento.target.removeAttribute('data-campo-estado');
+        }
+    }
+
+    formulario.addEventListener('input', quitarMarcaDeCampo);
+    formulario.addEventListener('change', quitarMarcaDeCampo);
+
+    var cacheCatalogos = {};
+    var idsTipoContacto = {
+        movil: null,
+        emergencia: null
+    };
+
     var botonMascota = document.getElementById('agregar-mascota-hogar');
 
     if (botonMascota) {
@@ -197,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            if (nodo.closest('[data-lista]') || nodo.closest('#lista-mascotas-hogar') || nodo.disabled) {
+            if (nodo.hasAttribute('data-solo-contacto') || nodo.closest('[data-lista]') || nodo.closest('#lista-mascotas-hogar') || nodo.disabled) {
                 return;
             }
 
@@ -219,8 +240,6 @@ document.addEventListener('DOMContentLoaded', function () {
             cuerpo[nodo.name] = nodo.value || null;
         });
 
-
-
         cuerpo.compromisos = valoresLista('compromisos');
         cuerpo.condiciones_especiales = valoresLista('condiciones_especiales');
         cuerpo.mascotas_hogar = cuerpo.tiene_mascotas ? mascotasHogar() : [];
@@ -235,9 +254,29 @@ document.addEventListener('DOMContentLoaded', function () {
     function valoresLista(nombre) {
         var caja = formulario.querySelector('[data-name="' + nombre + '"]');
         var ids = [];
+        var todos;
+        var acepta;
 
         if (!caja) {
             return ids;
+        }
+
+        if (caja.hasAttribute('data-compromisos-unico')) {
+            acepta = caja.querySelector('input[type="checkbox"]');
+
+            if (!acepta || !acepta.checked) {
+                return ids;
+            }
+
+            try {
+                todos = JSON.parse(caja.getAttribute('data-ids-compromisos') || '[]');
+            } catch (errorLista) {
+                todos = [];
+            }
+
+            return todos.map(function (id) {
+                return Number(id);
+            });
         }
 
         caja.querySelectorAll('input:checked').forEach(function (nodo) {
@@ -318,6 +357,13 @@ document.addEventListener('DOMContentLoaded', function () {
         vacia.value = '';
         vacia.textContent = '';
         vacia.selected = true;
+
+        if (select.hasAttribute('data-placeholder')) {
+            vacia.textContent = select.getAttribute('data-placeholder');
+            vacia.disabled = true;
+            vacia.removeAttribute('hidden');
+        }
+
         select.appendChild(vacia);
 
         (lista || []).forEach(function (item) {
@@ -414,6 +460,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var lista = document.getElementById('lista-mascotas-hogar');
 
         formulario.reset();
+        formulario.removeAttribute('data-intento-envio');
 
         while (lista && lista.firstChild) {
             lista.removeChild(lista.firstChild);
@@ -471,29 +518,41 @@ document.addEventListener('DOMContentLoaded', function () {
             pedidos.push(apiRequest(recurso).then(function (respuesta) {
                 var lista = listaDe(respuesta);
 
+                cacheCatalogos[recurso] = lista;
+
                 document.querySelectorAll('#formulario-solicitud select[data-catalogo="' + recurso + '"]:not([data-param]), #modelos-adopcion select[data-catalogo="' + recurso + '"]').forEach(function (select) {
                     llenarSelect(select, lista);
-<<<<<<< Updated upstream
-=======
-                    // Re‑enable the select after loading
-                    select.disabled = false;
-                    select.removeAttribute('data-loading');
-                    // Add placeholder for motivo de adopción if this is that catalog
-                    if (recurso === 'motivos_adopcion') {
-                        var placeholder = select.querySelector('option[value=""]');
-                        if (placeholder) {
-                            placeholder.textContent = 'Seleccione un motivo de adopción';
-                            placeholder.disabled = true;
-                            placeholder.hidden = false;
-                            placeholder.selected = true;
-                        }
-                    }
->>>>>>> Stashed changes
                 });
             }));
         });
 
         return Promise.all(pedidos);
+    }
+
+    function cargarTiposContacto() {
+        return apiRequest('tipos_contacto').then(function (respuesta) {
+            resolverTiposContacto(listaDe(respuesta));
+        }).catch(function () {
+            return null;
+        });
+    }
+
+    function resolverTiposContacto(lista) {
+        (lista || []).forEach(function (tipo) {
+            var nombre = String((tipo && (tipo.nombre_tipo || tipo.descripcion)) || '').toLowerCase();
+
+            if (nombre.indexOf('emerg') !== -1) {
+                idsTipoContacto.emergencia = Number(tipo.id);
+                return;
+            }
+
+            if (
+                idsTipoContacto.movil === null &&
+                (nombre.indexOf('movil') !== -1 || nombre.indexOf('móvil') !== -1 || nombre.indexOf('telefono') !== -1 || nombre.indexOf('tel') !== -1)
+            ) {
+                idsTipoContacto.movil = Number(tipo.id);
+            }
+        });
     }
 
     function cargarListas() {
@@ -505,8 +564,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             pedidos.push(apiRequest(recurso).then(function (respuesta) {
                 var modelo = document.getElementById('modelo-opcion-lista');
+                var items = listaDe(respuesta);
 
-                listaDe(respuesta).forEach(function (item) {
+                if (caja.hasAttribute('data-compromisos-unico')) {
+                    montarCompromisosUnico(caja, items);
+                    return;
+                }
+
+                items.forEach(function (item) {
                     var opcion;
                     var entrada;
                     var textoOpcion;
@@ -531,6 +596,48 @@ document.addEventListener('DOMContentLoaded', function () {
         return Promise.all(pedidos);
     }
 
+    function montarCompromisosUnico(caja, items) {
+        var ids = [];
+        var listaTextos;
+        var modelo = document.getElementById('modelo-opcion-lista');
+        var opcion;
+        var entrada;
+
+        (items || []).forEach(function (item) {
+            if (item && item.id !== undefined && item.id !== null) {
+                ids.push(Number(item.id));
+            }
+        });
+
+        caja.setAttribute('data-ids-compromisos', JSON.stringify(ids));
+        caja.innerHTML = '';
+
+        listaTextos = document.createElement('ul');
+        listaTextos.className = 'mb-2 ps-3';
+
+        (items || []).forEach(function (item) {
+            var li = document.createElement('li');
+
+            li.textContent = nombreDeItem(item);
+            listaTextos.appendChild(li);
+        });
+
+        caja.appendChild(listaTextos);
+
+        if (!modelo) {
+            return;
+        }
+
+        opcion = modelo.cloneNode(true);
+        opcion.removeAttribute('id');
+        entrada = opcion.querySelector('input');
+        entrada.name = 'acepta_compromisos_adopcion';
+        entrada.value = '1';
+        entrada.required = caja.hasAttribute('data-requerido');
+        opcion.querySelector('[data-texto]').textContent = 'Acepto todos los compromisos de adopción indicados';
+        caja.appendChild(opcion);
+    }
+
     function agregarMascotaHogar() {
         var lista = document.getElementById('lista-mascotas-hogar');
         var modelo = document.getElementById('modelo-mascota-hogar');
@@ -543,6 +650,13 @@ document.addEventListener('DOMContentLoaded', function () {
         fila = modelo.cloneNode(true);
         fila.removeAttribute('id');
         lista.appendChild(fila);
+        fila.querySelectorAll('select[data-catalogo]:not([data-param])').forEach(function (select) {
+            var recurso = select.getAttribute('data-catalogo');
+
+            if (recurso && cacheCatalogos[recurso]) {
+                llenarSelect(select, cacheCatalogos[recurso]);
+            }
+        });
         ponerBotonesLimpiar(fila);
     }
 
@@ -631,12 +745,281 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function asignarCampo(nombre, valor) {
+        var nodo = formulario.elements[nombre];
+
+        if (!nodo || valor === undefined || valor === null || valor === '') {
+            return;
+        }
+
+        if (nodo.type === 'checkbox') {
+            nodo.checked = !!valor;
+            return;
+        }
+
+        nodo.value = String(valor);
+    }
+
+    function encadenarSelectsDomicilio(domicilio) {
+        var provincia = formulario.elements.id_provincia;
+        var comuna = formulario.elements.id_comuna_municipio;
+
+        if (!domicilio || !provincia) {
+            return Promise.resolve();
+        }
+
+        asignarCampo('id_provincia', domicilio.id_provincia);
+
+        return cargarHijo(provincia).then(function () {
+            asignarCampo('id_comuna_municipio', domicilio.id_comuna_municipio);
+
+            if (!comuna) {
+                return null;
+            }
+
+            return cargarHijo(comuna);
+        }).then(function () {
+            asignarCampo('id_localidad', domicilio.id_localidad);
+            asignarCampo('nombre_barrio', domicilio.barrio_zona === barrioSinDato ? '' : domicilio.barrio_zona);
+
+            [
+                'calle',
+                'altura',
+                'piso',
+                'departamento',
+                'ruta_nombre',
+                'kilometro',
+                'entre_calle_1',
+                'entre_calle_2',
+                'indicadores_referencia',
+                'codigo_postal'
+            ].forEach(function (clave) {
+                asignarCampo(clave, domicilio[clave]);
+            });
+        });
+    }
+
+    function aplicarContactosAlFormulario(contactos) {
+        (contactos || []).forEach(function (item) {
+            var tipo = String((item && (item.tipo_contacto || item.nombre_tipo)) || '').toLowerCase();
+            var valor = item && item.valor;
+
+            if (!valor) {
+                return;
+            }
+
+            if (tipo.indexOf('emerg') !== -1 && formulario.elements.contacto_emergencia) {
+                formulario.elements.contacto_emergencia.value = valor;
+                return;
+            }
+
+            if (
+                (item.es_principal || tipo.indexOf('movil') !== -1 || tipo.indexOf('móvil') !== -1 || tipo.indexOf('tel') !== -1) &&
+                formulario.elements.telefono &&
+                !formulario.elements.telefono.value
+            ) {
+                formulario.elements.telefono.value = valor;
+            }
+        });
+    }
+
+    function ultimoFormularioDelUsuario(lista) {
+        var items = (lista || []).slice();
+
+        if (!items.length) {
+            return null;
+        }
+
+        items.sort(function (a, b) {
+            return Number(b.id || 0) - Number(a.id || 0);
+        });
+
+        return items[0];
+    }
+
+    function aplicarFormularioPrevio(datos) {
+        var claves = [
+            'id_tipo_vivienda',
+            'id_condicion_vivienda',
+            'tiene_patio',
+            'metros_cuadrados_patio',
+            'id_destino_mascota',
+            'cantidad_integrantes',
+            'horas_solo',
+            'hay_ninos',
+            'tiene_mascotas',
+            'responsable_principal',
+            'id_motivo_adopcion',
+            'puede_realizar_paseos',
+            'puede_realizar_traslados',
+            'cuenta_con_apoyo',
+            'cuenta_con_recursos',
+            'limitaciones_cuidado',
+            'experiencia_cuidado',
+            'cantidad_maxima_mascotas',
+            'disponibilidad_desde',
+            'disponibilidad_hasta',
+            'puede_administrar_medicacion',
+            'observaciones'
+        ];
+
+        if (!datos) {
+            return;
+        }
+
+        claves.forEach(function (clave) {
+            if (datos[clave] !== undefined && datos[clave] !== null && formulario.elements[clave]) {
+                asignarCampo(clave, datos[clave]);
+            }
+        });
+
+        aplicarDependencias();
+
+        if (datos.tiene_mascotas && Array.isArray(datos.mascotas_hogar)) {
+            datos.mascotas_hogar.forEach(function (mascota) {
+                agregarMascotaHogar();
+                var fila = document.getElementById('lista-mascotas-hogar').lastElementChild;
+
+                if (!fila) {
+                    return;
+                }
+
+                Array.prototype.forEach.call(fila.querySelectorAll('[name]'), function (nodo) {
+                    var valor = mascota[nodo.name];
+
+                    if (valor === undefined || valor === null) {
+                        return;
+                    }
+
+                    if (nodo.type === 'checkbox') {
+                        nodo.checked = !!valor;
+                    } else {
+                        nodo.value = String(valor);
+                    }
+                });
+            });
+        }
+    }
+
+    function rellenarDesdeDatosPrevios() {
+        var recurso = formulario.getAttribute('data-recurso');
+        var sesion = /(?:^|;\s*)usuario_id=[^;]+/.test(document.cookie);
+
+        if (!sesion || !recurso) {
+            return Promise.resolve();
+        }
+
+        return Promise.all([
+            apiRequest('domicilios', { credentials: 'include' }).catch(function () {
+                return null;
+            }),
+            apiRequest('contactos', { credentials: 'include' }).catch(function () {
+                return null;
+            }),
+            apiRequest(recurso, { credentials: 'include' }).catch(function () {
+                return null;
+            })
+        ]).then(function (respuestas) {
+            var domicilio = objetoDomicilioDePerfil(respuestas[0] && respuestas[0].data !== undefined ? respuestas[0].data : respuestas[0]);
+            var contactos = listaContactosDePerfil(respuestas[1] && respuestas[1].data !== undefined ? respuestas[1].data : respuestas[1]);
+            var formularios = listaDe(respuestas[2]);
+            var ultimo = ultimoFormularioDelUsuario(formularios);
+
+            aplicarContactosAlFormulario(contactos);
+
+            return encadenarSelectsDomicilio(domicilio).then(function () {
+                aplicarFormularioPrevio(ultimo);
+                aplicarDependencias();
+                aplicarFechasMinimas();
+            });
+        }).catch(function () {
+            return null;
+        });
+    }
+
+    function nombreDeCampo(nodo) {
+        var etiqueta = nodo.id ? formulario.querySelector('label[for="' + nodo.id + '"]') : null;
+        var opcion = nodo.closest('.form-check');
+        var columna = nodo.closest('[class*="col-"]');
+        var texto = nodo.name;
+
+        if (etiqueta) {
+            texto = etiqueta.textContent;
+        } else if (opcion) {
+            texto = opcion.textContent;
+        } else if (columna && columna.querySelector('label')) {
+            texto = columna.querySelector('label').textContent;
+        }
+
+        return String(texto || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function camposObligatoriosVacios() {
+        var vacios = [];
+
+        Array.prototype.forEach.call(formulario.elements, function (nodo) {
+            if (!nodo.name || !nodo.required || nodo.disabled || nodo.type === 'hidden') {
+                return;
+            }
+
+            if (nodo.type === 'checkbox') {
+                if (!nodo.checked) {
+                    vacios.push(nodo);
+                }
+
+                return;
+            }
+
+            if (String(nodo.value || '').trim() === '') {
+                vacios.push(nodo);
+            }
+        });
+
+        return vacios;
+    }
+
+    function avisarCamposVacios(vacios) {
+        var nombres = [];
+        var texto = 'Completá los campos obligatorios para enviar la solicitud';
+
+        mostrarAviso(mensaje, '');
+        marcarIntentoEnvio(formulario);
+
+        vacios.forEach(function (nodo) {
+            var nombre = nombreDeCampo(nodo);
+
+            nodo.setAttribute('data-campo-estado', 'error');
+
+            if (nombre && nombres.indexOf(nombre) === -1) {
+                nombres.push(nombre);
+            }
+        });
+
+        if (nombres.length) {
+            texto += ': ' + nombres.slice(0, 4).join(', ');
+
+            if (nombres.length > 4) {
+                texto += ' y ' + (nombres.length - 4) + ' más';
+            }
+        }
+
+        mostrarAviso(mensaje, texto + '.', false);
+    }
+
     function enviar() {
         var cuerpo;
         var boton = formulario.querySelector('[type="submit"]');
         var idSolicitud = null;
+        var vacios;
 
         if (formulario.getAttribute('data-enviando') === '1') {
+            return;
+        }
+
+        vacios = camposObligatoriosVacios();
+
+        if (vacios.length) {
+            avisarCamposVacios(vacios);
             return;
         }
 
@@ -690,6 +1073,15 @@ document.addEventListener('DOMContentLoaded', function () {
     function guardarDomicilioYContacto(cuerpo) {
         var fallo = null;
         var pedido = Promise.resolve();
+        var cuerpoDomicilio = {};
+
+        Object.keys(cuerpo).forEach(function (clave) {
+            cuerpoDomicilio[clave] = cuerpo[clave];
+        });
+
+        if (!String(cuerpoDomicilio.nombre_barrio || '').trim()) {
+            cuerpoDomicilio.nombre_barrio = barrioSinDato;
+        }
 
         function guardar(pedirGuardado) {
             pedido = pedido.then(pedirGuardado).catch(function (error) {
@@ -699,10 +1091,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (cuerpo.id_provincia) {
             guardar(function () {
-                return apiRequest('domicilios', { metodo: 'PUT', cuerpo: cuerpo })
+                return apiRequest('domicilios', { metodo: 'PUT', cuerpo: cuerpoDomicilio })
                     .catch(function (error) {
                         if (error && error.status === 404) {
-                            return apiRequest('domicilios', { metodo: 'POST', cuerpo: cuerpo });
+                            return apiRequest('domicilios', { metodo: 'POST', cuerpo: cuerpoDomicilio });
                         }
 
                         throw error;
@@ -710,9 +1102,29 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        if (cuerpo.valor) {
+        if (formulario.elements.telefono && formulario.elements.telefono.value.trim() && idsTipoContacto.movil) {
             guardar(function () {
-                return apiRequest('contactos', { metodo: 'POST', cuerpo: cuerpo });
+                return apiRequest('contactos', {
+                    metodo: 'POST',
+                    cuerpo: {
+                        id_tipo_contacto: idsTipoContacto.movil,
+                        valor: formulario.elements.telefono.value.trim(),
+                        es_principal: true
+                    }
+                });
+            });
+        }
+
+        if (formulario.elements.contacto_emergencia && formulario.elements.contacto_emergencia.value.trim() && idsTipoContacto.emergencia) {
+            guardar(function () {
+                return apiRequest('contactos', {
+                    metodo: 'POST',
+                    cuerpo: {
+                        id_tipo_contacto: idsTipoContacto.emergencia,
+                        valor: formulario.elements.contacto_emergencia.value.trim(),
+                        es_principal: false
+                    }
+                });
             });
         }
 

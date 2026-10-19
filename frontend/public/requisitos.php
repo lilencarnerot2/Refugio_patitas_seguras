@@ -9,7 +9,7 @@ require __DIR__ . '/includes/header.php';
         <h2>Requisitos</h2>
     </div>
 
-    <div class="requisitos-dos-columnas">
+    <div class="requisitos-columnas">
     <section class="requisitos-section" id="adopcion" data-tipo-solicitud="adopcion">
         <div class="page-intro">
             <h2>Adopción</h2>
@@ -25,14 +25,9 @@ require __DIR__ . '/includes/header.php';
             <div class="requisito-item"><span class="requisito-mark"></span>Compromisos y seguimiento posterior.</div>
         </div>
 
-        <details class="proceso-adopcion">
-            <summary>Proceso de adopción</summary>
-            <ol>
-                <li>Ingresá con un usuario registrado.</li>
-                <li>Elegí la mascota y completá el formulario.</li>
-                <li>El refugio evalúa, su compatibilidad.</li>
-            </ol>
-        </details>
+        <div class="requisitos-accion">
+            <a class="btn-primary" href="/public/mascotas.php#adopcion"><i class="bi bi-search-heart"></i> Ver catálogo de mascotas</a>
+        </div>
     </section>
 
     <section class="requisitos-section" id="transito" data-tipo-solicitud="transito">
@@ -50,14 +45,31 @@ require __DIR__ . '/includes/header.php';
             <div class="requisito-item"><span class="requisito-mark"></span>Medicación, disponibilidad y seguimiento.</div>
         </div>
 
-        <details class="proceso-transito">
-            <summary>Proceso de hogar de tránsito</summary>
-            <ol>
-                <li>Ingresá con un usuario registrado.</li>
-                <li>Elegí la mascota y completá el formulario.</li>
-                <li>El refugio evalúa y coordina el cuidado temporal.</li>
-            </ol>
-        </details>
+        <div class="requisitos-accion">
+            <a class="btn-primary" href="/public/mascotas.php"><i class="bi bi-search-heart"></i> Ver catálogo de mascotas</a>
+        </div>
+    </section>
+
+    <section class="requisitos-section" id="voluntariado" data-tipo-solicitud="voluntariado">
+        <div class="page-intro">
+            <h2>Voluntariado</h2>
+            <p>Sumá tu tiempo y tu cariño para ayudar en el día a día del refugio.</p>
+        </div>
+
+        <div class="requisitos-grid">
+            <div class="requisito-item"><span class="requisito-mark"></span>No hace falta usuario registrado.</div>
+            <div class="requisito-item"><span class="requisito-mark"></span>Completar tus datos de contacto.</div>
+            <div class="requisito-item"><span class="requisito-mark"></span>Elegir fecha y horario de un turno disponible.</div>
+            <div class="requisito-item"><span class="requisito-mark"></span>Contar tu experiencia con perros y gatos.</div>
+            <div class="requisito-item"><span class="requisito-mark"></span>Indicar con qué tareas podés ayudar.</div>
+            <div class="requisito-item"><span class="requisito-mark"></span>Aceptar las indicaciones del refugio.</div>
+            <div class="requisito-item"><span class="requisito-mark"></span>Avisar si no podés asistir.</div>
+        </div>
+
+
+        <div class="requisitos-accion">
+            <a class="btn-primary" href="/public/voluntariado.php"><i class="bi bi-hand-thumbs-up"></i> Quiero ser voluntario</a>
+        </div>
     </section>
     </div>
 

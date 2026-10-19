@@ -1,6 +1,7 @@
 <?php
 $tituloPagina = 'Crear cuenta - Patitas Seguras';
 $cuerpoClase = 'page-adapt';
+$reglas = require __DIR__ . '/includes/reglas_cuenta.php';
 require __DIR__ . '/includes/head.php';
 require __DIR__ . '/includes/header.php';
 ?>
@@ -27,7 +28,7 @@ require __DIR__ . '/includes/header.php';
 
             <div class="mb-3">
                 <label class="form-label" for="correo">Correo electrónico</label>
-                <input class="form-control" id="correo" name="correo" type="text" required>
+                <input class="form-control" id="correo" name="correo" type="text" inputmode="email" autocomplete="email" maxlength="254" required pattern="<?php echo htmlspecialchars($reglas['patron_email'], ENT_QUOTES, 'UTF-8'); ?>" title="<?php echo htmlspecialchars($reglas['texto_email'], ENT_QUOTES, 'UTF-8'); ?>">
             </div>
 
             <div class="mb-3">
@@ -43,13 +44,14 @@ require __DIR__ . '/includes/header.php';
             <div class="mb-3">
                 <label class="form-label" for="clave">Contraseña</label>
                 <div class="clave-wrap">
-                    <input class="form-control clave-campo" id="clave" name="clave" type="text" autocomplete="new-password" required>
+                    <input class="form-control clave-campo" id="clave" name="clave" type="text" autocomplete="new-password" maxlength="64" required pattern="<?php echo htmlspecialchars($reglas['patron_clave'], ENT_QUOTES, 'UTF-8'); ?>" title="<?php echo htmlspecialchars($reglas['texto_clave'], ENT_QUOTES, 'UTF-8'); ?>">
                     <input class="clave-toggle" id="ver-clave-registro" type="checkbox">
                     <label class="clave-ojo" for="ver-clave-registro" title="Mostrar u ocultar contraseña">
                         <i class="fa-regular fa-eye"></i>
                         <i class="fa-regular fa-eye-slash"></i>
                     </label>
                 </div>
+                <div class="form-text"><?php echo htmlspecialchars($reglas['ayuda_clave'], ENT_QUOTES, 'UTF-8'); ?></div>
             </div>
 
             <p class="campo-obligatorio"></p>

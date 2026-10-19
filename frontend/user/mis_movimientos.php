@@ -72,7 +72,6 @@ require __DIR__ . '/includes/header.php';
                     <article class="card solicitudes-grupo movimientos-donaciones-grupo border-0 rounded-4 shadow-sm" data-por-pagina="5" data-total="0" data-incluir-tipo-aporte="dinero">
                         <template data-modelo-cabecera-movimientos>
                             <th scope="col" data-campo="metodo_pago" data-etiqueta="Método pago"></th>
-                            <th scope="col" data-campo="frecuencia_aporte" data-etiqueta="Frecuencia"></th>
                             <th scope="col" data-campo="fecha" data-etiqueta="Fecha"></th>
                             <th scope="col" data-campo="monto" data-etiqueta="Monto"></th>
                             <th scope="col" data-campo="descripcion" data-etiqueta="Descripción"></th>
@@ -85,8 +84,8 @@ require __DIR__ . '/includes/header.php';
                             <div class="solicitudes-vacio text-center rounded-4 p-4">
                                 <i class="bi bi-inbox"></i>
                                 <p class="fw-semibold mb-1">Aún no registraste donaciones monetarias.</p>
-                                <p class="small text-body-secondary mb-3">Cuando cargues un aporte en dinero, lo vas a ver acá.</p>
-                                <a class="btn btn-outline-success btn-sm rounded-pill px-3" href="/public/donaciones_monetarias.php">Ir a donaciones monetarias <i class="bi bi-chevron-right"></i></a>
+                                <p class="small text-body-secondary mb-3">Cuando se registre un aporte en dinero a tu nombre, lo vas a ver acá.</p>
+                                <a class="btn btn-outline-success btn-sm rounded-pill px-3" href="/public/donaciones.php">Ver cómo donar <i class="bi bi-chevron-right"></i></a>
                             </div>
                             <div class="lista-scroll-mascotas lista-scroll-donaciones overflow-auto mt-3">
                                 <table class="dash-tabla mb-0">
@@ -116,7 +115,6 @@ require __DIR__ . '/includes/header.php';
                     <article class="card solicitudes-grupo movimientos-donaciones-grupo border-0 rounded-4 shadow-sm" data-por-pagina="5" data-total="0" data-excluir-tipo-aporte="dinero">
                         <template data-modelo-cabecera-movimientos>
                             <th scope="col" data-campo="tipo_aporte" data-etiqueta="Tipo aporte"></th>
-                            <th scope="col" data-campo="frecuencia_aporte" data-etiqueta="Frecuencia"></th>
                             <th scope="col" data-campo="fecha" data-etiqueta="Fecha"></th>
                             <th scope="col" data-campo="descripcion" data-etiqueta="Descripción"></th>
                         </template>

@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function () {
             texto(solicitud && solicitud.nombre_usuario),
             texto(solicitud && solicitud.apellido_usuario)
         ].join(' ').trim();
-        var urlFoto = texto(mascotaApi && mascotaApi.foto_url);
+        var urlFoto = urlFotoMascota(texto(mascotaApi && mascotaApi.foto_url));
 
         if (etiquetaMascota) {
             if (nombreMascota !== '') {
@@ -445,7 +445,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function pintarFotoMascotaDetalle(mascota) {
         var foto = document.getElementById('detalle-foto');
         var vacia = document.getElementById('detalle-foto-vacia');
-        var url = texto(mascota && mascota.foto_url);
+        var url = urlFotoMascota(texto(mascota && mascota.foto_url));
 
         if (!foto) {
             return;

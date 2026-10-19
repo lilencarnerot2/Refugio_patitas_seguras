@@ -13,6 +13,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     boton.addEventListener('click', function () {
         var mensaje = formulario.querySelector('.campo-obligatorio');
+        var correo = document.getElementById('correo');
+
+        correo.value = correo.value.trim();
+
+        if (!formatosValidos(formulario, mensaje)) {
+            return;
+        }
 
         boton.disabled = true;
 
@@ -30,7 +37,12 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(function (respuesta) {
             return irTrasSesion(respuesta);
         })
-        .catch(function () {
+        .catch(function (error) {
+            if (error && error.status === 401) {
+                avisoDeApi(mensaje, 'Ese correo ya tiene una cuenta. Si es tuya, ingresá la misma contraseña con la que la creaste o recuperala desde "Ingresar" > "Recuperar contraseña".', false, formulario);
+                formulario.querySelector('#clave').setAttribute('data-campo-estado', 'error');
+            }
+
             return null;
         })
         .finally(function () {

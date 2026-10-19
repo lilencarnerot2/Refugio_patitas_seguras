@@ -11,31 +11,31 @@ require __DIR__ . '/includes/header.php';
             <div id="seguimiento-solicitudes" class="seguimiento-solicitudes" data-param-detalle="solicitud">
                 <div class="row g-3 mb-4">
                     <div class="col-12 col-md-4">
-                        <div class="card contador-solicitudes contador-adopcion border-0 rounded-4 h-100">
+                        <div class="card contador-solicitudes border-0 rounded-4 h-100">
                             <div class="card-body d-flex align-items-center gap-3">
-                                <span class="contador-icono rounded-circle d-inline-flex align-items-center justify-content-center"><i class="bi bi-heart"></i></span>
+                                <span class="contador-icono rounded-circle d-inline-flex align-items-center justify-content-center"><i class="bi bi-hourglass-split"></i></span>
                                 <div>
-                                    <strong class="d-block fs-4" data-contador data-contar-clave="adopcion" data-contar-estado="pendiente">0</strong>
-                                    <span class="small d-block">Solicitudes de adopción</span>
-                                    <small class="text-body-secondary">En proceso</small>
+                                    <strong class="d-block fs-4" data-contador data-contar-estado="pendiente">0</strong>
+                                    <span class="small d-block">Solicitudes en proceso</span>
+                                    <small class="text-body-secondary">Esperando respuesta</small>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-4">
-                        <div class="card contador-solicitudes contador-transito border-0 rounded-4 h-100">
+                        <div class="card contador-solicitudes border-0 rounded-4 h-100">
                             <div class="card-body d-flex align-items-center gap-3">
-                                <span class="contador-icono rounded-circle d-inline-flex align-items-center justify-content-center"><i class="bi bi-house-heart"></i></span>
+                                <span class="contador-icono rounded-circle d-inline-flex align-items-center justify-content-center"><i class="bi bi-check2-circle"></i></span>
                                 <div>
-                                    <strong class="d-block fs-4" data-contador data-contar-clave="transito" data-contar-estado="pendiente">0</strong>
-                                    <span class="small d-block">Solicitudes de tránsito</span>
-                                    <small class="text-body-secondary">en proceso</small>
+                                    <strong class="d-block fs-4" data-contador data-contar-estado="aprobado">0</strong>
+                                    <span class="small d-block">Solicitudes aprobadas</span>
+                                    <small class="text-body-secondary">Aceptadas por el refugio</small>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-4">
-                        <div class="card contador-solicitudes contador-total border-0 rounded-4 h-100">
+                        <div class="card contador-solicitudes border-0 rounded-4 h-100">
                             <div class="card-body d-flex align-items-center gap-3">
                                 <span class="contador-icono rounded-circle d-inline-flex align-items-center justify-content-center"><i class="bi bi-file-earmark-text"></i></span>
                                 <div>
@@ -49,102 +49,48 @@ require __DIR__ . '/includes/header.php';
                 </div>
                 <h3 class="perfil-titulo h4 mb-3">Mis solicitudes</h3>
                 <p class="mensaje-formulario" data-mensaje-solicitudes role="status"></p>
-                <ul class="nav row g-3 mb-3 solicitudes-pestanas" role="tablist">
-                    <li class="col-12 col-md-6" role="presentation">
-                        <button class="nav-link pestana-adopcion active w-100 d-flex align-items-center justify-content-between rounded-4" type="button" role="tab" data-bs-toggle="pill" data-bs-target="#solicitudes-adopcion" aria-controls="solicitudes-adopcion" aria-selected="true">
-                            <span class="d-flex align-items-center gap-2"><i class="bi bi-folder2"></i> Mis solicitudes de adopción</span>
-                            <i class="bi bi-chevron-right"></i>
-                        </button>
-                    </li>
-                    <li class="col-12 col-md-6" role="presentation">
-                        <button class="nav-link pestana-transito w-100 d-flex align-items-center justify-content-between rounded-4" type="button" role="tab" data-bs-toggle="pill" data-bs-target="#solicitudes-transito" aria-controls="solicitudes-transito" aria-selected="false">
-                            <span class="d-flex align-items-center gap-2"><i class="bi bi-folder2"></i> Mis solicitudes de hogar de tránsito</span>
-                            <i class="bi bi-chevron-right"></i>
-                        </button>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="solicitudes-adopcion" role="tabpanel" data-clave="adopcion" data-recurso-formulario="formularios_adopcion">
-                        <article class="card solicitudes-grupo border-0 rounded-4 shadow-sm">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
-                                    <h4 class="h5 mb-0">Solicitudes de adopción</h4>
-                                    <span class="badge rounded-pill solicitudes-cantidad"><span data-cantidad>0</span> <span class="cantidad-plural">solicitudes</span><span class="cantidad-singular">solicitud</span></span>
-                                </div>
-                                <ul class="list-unstyled d-grid gap-3 mb-0" data-lista></ul>
-                                <div class="solicitudes-vacio text-center rounded-4 p-4">
-                                    <i class="fa-solid fa-cat"></i>
-                                    <p class="fw-semibold mb-1">Aún no tenés solicitudes de adopción.</p>
-                                    <p class="small mb-3">Cuando completes un formulario y lo envíes, vas a poder ver su estado desde acá.</p>
-                                    <a class="btn btn-sm btn-outline-success rounded-pill px-3" href="/public/mascotas.php">Ver mascotas</a>
-                                </div>
-                            </div>
-                        </article>
-                        <template data-modelo>
-                            <li class="card solicitud-item rounded-4">
-                                <div class="card-body d-flex flex-column flex-sm-row gap-3">
-                                    <div class="solicitud-foto rounded-4 flex-shrink-0 d-flex align-items-center justify-content-center">
-                                        <img data-campo="foto_url" alt="">
-                                        <i class="fa-solid fa-paw"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h5 class="mb-1"><span data-campo="nombre_mascota"></span> <i class="fa-solid fa-paw solicitud-pata"></i></h5>
-                                        <p class="solicitud-meta small mb-1"><span data-campo="especie"></span><span data-campo="raza"></span><span data-campo="tamaño"></span></p>
-                                        <p class="small mb-2"><i class="bi bi-calendar3"></i> Enviada el <span data-campo="fecha_solicitud" data-formato="fecha"></span></p>
-                                        <span class="badge rounded-pill estado-solicitud" data-campo="estado_solicitud"></span>
-                                        <p class="solicitud-ayuda small mt-2 mb-0" data-ayuda-estado="pendiente">Tu solicitud de adopción está siendo evaluada por el equipo del refugio. Te vamos a contactar si necesitamos más información.</p>
-                                        <p class="solicitud-ayuda small mt-2 mb-0" data-ayuda-estado="aprobado">¡Tu solicitud fue aprobada! El refugio se va a comunicar con vos para coordinar la adopción.</p>
-                                        <p class="solicitud-ayuda small mt-2 mb-0" data-ayuda-estado="rechazado">Esta vez tu solicitud no fue aprobada. Podés conocer a otras mascotas del refugio.</p>
-                                        <p class="solicitud-ayuda small mt-2 mb-0" data-ayuda-estado="finalizado">La adopción finalizó. ¡Gracias por darle un hogar!</p>
-                                    </div>
-                                    <div class="align-self-sm-end">
-                                        <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modal-detalle-solicitud">Ver detalle <i class="bi bi-chevron-right"></i></button>
-                                    </div>
-                                </div>
-                            </li>
-                        </template>
+                <article class="card solicitudes-grupo border-0 rounded-4 shadow-sm" data-grupo>
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                            <h4 class="h5 mb-0">Todas mis solicitudes</h4>
+                            <span class="badge rounded-pill solicitudes-cantidad"><span data-cantidad>0</span> <span class="cantidad-plural">solicitudes</span><span class="cantidad-singular">solicitud</span></span>
+                        </div>
+                        <ul class="list-unstyled d-grid gap-3 mb-0" data-lista></ul>
+                        <div class="solicitudes-vacio text-center rounded-4 p-4">
+                            <i class="fa-solid fa-cat"></i>
+                            <p class="fw-semibold mb-1">Aún no tenés solicitudes.</p>
+                            <p class="small mb-3">Cuando completes un formulario de adopción o de hogar de tránsito y lo envíes, vas a poder ver su estado desde acá.</p>
+                            <a class="btn btn-sm btn-outline-success rounded-pill px-3" href="/public/mascotas.php">Ver mascotas</a>
+                        </div>
                     </div>
-                    <div class="tab-pane fade" id="solicitudes-transito" role="tabpanel" data-clave="transito" data-recurso-formulario="formularios_transito">
-                        <article class="card solicitudes-grupo border-0 rounded-4 shadow-sm">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
-                                    <h4 class="h5 mb-0">Solicitudes de hogar de tránsito</h4>
-                                    <span class="badge rounded-pill solicitudes-cantidad"><span data-cantidad>0</span> <span class="cantidad-plural">solicitudes</span><span class="cantidad-singular">solicitud</span></span>
-                                </div>
-                                <ul class="list-unstyled d-grid gap-3 mb-0" data-lista></ul>
-                                <div class="solicitudes-vacio text-center rounded-4 p-4">
-                                    <i class="fa-solid fa-cat"></i>
-                                    <p class="fw-semibold mb-1">Aún no tenés solicitudes de hogar de tránsito.</p>
-                                    <p class="small mb-3">Cuando completes un formulario y lo envíes, vas a poder ver su estado desde acá.</p>
-                                    <a class="btn btn-sm btn-outline-success rounded-pill px-3" href="/public/mascotas.php">Ver mascotas</a>
-                                </div>
+                </article>
+                <template data-modelo>
+                    <li class="card solicitud-item rounded-4">
+                        <div class="card-body d-flex flex-column flex-sm-row gap-3">
+                            <div class="solicitud-foto rounded-4 flex-shrink-0 d-flex align-items-center justify-content-center">
+                                <img data-campo="foto_url" alt="">
+                                <i class="fa-solid fa-paw"></i>
                             </div>
-                        </article>
-                        <template data-modelo>
-                            <li class="card solicitud-item rounded-4">
-                                <div class="card-body d-flex flex-column flex-sm-row gap-3">
-                                    <div class="solicitud-foto rounded-4 flex-shrink-0 d-flex align-items-center justify-content-center">
-                                        <img data-campo="foto_url" alt="">
-                                        <i class="fa-solid fa-paw"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h5 class="mb-1"><span data-campo="nombre_mascota"></span> <i class="fa-solid fa-paw solicitud-pata"></i></h5>
-                                        <p class="solicitud-meta small mb-1"><span data-campo="especie"></span><span data-campo="raza"></span><span data-campo="tamaño"></span></p>
-                                        <p class="small mb-2"><i class="bi bi-calendar3"></i> Enviada el <span data-campo="fecha_solicitud" data-formato="fecha"></span></p>
-                                        <span class="badge rounded-pill estado-solicitud" data-campo="estado_solicitud"></span>
-                                        <p class="solicitud-ayuda small mt-2 mb-0" data-ayuda-estado="pendiente">Recibimos tu solicitud y el refugio la está evaluando. Te vamos a contactar si necesitamos más información.</p>
-                                        <p class="solicitud-ayuda small mt-2 mb-0" data-ayuda-estado="aprobado">¡Tu solicitud fue aprobada! El refugio se va a comunicar con vos para coordinar el tránsito.</p>
-                                        <p class="solicitud-ayuda small mt-2 mb-0" data-ayuda-estado="rechazado">Esta vez tu solicitud no fue aprobada. Podés ofrecerte como tránsito para otra mascota.</p>
-                                        <p class="solicitud-ayuda small mt-2 mb-0" data-ayuda-estado="finalizado">El tránsito finalizó. ¡Gracias por ayudar!</p>
-                                    </div>
-                                    <div class="align-self-sm-end">
-                                        <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modal-detalle-solicitud">Ver detalle <i class="bi bi-chevron-right"></i></button>
-                                    </div>
-                                </div>
-                            </li>
-                        </template>
-                    </div>
-                </div>
+                            <div class="flex-grow-1">
+                                <h5 class="mb-1"><span data-campo="nombre_mascota"></span> <i class="fa-solid fa-paw solicitud-pata"></i></h5>
+                                <p class="solicitud-meta small mb-1"><span data-campo="especie"></span><span data-campo="raza"></span><span data-campo="tamaño"></span></p>
+                                <p class="small mb-2"><i class="bi bi-calendar3"></i> Enviada el <span data-campo="fecha_solicitud" data-formato="fecha"></span></p>
+                                <span class="badge rounded-pill tipo-solicitud me-1">
+                                    <span data-tipo-texto="adopcion"><i class="bi bi-heart"></i> Adopción</span>
+                                    <span data-tipo-texto="transito"><i class="bi bi-house-heart"></i> Hogar de tránsito</span>
+                                </span>
+                                <span class="badge rounded-pill estado-solicitud" data-campo="estado_solicitud"></span>
+                                <p class="solicitud-ayuda small mt-2 mb-0" data-ayuda-estado="pendiente">Tu solicitud está siendo evaluada por el equipo del refugio. Te vamos a contactar si necesitamos más información.</p>
+                                <p class="solicitud-ayuda small mt-2 mb-0" data-ayuda-estado="aprobado">¡Tu solicitud fue aprobada! El refugio se va a comunicar con vos para coordinar los próximos pasos.</p>
+                                <p class="solicitud-ayuda small mt-2 mb-0" data-ayuda-estado="rechazado">Esta vez tu solicitud no fue aprobada. Podés conocer a otras mascotas del refugio.</p>
+                                <p class="solicitud-ayuda small mt-2 mb-0" data-ayuda-estado="finalizado">Esta solicitud ya finalizó. ¡Gracias por tu ayuda!</p>
+                            </div>
+                            <div class="align-self-sm-end">
+                                <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modal-detalle-solicitud">Ver detalle <i class="bi bi-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </li>
+                </template>
             </div>
     </section>
     <div class="modal fade" id="modal-detalle-solicitud" tabindex="-1" aria-labelledby="modal-detalle-titulo" aria-hidden="true" data-si="Sí" data-no="No" data-aviso-sin-formulario="No encontramos el formulario de esta solicitud.">
@@ -188,7 +134,7 @@ require __DIR__ . '/includes/header.php';
                         <div><dt>Tiene mascotas</dt><dd data-campo="tiene_mascotas"></dd></div>
                         <div><dt>Mascotas del hogar</dt><dd data-campo="mascotas_hogar"></dd></div>
                         <div><dt>Cantidad máxima de mascotas</dt><dd data-campo="cantidad_maxima_mascotas"></dd></div>
-
+                        <div><dt>Responsable principal</dt><dd data-campo="responsable_principal"></dd></div>
                         <div><dt>Puede realizar paseos</dt><dd data-campo="puede_realizar_paseos"></dd></div>
                         <div><dt>Puede realizar traslados</dt><dd data-campo="puede_realizar_traslados"></dd></div>
                         <div><dt>Puede administrar medicación</dt><dd data-campo="puede_administrar_medicacion"></dd></div>

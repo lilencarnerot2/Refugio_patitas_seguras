@@ -433,10 +433,10 @@
             border-radius: 20px;
         }
 
-        /* Grilla de 3 tarjetas en index: Adoptá, Voluntariado, etc. */
+        /* Grilla de 2 tarjetas en index: Adoptá o abrí tu hogar, Voluntariado */
         .action-cards {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
 
@@ -614,7 +614,7 @@
             display: inline-block;
         }
 
-        /* Tarjeta "sobre nosotros" en index */
+        /* Tarjeta "quiénes somos" en la página Nosotros */
         .nosotros-card {
             background: var(--tema-crema);
             border: 1px solid var(--tema-crema-borde);
@@ -633,6 +633,36 @@
             color: #555;
             line-height: 1.6;
             font-size: 14px;
+        }
+
+        #panel-nosotros {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        #panel-nosotros .nosotros-card,
+        #nosotros-trabajo,
+        #nosotros-transparencia {
+            margin-bottom: 28px;
+        }
+
+        #nosotros-transparencia a {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .nosotros-acciones {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .nosotros-acciones .btn-donate,
+        .nosotros-acciones .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         /* Título "otras formas de ayudar" en index */
@@ -932,7 +962,8 @@
             color: var(--text-soft);
         }
 
-        .info-card ul {
+        .info-card ul,
+        .info-card ol {
             margin: 10px 0 0 18px;
             font-size: 13px;
             color: var(--text-soft);
@@ -1114,31 +1145,50 @@
             flex-shrink: 0;
         }
 
-        /* Requisitos en dos columnas (adopción y tránsito lado a lado), solo CSS */
-        .requisitos-dos-columnas {
+        /* Requisitos en columnas (adopción, tránsito y voluntariado lado a lado), solo CSS */
+        .requisitos-columnas {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-            gap: 64px;
-            max-width: 1080px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 40px;
+            max-width: 1240px;
             width: 100%;
             margin: 0 auto;
             padding-left: 5%;
             padding-right: 5%;
-            align-items: start;
+            align-items: stretch;
             box-sizing: border-box;
         }
 
-        .requisitos-dos-columnas .requisitos-grid { grid-template-columns: 1fr; }
+        .requisitos-columnas .requisitos-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .requisitos-columnas .requisitos-section > * { width: 100%; }
+
+        .requisitos-columnas .requisitos-grid {
+            grid-template-columns: 1fr;
+            flex: 1 1 auto;
+            align-content: start;
+        }
 
         @media (max-width: 992px) {
-            .requisitos-dos-columnas {
+            .requisitos-columnas {
                 grid-template-columns: 1fr;
                 gap: 24px;
             }
         }
 
+        .requisitos-accion {
+            display: flex;
+            justify-content: center;
+            max-width: 720px;
+            margin: 24px auto 0;
+        }
+
         .proceso-adopcion,
-        .proceso-transito {
+        .proceso-transito,
+        .proceso-voluntariado {
             max-width: 720px;
             margin: 0 auto;
             background: var(--tema-crema);
@@ -1147,7 +1197,8 @@
         }
 
         .proceso-adopcion summary,
-        .proceso-transito summary {
+        .proceso-transito summary,
+        .proceso-voluntariado summary {
             padding: 12px 18px;
             cursor: pointer;
             list-style: none;
@@ -1156,10 +1207,12 @@
         }
 
         .proceso-adopcion summary::-webkit-details-marker,
-        .proceso-transito summary::-webkit-details-marker { display: none; }
+        .proceso-transito summary::-webkit-details-marker,
+        .proceso-voluntariado summary::-webkit-details-marker { display: none; }
 
         .proceso-adopcion ol,
-        .proceso-transito ol {
+        .proceso-transito ol,
+        .proceso-voluntariado ol {
             margin: 0;
             padding: 0 18px 16px 36px;
             color: var(--text-muted);
@@ -1199,16 +1252,19 @@
         .form-feedback[data-estado="ok"] { color: var(--primary-color); }
         .form-feedback[data-estado="error"] { color: var(--bs-danger, #a32b21); }
 
-        #panel-voluntariado.panel-aportes {
+        #panel-voluntariado.panel-aportes,
+        #panel-contacto.panel-aportes {
             padding: 28px 5% 48px;
         }
 
-        #panel-voluntariado .page-intro {
+        #panel-voluntariado .page-intro,
+        #panel-contacto .page-intro {
             margin-bottom: 40px;
         }
 
         #panel-voluntariado .info-card-single,
-        #panel-voluntariado .public-form.public-form-tarjeta {
+        #panel-voluntariado .public-form.public-form-tarjeta,
+        #panel-contacto .public-form.public-form-tarjeta {
             max-width: 640px;
             margin-left: auto;
             margin-right: auto;
@@ -1219,7 +1275,9 @@
         }
 
         #panel-voluntariado .public-form.public-form-tarjeta h3,
-        #panel-voluntariado .public-form.public-form-tarjeta > p {
+        #panel-voluntariado .public-form.public-form-tarjeta > p,
+        #panel-contacto .public-form.public-form-tarjeta h3,
+        #panel-contacto .public-form.public-form-tarjeta > p {
             text-align: center;
         }
 
@@ -1312,6 +1370,19 @@
             opacity: 1;
         }
 
+        #panel-denuncia.panel-aportes {
+            padding: 28px 5% 48px;
+        }
+
+        #panel-denuncia .info-card-single {
+            max-width: 720px;
+            margin: 0 auto 20px;
+        }
+
+        #panel-denuncia .info-card li + li {
+            margin-top: 6px;
+        }
+
         .turno-horario-ayuda { min-height: 1.4em; }
 
         .turno-voluntariado:has(#fecha[value]:not([value=""])) .turno-horario-ayuda {
@@ -1331,11 +1402,14 @@
         }
 
         @media (max-width: 576px) {
-            #panel-voluntariado.panel-aportes { padding-left: 12px; padding-right: 12px; }
+            #panel-voluntariado.panel-aportes,
+            #panel-contacto.panel-aportes { padding-left: 12px; padding-right: 12px; }
 
-            #panel-voluntariado .public-form.public-form-tarjeta { padding: 16px 12px 18px; }
+            #panel-voluntariado .public-form.public-form-tarjeta,
+            #panel-contacto .public-form.public-form-tarjeta { padding: 16px 12px 18px; }
 
-            #panel-voluntariado .form-seccion { padding: 12px 10px 14px; }
+            #panel-voluntariado .form-seccion,
+            #panel-contacto .form-seccion { padding: 12px 10px 14px; }
 
             #calendario-voluntariado .card-header,
             #calendario-voluntariado .card-body { padding-left: 8px; padding-right: 8px; }
@@ -1738,11 +1812,19 @@
         }
 
         #bloque-solicitud #ficha-mascota img {
-            width: 100%;
-            height: 180px;
+            box-sizing: content-box;
+            width: auto;
+            height: auto;
+            max-width: calc(100% - 12px);
+            max-height: 180px;
+            margin: 12px auto 4px;
+            padding: 3px;
+            border-radius: 10px;
             object-fit: contain;
             background: var(--tema-crema-claro);
         }
+
+        #bloque-solicitud #ficha-mascota img[hidden] { display: none; }
 
         #bloque-solicitud #ficha-mascota .pet-card-body {
             padding: 8px 10px 10px;
@@ -2094,25 +2176,6 @@
 
         .contador-solicitudes .contador-icono { color: var(--tema-crema-tinta); }
 
-        .solicitudes-pestanas .nav-link {
-            padding: 16px 18px;
-            border: 1px solid var(--border-light);
-            background: var(--white);
-            color: var(--text-dark);
-            font-weight: 600;
-            text-align: left;
-            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-        }
-
-        .solicitudes-pestanas .nav-link > span i { color: var(--tema-crema-tinta); }
-
-        .solicitudes-pestanas .nav-link:hover,
-        .solicitudes-pestanas .nav-link.active {
-            border-color: var(--tema-crema-borde);
-            background: var(--tema-crema);
-            color: var(--text-dark);
-        }
-
         .solicitudes-grupo h4 {
             color: var(--primary-color);
             font-weight: 700;
@@ -2165,7 +2228,24 @@
             border-radius: 8px;
         }
 
+        .movimientos-pestanas .nav-link {
+            padding: 16px 18px;
+            border: 1px solid var(--border-light);
+            background: var(--white);
+            color: var(--text-dark);
+            font-weight: 600;
+            text-align: left;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+
         .movimientos-pestanas .nav-link > span i { color: var(--tema-crema-tinta); }
+
+        .movimientos-pestanas .nav-link:hover,
+        .movimientos-pestanas .nav-link.active {
+            border-color: var(--tema-crema-borde);
+            background: var(--tema-crema);
+            color: var(--text-dark);
+        }
 
         .solicitudes-vacio > i {
             display: block;
@@ -2247,6 +2327,22 @@
 
         .solicitud-meta span:not(:empty) ~ span:not(:empty)::before { content: " · "; }
         .solicitud-ayuda { color: var(--text-soft); }
+
+        .tipo-solicitud {
+            padding: 5px 12px;
+            border: 1px solid var(--tema-crema-borde);
+            background: var(--tema-crema);
+            color: var(--tema-crema-tinta);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .solicitud-item [data-tipo-texto] { display: none; }
+
+        .solicitud-item[data-tipo="adopcion"] [data-tipo-texto="adopcion"],
+        .solicitud-item[data-tipo="transito"] [data-tipo-texto="transito"] { display: inline; }
 
         .estado-solicitud {
             padding: 5px 12px;
@@ -2382,7 +2478,8 @@
             }
 
             #bloque-solicitud #ficha-mascota img {
-                height: 150px;
+                height: auto;
+                max-height: 150px;
                 object-fit: contain;
             }
 
@@ -2415,7 +2512,7 @@
 
             .detalle-section { padding: 24px 16px; }
 
-            .requisitos-dos-columnas {
+            .requisitos-columnas {
                 padding-left: 16px;
                 padding-right: 16px;
             }
@@ -2438,12 +2535,53 @@
 
         #bloque-aportes[hidden] { display: none !important; }
 
-        .donaciones-elegir {
+        #insumos-necesarios {
             max-width: 960px;
-            margin: 0 auto;
+            margin: 8px auto 0;
+        }
+
+        .insumos-titulo {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        #insumos-necesarios .info-card li + li { margin-top: 6px; }
+
+        .insumos-nota {
+            max-width: 960px;
+            margin: 20px auto 28px;
+            color: var(--text-soft);
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .donaciones-insumos-accion {
+            max-width: 960px;
+            margin: 28px auto 0;
+            text-align: center;
+        }
+
+        .donaciones-insumos-accion p {
+            margin-bottom: 14px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .donaciones-insumos-accion .btn-donate {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         #tarjetas-alias {
+            max-width: 960px;
+            margin: 28px auto 0;
+        }
+
+        #info-castracion {
+            width: 100%;
             max-width: 960px;
             margin: 28px auto 0;
         }
@@ -2488,6 +2626,49 @@
             color: var(--text-dark);
             line-height: 1.7;
             word-break: break-word;
+        }
+
+        #donar-mercado-pago {
+            margin-top: 36px;
+        }
+
+        #tarjetas-montos {
+            max-width: 960px;
+            margin: 20px auto 0;
+        }
+
+        .tarjeta-monto { background: var(--white); }
+
+        .tarjeta-monto-icono {
+            font-size: 1.8rem;
+            line-height: 1;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .tarjeta-monto-valor {
+            margin-bottom: 16px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .tarjeta-monto .btn-donate {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .donaciones-mp-nota {
+            max-width: 960px;
+            margin: 20px auto 0;
+            color: var(--text-soft);
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .donaciones-mp-nota a {
+            color: var(--primary-color);
+            font-weight: 600;
         }
 
         #panel-aportes-sitio .public-form h3 { text-align: center; }
@@ -3146,6 +3327,79 @@
         .perfil-vacio { display: none; }
         .pet-detail-meta[data-cargado]:empty + .perfil-vacio { display: block; }
 
+        #panel-mi-perfil .perfil-card [data-estado-texto] { display: none; }
+
+        #panel-mi-perfil .perfil-card[data-perfil-estado="completo"] [data-estado-texto="completo"],
+        #panel-mi-perfil .perfil-card[data-perfil-estado="incompleto"] [data-estado-texto="incompleto"],
+        #panel-mi-perfil .perfil-card[data-perfil-estado="vacio"] [data-estado-texto="vacio"] { display: inline; }
+
+        #panel-mi-perfil .perfil-estado {
+            margin-left: auto;
+            padding: 3px 12px;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        #panel-mi-perfil .perfil-card:not([data-perfil-estado]) .perfil-estado { display: none; }
+
+        #panel-mi-perfil .perfil-card[data-perfil-estado="completo"] .perfil-estado {
+            background: #e3f3e6;
+            border-color: #bfe0c6;
+            color: #1f6b35;
+        }
+
+        #panel-mi-perfil .perfil-card[data-perfil-estado="incompleto"] .perfil-estado {
+            background: #fff3d6;
+            border-color: #f0d9a0;
+            color: #8a5a00;
+        }
+
+        #panel-mi-perfil .perfil-card[data-perfil-estado="vacio"] .perfil-estado {
+            background: #fbe7e5;
+            border-color: #f0c4bf;
+            color: #a32b21;
+        }
+
+        #panel-mi-perfil .perfil-nota {
+            margin-top: 12px;
+            color: var(--text-soft);
+        }
+
+        #panel-mi-perfil .pet-detail-meta li[data-vacio] span:last-child {
+            color: var(--text-soft);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        #panel-mi-perfil .perfil-form {
+            max-width: none;
+            margin: 14px 0 0;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        #panel-mi-perfil .perfil-form .form-label {
+            margin-bottom: 4px;
+            color: var(--text-soft);
+            font-size: 13px;
+        }
+
+        #panel-mi-perfil .perfil-lista-contacto {
+            margin-top: 12px;
+        }
+
+        #panel-mi-perfil .perfil-form-acciones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
         .modal-salir-icono {
             width: 56px;
             height: 56px;
@@ -3254,8 +3508,9 @@
             .info-card,
             .pet-card,
             .catalog-empty,
-            .donaciones-elegir,
+            .donaciones-insumos-accion,
             #tarjetas-alias,
+            #tarjetas-montos,
             .solicitud-formulario,
             .perfil-datos-grid,
             .ficha-listado,
@@ -3298,6 +3553,8 @@
             .action-cards,
             .other-ways,
             .stats-container { justify-items: center; }
+
+            .action-cards .card { width: 100%; }
 
             footer .footer-inner {
                 justify-content: center;
@@ -3373,36 +3630,3 @@
             color: var(--tema-rojo-tinta);
             box-shadow: 0 8px 22px rgba(168, 72, 62, 0.12);
         }
-
-/* ------------------------------------------
-   Center forms and align pet card
-   ------------------------------------------ */
-#bloque-solicitud {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 800px; /* adjust as needed */
-    margin: 0 auto;
-    gap: 1rem;
-}
-
-/* Ensure the form container takes full width within the block */
-#bloque-solicitud .solicitud-formulario {
-    width: 100%;
-    order: 1; /* appears before pet card */
-}
-
-/* Pet card styling and positioning */
-#bloque-solicitud .pet-card {
-    order: 2;
-    width: 100%;
-    max-width: 300px; /* optional fixed width for card */
-    margin-top: 0.5rem;
-}
-
-/* Center the title text */
-#bloque-solicitud .page-intro {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 1rem;
-}
