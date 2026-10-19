@@ -88,6 +88,27 @@ function cambiar_estado_solicitud(
         );
     }
 
+    $estado_aprobado = obtener_estado_solicitud_por_nombre('Aprobado');
+    $tipo_adopcion = obtener_tipo_solicitud_por_nombre('Adopción');
+    
+    if ($estado_aprobado && (int)$estado_aprobado['id'] === $id_estado_solicitud) {
+        if ($tipo_adopcion && (int)$solicitud['id_tipo_solicitud'] === (int)$tipo_adopcion['id']) {
+            require_once __DIR__ . '/../../mascotas/repositories/mascotas.php';
+            desactivar_mascota_por_id((int)$solicitud['id_mascota']);
+        }
+    }
+ 
+    $estado_aprobado = obtener_estado_solicitud_por_nombre('Aprobado');
+    $tipo_adopcion = obtener_tipo_solicitud_por_nombre('Adopción');
+    
+    if ($estado_aprobado && (int)$estado_aprobado['id'] === $id_estado_solicitud) {
+        if ($tipo_adopcion && (int)$solicitud['id_tipo_solicitud'] === (int)$tipo_adopcion['id']) {
+    
+            require_once __DIR__ . '/../../mascotas/repositories/mascotas.php';
+            desactivar_mascota_por_id((int)$solicitud['id_mascota']);
+        }
+    }
+
     // Recargamos la solicitud con TODOS los datos
     $solicitudCompleta = obtener_solicitud_por_id($id_solicitud);
 

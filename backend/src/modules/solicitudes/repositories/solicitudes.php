@@ -337,3 +337,20 @@ function crear_solicitud(
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+function obtener_tipo_solicitud_por_nombre(string $nombre_tipo): array|false
+{
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT id, nombre_tipo
+        FROM tipos_solicitudes
+        WHERE LOWER(TRIM(nombre_tipo)) = LOWER(TRIM(:nombre_tipo))
+          AND estado = TRUE
+        LIMIT 1
+    ";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([':nombre_tipo' => $nombre_tipo]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
