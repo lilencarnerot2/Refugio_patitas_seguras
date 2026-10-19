@@ -27,7 +27,7 @@ function buscar_solicitud_por_id(int $id): array|false {
 function cambiar_estado_solicitud(
     int $id_solicitud,
     int $id_estado_solicitud
-): array {
+ ): array {
 
     if ($id_solicitud <= 0 || $id_estado_solicitud <= 0) {
         throw new InvalidArgumentException(
@@ -59,6 +59,22 @@ function cambiar_estado_solicitud(
         throw new InvalidArgumentException(
             'La solicitud ya tiene ese estado.'
         );
+    }
+
+    $estado_finalizado = obtener_estado_solicitud_por_nombre('Finalizado');
+    $estado_aprobado = obtener_estado_solicitud_por_nombre('Aprobado');
+    $estado_rechazado = obtener_estado_solicitud_por_nombre('Rechazado');
+
+    if ($estado_finalizado && $id_estado_solicitud === (int) $estado_finalizado['id']) {
+        // Si quiere pasar a Finalizado, el estado actual debe ser Aprobado o Rechazado
+        $es_aprobado = $estado_aprobado && $estado_actual_id === (int) $estado_aprobado['id'];
+        $es_rechazado = $estado_rechazado && $estado_actual_id === (int) $estado_rechazado['id'];
+
+        if (!$es_aprobado && !$es_rechazado) {
+            throw new InvalidArgumentException(
+                'Solo se puede finalizar una solicitud que haya sido aprobada o rechazada previamente.'
+            );
+        }
     }
 
     $solicitud_actualizada = actualizar_estado_solicitud(
