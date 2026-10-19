@@ -1081,11 +1081,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                if (botones.hasAttribute('data-resolver')
-                    && clave.indexOf('aprob') === -1
-                    && clave.indexOf('rechaz') === -1
-                    && clave.indexOf('finaliz') === -1) {
-                    return;
+                if (botones.hasAttribute('data-resolver')) {
+                    var claveActual = normalizarTipo(estadoActual && estadoActual.nombre);
+                    var resuelta = claveActual.indexOf('aprob') !== -1 || claveActual.indexOf('rechaz') !== -1;
+
+                    if (clave.indexOf('finaliz') !== -1 && !resuelta) {
+                        return;
+                    }
+
+                    if (clave.indexOf('aprob') === -1 && clave.indexOf('rechaz') === -1 && clave.indexOf('finaliz') === -1) {
+                        return;
+                    }
                 }
 
                 plantilla = plantillaBotonEstado(clave);

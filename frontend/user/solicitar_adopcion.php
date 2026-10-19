@@ -78,8 +78,8 @@ require __DIR__ . '/../public/includes/header.php';
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="horas_solo">Horas solo</label>
-                                            <input class="form-control" type="number" min="0" max="24" id="horas_solo" name="horas_solo" aria-describedby="ayuda-horas-solo">
-                                            <div id="ayuda-horas-solo" class="form-text">Coloque un número del 0 al 24.</div>
+                                            <input class="form-control" type="number" min="0" max="8" id="horas_solo" name="horas_solo" aria-describedby="ayuda-horas-solo">
+                                            <div id="ayuda-horas-solo" class="form-text">Coloque un número del 0 al 8 (máximo de 8 horas).</div>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-check" for="hay_ninos">
@@ -94,14 +94,18 @@ require __DIR__ . '/../public/includes/header.php';
                                             </label>
                                         </div>
                                         <div class="col-12">
-                                            <label class="form-label" for="responsable_principal">Responsable principal</label>
-                                            <input class="form-control" type="text" id="responsable_principal" name="responsable_principal" maxlength="60" required>
+
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label" for="id_motivo_adopcion">Motivo de adopción</label>
                                             <select class="form-select" id="id_motivo_adopcion" name="id_motivo_adopcion" data-catalogo="motivos_adopcion" required>
                                                 <option value="" selected disabled></option>
                                             </select>
+                                        </div>
+                                        <div class="col-12" id="grupo-mascotas-hogar" hidden>
+                                            <p class="form-label">Mascotas del hogar</p>
+                                            <div id="lista-mascotas-hogar"></div>
+                                            <button class="btn btn-outline-primary" type="button" id="agregar-mascota-hogar">Agregar mascota</button>
                                         </div>
                                     </div>
                                 </section>
@@ -144,16 +148,11 @@ require __DIR__ . '/../public/includes/header.php';
                                         </div>
                                         <div class="col-12">
                                             <p class="form-label">Compromisos de adopción</p>
-                                            <div data-lista="compromisos_adopcion" data-name="compromisos" data-requerido></div>
+                                            <div data-lista="compromisos_adopcion" data-name="compromisos" data-requerido data-compromisos-unico></div>
                                         </div>
                                         <div class="col-12">
                                             <p class="form-label">Condiciones especiales</p>
                                             <div data-lista="condiciones_especiales" data-name="condiciones_especiales"></div>
-                                        </div>
-                                        <div class="col-12" id="grupo-mascotas-hogar" hidden>
-                                            <p class="form-label">Mascotas del hogar</p>
-                                            <div id="lista-mascotas-hogar"></div>
-                                            <button class="btn btn-outline-primary" type="button" id="agregar-mascota-hogar">Agregar mascota</button>
                                         </div>
                                     </div>
                                 </section>
@@ -176,15 +175,13 @@ require __DIR__ . '/../public/includes/header.php';
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="id_localidad">Localidad</label>
-                                            <select class="form-select" id="id_localidad" name="id_localidad" data-catalogo="localidades" data-param="id_comuna_municipio" data-carga="id_barrio_zona">
+                                            <select class="form-select" id="id_localidad" name="id_localidad" data-catalogo="localidades" data-param="id_comuna_municipio">
                                                 <option value="" selected disabled></option>
                                             </select>
                                         </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label" for="id_barrio_zona">Barrio o zona</label>
-                                            <select class="form-select" id="id_barrio_zona" name="id_barrio_zona" data-catalogo="barrios_zonas" data-param="id_localidad">
-                                                <option value="" selected disabled></option>
-                                            </select>
+                                        <div class="col-md-6" id="grupo-barrio-zona">
+                                            <label class="form-label" for="id_barrio_zona">Barrio o zona <span class="text-muted fw-normal">(opcional)</span></label>
+                                            <select class="form-select" id="id_barrio_zona" name="id_barrio_zona" data-carga="id_barrio_zona" required></select>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="calle">Calle</label>
@@ -227,20 +224,12 @@ require __DIR__ . '/../public/includes/header.php';
                                             <input class="form-control" type="text" id="codigo_postal" name="codigo_postal">
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label" for="id_tipo_contacto">Tipo de contacto</label>
-                                            <select class="form-select" id="id_tipo_contacto" name="id_tipo_contacto" data-catalogo="tipos_contacto">
-                                                <option value="" selected disabled></option>
-                                            </select>
+                                            <label class="form-label" for="telefono">Teléfono</label>
+                                            <input class="form-control" type="tel" id="telefono" name="telefono" data-solo-contacto required>
                                         </div>
-                                        <div class="col-md-6 d-flex flex-column gap-2">
-                                            <div>
-                                                <label class="form-label" for="valor">Contacto</label>
-                                                <input class="form-control" type="text" id="valor" name="valor">
-                                            </div>
-                                            <label class="form-check" for="es_principal">
-                                                <input class="form-check-input" type="checkbox" id="es_principal" name="es_principal">
-                                                <span>Es principal</span>
-                                            </label>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="contacto_emergencia">Contacto de emergencia</label>
+                                            <input class="form-control" type="tel" id="contacto_emergencia" name="contacto_emergencia" data-solo-contacto required>
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label" for="observaciones">Observaciones</label>
@@ -253,6 +242,7 @@ require __DIR__ . '/../public/includes/header.php';
 
                     <p id="mensaje-formulario" class="mensaje-formulario"></p>
                     <button class="btn-primary" type="submit">Enviar solicitud</button>
+<button class="btn-primary" type="button" id="finalizar-solicitud" hidden>Finalizar</button>
                 </form>
             </div>
         </div>
@@ -284,16 +274,16 @@ require __DIR__ . '/../public/includes/header.php';
                 </select>
             </div>
             <div class="col-md-4">
-                <label class="form-label">Nombre</label>
-                <input class="form-control" type="text" name="nombre" maxlength="30">
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Edad aproximada</label>
-                <input class="form-control" type="number" min="0" name="edad_aproximada">
+                <label class="form-label">Edad aproximada (años)</label>
+                <input class="form-control" type="number" min="1" step="1" name="edad_aproximada" required>
             </div>
             <div class="col-md-4">
                 <label class="form-label">Sexo</label>
-                <input class="form-control" type="text" name="sexo">
+                <select class="form-select" name="sexo" required>
+                    <option value="" selected disabled hidden></option>
+                    <option value="macho">Macho</option>
+                    <option value="hembra">Hembra</option>
+                </select>
             </div>
             <div class="col-md-8">
                 <div class="row g-2 align-items-end h-100">
@@ -313,7 +303,9 @@ require __DIR__ . '/../public/includes/header.php';
             </div>
             <div class="col-12">
                 <label class="form-label">Enfermedad o condición</label>
-                <input class="form-control" type="text" name="enfermedad_condicion">
+                <select class="form-select" name="id_enfermedad_condicion" data-catalogo="enfermedades_condiciones">
+                    <option value="" selected disabled></option>
+                </select>
             </div>
             <div class="col-12">
                 <label class="form-label">Descripción</label>

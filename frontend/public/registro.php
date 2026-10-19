@@ -31,6 +31,16 @@ require __DIR__ . '/includes/header.php';
             </div>
 
             <div class="mb-3">
+                <label class="form-label" for="fecha_nacimiento">Fecha de nacimiento</label>
+                <input class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" type="date" required max="<?php echo date('Y-m-d', strtotime('-18 years')); ?>">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="telefono">Teléfono</label>
+                <input class="form-control" id="telefono" name="telefono" type="tel" required>
+            </div>
+
+            <div class="mb-3">
                 <label class="form-label" for="clave">Contraseña</label>
                 <div class="clave-wrap">
                     <input class="form-control clave-campo" id="clave" name="clave" type="text" autocomplete="new-password" required>

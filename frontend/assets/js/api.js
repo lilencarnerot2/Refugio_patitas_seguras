@@ -190,9 +190,31 @@ function irTrasSesion(origen) {
   });
 }
 
+function formatear_fecha(fecha) {
+  var texto;
+  var partes;
+
+  if (fecha === undefined || fecha === null || fecha === '') {
+    return '';
+  }
+
+  texto = String(fecha).trim().replace('T', ' ').split(/\s+/)[0];
+
+  if (texto.indexOf('/') !== -1) {
+    return texto;
+  }
+
+  partes = texto.split('-');
+
+  if (partes.length !== 3) {
+    return texto;
+  }
+
+  return partes[2] + '/' + partes[1] + '/' + partes[0];
+}
+
 function fechaCorta(valor) {
-  var texto = (valor === undefined || valor === null) ? '' : String(valor);
-  return texto.split(' ')[0];
+  return formatear_fecha(valor);
 }
 
 function fechaHoraLista(valor) {

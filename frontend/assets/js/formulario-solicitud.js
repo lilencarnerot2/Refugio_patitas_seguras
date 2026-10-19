@@ -219,14 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
             cuerpo[nodo.name] = nodo.value || null;
         });
 
-        if (formulario.elements.id_barrio_zona) {
-            var barrio = formulario.elements.id_barrio_zona;
-            var opcion = barrio.options[barrio.selectedIndex];
 
-            if (opcion && opcion.value) {
-                cuerpo.nombre_barrio = opcion.textContent;
-            }
-        }
 
         cuerpo.compromisos = valoresLista('compromisos');
         cuerpo.condiciones_especiales = valoresLista('condiciones_especiales');
@@ -480,6 +473,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 document.querySelectorAll('#formulario-solicitud select[data-catalogo="' + recurso + '"]:not([data-param]), #modelos-adopcion select[data-catalogo="' + recurso + '"]').forEach(function (select) {
                     llenarSelect(select, lista);
+<<<<<<< Updated upstream
+=======
+                    // Re‑enable the select after loading
+                    select.disabled = false;
+                    select.removeAttribute('data-loading');
+                    // Add placeholder for motivo de adopción if this is that catalog
+                    if (recurso === 'motivos_adopcion') {
+                        var placeholder = select.querySelector('option[value=""]');
+                        if (placeholder) {
+                            placeholder.textContent = 'Seleccione un motivo de adopción';
+                            placeholder.disabled = true;
+                            placeholder.hidden = false;
+                            placeholder.selected = true;
+                        }
+                    }
+>>>>>>> Stashed changes
                 });
             }));
         });

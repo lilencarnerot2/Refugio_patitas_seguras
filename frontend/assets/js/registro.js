@@ -22,7 +22,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 nombre: document.getElementById('nombre').value.trim(),
                 apellido: document.getElementById('apellido').value.trim(),
                 email: document.getElementById('correo').value.trim(),
-                password: document.getElementById('clave').value
+                password: document.getElementById('clave').value,
+                fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
+                telefono: document.getElementById('telefono').value.trim()
             }
         })
         .then(function (respuesta) {
