@@ -3,12 +3,8 @@
 require_once __DIR__ . '/../../../config/database.php';
 
 
-// ============================================================
 // CATÁLOGOS
-// ============================================================
-
-function obtener_tipos_aportes(): array
-{
+function obtener_tipos_aportes(): array {
     $conexion = conectarDB();
     $sql = "SELECT id, nombre_aporte, estado FROM tipos_aportes WHERE estado = TRUE ORDER BY id";
     $stmt = $conexion->prepare($sql);
@@ -17,8 +13,7 @@ function obtener_tipos_aportes(): array
 }
 
 
-function obtener_tipos_movimientos_aportes(): array
-{
+function obtener_tipos_movimientos_aportes(): array {
     $conexion = conectarDB();
     $sql = "SELECT id, nombre_movimiento, estado FROM tipos_movimientos_aportes WHERE estado = TRUE ORDER BY id";
     $stmt = $conexion->prepare($sql);
@@ -27,8 +22,7 @@ function obtener_tipos_movimientos_aportes(): array
 }
 
 
-function obtener_frecuencia_aportes(): array
-{
+function obtener_frecuencia_aportes(): array {
     $conexion = conectarDB();
     $sql = "SELECT id, nombre_frecuencia_aporte, estado FROM frecuencia_aportes WHERE estado = TRUE ORDER BY id";
     $stmt = $conexion->prepare($sql);
@@ -37,8 +31,7 @@ function obtener_frecuencia_aportes(): array
 }
 
 
-function obtener_metodos_pago(): array
-{
+function obtener_metodos_pago(): array {
     $conexion = conectarDB();
     $sql = "SELECT id, nombre_metodo, estado FROM metodos_pago WHERE estado = TRUE ORDER BY id";
     $stmt = $conexion->prepare($sql);
@@ -47,8 +40,7 @@ function obtener_metodos_pago(): array
 }
 
 
-function existe_tipo_aporte(int $id): bool
-{
+function existe_tipo_aporte(int $id): bool {
     $conexion = conectarDB();
     $sql = "SELECT 1 FROM tipos_aportes WHERE id = :id AND estado = TRUE LIMIT 1";
     $stmt = $conexion->prepare($sql);
@@ -57,8 +49,7 @@ function existe_tipo_aporte(int $id): bool
 }
 
 
-function existe_tipo_movimiento(int $id): bool
-{
+function existe_tipo_movimiento(int $id): bool {
     $conexion = conectarDB();
     $sql = "SELECT 1 FROM tipos_movimientos_aportes WHERE id = :id AND estado = TRUE LIMIT 1";
     $stmt = $conexion->prepare($sql);
@@ -67,8 +58,7 @@ function existe_tipo_movimiento(int $id): bool
 }
 
 
-function existe_frecuencia_aporte(int $id): bool
-{
+function existe_frecuencia_aporte(int $id): bool {
     $conexion = conectarDB();
     $sql = "SELECT 1 FROM frecuencia_aportes WHERE id = :id AND estado = TRUE LIMIT 1";
     $stmt = $conexion->prepare($sql);
@@ -77,8 +67,7 @@ function existe_frecuencia_aporte(int $id): bool
 }
 
 
-function existe_metodo_pago(int $id): bool
-{
+function existe_metodo_pago(int $id): bool {
     $conexion = conectarDB();
     $sql = "SELECT 1 FROM metodos_pago WHERE id = :id AND estado = TRUE LIMIT 1";
     $stmt = $conexion->prepare($sql);
@@ -87,14 +76,10 @@ function existe_metodo_pago(int $id): bool
 }
 
 
-// ============================================================
+
 // MOVIMIENTOS
-// ============================================================
-
-function obtener_movimientos_filtrados(array $filtros, ?int $id_usuario_solo_suyos): array
-{
+function obtener_movimientos_filtrados(array $filtros,?int $id_usuario_solo_suyos): array{
     $conexion = conectarDB();
-
     $sql = "
         SELECT
             m.id,
@@ -113,7 +98,7 @@ function obtener_movimientos_filtrados(array $filtros, ?int $id_usuario_solo_suy
             m.monto,
             m.descripcion
         FROM movimientos m
-        INNER JOIN usuarios u
+        LEFT JOIN usuarios u
             ON u.id = m.id_usuario
         INNER JOIN tipos_movimientos_aportes tm
             ON tm.id = m.id_tipo_movimiento
@@ -127,53 +112,52 @@ function obtener_movimientos_filtrados(array $filtros, ?int $id_usuario_solo_suy
     ";
 
     $parametros = [];
-
     if ($id_usuario_solo_suyos !== null) {
         $sql .= " AND m.id_usuario = :id_usuario";
         $parametros[':id_usuario'] = $id_usuario_solo_suyos;
     }
-
     if (!empty($filtros['id_tipo_aporte'])) {
         $sql .= " AND m.id_tipo_aporte = :id_tipo_aporte";
         $parametros[':id_tipo_aporte'] = (int) $filtros['id_tipo_aporte'];
     }
-
     if (!empty($filtros['id_tipo_movimiento'])) {
         $sql .= " AND m.id_tipo_movimiento = :id_tipo_movimiento";
         $parametros[':id_tipo_movimiento'] = (int) $filtros['id_tipo_movimiento'];
     }
-
     if (!empty($filtros['id_metodo_pago'])) {
         $sql .= " AND m.id_metodo_pago = :id_metodo_pago";
         $parametros[':id_metodo_pago'] = (int) $filtros['id_metodo_pago'];
     }
-
     if (!empty($filtros['id_frecuencia_aporte'])) {
         $sql .= " AND m.id_frecuencia_aporte = :id_frecuencia_aporte";
         $parametros[':id_frecuencia_aporte'] = (int) $filtros['id_frecuencia_aporte'];
     }
-
     if (!empty($filtros['fecha_desde'])) {
         $sql .= " AND m.fecha >= :fecha_desde";
         $parametros[':fecha_desde'] = $filtros['fecha_desde'];
     }
-
     if (!empty($filtros['fecha_hasta'])) {
         $sql .= " AND m.fecha <= :fecha_hasta";
         $parametros[':fecha_hasta'] = $filtros['fecha_hasta'];
     }
-
     if (!empty($filtros['busqueda'])) {
-        $sql .= " AND (
-            LOWER(m.descripcion) LIKE LOWER(:busqueda)
-            OR LOWER(u.nombre) LIKE LOWER(:busqueda)
-            OR LOWER(u.apellido) LIKE LOWER(:busqueda)
-        )";
-        $parametros[':busqueda'] = '%' . $filtros['busqueda'] . '%';
+        $sql .= "
+            AND (
+                LOWER(m.descripcion) LIKE LOWER(:busqueda)
+                OR LOWER(u.nombre) LIKE LOWER(:busqueda)
+                OR LOWER(u.apellido) LIKE LOWER(:busqueda)
+            )
+        ";
+
+        $parametros[':busqueda'] =
+            '%' . $filtros['busqueda'] . '%';
     }
 
-    $sql .= " ORDER BY m.fecha DESC, m.id DESC";
-
+    $sql .= "
+        ORDER BY
+            m.fecha DESC,
+            m.id DESC
+    ";
     $stmt = $conexion->prepare($sql);
     $stmt->execute($parametros);
 
@@ -181,10 +165,8 @@ function obtener_movimientos_filtrados(array $filtros, ?int $id_usuario_solo_suy
 }
 
 
-function obtener_movimiento_por_id(int $id): array|false
-{
+function obtener_movimiento_por_id(int $id): array|false {
     $conexion = conectarDB();
-
     $sql = "
         SELECT
             m.id,
@@ -203,7 +185,7 @@ function obtener_movimiento_por_id(int $id): array|false
             m.monto,
             m.descripcion
         FROM movimientos m
-        INNER JOIN usuarios u
+        LEFT JOIN usuarios u
             ON u.id = m.id_usuario
         INNER JOIN tipos_movimientos_aportes tm
             ON tm.id = m.id_tipo_movimiento
@@ -217,14 +199,16 @@ function obtener_movimiento_por_id(int $id): array|false
     ";
 
     $stmt = $conexion->prepare($sql);
-    $stmt->execute([':id' => $id]);
+    $stmt->execute([
+        ':id' => $id
+    ]);
 
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 
-function crear_movimiento(array $datos): array|false
-{
+
+function crear_movimiento(array $datos): array|false {
     $conexion = conectarDB();
 
     $sql = "
@@ -253,7 +237,12 @@ function crear_movimiento(array $datos): array|false
 
     $stmt = $conexion->prepare($sql);
 
-    $stmt->bindValue(':id_usuario', $datos['id_usuario'], PDO::PARAM_INT);
+    if ($datos['id_usuario'] === null) {
+        $stmt->bindValue(':id_usuario', null, PDO::PARAM_NULL);
+    } else {
+        $stmt->bindValue(':id_usuario', $datos['id_usuario'], PDO::PARAM_INT);
+    }
+    
     $stmt->bindValue(':id_tipo_movimiento', $datos['id_tipo_movimiento'], PDO::PARAM_INT);
     $stmt->bindValue(':id_tipo_aporte', $datos['id_tipo_aporte'], PDO::PARAM_INT);
 
@@ -290,12 +279,9 @@ function crear_movimiento(array $datos): array|false
     return $fila ?: false;
 }
 
-// ============================================================
-// REPORTES
-// ============================================================
 
-function obtener_resumen_movimientos(array $filtros): array
-{
+// REPORTES
+function obtener_resumen_movimientos(array $filtros): array {
     $conexion = conectarDB();
 
     $sql = "
@@ -379,8 +365,7 @@ function obtener_resumen_movimientos(array $filtros): array
 }
 
 
-function obtener_totales_por_tipo_aporte(array $filtros): array
-{
+function obtener_totales_por_tipo_aporte(array $filtros): array {
     $conexion = conectarDB();
 
     $sql = "
@@ -431,8 +416,7 @@ function obtener_totales_por_tipo_aporte(array $filtros): array
 }
 
 
-function obtener_totales_por_metodo_pago(array $filtros): array
-{
+function obtener_totales_por_metodo_pago(array $filtros): array {
     $conexion = conectarDB();
 
     $sql = "
@@ -483,8 +467,7 @@ function obtener_totales_por_metodo_pago(array $filtros): array
 }
 
 
-function obtener_totales_por_frecuencia(array $filtros): array
-{
+function obtener_totales_por_frecuencia(array $filtros): array {
     $conexion = conectarDB();
 
     $sql = "

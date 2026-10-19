@@ -3,47 +3,36 @@
 require_once __DIR__ . '/../repositories/movimientos.php';
 
 
-// ============================================================
-// CATÁLOGOS
-// ============================================================
 
-function listar_tipos_aportes(): array
-{
+// CATÁLOGOS
+function listar_tipos_aportes(): array {
     return obtener_tipos_aportes();
 }
 
 
-function listar_tipos_movimientos_aportes(): array
-{
+function listar_tipos_movimientos_aportes(): array {
     return obtener_tipos_movimientos_aportes();
 }
 
 
-function listar_frecuencia_aportes(): array
-{
+function listar_frecuencia_aportes(): array {
     return obtener_frecuencia_aportes();
 }
 
 
-function listar_metodos_pago(): array
-{
+function listar_metodos_pago(): array {
     return obtener_metodos_pago();
 }
 
 
-// ============================================================
 // VALIDACIONES
-// ============================================================
-
-function validar_fecha(string $fecha): bool
-{
+function validar_fecha(string $fecha): bool {
     $d = DateTime::createFromFormat('Y-m-d', $fecha);
     return $d && $d->format('Y-m-d') === $fecha;
 }
 
 
-function validar_movimiento_datos(array $datos): void
-{
+function validar_movimiento_datos(array $datos): void {
     $id_tipo_movimiento = filter_var($datos['id_tipo_movimiento'] ?? null, FILTER_VALIDATE_INT);
 
     if ($id_tipo_movimiento === false || $id_tipo_movimiento <= 0) {
@@ -131,20 +120,16 @@ function validar_movimiento_datos(array $datos): void
 }
 
 
-// ============================================================
-// OPERACIONES
-// ============================================================
 
-function listar_movimientos(array $filtros, int $id_usuario_actual, bool $es_admin): array
-{
+// OPERACIONES
+function listar_movimientos(array $filtros, int $id_usuario_actual, bool $es_admin): array {
     $id_usuario_solo_suyos = $es_admin ? null : $id_usuario_actual;
 
     return obtener_movimientos_filtrados($filtros, $id_usuario_solo_suyos);
 }
 
 
-function buscar_movimiento_por_id(int $id, int $id_usuario_actual, bool $es_admin): array
-{
+function buscar_movimiento_por_id(int $id, int $id_usuario_actual, bool $es_admin): array {
     if ($id <= 0) {
         throw new InvalidArgumentException('El id del movimiento no es válido.');
     }
@@ -163,65 +148,93 @@ function buscar_movimiento_por_id(int $id, int $id_usuario_actual, bool $es_admi
 }
 
 
-function registrar_movimiento(int $id_usuario_actual, array $datos): array
-{
-    if ($id_usuario_actual <= 0) {
-        throw new InvalidArgumentException('El usuario autenticado no es válido.');
-    }
-
+function registrar_movimiento(?int $id_usuario_actual, array $datos): array {
     validar_movimiento_datos($datos);
 
     $id_tipo_aporte = (int) $datos['id_tipo_aporte'];
 
+    // Solo "dinero" (id = 1) puede ser anonimo
+    if (
+        $id_tipo_aporte !== 1 &&
+        ($id_usuario_actual === null || $id_usuario_actual <= 0)
+    ) {
+        throw new InvalidArgumentException(
+            'Debés iniciar sesión para realizar una donación de insumos.'
+        );
+    }
+
+    // Si existe usuario, debe ser valido
+    if ($id_usuario_actual !== null && $id_usuario_actual <= 0) {
+        throw new InvalidArgumentException(
+            'El usuario autenticado no es válido.'
+        );
+    }
+
     $monto = null;
     $id_metodo_pago = null;
 
-    // Solo guardamos monto y método de pago si el aporte es dinero
+    // solo guardamos monto y metodo de pago si el aporte es dinero
     if ($id_tipo_aporte === 1) {
         $monto = (float) $datos['monto'];
         $id_metodo_pago = (int) $datos['id_metodo_pago'];
     }
 
     $id_frecuencia_aporte = null;
+
     if (
         isset($datos['id_frecuencia_aporte']) &&
         $datos['id_frecuencia_aporte'] !== null &&
         $datos['id_frecuencia_aporte'] !== ''
     ) {
-        $id_frecuencia_aporte = (int) $datos['id_frecuencia_aporte'];
+        $id_frecuencia_aporte =
+            (int) $datos['id_frecuencia_aporte'];
     }
 
-    $fecha = !empty($datos['fecha']) ? (string) $datos['fecha'] : date('Y-m-d');
+    $fecha = !empty($datos['fecha'])
+        ? (string) $datos['fecha']
+        : date('Y-m-d');
 
     $descripcion = null;
+
     if (!empty($datos['descripcion'])) {
-        $descripcion = trim((string) $datos['descripcion']);
+        $descripcion =
+            trim((string) $datos['descripcion']);
     }
 
     $creado = crear_movimiento([
         'id_usuario' => $id_usuario_actual,
-        'id_tipo_movimiento' => (int) $datos['id_tipo_movimiento'],
+        'id_tipo_movimiento' =>
+            (int) $datos['id_tipo_movimiento'],
         'id_tipo_aporte' => $id_tipo_aporte,
         'id_metodo_pago' => $id_metodo_pago,
-        'id_frecuencia_aporte' => $id_frecuencia_aporte,
+        'id_frecuencia_aporte' =>
+            $id_frecuencia_aporte,
         'fecha' => $fecha,
         'monto' => $monto,
         'descripcion' => $descripcion,
     ]);
 
     if (!$creado) {
-        throw new RuntimeException('No se pudo registrar el movimiento.');
+        throw new RuntimeException(
+            'No se pudo registrar el movimiento.'
+        );
     }
 
-    return buscar_movimiento_por_id((int) $creado['id'], $id_usuario_actual, true);
+    $movimiento =
+        obtener_movimiento_por_id((int) $creado['id']);
+
+    if (!$movimiento) {
+        throw new RuntimeException(
+            'No se pudo recuperar el movimiento registrado.'
+        );
+    }
+
+    return $movimiento;
 }
 
-// ============================================================
-// REPORTES
-// ============================================================
 
-function validar_filtros_reporte(array $filtros): void
-{
+// REPORTES
+function validar_filtros_reporte(array $filtros): void {
     if (!empty($filtros['fecha_desde'])) {
         if (!validar_fecha((string) $filtros['fecha_desde'])) {
             throw new InvalidArgumentException('La fecha_desde no es válida. Formato esperado: YYYY-MM-DD.');
@@ -268,32 +281,28 @@ function validar_filtros_reporte(array $filtros): void
 }
 
 
-function resumen_movimientos(array $filtros): array
-{
+function resumen_movimientos(array $filtros): array {
     validar_filtros_reporte($filtros);
 
     return obtener_resumen_movimientos($filtros);
 }
 
 
-function reporte_por_tipo_aporte(array $filtros): array
-{
+function reporte_por_tipo_aporte(array $filtros): array {
     validar_filtros_reporte($filtros);
 
     return obtener_totales_por_tipo_aporte($filtros);
 }
 
 
-function reporte_por_metodo_pago(array $filtros): array
-{
+function reporte_por_metodo_pago(array $filtros): array {
     validar_filtros_reporte($filtros);
 
     return obtener_totales_por_metodo_pago($filtros);
 }
 
 
-function reporte_por_frecuencia(array $filtros): array
-{
+function reporte_por_frecuencia(array $filtros): array {
     validar_filtros_reporte($filtros);
 
     return obtener_totales_por_frecuencia($filtros);
