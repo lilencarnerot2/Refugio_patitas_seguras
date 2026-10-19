@@ -67,3 +67,51 @@ function manejar_solicitar_reset()
 
     return solicitar_reset_controller($datos);
 }
+function manejar_solicitar_cambio_password()
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        return responderJson(false, 'Método no permitido', null, 405);
+    }
+
+    if (!requerir_autenticacion()) {
+        return;
+    }
+
+    $body = file_get_contents('php://input');
+    $datos = json_decode($body, true);
+
+    if (!is_array($datos)) {
+        return responderJson(false, 'JSON inválido', null, 400);
+    }
+
+    $email = trim($datos['email'] ?? '');
+    $email_sesion = $_SESSION['usuario_email'] ?? ''; 
+
+    
+    if (empty($email_sesion)) {
+        require_once __DIR__ . '/../../usuarios/services/usuarios.php';
+        $usuario = buscar_usuario_por_id((int)$_SESSION['usuario_id']);
+       
+    }
+
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return responderJson(false, 'El email no es válido', null, 400);
+    }
+
+    
+    $resultado = solicitarResetEnPadron($email);
+
+    if (!$resultado['ok']) {
+        $statusPadron = (int) ($resultado['status'] ?? 500);
+        $status = ($statusPadron >= 400 && $statusPadron < 500) ? $statusPadron : 500;
+        return responderJson(false, $resultado['error'] ?? 'Error al solicitar el cambio', null, $status);
+    }
+
+    return responderJson(
+        true,
+        'Te enviamos un mail para que puedas cambiar tu contraseña.',
+        null,
+        200
+    );
+}
+ 

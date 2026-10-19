@@ -126,6 +126,12 @@ function manejarRutas() {
             manejar_solicitar_reset();
             break;
 
+        case 'password-change-request':
+            require_once __DIR__ . '/../modules/auth/controllers/recuperar.php';
+            manejar_solicitar_cambio_password();
+            break; 
+               
+
         case 'password-reset-confirmar':
             require_once __DIR__ . '/../modules/auth/controllers/reset.php';
             manejar_confirmar_reset();
