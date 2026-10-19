@@ -122,6 +122,32 @@ function validar_formulario_transito_datos(array $datos): void {
     if ($datos['disponibilidad_hasta'] <= $datos['disponibilidad_desde']) {
         throw new InvalidArgumentException('La fecha "hasta" debe ser posterior a la fecha "desde".');
     }
+
+    // Validar que el rango no supere los 6 meses
+    $fecha_desde = new DateTime($datos['disponibilidad_desde']);
+    $fecha_hasta = new DateTime($datos['disponibilidad_hasta']);
+    
+    // Clonamos la fecha "desde" y le sumamos 6 meses
+    $fecha_limite = clone $fecha_desde;
+    $fecha_limite->modify('+6 months');
+
+    if ($fecha_hasta > $fecha_limite) {
+        throw new InvalidArgumentException('La fecha "hasta" no puede superar los 6 meses desde la fecha "desde".');
+    }
+
+    // Validar teléfono (obligatorio, solo números/espacios/guiones, entre 8 y 15 caracteres)
+    $telefono = trim((string) ($datos['telefono'] ?? ''));
+    if ($telefono === '') {
+        throw new InvalidArgumentException('El teléfono es obligatorio.');
+    }
+    
+    // Contar solo los dígitos para validar la longitud real
+    $solo_numeros = preg_replace('/[^0-9]/', '', $telefono);
+    
+    if (strlen($solo_numeros) < 8 || strlen($solo_numeros) > 15) {
+        throw new InvalidArgumentException('El teléfono debe tener entre 8 y 15 dígitos.');
+    }
+    
 }
 
 

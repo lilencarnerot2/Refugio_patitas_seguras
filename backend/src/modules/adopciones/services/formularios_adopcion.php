@@ -77,6 +77,18 @@ function validar_formulario_datos(array $datos): void {
         }
     }
 
+     $telefono = trim((string) ($datos['telefono'] ?? ''));
+    if ($telefono === '') {
+        throw new InvalidArgumentException('El teléfono es obligatorio.');
+    }
+    
+    // Contar solo los dígitos para validar la longitud real
+    $solo_numeros = preg_replace('/[^0-9]/', '', $telefono);
+    
+    if (strlen($solo_numeros) < 8 || strlen($solo_numeros) > 15) {
+        throw new InvalidArgumentException('El teléfono debe tener entre 8 y 15 dígitos.');
+    }
+
     if (empty($datos['cantidad_integrantes']) || (int) $datos['cantidad_integrantes'] <= 0) {
         throw new InvalidArgumentException('La cantidad de integrantes debe ser mayor a 0.');
     }
@@ -96,7 +108,7 @@ function validar_formulario_datos(array $datos): void {
         throw new InvalidArgumentException('Debe indicar si tiene mascotas.');
     }
 
-    
+
     $id_motivo_adopcion = filter_var(
     $datos['id_motivo_adopcion'] ?? null,
     FILTER_VALIDATE_INT
