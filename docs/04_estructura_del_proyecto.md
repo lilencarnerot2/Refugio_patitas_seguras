@@ -19,6 +19,8 @@ Esta organización permite mantener el proyecto ordenado, facilitar el trabajo e
 
 > **Importante:** Es importante aclarar que esta estructura representa la organización general prevista para el proyecto. Algunas carpetas o archivos pueden incorporarse progresivamente a medida que avancen los distintos Sprints.
 
+> **Nota:** la estructura final, con los cambios realizados durante el desarrollo, está documentada en `07_reforma_de_arquitectura.md`.
+
 ---
 
 ## 2. Estructura general
@@ -100,7 +102,6 @@ frontend/
 ├── admin/
 │   ├── dashboard.php
 │   ├── mascotas.php
-│   ├── mascota-form.php
 │   ├── salud.php
 │   ├── solicitudes.php
 │   ├── solicitud-detalle.php
