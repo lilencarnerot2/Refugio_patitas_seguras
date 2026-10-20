@@ -12,12 +12,12 @@ if ($recursoFormularioDetalle === '' && $tipoDetalle === 'transito') {
 }
 $atributoRecursoFormulario = $recursoFormularioDetalle === ''
     ? ''
-    : ' data-recurso-formulario="' . htmlspecialchars($recursoFormularioDetalle, ENT_QUOTES, 'UTF-8') . '"';
+    : ' data-recurso-formulario="' . $recursoFormularioDetalle . '"';
 ?>
     <section id="panel-solicitud-detalle" class="panel-listado"
-        data-listado="<?php echo htmlspecialchars($solicitudDetalleListado, ENT_QUOTES, 'UTF-8'); ?>"
-        data-tipo="<?php echo htmlspecialchars($tipoDetalle, ENT_QUOTES, 'UTF-8'); ?>"
-        data-vista-href="<?php echo htmlspecialchars($solicitudDetalleHref, ENT_QUOTES, 'UTF-8'); ?>"
+        data-listado="<?php echo $solicitudDetalleListado; ?>"
+        data-tipo="<?php echo $tipoDetalle; ?>"
+        data-vista-href="<?php echo $solicitudDetalleHref; ?>"
         data-si="Sí"
         data-no="No"
         data-etiqueta-si="Sí"

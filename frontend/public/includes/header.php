@@ -10,9 +10,7 @@ $esPersonal = esPersonalAdmin();
 $donar = '/public/donaciones.php';
 ?><header>
     <a class="logo-container" href="<?php echo $esInicio ? '#inicio' : $inicio; ?>">
-            <div class="logo-icon">
-                <span class="icono-pata"></span>
-            </div>
+            <img class="logo-image" src="/assets/img/LogoPatitas.jpeg" alt="Logo Patitas Seguras">
             <div class="logo-text">
                 <h1>PATITAS SEGURAS</h1>
                 <span>Refugio de animales</span>
@@ -51,15 +49,23 @@ $donar = '/public/donaciones.php';
                     <?php if ($esPersonal) { ?>
                     <a class="btn-outline" href="/admin/dashboard.php">PANEL</a>
                     <?php } ?>
-                    <?php if ($autenticado && !$esPersonal) { ?>
-                    <a class="btn-outline" href="/user/mi_perfil.php">MI PERFIL</a>
+                    <?php if ($autenticado && usuarioSesion() !== null && !$esPersonal) { ?>
+                    <div class="dropdown perfil-dropdown">
+                        <button class="btn-outline perfil-dropdown-toggle dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                            MI PERFIL
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end perfil-dropdown-menu">
+                            <li><a class="dropdown-item" href="/user/mi_perfil.php"><i class="bi bi-person"></i> Datos</a></li>
+                            <li><a class="dropdown-item" href="/user/mis_movimientos.php"><i class="bi bi-cash-coin"></i> Mis donaciones</a></li>
+                            <li><a class="dropdown-item" href="/user/mis_solicitudes.php"><i class="bi bi-file-earmark-text"></i> Mis solicitudes</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><button class="dropdown-item text-danger" type="button" data-bs-toggle="modal" data-bs-target="#modal-salir"><i class="bi bi-box-arrow-right"></i> Salir</button></li>
+                        </ul>
+                    </div>
                     <?php } ?>
-                    <?php if ($autenticado) { ?>
+                    <?php if ($autenticado && $esPersonal) { ?>
                     <a class="btn-outline" href="<?php echo $salir; ?>" role="button" data-bs-toggle="modal" data-bs-target="#modal-salir">SALIR</a>
                     <?php } ?>
-                    <a class="btn-donate" href="<?php echo $donar; ?>">
-                        <i class="bi bi-heart-fill"></i> DONAR
-                    </a>
                 </li>
             </ul>
         </nav>
@@ -70,10 +76,21 @@ $donar = '/public/donaciones.php';
             <?php if ($esPersonal) { ?>
             <a class="btn-outline" href="/admin/dashboard.php">PANEL</a>
             <?php } ?>
-            <?php if ($autenticado && !$esPersonal) { ?>
-            <a class="btn-outline" href="/user/mi_perfil.php">MI PERFIL</a>
+            <?php if ($autenticado && usuarioSesion() !== null && !$esPersonal) { ?>
+            <div class="dropdown perfil-dropdown">
+                <button class="btn-outline perfil-dropdown-toggle dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                    MI PERFIL
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end perfil-dropdown-menu">
+                    <li><a class="dropdown-item" href="/user/mi_perfil.php"><i class="bi bi-person"></i> Datos</a></li>
+                    <li><a class="dropdown-item" href="/user/mis_movimientos.php"><i class="bi bi-cash-coin"></i> Mis donaciones</a></li>
+                    <li><a class="dropdown-item" href="/user/mis_solicitudes.php"><i class="bi bi-file-earmark-text"></i> Mis solicitudes</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><button class="dropdown-item text-danger" type="button" data-bs-toggle="modal" data-bs-target="#modal-salir"><i class="bi bi-box-arrow-right"></i> Salir</button></li>
+                </ul>
+            </div>
             <?php } ?>
-            <?php if ($autenticado) { ?>
+            <?php if ($autenticado && $esPersonal) { ?>
             <a class="btn-outline" href="<?php echo $salir; ?>" role="button" data-bs-toggle="modal" data-bs-target="#modal-salir">SALIR</a>
             <?php } ?>
             <a class="btn-donate" href="<?php echo $donar; ?>">

@@ -295,12 +295,18 @@ document.addEventListener('DOMContentLoaded', function () {
     var campoFotoActual = document.getElementById('mascota-foto-actual');
     var bloqueFoto = document.getElementById('mascota-foto-bloque');
     var vistaFoto = document.getElementById('mascota-foto-vista');
+    var inputFotosAdicionales = document.getElementById('mascota-fotos-adicionales');
+    var listaFotosAdicionales = document.getElementById('mascota-fotos-adicionales-lista');
+    var mensajeFotosAdicionales = document.getElementById('mascota-fotos-adicionales-mensaje');
+    var ayudaFotosAdicionales = document.getElementById('mascota-fotos-adicionales-ayuda');
     var pesoMaximoFoto = 5 * 1024 * 1024;
     var tiposFotoPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
     var vistaTemporal = '';
     var especies = [];
     var especiesListas = Promise.resolve();
     var idEditando = '';
+    var fotosAdicionales = [];
+    var fotosAdicionalesPendientes = [];
 
     function mostrarVistaFoto(url) {
         if (vistaTemporal !== '' && url !== vistaTemporal) {
@@ -360,15 +366,184 @@ document.addEventListener('DOMContentLoaded', function () {
         mostrarVistaFoto(vistaTemporal);
     }
 
-    function subirFoto(id, archivo) {
+    function subirFoto(id, archivo, tipo) {
         var datos = new FormData();
 
         datos.append('foto', archivo);
 
-        return apiRequest('foto_mascota', {
+        return apiRequest('fotos_mascota', {
             metodo: 'POST',
-            parametros: { id: id },
+            parametros: { tipo: tipo, id_mascota: id },
             cuerpo: datos
+        });
+    }
+
+    function leerFotosAdicionales(respuesta) {
+        var datos = respuesta && respuesta.data;
+        var i;
+
+        if (!Array.isArray(datos)) {
+            if (datos && Array.isArray(datos.fotos)) {
+                datos = datos.fotos;
+            } else if (datos && Array.isArray(datos.fotos_adicionales)) {
+                datos = datos.fotos_adicionales;
+            } else if (datos === null || datos === undefined) {
+                datos = [];
+            } else {
+                throw new Error('La respuesta de fotos adicionales no tiene el formato esperado.');
+            }
+        }
+
+        for (i = 0; i < datos.length; i++) {
+            if (
+                !datos[i]
+                || datos[i].id_foto === undefined
+                || datos[i].id_foto === null
+                || !urlDeFotoAdicional(datos[i])
+            ) {
+                throw new Error('Una foto adicional no contiene su identificador o ruta.');
+            }
+        }
+
+        return datos;
+    }
+
+    function urlDeFotoAdicional(foto) {
+        return texto(foto && (foto.foto_url || foto.url));
+    }
+
+    function cargarFotosAdicionales(id) {
+        if (!listaFotosAdicionales || !id) {
+            fotosAdicionales = [];
+            dibujarFotosAdicionales();
+            return Promise.resolve();
+        }
+
+        return apiRequest('fotos_mascota', {
+            parametros: { id_mascota: id }
+        }).then(function (respuesta) {
+            fotosAdicionales = leerFotosAdicionales(respuesta);
+            dibujarFotosAdicionales();
+        });
+    }
+
+    function dibujarFotosAdicionales() {
+        if (!listaFotosAdicionales) {
+            return;
+        }
+
+        listaFotosAdicionales.textContent = '';
+
+        fotosAdicionales.forEach(function (foto) {
+            var url = urlDeFotoAdicional(foto);
+            var idFoto = foto && foto.id_foto;
+            var item = document.createElement('div');
+            var imagen = document.createElement('img');
+            var borrar = document.createElement('button');
+            var icono = document.createElement('i');
+
+            item.className = 'mascota-foto-admin-item';
+            imagen.src = urlFotoMascota(url);
+            imagen.alt = 'Foto adicional';
+            borrar.type = 'button';
+            borrar.className = 'btn-eliminar-foto-adicional';
+            borrar.setAttribute('data-borrar-foto', texto(idFoto));
+            borrar.setAttribute('aria-label', 'Eliminar foto adicional');
+            icono.className = 'fa-solid fa-trash';
+            icono.setAttribute('aria-hidden', 'true');
+            borrar.appendChild(icono);
+            item.appendChild(imagen);
+            item.appendChild(borrar);
+            listaFotosAdicionales.appendChild(item);
+        });
+
+        if (inputFotosAdicionales) {
+            inputFotosAdicionales.disabled = fotosAdicionalesPendientes.length > 0;
+        }
+
+        if (ayudaFotosAdicionales) {
+            ayudaFotosAdicionales.textContent = 'Podés agregar ' + Math.max(0, 6 - fotosAdicionales.length)
+                + ' foto' + (6 - fotosAdicionales.length === 1 ? '' : 's') + ' adicional' + (6 - fotosAdicionales.length === 1 ? '' : 'es') + '. JPG, PNG o WebP. Máximo 5 MB por foto.';
+        }
+    }
+
+    function validarFotosAdicionales(archivos) {
+        var limite = Math.max(0, 6 - fotosAdicionales.length);
+        var i;
+        var motivo;
+
+        if (archivos.length > limite) {
+            return 'Solo podés agregar ' + limite + ' foto' + (limite === 1 ? '' : 's') + ' adicional' + (limite === 1 ? '' : 'es') + ' más.';
+        }
+
+        for (i = 0; i < archivos.length; i++) {
+            motivo = motivoFotoInvalida(archivos[i]);
+
+            if (motivo) {
+                return motivo;
+            }
+        }
+
+        return '';
+    }
+
+    function subirFotosAdicionales(id) {
+        if (fotosAdicionalesPendientes.length === 0 && inputFotosAdicionales && inputFotosAdicionales.files) {
+            fotosAdicionalesPendientes = Array.prototype.slice.call(inputFotosAdicionales.files);
+        }
+
+        if (!fotosAdicionalesPendientes.length) {
+            return Promise.resolve();
+        }
+
+        if (inputFotosAdicionales) {
+            inputFotosAdicionales.value = '';
+            inputFotosAdicionales.disabled = true;
+        }
+
+        function subirSiguiente() {
+            var archivo = fotosAdicionalesPendientes[0];
+
+            if (!archivo) {
+                fotosAdicionalesPendientes = [];
+
+                if (inputFotosAdicionales) {
+                    inputFotosAdicionales.disabled = false;
+                }
+
+                return cargarFotosAdicionales(id);
+            }
+
+            return subirFoto(id, archivo, 'adicional').then(function () {
+                fotosAdicionalesPendientes.shift();
+                return subirSiguiente();
+            });
+        }
+
+        return subirSiguiente();
+    }
+
+    function sincronizarFotoPrincipal(id, respuesta) {
+        var datos = respuesta && respuesta.data ? respuesta.data : {};
+        var fotoUrl = datos.foto_url;
+        var mascota;
+
+        if (fotoUrl) {
+            campoFotoActual.value = fotoUrl;
+            mostrarVistaFoto(fotoUrl);
+            return Promise.resolve();
+        }
+
+        return apiRequest('mascotas', { parametros: { id: id } }).then(function (respuestaMascota) {
+            datos = respuestaMascota && respuestaMascota.data ? respuestaMascota.data : {};
+            mascota = Array.isArray(datos) ? (datos[0] || {}) : datos;
+
+            if (!mascota.foto_url) {
+                throw new Error('No se pudo confirmar la ruta de la foto principal guardada.');
+            }
+
+            campoFotoActual.value = mascota.foto_url;
+            mostrarVistaFoto(mascota.foto_url);
         });
     }
 
@@ -455,15 +630,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function abrirAlta() {
         idEditando = '';
+        fotosAdicionales = [];
+        fotosAdicionalesPendientes = [];
         formulario.reset();
         vaciarRazas();
         mostrarVistaFoto('');
+        if (mensajeFotosAdicionales) {
+            mensajeFotosAdicionales.textContent = '';
+        }
+        dibujarFotosAdicionales();
         prepararModal('Nueva mascota', 'Guardar mascota');
         modalDe(modalMascota).show();
     }
 
     function abrirEdicion(id) {
         avisoDeApi(mensaje, '');
+        fotosAdicionales = [];
+        fotosAdicionalesPendientes = [];
+
+        if (inputFotosAdicionales) {
+            inputFotosAdicionales.value = '';
+            inputFotosAdicionales.disabled = false;
+        }
+        if (mensajeFotosAdicionales) {
+            mensajeFotosAdicionales.textContent = '';
+        }
+        dibujarFotosAdicionales();
 
         especiesListas.then(function () {
             return apiRequest('mascotas', { parametros: { id: id } });
@@ -485,11 +677,18 @@ document.addEventListener('DOMContentLoaded', function () {
             mostrarVistaFoto(campoFotoActual.value);
             selectEspecie.value = idEspecie;
 
-            return cargarRazas(idEspecie, mascota.raza);
+            return Promise.all([
+                cargarRazas(idEspecie, mascota.raza),
+                cargarFotosAdicionales(idEditando)
+            ]);
         }).then(function () {
             modalDe(modalMascota).show();
         }).catch(function (error) {
             avisoDeApi(mensaje, error);
+            if (idEditando && mensajeFotosAdicionales) {
+                mensajeFotosAdicionales.textContent = 'No se pudieron cargar las fotos adicionales: ' + mensajeDeApi(error);
+                modalDe(modalMascota).show();
+            }
         });
     }
 
@@ -525,6 +724,15 @@ document.addEventListener('DOMContentLoaded', function () {
         formulario.reset();
         vaciarRazas();
         mostrarVistaFoto('');
+        fotosAdicionales = [];
+        fotosAdicionalesPendientes = [];
+        if (inputFotosAdicionales) {
+            inputFotosAdicionales.disabled = false;
+        }
+        if (mensajeFotosAdicionales) {
+            mensajeFotosAdicionales.textContent = '';
+        }
+        dibujarFotosAdicionales();
         idEditando = '';
 
         return cargarListado().then(function () {
@@ -534,9 +742,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function avisarFotoNoSubida(idMascota, error) {
+    function avisarFotoNoSubida(idMascota, error, tipoFoto) {
         var detalle = mensajeDeApi(error);
-        var aviso = 'La mascota se guardó, pero la foto no se pudo subir' + (detalle ? ': ' + detalle : '.');
+        var aviso = 'La mascota se guardó, pero ' + tipoFoto + ' no se pudo subir' + (detalle ? ': ' + detalle : '.');
 
         if (idMascota !== '') {
             idEditando = idMascota;
@@ -548,7 +756,10 @@ document.addEventListener('DOMContentLoaded', function () {
         marcarIntentoEnvio(formulario);
         avisoDeApi(mensajeModal, aviso, false);
 
-        return cargarListado().catch(function () {
+        return Promise.all([
+            cargarListado(),
+            idMascota ? cargarFotosAdicionales(idMascota) : Promise.resolve()
+        ]).catch(function () {
             return null;
         });
     }
@@ -556,8 +767,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function guardarMascota(evento) {
         var opciones = { cuerpo: cuerpoDelFormulario() };
         var archivo = inputFoto.files && inputFoto.files[0] ? inputFoto.files[0] : null;
+        var archivosAdicionales = inputFotosAdicionales && inputFotosAdicionales.files
+            ? Array.prototype.slice.call(inputFotosAdicionales.files)
+            : [];
         var motivo = archivo ? motivoFotoInvalida(archivo) : '';
         var idMascota = idEditando;
+        var motivoAdicional;
+        var fotoPrincipalGuardada = false;
+        var fotoPrincipalSincronizada = false;
 
         evento.preventDefault();
 
@@ -565,6 +782,16 @@ document.addEventListener('DOMContentLoaded', function () {
             marcarIntentoEnvio(formulario);
             avisoDeApi(mensajeModal, motivo, false);
             return;
+        }
+
+        if (fotosAdicionalesPendientes.length === 0) {
+            motivoAdicional = validarFotosAdicionales(archivosAdicionales);
+
+            if (motivoAdicional) {
+                marcarIntentoEnvio(formulario);
+                avisoDeApi(mensajeModal, motivoAdicional, false);
+                return;
+            }
         }
 
         if (botonGuardar.disabled) {
@@ -591,18 +818,39 @@ document.addEventListener('DOMContentLoaded', function () {
                 idMascota = datos.id === undefined || datos.id === null ? '' : texto(datos.id);
             }
 
-            if (!archivo) {
+            if (idMascota === '') {
+                if (archivo || archivosAdicionales.length) {
+                    return avisarFotoNoSubida('', new Error('No se recibió el ID de la mascota para guardar sus fotos.'), 'las fotos');
+                }
+
                 return cerrarModalGuardado(respuesta);
             }
 
-            if (idMascota === '') {
-                return avisarFotoNoSubida('', null);
-            }
+            idEditando = idMascota;
 
-            return subirFoto(idMascota, archivo).then(function (respuestaFoto) {
-                return cerrarModalGuardado(respuestaFoto && respuestaFoto.message ? respuestaFoto : respuesta);
-            }, function (error) {
-                return avisarFotoNoSubida(idMascota, error);
+            var subirPrincipal = archivo
+                ? subirFoto(idMascota, archivo, 'principal').then(function (respuestaFoto) {
+                    fotoPrincipalGuardada = true;
+                    return sincronizarFotoPrincipal(idMascota, respuestaFoto).then(function () {
+                        fotoPrincipalSincronizada = true;
+                        inputFoto.value = '';
+                        return respuestaFoto;
+                    });
+                })
+                : Promise.resolve(respuesta);
+
+            return subirPrincipal.then(function (respuestaFoto) {
+                return subirFotosAdicionales(idMascota).then(function () {
+                    return cerrarModalGuardado(respuestaFoto && respuestaFoto.message ? respuestaFoto : respuesta);
+                });
+            }).catch(function (error) {
+                var tipoFoto = !fotoPrincipalGuardada && archivo
+                    ? 'la foto principal'
+                    : (fotoPrincipalGuardada && !fotoPrincipalSincronizada
+                        ? 'la foto principal (no se pudo confirmar la ruta)'
+                        : 'las fotos adicionales');
+
+                return avisarFotoNoSubida(idMascota, error, tipoFoto);
             });
         }).catch(function () {
             return null;
@@ -621,6 +869,51 @@ document.addEventListener('DOMContentLoaded', function () {
         formulario.addEventListener('submit', guardarMascota);
 
         inputFoto.addEventListener('change', elegirFoto);
+
+        if (inputFotosAdicionales) {
+            inputFotosAdicionales.addEventListener('change', function () {
+                var archivos = Array.prototype.slice.call(inputFotosAdicionales.files || []);
+                var motivo = validarFotosAdicionales(archivos);
+
+                if (motivo) {
+                    inputFotosAdicionales.value = '';
+                    avisoDeApi(mensajeModal, motivo, false);
+                    return;
+                }
+
+                if (mensajeFotosAdicionales) {
+                    mensajeFotosAdicionales.textContent = archivos.length
+                        ? archivos.length + ' foto' + (archivos.length === 1 ? '' : 's') + ' lista' + (archivos.length === 1 ? '' : 's') + ' para subir.'
+                        : '';
+                }
+            });
+        }
+
+        if (listaFotosAdicionales) {
+            listaFotosAdicionales.addEventListener('click', function (evento) {
+                var botonBorrar = evento.target.closest('[data-borrar-foto]');
+
+                if (!botonBorrar || !idEditando) {
+                    return;
+                }
+
+                botonBorrar.disabled = true;
+                apiRequest('fotos_mascota', {
+                    metodo: 'DELETE',
+                    parametros: {
+                        id_mascota: idEditando,
+                        id_foto: botonBorrar.getAttribute('data-borrar-foto')
+                    }
+                }).then(function (respuesta) {
+                    return cargarFotosAdicionales(idEditando).then(function () {
+                        avisoDeApi(mensajeModal, respuesta);
+                    });
+                }).catch(function (error) {
+                    botonBorrar.disabled = false;
+                    avisoDeApi(mensajeModal, error, false);
+                });
+            });
+        }
 
         if (botonAlta) {
             botonAlta.addEventListener('click', abrirAlta);

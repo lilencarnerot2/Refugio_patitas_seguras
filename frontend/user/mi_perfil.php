@@ -18,7 +18,7 @@ $datosPersonales = [
         <div class="perfil-bienvenida card border-0 rounded-4 mb-4">
             <div class="card-body p-4 d-flex align-items-center justify-content-between gap-3">
                 <div>
-                    <h2 class="mb-2">¡Hola, <?php echo htmlspecialchars($usuarioPerfil['nombre'] ?? '', ENT_QUOTES, 'UTF-8'); ?>! <i class="fa-solid fa-paw"></i></h2>
+                    <h2 class="mb-2">¡Hola, <?php echo $usuarioPerfil['nombre'] ?? ''; ?>! <i class="fa-solid fa-paw"></i></h2>
                     <p class="mb-0">Gracias por ser parte de Patitas Seguras.<br>Desde acá podés ver y completar tus datos personales y tu domicilio.</p>
                 </div>
                 <div class="perfil-bienvenida-ilustracion d-none d-md-flex align-items-end gap-2" aria-hidden="true">
@@ -46,7 +46,7 @@ $datosPersonales = [
 <?php foreach ($datosPersonales as $etiqueta => $valor) { ?>
                             <li<?php echo $valor === '' ? ' data-vacio' : ''; ?>>
                                 <span class="detalle-label"><?php echo $etiqueta; ?></span>
-                                <span data-texto="<?php echo htmlspecialchars($valor !== '' ? $valor : 'Sin completar', ENT_QUOTES, 'UTF-8'); ?>"></span>
+                                <span data-texto="<?php echo $valor !== '' ? $valor : 'Sin completar'; ?>"></span>
                             </li>
 <?php } ?>
                         </ul>
@@ -169,11 +169,38 @@ $datosPersonales = [
                 </article>
             </div>
         </div>
+
+        <article class="card perfil-card border-0 rounded-4 shadow-sm mt-4" id="perfil-cambio-password">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="perfil-card-icono rounded-circle d-inline-flex align-items-center justify-content-center"><i class="bi bi-shield-lock"></i></span>
+                    <h3 class="h5 mb-0">Cambiar contraseña</h3>
+                </div>
+                <button class="btn btn-outline-primary" type="button" data-toggle-cambio-password aria-expanded="false" aria-controls="form-cambio-password">
+                    Modificar
+                </button>
+                <form class="public-form perfil-form mt-3" id="form-cambio-password" data-form-cambio-password autocomplete="off" hidden>
+                    <div class="mb-3">
+                        <label class="form-label" for="perfil-password-actual">Contraseña actual</label>
+                        <input class="form-control" type="password" id="perfil-password-actual" name="current_password" autocomplete="current-password">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="perfil-password-nueva">Nueva contraseña</label>
+                        <input class="form-control" type="password" id="perfil-password-nueva" name="new_password" autocomplete="new-password">
+                    </div>
+                
+                    <button class="btn-primary" type="submit" disabled aria-disabled="true">
+                        Guardar nueva contraseña
+                    </button>
+                </form>
+            </div>
+        </article>
     </section>
 
 <script src="../public/config.php"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/mi-perfil.js"></script>
 <script src="../assets/js/perfil-datos.js"></script>
+<script src="../assets/js/cambio-password-perfil.js"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

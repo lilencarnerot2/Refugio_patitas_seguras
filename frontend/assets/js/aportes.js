@@ -713,67 +713,10 @@ function ponerFechaDeHoy(formulario) {
     }
 }
 
-function nombreDeCampoMovimiento(formulario, campo) {
-    var etiqueta = campo.id ? formulario.querySelector('label[for="' + campo.id + '"]') : null;
-
-    return etiqueta ? etiqueta.textContent.replace(/\s+/g, ' ').trim() : campo.name;
-}
-
-function movimientoValido(formulario, caja) {
-    var vacios = [];
-    var nombres = [];
-    var avisos = [];
-    var campoMonto = formulario.querySelector('[name="monto"]');
-    var montoInvalido = false;
-
-    avisoDeApi(caja, '', true, formulario);
-
-    Array.prototype.forEach.call(formulario.elements, function (campo) {
-        if (!campo.name || !campo.required || campo.disabled || campo.type === 'hidden' || campo.closest('[hidden]')) {
-            return;
-        }
-
-        if (String(campo.value || '').trim() === '') {
-            vacios.push(campo);
-            nombres.push(nombreDeCampoMovimiento(formulario, campo));
-        }
-    });
-
-    if (campoMonto && String(campoMonto.value || '').trim() !== '' && !(Number(campoMonto.value) > 0)) {
-        montoInvalido = true;
-    }
-
-    if (!vacios.length && !montoInvalido) {
-        return true;
-    }
-
-    if (vacios.length) {
-        avisos.push('Completá los campos obligatorios: ' + nombres.join(', ') + '.');
-    }
-
-    if (montoInvalido) {
-        campoMonto.setAttribute('data-campo-estado', 'error');
-        avisos.push('El monto tiene que ser mayor a 0.');
-    }
-
-    vacios.forEach(function (campo) {
-        campo.setAttribute('data-campo-estado', 'error');
-    });
-
-    marcarIntentoEnvio(formulario);
-    avisoDeApi(caja, avisos.join(' '), false);
-
-    return false;
-}
-
 function enviarMovimiento(formulario, recargar) {
     var caja = document.getElementById('mensaje-aportes');
 
     if (!formulario) {
-        return Promise.resolve();
-    }
-
-    if (formulario.getAttribute('data-enviando') !== '1' && !movimientoValido(formulario, caja)) {
         return Promise.resolve();
     }
 
@@ -812,6 +755,13 @@ document.addEventListener('DOMContentLoaded', function () {
     bloque = document.getElementById('bloque-aportes');
     caja = document.getElementById('mensaje-aportes');
     formulario = document.getElementById('form-movimiento');
+
+    if (!valorCookie('usuario_id')) {
+        if (bloque) {
+            bloque.hidden = true;
+        }
+        return;
+    }
 
     function pintarAliases() {
         sitio.querySelectorAll('[data-alias]').forEach(function (card) {

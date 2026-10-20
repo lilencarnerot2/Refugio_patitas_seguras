@@ -26,3 +26,4 @@ if (!empty($requiereSuperadministrador)) {
     <link rel="stylesheet" href="/assets/css/admin.css">
 </head>
 <body class="<?php echo $cuerpoClase; ?>">
+<?php require __DIR__ . '/../../public/includes/loader.php'; ?>

@@ -37,10 +37,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             campoEmail.value = campoEmail.value.trim();
 
-            if (!formatosValidos(formEmail, mensaje)) {
-                return;
-            }
-
             boton.disabled = true;
 
             enviarFormularioApi(formEmail, mensaje, 'password-reset-solicitar', {
@@ -63,10 +59,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         boton.addEventListener('click', function () {
-            if (!formatosValidos(formPassword, mensaje)) {
-                return;
-            }
-
             boton.disabled = true;
 
             enviarFormularioApi(formPassword, mensaje, 'password-reset-confirmar', {

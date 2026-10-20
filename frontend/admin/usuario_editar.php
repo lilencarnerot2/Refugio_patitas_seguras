@@ -1,11 +1,7 @@
 <?php
-if (empty($_COOKIE['usuario_acceso_superadmin'])) {
-    header('Location: /admin/usuarios.php');
-    exit;
-}
-
 $tituloPagina = 'Editar usuario - Patitas Seguras';
 $paginaAdmin = 'usuario_editar';
+$requiereSuperadministrador = true;
 require __DIR__ . '/includes/head.php';
 require __DIR__ . '/includes/header.php';
 ?>

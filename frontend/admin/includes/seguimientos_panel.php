@@ -4,8 +4,8 @@ $claveSolicitud = trim((string) ($claveSolicitud ?? ''));
 $porPaginaSeguimientos = (int) ($porPaginaSeguimientos ?? 5);
 ?>
     <section id="panel-seguimientos-admin" class="panel-listado panel-seguimientos"
-        data-recurso="<?php echo htmlspecialchars($recursoSeguimiento, ENT_QUOTES, 'UTF-8'); ?>"
-        data-clave-solicitud="<?php echo htmlspecialchars($claveSolicitud, ENT_QUOTES, 'UTF-8'); ?>"
+        data-recurso="<?php echo $recursoSeguimiento; ?>"
+        data-clave-solicitud="<?php echo $claveSolicitud; ?>"
         data-por-pagina="<?php echo $porPaginaSeguimientos; ?>"
         data-texto-seguimiento-activo="Activo"
         data-texto-seguimiento-realizado="Realizado"

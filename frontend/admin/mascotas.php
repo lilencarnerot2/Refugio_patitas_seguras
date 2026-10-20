@@ -122,13 +122,20 @@ require __DIR__ . '/includes/header.php';
                         <input class="form-control" type="date" id="mascota-fecha-nacimiento" name="fecha_nacimiento_estimada" max="<?php echo date('Y-m-d'); ?>">
                     </div>
                     <div class="col-12 col-lg-6">
-                        <label class="form-label" for="mascota-foto">Foto</label>
+                        <label class="form-label" for="mascota-foto">Foto principal</label>
                         <input type="hidden" id="mascota-foto-actual" name="foto_url">
                         <input class="form-control" type="file" id="mascota-foto" name="foto" accept="image/jpeg,image/png,image/webp">
                         <div class="form-text">JPG, PNG o WebP. Máximo 5 MB.</div>
                     </div>
                     <div class="col-12" id="mascota-foto-bloque" hidden>
                         <img id="mascota-foto-vista" class="mascota-foto-vista" alt="Vista previa de la foto">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="mascota-fotos-adicionales">Fotos adicionales</label>
+                        <input class="form-control" type="file" id="mascota-fotos-adicionales" accept="image/jpeg,image/png,image/webp" multiple>
+                        <div id="mascota-fotos-adicionales-ayuda" class="form-text">Hasta 6 fotos adicionales. JPG, PNG o WebP. Máximo 5 MB por foto.</div>
+                        <div id="mascota-fotos-adicionales-mensaje" class="form-text" role="status" aria-live="polite"></div>
+                        <div id="mascota-fotos-adicionales-lista" class="mascota-fotos-admin" role="group" aria-label="Fotos adicionales actuales"></div>
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="mascota-historial">Historial</label>
