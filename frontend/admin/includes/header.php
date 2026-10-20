@@ -72,6 +72,7 @@ $menuSolicitudesActivo = $paginaAdmin === 'solicitudes'
                 <a href="usuario_editar.php"<?php echo $paginaAdmin === 'usuario_editar' ? ' class="active"' : ''; ?>>Editar usuario</a>
             </details>
         </li>
+ 
         <?php } else { ?>
         <li>
             <a href="usuarios.php"<?php echo in_array($paginaAdmin, ['usuarios', 'usuario_detalle'], true) ? ' class="active"' : ''; ?>>
@@ -79,6 +80,13 @@ $menuSolicitudesActivo = $paginaAdmin === 'solicitudes'
             </a>
         </li>
         <?php } ?>
+
+        <li>
+            <a href="configuracion.php"<?php echo $paginaAdmin === 'configuracion' ? ' class="active"' : ''; ?>>
+                <i class="bi bi-gear-fill"></i> Configuración
+            </a>
+        </li>
+
         <?php if ($esSuperadministrador) { ?>
         <li>
             <a href="auditorias.php"<?php echo in_array($paginaAdmin, ['auditorias', 'auditoria_detalle'], true) ? ' class="active"' : ''; ?>>
