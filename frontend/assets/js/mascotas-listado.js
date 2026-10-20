@@ -388,20 +388,19 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (datos && Array.isArray(datos.fotos_adicionales)) {
                 datos = datos.fotos_adicionales;
             } else if (datos === null || datos === undefined) {
-                datos = [];
+            datos = [];
             } else {
-                throw new Error('La respuesta de fotos adicionales no tiene el formato esperado.');
+                throw new Error(
+                    'La respuesta de fotos adicionales no tiene el formato esperado.'
+                );
             }
         }
 
         for (i = 0; i < datos.length; i++) {
-            if (
-                !datos[i]
-                || datos[i].id_foto === undefined
-                || datos[i].id_foto === null
-                || !urlDeFotoAdicional(datos[i])
-            ) {
-                throw new Error('Una foto adicional no contiene su identificador o ruta.');
+            if (!datos[i] || (datos[i].id === undefined && datos[i].id_foto === undefined) || !urlDeFotoAdicional(datos[i])) {
+                throw new Error(
+                    'Una foto adicional no contiene su identificador o ruta.'
+                );
             }
         }
 
@@ -436,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         fotosAdicionales.forEach(function (foto) {
             var url = urlDeFotoAdicional(foto);
-            var idFoto = foto && foto.id_foto;
+            var idFoto = foto && (foto.id_foto !== undefined ? foto.id_foto : foto.id);
             var item = document.createElement('div');
             var imagen = document.createElement('img');
             var borrar = document.createElement('button');
@@ -700,9 +699,9 @@ document.addEventListener('DOMContentLoaded', function () {
             sexo: formulario.elements.sexo.value,
             'tamaño': formulario.elements['tamaño'].value
         };
+
         var fecha = formulario.elements.fecha_nacimiento_estimada.value;
         var historial = formulario.elements.historial.value;
-        var foto = campoFotoActual.value;
 
         if (fecha) {
             datos.fecha_nacimiento_estimada = fecha;
@@ -710,10 +709,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (historial) {
             datos.historial = historial;
-        }
-
-        if (foto) {
-            datos.foto_url = foto;
         }
 
         return datos;
@@ -796,10 +791,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (botonGuardar.disabled) {
             return;
-        }
-
-        if (archivo) {
-            delete opciones.cuerpo.foto_url;
         }
 
         if (idEditando === '') {

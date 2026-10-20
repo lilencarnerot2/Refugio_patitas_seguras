@@ -220,3 +220,28 @@ function registrar_voluntariado(array $datos): array {
         ],
     ];
 }
+
+function listar_turnos_voluntariado(): array {
+    $resultado = [];
+
+    foreach (VOLUNTARIADO_TURNOS as $clave => $turno) {
+
+        if ($turno['dia'] === 'Sábado') {
+            $dia_semana = 6;
+        } elseif ($turno['dia'] === 'Domingo') {
+            $dia_semana = 0;
+        } else {
+            continue;
+        }
+
+        $resultado[] = [
+            'clave' => $clave,
+            'dia' => $turno['dia'],
+            'dia_semana' => $dia_semana,
+            'rango' => $turno['rango'],
+            'horario' => $turno['horario']
+        ];
+    }
+
+    return $resultado;
+}

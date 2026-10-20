@@ -4,8 +4,7 @@ require_once __DIR__ . '/../services/voluntariado.php';
 require_once __DIR__ . '/../../../utils/response.php';
 
 
-function manejar_voluntariado(): void
-{
+function manejar_voluntariado(): void {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         responderJson(false, 'Método no permitido.', null, 405);
         return;
@@ -34,5 +33,43 @@ function manejar_voluntariado(): void
     } catch (Throwable $e) {
         error_log('ERROR VOLUNTARIADO: ' . $e->getMessage());
         responderJson(false, 'Error al procesar la postulación.', null, 500);
+    }
+}
+
+function manejar_voluntariado_turnos(): void {
+    if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+        responderJson(
+            false,
+            'Método no permitido.',
+            null,
+            405
+        );
+        return;
+    }
+
+    try {
+
+        $turnos = listar_turnos_voluntariado();
+
+        responderJson(
+            true,
+            null,
+            $turnos,
+            200
+        );
+
+    } catch (Throwable $e) {
+
+        error_log(
+            'ERROR TURNOS VOLUNTARIADO: ' .
+            $e->getMessage()
+        );
+
+        responderJson(
+            false,
+            'Error al obtener los turnos de voluntariado.',
+            null,
+            500
+        );
     }
 }

@@ -397,6 +397,10 @@ function manejarRutas() {
             manejar_voluntariado();
             break;
 
+        case 'voluntariado_turnos':
+            manejar_voluntariado_turnos();
+            break;
+
         case 'auditorias':
             if (!requerir_roles([
                 'Super Administrador'
