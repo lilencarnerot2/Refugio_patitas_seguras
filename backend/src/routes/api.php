@@ -50,6 +50,17 @@ function manejarRutas() {
             manejar_rol_usuario();
             break;
 
+        case 'configuracion':
+            if (!requerir_roles([
+                'Administrador',
+                'Super Administrador'
+            ])) {
+            break;
+            }
+            require_once __DIR__ . '/../modules/configuracion/controllers/configuracion.php';
+            manejarConfiguracion();
+            break;
+
         case 'tipos_vivienda':
             require_once __DIR__ . '/../modules/usuarios/controllers/tipos_vivienda.php';
                 manejar_tipos_vivienda();
