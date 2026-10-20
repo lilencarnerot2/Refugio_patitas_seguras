@@ -13,12 +13,15 @@ La distribución de componentes y sus límites de comunicación se detalla en
 1. La persona completa `frontend/public/registro.php`; `registro.js` envía los
    datos a `?recurso=registro`.
 2. `backend/src/modules/auth/controllers/registro.php` valida los campos,
-   formato de correo y fecha de nacimiento.
-3. El backend registra la cuenta en el servicio Padrón PP2, sincroniza o crea el
-   usuario local y registra el contacto.
-4. La respuesta indica que se debe confirmar la cuenta desde el correo. El
-   registro no inicia una sesión: la persona podrá ingresar una vez activada la
-   cuenta en Padrón PP2.
+   formato de correo y fecha de nacimiento, y registra la cuenta en Padrón PP2.
+   Luego sincroniza o crea el usuario local y registra el contacto.
+3. Para una cuenta nueva, la respuesta indica que se debe confirmar la cuenta
+   desde el correo. El registro no inicia una sesión; la persona podrá ingresar
+   una vez activada la cuenta en Padrón PP2.
+4. Si el correo ya corresponde a una cuenta pendiente de activación, la
+   respuesta indica que debe completar esa activación. Si la cuenta ya está
+   activa, la API responde `409` y dirige a la persona a iniciar sesión o
+   recuperar la contraseña.
 
 ## 2. Inicio de sesión
 
@@ -42,8 +45,10 @@ La distribución de componentes y sus límites de comunicación se detalla en
 3. La persona abre el enlace y envía el token junto con la nueva contraseña a
    `?recurso=password-reset-confirmar`.
 4. El backend delega la confirmación a Padrón PP2 y devuelve el resultado.
-   El cambio iniciado desde una sesión también usa
-   `?recurso=password-change-request`.
+   Desde el perfil, el cambio iniciado con
+   `?recurso=password-change-request` permite ingresar el correo de la cuenta
+   autenticada y envía allí un enlace para elegir la nueva contraseña; el
+   backend verifica que coincida con el correo asociado a esa cuenta.
 
 ## 4. Solicitud de adopción
 
@@ -77,10 +82,13 @@ La distribución de componentes y sus límites de comunicación se detalla en
 ## 6. Movimientos y donaciones
 
 1. `frontend/public/donaciones.php` presenta los datos de transferencia y
-   opciones de montos. Las URLs de Mercado Pago se configuran en
-   `frontend/public/includes/datos_refugio.php`; mientras estén vacías, los
-   botones de pago permanecen deshabilitados. La interfaz de movimientos envía
-   los registros a `?recurso=movimientos`.
+   opciones de montos. Las URLs de Mercado Pago, débito automático y
+   apadrinamiento se configuran en
+   `frontend/public/includes/datos_refugio.php`; las URLs actualmente
+   configuradas se abren como enlaces externos. El backend registra los
+   movimientos informados, pero no procesa pagos ni confirma transacciones con
+   Mercado Pago. La interfaz de movimientos envía los registros a
+   `?recurso=movimientos`.
 2. Los movimientos monetarios admiten una persona autenticada o un aporte
    anónimo. Los aportes no monetarios requieren sesión; la API determina el
    usuario asociado y valida los datos del movimiento.
@@ -122,3 +130,15 @@ La distribución de componentes y sus límites de comunicación se detalla en
   `frontend/public/includes/datos_refugio.php`. No se encontró un recurso de la
   API que los provea; hasta que exista una fuente administrable, permanecen
   como configuración del frontend.
+
+## 9. Autenticación y autorización
+
+- Los recursos que requieren una sesión responden `401` cuando no hay un
+  usuario autenticado.
+- Los recursos restringidos por rol vuelven a consultar en la base de datos el
+  estado y el rol actual del usuario. Un usuario deshabilitado o autenticado
+  sin uno de los roles permitidos recibe `403`.
+- Por ejemplo, `?recurso=roles` requiere el rol `Super Administrador`; un
+  usuario autenticado con el rol `Usuario` recibe `403` y una respuesta JSON
+  indicando que no tiene permisos. La autorización se aplica en el backend,
+  independientemente de los controles de navegación del frontend.

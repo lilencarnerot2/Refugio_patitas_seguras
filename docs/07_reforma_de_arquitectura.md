@@ -107,12 +107,13 @@ usa `BACKEND_INTERNAL_URL`; el backend enruta los recursos por
 `backend/src/routes/api.php`.
 
 Los catálogos de negocio se solicitan a la API cuando existe el recurso
-correspondiente. Datos editoriales, cuentas del refugio y opciones de montos
-para donación se mantienen en `frontend/public/includes/datos_refugio.php`, ya
-que no hay un endpoint de configuración para administrarlos. Las URLs de
-Mercado Pago están vacías en la configuración actual, por lo que los botones
-de pago permanecen deshabilitados; no se procesan pagos ni se usan URLs de
-demostración.
+correspondiente. Datos editoriales, cuentas del refugio, opciones de montos y
+enlaces de pago se mantienen en `frontend/public/includes/datos_refugio.php`,
+ya que no hay un endpoint de configuración para administrarlos. La
+configuración actual contiene enlaces de Mercado Pago para montos, débito
+automático y apadrinamiento; el frontend los presenta como enlaces externos.
+No hay SDK ni procesamiento o confirmación de pagos de Mercado Pago en el
+backend.
 
 La página inicial todavía muestra métricas estáticas y los pies de página
 incluyen enlaces genéricos a redes sociales. No existe un recurso backend para
@@ -126,6 +127,12 @@ pendientes y no se inventan valores ni endpoints.
 El backend aplica autenticación/autorización, valida operaciones, coordina la
 persistencia y devuelve respuestas JSON.
 
+- `backend/src/middleware/autenticacion.php` requiere una sesión PHP válida y
+  responde `401` cuando falta autenticación.
+- `backend/src/middleware/autorizacion.php` vuelve a consultar el usuario, su
+  estado y su rol en la base de datos. Responde `403` si el usuario está
+  deshabilitado o autenticado pero no tiene un rol permitido; por ejemplo,
+  `?recurso=roles` requiere `Super Administrador`.
 - `backend/src/config/`: conexión y configuración de PostgreSQL, incluido el
   contexto de usuario utilizado por auditoría.
 - `backend/src/middleware/`: autenticación y autorización por rol.
