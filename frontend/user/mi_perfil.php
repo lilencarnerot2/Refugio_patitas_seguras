@@ -180,17 +180,14 @@ $datosPersonales = [
                     Modificar
                 </button>
                 <form class="public-form perfil-form mt-3" id="form-cambio-password" data-form-cambio-password autocomplete="off" hidden>
+                    <p>Ingresá el correo electrónico asociado a tu cuenta y te enviaremos un enlace para elegir una nueva contraseña.</p>
                     <div class="mb-3">
-                        <label class="form-label" for="perfil-password-actual">Contraseña actual</label>
-                        <input class="form-control" type="password" id="perfil-password-actual" name="current_password" autocomplete="current-password">
+                        <label class="form-label" for="perfil-email-cambio-password">Correo electrónico</label>
+                        <input class="form-control" type="email" id="perfil-email-cambio-password" name="email" autocomplete="email" required>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="perfil-password-nueva">Nueva contraseña</label>
-                        <input class="form-control" type="password" id="perfil-password-nueva" name="new_password" autocomplete="new-password">
-                    </div>
-                
-                    <button class="btn-primary" type="submit" disabled aria-disabled="true">
-                        Guardar nueva contraseña
+                    <p class="mensaje-formulario" data-mensaje-cambio-password aria-live="polite"></p>
+                    <button class="btn-primary" type="submit">
+                        Enviarme el enlace
                     </button>
                 </form>
             </div>
