@@ -5,6 +5,10 @@ echo 'window.APP_CONFIG = ' . json_encode([
     'backendUrl' => '/public/api.php',
     'inicioUrl' => '/index.php',
     'panelUrl' => '/admin/dashboard.php',
+    
+   
+    'configuracion' => 'configuracion',
+    
     'detalleSolicitud' => [
         'comunes' => [
             'solicitud' => 'solicitudes',
