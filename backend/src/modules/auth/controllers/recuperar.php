@@ -26,9 +26,9 @@ function solicitar_reset_controller($datos)
     }
 
     $email = strtolower($email);
-//buscamos si el usuario existe en la base de datos local a traves del padron
+ //buscamos si el usuario existe en la base de datos local a traves del padron
    require_once __DIR__ . '/../../usuarios/repositories/usuarios.php';
-   require_once __DIR__ . '/../../usuarios/repositories/usuarios.php';
+   
 
     $resultado = solicitarResetEnPadron($email);
 
@@ -46,6 +46,24 @@ function solicitar_reset_controller($datos)
             $status
         );
     }
+     if (isset($resultado['data']['token'])) {
+        $token = $resultado['data']['token'];
+        
+        // Usamos la URL del frontend desde el .env, o localhost si no está definida
+        $frontend_url = getenv('FRONTEND_URL') ?: 'http://localhost:8080';
+        $enlace = rtrim($frontend_url, '/') . "/public/recuperar.php?token=" . $token;
+        
+        require_once __DIR__ . '/../../mail/services/mail.php';
+        
+        enviarMail(
+            $email,
+            'Recuperación de contraseña - Patitas Seguras',
+            "Hola, para cambiar tu contraseña ingresá a este enlace: $enlace",
+            null,
+            'reset-' . md5($email . $token)
+        );
+      }
+     // ----------------------------------
 
     return responderJson(
         true,
