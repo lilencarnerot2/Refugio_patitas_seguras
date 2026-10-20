@@ -89,8 +89,10 @@ function validar_formulario_datos(array $datos): void {
         throw new InvalidArgumentException('El teléfono debe tener entre 8 y 15 dígitos.');
     }
 
-    if (empty($datos['cantidad_integrantes']) || (int) $datos['cantidad_integrantes'] <= 0) {
-        throw new InvalidArgumentException('La cantidad de integrantes debe ser mayor a 0.');
+    if (empty($datos['cantidad_integrantes']) || (int) $datos['cantidad_integrantes'] <= 0 || (int) $datos['cantidad_integrantes'] > 10) {
+        throw new InvalidArgumentException(
+            'La cantidad de integrantes debe estar entre 1 y 10.'
+        );
     }
 
     if (!isset($datos['hay_ninos']) || !is_bool($datos['hay_ninos'])) {
