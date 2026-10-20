@@ -76,6 +76,341 @@ function existe_metodo_pago(int $id): bool {
 }
 
 
+// CRUD TIPOS DE APORTES
+function existe_tipo_aporte_por_nombre(
+    string $nombre,
+    ?int $idExcluir = null
+): bool {
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT 1
+        FROM tipos_aportes
+        WHERE LOWER(nombre_aporte) = LOWER(:nombre)
+          AND estado = TRUE
+    ";
+
+    $parametros = [
+        ':nombre' => $nombre
+    ];
+
+    if ($idExcluir !== null) {
+        $sql .= " AND id <> :id_excluir";
+        $parametros[':id_excluir'] = $idExcluir;
+    }
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute($parametros);
+
+    return (bool) $stmt->fetchColumn();
+}
+
+
+function crear_tipo_aporte(string $nombre): array|false {
+    $conexion = conectarDB();
+
+    $sql = "
+        INSERT INTO tipos_aportes (
+            nombre_aporte,
+            estado
+        )
+        VALUES (
+            :nombre,
+            TRUE
+        )
+        RETURNING
+            id,
+            nombre_aporte,
+            estado
+    ";
+
+    $stmt = $conexion->prepare($sql);
+
+    $stmt->execute([
+        ':nombre' => $nombre
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
+function actualizar_tipo_aporte(
+    int $id,
+    string $nombre
+): array|false {
+    $conexion = conectarDB();
+
+    $sql = "
+        UPDATE tipos_aportes
+        SET nombre_aporte = :nombre
+        WHERE id = :id
+          AND estado = TRUE
+        RETURNING
+            id,
+            nombre_aporte,
+            estado
+    ";
+
+    $stmt = $conexion->prepare($sql);
+
+    $stmt->execute([
+        ':id' => $id,
+        ':nombre' => $nombre
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
+function eliminar_tipo_aporte(int $id): array|false {
+    $conexion = conectarDB();
+
+    $sql = "
+        UPDATE tipos_aportes
+        SET estado = FALSE
+        WHERE id = :id
+          AND estado = TRUE
+        RETURNING
+            id,
+            nombre_aporte,
+            estado
+    ";
+
+    $stmt = $conexion->prepare($sql);
+
+    $stmt->execute([
+        ':id' => $id
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
+// CRUD FRECUENCIAS DE APORTES
+function existe_frecuencia_aporte_por_nombre(
+    string $nombre,
+    ?int $idExcluir = null
+): bool {
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT 1
+        FROM frecuencia_aportes
+        WHERE LOWER(nombre_frecuencia_aporte) = LOWER(:nombre)
+          AND estado = TRUE
+    ";
+
+    $parametros = [
+        ':nombre' => $nombre
+    ];
+
+    if ($idExcluir !== null) {
+        $sql .= " AND id <> :id_excluir";
+        $parametros[':id_excluir'] = $idExcluir;
+    }
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute($parametros);
+
+    return (bool) $stmt->fetchColumn();
+}
+
+
+function crear_frecuencia_aporte(
+    string $nombre
+): array|false {
+    $conexion = conectarDB();
+
+    $sql = "
+        INSERT INTO frecuencia_aportes (
+            nombre_frecuencia_aporte,
+            estado
+        )
+        VALUES (
+            :nombre,
+            TRUE
+        )
+        RETURNING
+            id,
+            nombre_frecuencia_aporte,
+            estado
+    ";
+
+    $stmt = $conexion->prepare($sql);
+
+    $stmt->execute([
+        ':nombre' => $nombre
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
+function actualizar_frecuencia_aporte(
+    int $id,
+    string $nombre
+): array|false {
+    $conexion = conectarDB();
+
+    $sql = "
+        UPDATE frecuencia_aportes
+        SET nombre_frecuencia_aporte = :nombre
+        WHERE id = :id
+          AND estado = TRUE
+        RETURNING
+            id,
+            nombre_frecuencia_aporte,
+            estado
+    ";
+
+    $stmt = $conexion->prepare($sql);
+
+    $stmt->execute([
+        ':id' => $id,
+        ':nombre' => $nombre
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
+function eliminar_frecuencia_aporte(
+    int $id
+): array|false {
+    $conexion = conectarDB();
+
+    $sql = "
+        UPDATE frecuencia_aportes
+        SET estado = FALSE
+        WHERE id = :id
+          AND estado = TRUE
+        RETURNING
+            id,
+            nombre_frecuencia_aporte,
+            estado
+    ";
+
+    $stmt = $conexion->prepare($sql);
+
+    $stmt->execute([
+        ':id' => $id
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+// CRUD MÉTODOS DE PAGO
+function existe_metodo_pago_por_nombre(
+    string $nombre,
+    ?int $idExcluir = null
+): bool {
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT 1
+        FROM metodos_pago
+        WHERE LOWER(nombre_metodo) = LOWER(:nombre)
+          AND estado = TRUE
+    ";
+
+    $parametros = [
+        ':nombre' => $nombre
+    ];
+
+    if ($idExcluir !== null) {
+        $sql .= " AND id <> :id_excluir";
+        $parametros[':id_excluir'] = $idExcluir;
+    }
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute($parametros);
+
+    return (bool) $stmt->fetchColumn();
+}
+
+
+function crear_metodo_pago(
+    string $nombre
+): array|false {
+    $conexion = conectarDB();
+
+    $sql = "
+        INSERT INTO metodos_pago (
+            nombre_metodo,
+            estado
+        )
+        VALUES (
+            :nombre,
+            TRUE
+        )
+        RETURNING
+            id,
+            nombre_metodo,
+            estado
+    ";
+
+    $stmt = $conexion->prepare($sql);
+
+    $stmt->execute([
+        ':nombre' => $nombre
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
+function actualizar_metodo_pago(
+    int $id,
+    string $nombre
+): array|false {
+    $conexion = conectarDB();
+
+    $sql = "
+        UPDATE metodos_pago
+        SET nombre_metodo = :nombre
+        WHERE id = :id
+          AND estado = TRUE
+        RETURNING
+            id,
+            nombre_metodo,
+            estado
+    ";
+
+    $stmt = $conexion->prepare($sql);
+
+    $stmt->execute([
+        ':id' => $id,
+        ':nombre' => $nombre
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
+function eliminar_metodo_pago(
+    int $id
+): array|false {
+    $conexion = conectarDB();
+
+    $sql = "
+        UPDATE metodos_pago
+        SET estado = FALSE
+        WHERE id = :id
+          AND estado = TRUE
+        RETURNING
+            id,
+            nombre_metodo,
+            estado
+    ";
+
+    $stmt = $conexion->prepare($sql);
+
+    $stmt->execute([
+        ':id' => $id
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
 // MOVIMIENTOS
 function obtener_movimientos_filtrados(array $filtros,?int $id_usuario_solo_suyos): array{

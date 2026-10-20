@@ -21,17 +21,118 @@ function es_admin_actual_donaciones(): bool {
 
 // CATÁLOGOS
 function manejar_tipos_aportes(): void {
+    $metodo = $_SERVER['REQUEST_METHOD'];
     try {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            responderJson(false, 'Método no permitido.', null, 405);
+        if ($metodo === 'GET') {
+            if (!requerir_autenticacion()) {
+                return;
+            }
+            responderJson(
+                true,
+                null,
+                listar_tipos_aportes(),
+                200
+            );
             return;
         }
-        if (!requerir_autenticacion()) {
+        if (!requerir_roles([
+            'Administrador',
+            'Super Administrador'
+        ])) {
             return;
         }
-        responderJson(true, null, listar_tipos_aportes(), 200);
+        if ($metodo === 'POST') {
+            $datos = json_decode(
+                file_get_contents('php://input'),
+                true
+            );
+            if (!is_array($datos)) {
+                responderJson(
+                    false,
+                    'JSON inválido.',
+                    null,
+                    400
+                );
+                return;
+            }
+            responderJson(
+                true,
+                'Tipo de aporte creado correctamente.',
+                registrar_tipo_aporte($datos),
+                201
+            );
+            return;
+        }
+        $id = filter_var(
+            $_GET['id'] ?? null,
+            FILTER_VALIDATE_INT
+        );
+        if ($id === false || $id <= 0) {
+            responderJson(
+                false,
+                'El ID del tipo de aporte no es válido.',
+                null,
+                400
+            );
+            return;
+        }
+        if ($metodo === 'PUT') {
+            $datos = json_decode(
+                file_get_contents('php://input'),
+                true
+            );
+            if (!is_array($datos)) {
+                responderJson(
+                    false,
+                    'JSON inválido.',
+                    null,
+                    400
+                );
+                return;
+            }
+
+            responderJson(
+                true,
+                'Tipo de aporte actualizado correctamente.',
+                modificar_tipo_aporte((int)$id, $datos),
+                200
+            );
+            return;
+        }
+
+        if ($metodo === 'DELETE') {
+            responderJson(
+                true,
+                'Tipo de aporte eliminado correctamente.',
+                dar_baja_tipo_aporte((int)$id),
+                200
+            );
+            return;
+        }
+        responderJson(
+            false,
+            'Método no permitido.',
+            null,
+            405
+        );
+    } catch (InvalidArgumentException $e) {
+        responderJson(
+            false,
+            $e->getMessage(),
+            null,
+            400
+        );
     } catch (Throwable $e) {
-        responderJson(false, 'Error al listar tipos de aportes.', null, 500);
+        error_log(
+            'ERROR TIPOS APORTES: ' .
+            $e->getMessage()
+        );
+        responderJson(
+            false,
+            'Error al procesar tipos de aportes.',
+            null,
+            500
+        );
     }
 }
 
@@ -53,33 +154,246 @@ function manejar_tipos_movimientos_aportes(): void {
 
 
 function manejar_frecuencia_aportes(): void {
+    $metodo = $_SERVER['REQUEST_METHOD'];
     try {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            responderJson(false, 'Método no permitido.', null, 405);
+        if ($metodo === 'GET') {
+            if (!requerir_autenticacion()) {
+                return;
+            }
+            responderJson(
+                true,
+                null,
+                listar_frecuencia_aportes(),
+                200
+            );
             return;
         }
-        if (!requerir_autenticacion()) {
+        if (!requerir_roles([
+            'Administrador',
+            'Super Administrador'
+        ])) {
             return;
         }
-        responderJson(true, null, listar_frecuencia_aportes(), 200);
+        if ($metodo === 'POST') {
+            $datos = json_decode(
+                file_get_contents('php://input'),
+                true
+            );
+            if (!is_array($datos)) {
+                responderJson(
+                    false,
+                    'JSON inválido.',
+                    null,
+                    400
+                );
+                return;
+            }
+            responderJson(
+                true,
+                'Frecuencia creada correctamente.',
+                registrar_frecuencia_aporte($datos),
+                201
+            );
+            return;
+        }
+        $id = filter_var(
+            $_GET['id'] ?? null,
+            FILTER_VALIDATE_INT
+        );
+        if ($id === false || $id <= 0) {
+            responderJson(
+                false,
+                'El ID de frecuencia no es válido.',
+                null,
+                400
+            );
+            return;
+        }
+
+        if ($metodo === 'PUT') {
+            $datos = json_decode(
+                file_get_contents('php://input'),
+                true
+            );
+            if (!is_array($datos)) {
+                responderJson(
+                    false,
+                    'JSON inválido.',
+                    null,
+                    400
+                );
+                return;
+            }
+            responderJson(
+                true,
+                'Frecuencia actualizada correctamente.',
+                modificar_frecuencia_aporte(
+                    (int)$id,
+                    $datos
+                ),
+                200
+            );
+
+            return;
+        }
+        if ($metodo === 'DELETE') {
+            responderJson(
+                true,
+                'Frecuencia eliminada correctamente.',
+                dar_baja_frecuencia_aporte((int)$id),
+                200
+            );
+            return;
+        }
+        responderJson(
+            false,
+            'Método no permitido.',
+            null,
+            405
+        );
+    } catch (InvalidArgumentException $e) {
+        responderJson(
+            false,
+            $e->getMessage(),
+            null,
+            400
+        );
+
     } catch (Throwable $e) {
-        responderJson(false, 'Error al listar frecuencias de aportes.', null, 500);
+        error_log(
+            'ERROR FRECUENCIAS: ' .
+            $e->getMessage()
+        );
+        responderJson(
+            false,
+            'Error al procesar frecuencias.',
+            null,
+            500
+        );
     }
 }
 
 
 function manejar_metodos_pago(): void {
+    $metodo = $_SERVER['REQUEST_METHOD'];
+
     try {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            responderJson(false, 'Método no permitido.', null, 405);
+        if ($metodo === 'GET') {
+            if (!requerir_autenticacion()) {
+                return;
+            }
+            responderJson(
+                true,
+                null,
+                listar_metodos_pago(),
+                200
+            );
             return;
         }
-        if (!requerir_autenticacion()) {
+        if (!requerir_roles([
+            'Administrador',
+            'Super Administrador'
+        ])) {
             return;
         }
-        responderJson(true, null, listar_metodos_pago(), 200);
+
+        if ($metodo === 'POST') {
+            $datos = json_decode(
+                file_get_contents('php://input'),
+                true
+            );
+            if (!is_array($datos)) {
+                responderJson(
+                    false,
+                    'JSON inválido.',
+                    null,
+                    400
+                );
+                return;
+            }
+            responderJson(
+                true,
+                'Método de pago creado correctamente.',
+                registrar_metodo_pago($datos),
+                201
+            );
+            return;
+        }
+        $id = filter_var(
+            $_GET['id'] ?? null,
+            FILTER_VALIDATE_INT
+        );
+        if ($id === false || $id <= 0) {
+            responderJson(
+                false,
+                'El ID del método de pago no es válido.',
+                null,
+                400
+            );
+            return;
+        }
+
+        if ($metodo === 'PUT') {
+            $datos = json_decode(
+                file_get_contents('php://input'),
+                true
+            );
+            if (!is_array($datos)) {
+                responderJson(
+                    false,
+                    'JSON inválido.',
+                    null,
+                    400
+                );
+                return;
+            }
+            responderJson(
+                true,
+                'Método de pago actualizado correctamente.',
+                modificar_metodo_pago(
+                    (int)$id,
+                    $datos
+                ),
+                200
+            );
+
+            return;
+        }
+
+        if ($metodo === 'DELETE') {
+            responderJson(
+                true,
+                'Método de pago eliminado correctamente.',
+                dar_baja_metodo_pago((int)$id),
+                200
+            );
+            return;
+        }
+        responderJson(
+            false,
+            'Método no permitido.',
+            null,
+            405
+        );
+
+    } catch (InvalidArgumentException $e) {
+        responderJson(
+            false,
+            $e->getMessage(),
+            null,
+            400
+        );
     } catch (Throwable $e) {
-        responderJson(false, 'Error al listar métodos de pago.', null, 500);
+        error_log(
+            'ERROR METODOS PAGO: ' .
+            $e->getMessage()
+        );
+        responderJson(
+            false,
+            'Error al procesar métodos de pago.',
+            null,
+            500
+        );
     }
 }
 

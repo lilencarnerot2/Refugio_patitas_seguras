@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../repositories/movimientos.php';
 
 
-
 // CATÁLOGOS
 function listar_tipos_aportes(): array {
     return obtener_tipos_aportes();
@@ -24,6 +23,269 @@ function listar_metodos_pago(): array {
     return obtener_metodos_pago();
 }
 
+
+// TIPOS DE APORTES
+function registrar_tipo_aporte(array $datos): array {
+    $nombre = trim($datos['nombre_aporte'] ?? '');
+    if ($nombre === '') {
+        throw new InvalidArgumentException(
+            'El nombre del tipo de aporte es obligatorio.'
+        );
+    }
+    if (existe_tipo_aporte_por_nombre($nombre)) {
+        throw new InvalidArgumentException(
+            'Ya existe un tipo de aporte con ese nombre.'
+        );
+    }
+    $tipo = crear_tipo_aporte($nombre);
+
+    if (!$tipo) {
+        throw new RuntimeException(
+            'No se pudo crear el tipo de aporte.'
+        );
+    }
+    return $tipo;
+}
+
+
+function modificar_tipo_aporte(
+    int $id,
+    array $datos
+): array {
+    if ($id <= 0 || !existe_tipo_aporte($id)) {
+        throw new InvalidArgumentException(
+            'El tipo de aporte indicado no existe.'
+        );
+    }
+
+    $nombre = trim($datos['nombre_aporte'] ?? '');
+
+    if ($nombre === '') {
+        throw new InvalidArgumentException(
+            'El nombre del tipo de aporte es obligatorio.'
+        );
+    }
+
+    if (existe_tipo_aporte_por_nombre($nombre, $id)) {
+        throw new InvalidArgumentException(
+            'Ya existe un tipo de aporte con ese nombre.'
+        );
+    }
+
+    $tipo = actualizar_tipo_aporte(
+        $id,
+        $nombre
+    );
+
+    if (!$tipo) {
+        throw new RuntimeException(
+            'No se pudo actualizar el tipo de aporte.'
+        );
+    }
+
+    return $tipo;
+}
+
+
+function dar_baja_tipo_aporte(int $id): array {
+    if ($id <= 0 || !existe_tipo_aporte($id)) {
+        throw new InvalidArgumentException(
+            'El tipo de aporte indicado no existe.'
+        );
+    }
+
+    $tipo = eliminar_tipo_aporte($id);
+
+    if (!$tipo) {
+        throw new RuntimeException(
+            'No se pudo eliminar el tipo de aporte.'
+        );
+    }
+
+    return $tipo;
+}
+
+
+// FRECUENCIAS
+function registrar_frecuencia_aporte(array $datos): array {
+    $nombre = trim(
+        $datos['nombre_frecuencia_aporte'] ?? ''
+    );
+
+    if ($nombre === '') {
+        throw new InvalidArgumentException(
+            'El nombre de la frecuencia es obligatorio.'
+        );
+    }
+
+    if (existe_frecuencia_aporte_por_nombre($nombre)) {
+        throw new InvalidArgumentException(
+            'Ya existe una frecuencia con ese nombre.'
+        );
+    }
+
+    $frecuencia = crear_frecuencia_aporte($nombre);
+
+    if (!$frecuencia) {
+        throw new RuntimeException(
+            'No se pudo crear la frecuencia.'
+        );
+    }
+
+    return $frecuencia;
+}
+
+
+function modificar_frecuencia_aporte(
+    int $id,
+    array $datos
+): array {
+    if ($id <= 0 || !existe_frecuencia_aporte($id)) {
+        throw new InvalidArgumentException(
+            'La frecuencia indicada no existe.'
+        );
+    }
+
+    $nombre = trim(
+        $datos['nombre_frecuencia_aporte'] ?? ''
+    );
+
+    if ($nombre === '') {
+        throw new InvalidArgumentException(
+            'El nombre de la frecuencia es obligatorio.'
+        );
+    }
+
+    if (
+        existe_frecuencia_aporte_por_nombre(
+            $nombre,
+            $id
+        )
+    ) {
+        throw new InvalidArgumentException(
+            'Ya existe una frecuencia con ese nombre.'
+        );
+    }
+
+    $frecuencia = actualizar_frecuencia_aporte(
+        $id,
+        $nombre
+    );
+
+    if (!$frecuencia) {
+        throw new RuntimeException(
+            'No se pudo actualizar la frecuencia.'
+        );
+    }
+
+    return $frecuencia;
+}
+
+
+function dar_baja_frecuencia_aporte(int $id): array {
+    if ($id <= 0 || !existe_frecuencia_aporte($id)) {
+        throw new InvalidArgumentException(
+            'La frecuencia indicada no existe.'
+        );
+    }
+
+    $frecuencia = eliminar_frecuencia_aporte($id);
+
+    if (!$frecuencia) {
+        throw new RuntimeException(
+            'No se pudo eliminar la frecuencia.'
+        );
+    }
+
+    return $frecuencia;
+}
+
+
+
+// MÉTODOS DE PAGO
+function registrar_metodo_pago(array $datos): array {
+    $nombre = trim(
+        $datos['nombre_metodo'] ?? ''
+    );
+    if ($nombre === '') {
+        throw new InvalidArgumentException(
+            'El nombre del método de pago es obligatorio.'
+        );
+    }
+    if (existe_metodo_pago_por_nombre($nombre)) {
+        throw new InvalidArgumentException(
+            'Ya existe un método de pago con ese nombre.'
+        );
+    }
+    $metodo = crear_metodo_pago($nombre);
+
+    if (!$metodo) {
+        throw new RuntimeException(
+            'No se pudo crear el método de pago.'
+        );
+    }
+
+    return $metodo;
+}
+
+
+function modificar_metodo_pago(
+    int $id,
+    array $datos
+): array {
+    if ($id <= 0 || !existe_metodo_pago($id)) {
+        throw new InvalidArgumentException(
+            'El método de pago indicado no existe.'
+        );
+    }
+
+    $nombre = trim(
+        $datos['nombre_metodo'] ?? ''
+    );
+    if ($nombre === '') {
+        throw new InvalidArgumentException(
+            'El nombre del método de pago es obligatorio.'
+        );
+    }
+    if (
+        existe_metodo_pago_por_nombre(
+            $nombre,
+            $id
+        )
+    ) {
+        throw new InvalidArgumentException(
+            'Ya existe un método de pago con ese nombre.'
+        );
+    }
+    $metodo = actualizar_metodo_pago(
+        $id,
+        $nombre
+    );
+    if (!$metodo) {
+        throw new RuntimeException(
+            'No se pudo actualizar el método de pago.'
+        );
+    }
+
+    return $metodo;
+}
+
+
+function dar_baja_metodo_pago(int $id): array {
+    if ($id <= 0 || !existe_metodo_pago($id)) {
+        throw new InvalidArgumentException(
+            'El método de pago indicado no existe.'
+        );
+    }
+    $metodo = eliminar_metodo_pago($id);
+    if (!$metodo) {
+        throw new RuntimeException(
+            'No se pudo eliminar el método de pago.'
+        );
+    }
+
+    return $metodo;
+}
 
 // VALIDACIONES
 function validar_fecha(string $fecha): bool {
