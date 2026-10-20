@@ -31,24 +31,21 @@ function usuarioAutenticado(): bool
     return validarRolEnBackend('contactos') === true;
 }
 
-function esPersonalAdmin(): bool
-{
-    if (
-        !usuarioAutenticado()
-        || (empty($_COOKIE['usuario_acceso_admin']) && empty($_COOKIE['usuario_acceso_superadmin']))
-    ) {
+function esPersonalAdmin(): bool {
+    if (!usuarioAutenticado()) {
         return false;
     }
 
     return validarRolEnBackend(
         'usuarios',
-        isset($_COOKIE['usuario_id']) ? (string) $_COOKIE['usuario_id'] : null
+        isset($_COOKIE['usuario_id'])
+            ? (string) $_COOKIE['usuario_id']
+            : null
     ) === true;
 }
 
-function esSuperadministrador(): bool
-{
-    if (!usuarioAutenticado() || empty($_COOKIE['usuario_acceso_superadmin'])) {
+function esSuperadministrador(): bool {
+    if (!usuarioAutenticado()) {
         return false;
     }
 

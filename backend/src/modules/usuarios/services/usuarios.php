@@ -116,36 +116,49 @@ function eliminar_usuario(
     int $id,
     int $id_usuario_actual,
     string $rol_usuario_actual
-): bool{
+): bool {
+
     if ($id <= 0) {
         throw new InvalidArgumentException(
             'El id del usuario no es válido.'
         );
     }
+
     if ($id === $id_usuario_actual) {
         throw new InvalidArgumentException(
             'No podés deshabilitar tu propio usuario.'
         );
     }
+
     $usuario = obtener_usuario_por_id($id);
+
     if (!$usuario) {
         return false;
     }
+
+    // Nadie puede deshabilitar a un Super Administrador.
+    if ($usuario['nombre_rol'] === 'Super Administrador') {
+        throw new InvalidArgumentException(
+            'No se puede deshabilitar un Super Administrador.'
+        );
+    }
+
+    // Administrador solamente puede deshabilitar usuarios comunes.
     if (
-        $rol_usuario_actual === 'Administrador' &&
-        $usuario['nombre_rol'] !== 'Usuario'
+        $rol_usuario_actual === 'Administrador'
+        && $usuario['nombre_rol'] !== 'Usuario'
     ) {
         throw new InvalidArgumentException(
             'Un Administrador solo puede deshabilitar usuarios comunes.'
         );
     }
+
     $eliminado = desactivar_usuario($id);
+
     if (!$eliminado) {
         return false;
     }
-    $usuario_desactivado = $usuario;
-    $usuario_desactivado['estado'] = false;
-    
+
     return true;
 }
 
@@ -154,29 +167,46 @@ function habilitar_usuario(
     int $id_usuario_actual,
     string $rol_usuario_actual
 ): bool {
+
     if ($id <= 0) {
         throw new InvalidArgumentException(
             'El id del usuario no es válido.'
         );
     }
+
     if ($id === $id_usuario_actual) {
         throw new InvalidArgumentException(
             'No podés modificar el estado de tu propio usuario.'
         );
     }
-    $usuario = obtener_usuario_por_id($id);
+
+    // IMPORTANTE:
+    // para habilitar tenemos que poder encontrar usuarios inactivos.
+    $usuario = obtener_usuario_por_id_incluyendo_inactivos($id);
+
     if (!$usuario) {
         return false;
     }
+
+    // Nadie puede modificar a un Super Administrador.
+    if ($usuario['nombre_rol'] === 'Super Administrador') {
+        throw new InvalidArgumentException(
+            'No se puede modificar el estado de un Super Administrador.'
+        );
+    }
+
+    // Administrador solamente puede habilitar usuarios comunes.
     if (
-        $rol_usuario_actual === 'Administrador' &&
-        $usuario['nombre_rol'] !== 'Usuario'
+        $rol_usuario_actual === 'Administrador'
+        && $usuario['nombre_rol'] !== 'Usuario'
     ) {
         throw new InvalidArgumentException(
             'Un Administrador solo puede habilitar usuarios comunes.'
         );
     }
+
     $activado = activar_usuario($id);
+
     if (!$activado) {
         return false;
     }

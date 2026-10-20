@@ -308,3 +308,33 @@ function activar_usuario(int $id): bool{
 
     return $consulta->rowCount() > 0;
 }
+
+function obtener_usuario_por_id_incluyendo_inactivos(int $id): array|false {
+    $conexion = conectarDB();
+
+    $sql = "
+        SELECT
+            u.id,
+            u.uid_pp2,
+            u.id_rol,
+            r.nombre_rol,
+            u.id_domicilio,
+            u.nombre,
+            u.apellido,
+            u.fecha_nacimiento,
+            u.fecha_alta,
+            u.estado
+        FROM usuarios u
+        INNER JOIN roles r
+            ON r.id = u.id_rol
+        WHERE u.id = :id
+        LIMIT 1
+    ";
+
+    $consulta = $conexion->prepare($sql);
+    $consulta->execute([
+        ':id' => $id
+    ]);
+
+    return $consulta->fetch(PDO::FETCH_ASSOC);
+}

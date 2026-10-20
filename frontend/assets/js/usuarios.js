@@ -88,10 +88,26 @@ document.addEventListener('DOMContentLoaded', function () {
         ponerDestino(tr, '.abm-ver', usuario.id);
         ponerDestino(tr, '.abm-editar', usuario.id);
 
+        var alta = tr.querySelector('.abm-alta');
         var baja = tr.querySelector('.abm-baja');
+        if (alta) {
+            alta.setAttribute('data-id', texto(usuario.id));
+
+            if (String(usuario.estado).toLowerCase() === 'true') {
+                alta.disabled = true;
+            } else {
+                alta.disabled = false;
+            }
+        }
 
         if (baja) {
             baja.setAttribute('data-id', texto(usuario.id));
+
+            if (String(usuario.estado).toLowerCase() === 'true') {
+                baja.disabled = false;
+            } else {
+                baja.disabled = true;
+            }
         }
 
         return tr;
@@ -341,6 +357,32 @@ document.addEventListener('DOMContentLoaded', function () {
         apiRequest('usuarios', {
             metodo: 'DELETE',
             parametros: { id: boton.getAttribute('data-id') }
+        }).then(function (respuesta) {
+            return cargarListado().then(function () {
+                if (mensaje) {
+                    avisoDeApi(mensaje, respuesta);
+                }
+            });
+        }).catch(function (error) {
+            if (mensaje) {
+                avisoDeApi(mensaje, error);
+            }
+        });
+    });
+
+    cuerpo.addEventListener('click', function (evento) {
+        var boton = evento.target.closest('[data-id].abm-alta');
+
+        if (!boton || boton.disabled) {
+            return;
+        }
+
+        apiRequest('usuarios', {
+            metodo: 'PUT',
+            parametros: {
+                id: boton.getAttribute('data-id'),
+                accion: 'activar'
+            }
         }).then(function (respuesta) {
             return cargarListado().then(function () {
                 if (mensaje) {

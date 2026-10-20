@@ -3,6 +3,7 @@ $tituloPagina = 'Usuarios - Patitas Seguras';
 $paginaAdmin = 'usuarios';
 require __DIR__ . '/includes/head.php';
 require __DIR__ . '/includes/header.php';
+$esPersonalAdmin = esPersonalAdmin();
 ?>
 
     <section id="panel-usuarios" class="panel-listado" data-por-pagina="5">
@@ -54,6 +55,9 @@ require __DIR__ . '/includes/header.php';
                             <th id="columna-usuario-ver"></th>
                             <?php if ($esSuperadministrador) { ?>
                             <th id="columna-usuario-editar"></th>
+                            <?php } ?>
+
+                            <?php if ($esPersonalAdmin) { ?>
                             <th id="columna-usuario-alta"></th>
                             <th id="columna-usuario-baja"></th>
                             <?php } ?>
@@ -68,11 +72,21 @@ require __DIR__ . '/includes/header.php';
                             <td data-campo="fecha_alta"></td>
                             <td data-campo="nombre_rol"></td>
                             <td data-campo="estado"></td>
-                            <td><a class="abm-ver" href="usuario_detalle.php" aria-label="Ver"></a></td>
+                            <td>
+                                <a class="abm-ver" href="usuario_detalle.php" aria-label="Ver"></a>
+                            </td>
                             <?php if ($esSuperadministrador) { ?>
-                            <td><a class="abm-editar" href="usuario_editar.php" aria-label="Editar"></a></td>
-                            <td><button type="button" class="abm-alta" disabled aria-label="Alta"></button></td>
-                            <td><button type="button" class="abm-baja" aria-label="Baja"></button></td>
+                            <td>
+                                <a class="abm-editar" href="usuario_editar.php" aria-label="Editar"></a>
+                            </td>
+                            <?php } ?>
+                            <?php if ($esPersonalAdmin) { ?>
+                            <td>
+                                <button type="button" class="abm-alta" disabled aria-label="Alta"></button>
+                            </td>
+                            <td>
+                                <button type="button" class="abm-baja" aria-label="Baja"></button>
+                            </td>
                             <?php } ?>
                         </tr>
                     </tbody>
