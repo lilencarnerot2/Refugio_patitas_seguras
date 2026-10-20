@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../repositories/formularios_transito.php';
 require_once __DIR__ . '/../../adopciones/repositories/formularios_adopcion.php';
 require_once __DIR__ . '/../../usuarios/services/usuarios.php';
-require_once __DIR__ . '/../../../utils/edad.php';
+require_once __DIR__ . '/../../../utils/response.php';
 
 // VALIDACIONES AUXILIARES
 function validar_solicitud_para_transito(int $id_solicitud, int $id_usuario_actual, bool $es_admin): array {
@@ -374,10 +374,32 @@ function modificar_formulario_transito(int $id_formulario, int $id_usuario_actua
     return obtener_formulario_transito($id_formulario, $id_usuario_actual, false);
 }
 
-function listar_formularios_transito(array $filtros, int $id_usuario_actual, bool $es_admin): array {
-    $id_usuario_solo_suyos = $es_admin ? null : $id_usuario_actual;
+function listar_formularios_transito(
+    array $filtros,
+    int $id_usuario_actual,
+    bool $es_admin
+): array {
+    $id_usuario_solo_suyos = $es_admin
+        ? null
+        : $id_usuario_actual;
 
-    return obtener_formularios_transito_filtrados($filtros, $id_usuario_solo_suyos);
+    $formularios = obtener_formularios_transito_filtrados(
+        $filtros,
+        $id_usuario_solo_suyos
+    );
+
+    foreach ($formularios as &$formulario) {
+        $id_formulario = (int) ($formulario['id'] ?? 0);
+
+        $formulario['mascotas_hogar'] =
+            $id_formulario > 0
+                ? obtener_mascotas_de_transito($id_formulario)
+                : [];
+    }
+
+    unset($formulario);
+
+    return $formularios;
 }
 
 function finalizar_transito(

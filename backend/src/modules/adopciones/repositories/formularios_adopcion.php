@@ -247,22 +247,6 @@ function existe_tipo_mascota(int $id): bool {
     return (bool) $stmt->fetchColumn();
 }
 
-function existe_motivo_adopcion(int $id): bool {
-    $conexion = conectarDB();
-    $sql = "
-        SELECT 1
-        FROM motivos_adopcion
-        WHERE id = :id
-          AND estado = TRUE
-        LIMIT 1
-    ";
-    $stmt = $conexion->prepare($sql);
-    $stmt->execute([
-        ':id' => $id
-    ]);
-    return (bool) $stmt->fetchColumn();
-}
-
 
 function crear_formulario_adopcion(array $datos): array|false {
     $conexion = conectarDB();

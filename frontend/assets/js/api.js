@@ -2,6 +2,7 @@
 var API_URL = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) || '';
 var INICIO_URL = (window.APP_CONFIG && window.APP_CONFIG.inicioUrl) || '';
 var PANEL_URL = (window.APP_CONFIG && window.APP_CONFIG.panelUrl) || '';
+var LOGIN_URL = (window.APP_CONFIG && window.APP_CONFIG.loginUrl) || '/public/login.php';
 
 function apiBaseUrl() {
   var base = (window.APP_CONFIG && window.APP_CONFIG.backendUrl) || API_URL || '';
@@ -108,9 +109,20 @@ function apiRequest(recurso, opciones) {
 
   return fetch(url, config)
     .then(function (response) {
-      if (response.status === 204) {
-        return null;
-      }
+
+      if (response.status === 401 && recurso !== 'login') {
+        limpiarCookiesAplicacion();
+        borrarCookie('PHPSESSID');
+
+        if (window.location.pathname !== LOGIN_URL) {
+            window.location.href = LOGIN_URL;
+        }
+          throw new Error('Debés iniciar sesión.');
+        }
+
+        if (response.status === 204) {
+          return null;
+        }
 
       return response.json().then(function (data) {
         if (!response.ok || (data && data.success === false)) {
@@ -128,6 +140,7 @@ function apiRequest(recurso, opciones) {
         var mensaje = response.ok
           ? 'El servidor devolvió una respuesta inválida. Intentá nuevamente más tarde.'
           : 'No se pudo completar la solicitud. Intentá nuevamente.';
+
         var error = new Error(mensaje);
         error.status = response.status;
         throw error;
@@ -135,12 +148,14 @@ function apiRequest(recurso, opciones) {
     })
     .catch(function (error) {
       if (error instanceof TypeError && !error.status) {
-        throw new Error('No se pudo conectar con el servicio. Revisá tu conexión e intentá nuevamente.');
-      }
+        throw new Error(
+          'No se pudo conectar con el servicio. Revisá tu conexión e intentá nuevamente.'
+        );
+      } 
 
       throw error;
     });
-}
+  }
 
 function guardarCookie(nombre, valor) {
   document.cookie = nombre + '=' + encodeURIComponent(valor || '') + '; path=/; SameSite=Lax';

@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../repositories/formularios_adopcion.php';
 require_once __DIR__ . '/../../usuarios/services/usuarios.php';
-require_once __DIR__ . '/../../../utils/edad.php';
+require_once __DIR__ . '/../../../utils/response.php';
 
 // CATÁLOGOS
 function listar_compromisos_adopcion(): array {
@@ -438,8 +438,30 @@ function listar_destinos_mascotas(): array {
     return obtener_destinos_mascotas();
 }
 
-function listar_formularios_adopcion(array $filtros, int $id_usuario_actual, bool $es_admin): array {
-    $id_usuario_solo_suyos = $es_admin ? null : $id_usuario_actual;
+function listar_formularios_adopcion(
+    array $filtros,
+    int $id_usuario_actual,
+    bool $es_admin
+): array {
+    $id_usuario_solo_suyos = $es_admin
+        ? null
+        : $id_usuario_actual;
 
-    return obtener_formularios_adopcion_filtrados($filtros, $id_usuario_solo_suyos);
+    $formularios = obtener_formularios_adopcion_filtrados(
+        $filtros,
+        $id_usuario_solo_suyos
+    );
+
+    foreach ($formularios as &$formulario) {
+        $id_formulario = (int) ($formulario['id'] ?? 0);
+
+        $formulario['mascotas_hogar'] =
+            $id_formulario > 0
+                ? obtener_mascotas_de_formulario($id_formulario)
+                : [];
+    }
+
+    unset($formulario);
+
+    return $formularios;
 }

@@ -87,21 +87,21 @@ require __DIR__ . '/includes/header.php';
                                     <h6 class="mb-1 fw-bold">Tipos de Vivienda</h6>
                                     <small class="text-muted">Definí los tipos de vivienda disponibles para las adopciones.</small>
                                 </div>
-                                <button class="btn btn-sm btn-outline-success" onclick="alert('Próximamente: Editar tipos de vivienda')">Editar</button>
+                                <button type="button" class="btn btn-sm btn-outline-success btn-editar-catalogo" data-catalogo="tipos_vivienda">Editar</button>
                             </div>
                             <div class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="mb-1 fw-bold">Especies</h6>
                                     <small class="text-muted">Gestioná las especies de animales del refugio.</small>
                                 </div>
-                                <button class="btn btn-sm btn-outline-success" onclick="alert('Próximamente: Editar especies')">Editar</button>
+                                <button type="button" class="btn btn-sm btn-outline-success btn-editar-catalogo" data-catalogo="especies">Editar</button>
                             </div>
                             <div class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="mb-1 fw-bold">Motivos de Adopción</h6>
                                     <small class="text-muted">Configurá los motivos por los cuales se pueden adoptar.</small>
                                 </div>
-                                <button class="btn btn-sm btn-outline-success" onclick="alert('Próximamente: Editar motivos')">Editar</button>
+                                <button type="button" class="btn btn-sm btn-outline-success btn-editar-catalogo" data-catalogo="motivos_adopcion">Editar</button>
                             </div>
                         </div>
                     </div>

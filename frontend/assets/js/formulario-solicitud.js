@@ -843,6 +843,24 @@ document.addEventListener('DOMContentLoaded', function () {
         return items[0];
     }
 
+    function datosComunesFormularioPrevio(datos) {
+        if (!datos) {
+            return null;
+        }
+
+        return {
+            id_tipo_vivienda: datos.id_tipo_vivienda,
+            id_condicion_vivienda: datos.id_condicion_vivienda,
+            tiene_patio: datos.tiene_patio,
+            metros_cuadrados_patio: datos.metros_cuadrados_patio,
+            cantidad_integrantes: datos.cantidad_integrantes,
+            horas_solo: datos.horas_solo,
+            hay_ninos: datos.hay_ninos,
+            tiene_mascotas: datos.tiene_mascotas,
+            mascotas_hogar: datos.mascotas_hogar
+        };
+    }
+
     function aplicarFormularioPrevio(datos) {
         var claves = [
             'id_tipo_vivienda',
@@ -911,9 +929,18 @@ document.addEventListener('DOMContentLoaded', function () {
         var recurso = formulario.getAttribute('data-recurso');
         var sesion = /(?:^|;\s*)usuario_id=[^;]+/.test(document.cookie);
         var errores = [];
+        var recursoAlternativo;
 
         if (!sesion || !recurso) {
             return Promise.resolve();
+        }
+
+        if (recurso === 'formularios_adopcion') {
+            recursoAlternativo = 'formularios_transito';
+        } else if (recurso === 'formularios_transito') {
+            recursoAlternativo = 'formularios_adopcion';
+        } else {
+            recursoAlternativo = '';
         }
 
         return Promise.all([
@@ -921,37 +948,84 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!error || error.status !== 404) {
                     errores.push(error);
                 }
+
                 return null;
             }),
+
             apiRequest('contactos', { credentials: 'include' }).catch(function (error) {
                 if (!error || error.status !== 404) {
                     errores.push(error);
                 }
+
                 return null;
             }),
+
             apiRequest(recurso, { credentials: 'include' }).catch(function (error) {
                 if (!error || error.status !== 404) {
                     errores.push(error);
                 }
+
                 return null;
-            })
+            }),
+
+            recursoAlternativo
+                ? apiRequest(recursoAlternativo, { credentials: 'include' }).catch(function (error) {
+                    if (!error || error.status !== 404) {
+                        errores.push(error);
+                    }
+
+                    return null;
+                })
+                : Promise.resolve(null)
+
         ]).then(function (respuestas) {
-            var domicilio = objetoDomicilioDePerfil(respuestas[0] && respuestas[0].data !== undefined ? respuestas[0].data : respuestas[0]);
-            var contactos = listaContactosDePerfil(respuestas[1] && respuestas[1].data !== undefined ? respuestas[1].data : respuestas[1]);
-            var formularios = listaDe(respuestas[2]);
-            var ultimo = ultimoFormularioDelUsuario(formularios);
+            var domicilio = objetoDomicilioDePerfil(
+                respuestas[0] && respuestas[0].data !== undefined
+                    ? respuestas[0].data
+                    : respuestas[0]
+            );
+
+            var contactos = listaContactosDePerfil(
+                respuestas[1] && respuestas[1].data !== undefined
+                    ? respuestas[1].data
+                    : respuestas[1]
+            );
+
+            var formulariosActuales = listaDe(respuestas[2]);
+            var formulariosAlternativos = listaDe(respuestas[3]);
+
+            var ultimoActual = ultimoFormularioDelUsuario(formulariosActuales);
+            var ultimoAlternativo = ultimoFormularioDelUsuario(formulariosAlternativos);
+
+            var formularioParaAplicar;
+
+            if (ultimoActual) {
+                // Si ya hizo antes este mismo tipo de formulario,
+                // reutilizamos todos sus datos.
+                formularioParaAplicar = ultimoActual;
+            } else if (ultimoAlternativo) {
+                // Si solamente hizo el otro formulario,
+                // reutilizamos únicamente los campos comunes.
+                formularioParaAplicar = datosComunesFormularioPrevio(
+                ultimoAlternativo
+                );
+            } else {
+                formularioParaAplicar = null;
+            }
 
             aplicarContactosAlFormulario(contactos);
 
             return encadenarSelectsDomicilio(domicilio).then(function () {
-                aplicarFormularioPrevio(ultimo);
+                aplicarFormularioPrevio(formularioParaAplicar);
                 aplicarDependencias();
                 aplicarFechasMinimas();
             });
+
         }).then(function () {
             if (errores.length) {
                 mostrarAviso(mensaje, errores[0], false);
             }
+
         }).catch(function (error) {
             mostrarAviso(mensaje, error, false);
             return null;
