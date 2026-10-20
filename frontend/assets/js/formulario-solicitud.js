@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var avisoAcceso = document.getElementById('mensaje-solicitud');
     var formulario = document.getElementById('formulario-solicitud');
     var mensaje = document.getElementById('mensaje-formulario');
+    var idSolicitudExistente = new URLSearchParams(window.location.search).get('id_solicitud');
 
     if (!acceso || !formulario) {
         return;
@@ -218,7 +219,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            if (nodo.hasAttribute('data-solo-contacto') || nodo.closest('[data-lista]') || nodo.closest('#lista-mascotas-hogar') || nodo.disabled) {
+            if (
+                (nodo.hasAttribute('data-solo-contacto') && nodo.name !== 'telefono') ||
+                nodo.closest('[data-lista]') ||
+                nodo.closest('#lista-mascotas-hogar') ||
+                nodo.disabled
+            ) {
                 return;
             }
 
@@ -904,19 +910,29 @@ document.addEventListener('DOMContentLoaded', function () {
     function rellenarDesdeDatosPrevios() {
         var recurso = formulario.getAttribute('data-recurso');
         var sesion = /(?:^|;\s*)usuario_id=[^;]+/.test(document.cookie);
+        var errores = [];
 
         if (!sesion || !recurso) {
             return Promise.resolve();
         }
 
         return Promise.all([
-            apiRequest('domicilios', { credentials: 'include' }).catch(function () {
+            apiRequest('domicilios', { credentials: 'include' }).catch(function (error) {
+                if (!error || error.status !== 404) {
+                    errores.push(error);
+                }
                 return null;
             }),
-            apiRequest('contactos', { credentials: 'include' }).catch(function () {
+            apiRequest('contactos', { credentials: 'include' }).catch(function (error) {
+                if (!error || error.status !== 404) {
+                    errores.push(error);
+                }
                 return null;
             }),
-            apiRequest(recurso, { credentials: 'include' }).catch(function () {
+            apiRequest(recurso, { credentials: 'include' }).catch(function (error) {
+                if (!error || error.status !== 404) {
+                    errores.push(error);
+                }
                 return null;
             })
         ]).then(function (respuestas) {
@@ -932,100 +948,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 aplicarDependencias();
                 aplicarFechasMinimas();
             });
-        }).catch(function () {
+        }).then(function () {
+            if (errores.length) {
+                mostrarAviso(mensaje, errores[0], false);
+            }
+        }).catch(function (error) {
+            mostrarAviso(mensaje, error, false);
             return null;
         });
-    }
-
-    function nombreDeCampo(nodo) {
-        var etiqueta = nodo.id ? formulario.querySelector('label[for="' + nodo.id + '"]') : null;
-        var opcion = nodo.closest('.form-check');
-        var columna = nodo.closest('[class*="col-"]');
-        var texto = nodo.name;
-
-        if (etiqueta) {
-            texto = etiqueta.textContent;
-        } else if (opcion) {
-            texto = opcion.textContent;
-        } else if (columna && columna.querySelector('label')) {
-            texto = columna.querySelector('label').textContent;
-        }
-
-        return String(texto || '').replace(/\s+/g, ' ').trim();
-    }
-
-    function camposObligatoriosVacios() {
-        var vacios = [];
-
-        Array.prototype.forEach.call(formulario.elements, function (nodo) {
-            if (!nodo.name || !nodo.required || nodo.disabled || nodo.type === 'hidden') {
-                return;
-            }
-
-            if (nodo.type === 'checkbox') {
-                if (!nodo.checked) {
-                    vacios.push(nodo);
-                }
-
-                return;
-            }
-
-            if (String(nodo.value || '').trim() === '') {
-                vacios.push(nodo);
-            }
-        });
-
-        return vacios;
-    }
-
-    function avisarCamposVacios(vacios) {
-        var nombres = [];
-        var texto = 'Completá los campos obligatorios para enviar la solicitud';
-
-        mostrarAviso(mensaje, '');
-        marcarIntentoEnvio(formulario);
-
-        vacios.forEach(function (nodo) {
-            var nombre = nombreDeCampo(nodo);
-
-            nodo.setAttribute('data-campo-estado', 'error');
-
-            if (nombre && nombres.indexOf(nombre) === -1) {
-                nombres.push(nombre);
-            }
-        });
-
-        if (nombres.length) {
-            texto += ': ' + nombres.slice(0, 4).join(', ');
-
-            if (nombres.length > 4) {
-                texto += ' y ' + (nombres.length - 4) + ' más';
-            }
-        }
-
-        mostrarAviso(mensaje, texto + '.', false);
     }
 
     function enviar() {
         var cuerpo;
         var boton = formulario.querySelector('[type="submit"]');
         var idSolicitud = null;
-        var vacios;
+        var recurso = formulario.getAttribute('data-recurso');
+        var solicitud;
 
         if (formulario.getAttribute('data-enviando') === '1') {
             return;
         }
 
-        vacios = camposObligatoriosVacios();
+        marcarIntentoEnvio(formulario);
 
-        if (vacios.length) {
-            avisarCamposVacios(vacios);
+        if (!formulario.reportValidity()) {
             return;
         }
 
         formulario.setAttribute('data-enviando', '1');
 
-        marcarIntentoEnvio(formulario);
         mostrarAviso(mensaje, '');
 
         cuerpo = cuerpoDelFormulario();
@@ -1034,18 +985,26 @@ document.addEventListener('DOMContentLoaded', function () {
             boton.disabled = true;
         }
 
-        apiRequest('solicitudes', { metodo: 'POST', cuerpo: cuerpo })
+        (idSolicitudExistente
+            ? Promise.resolve(null)
+            : apiRequest('solicitudes', { metodo: 'POST', cuerpo: cuerpo }))
             .then(function (respuesta) {
-                var solicitud = (respuesta && respuesta.data) || {};
-                var recurso = formulario.getAttribute('data-recurso');
+                solicitud = (respuesta && respuesta.data) || {};
+                idSolicitudExistente = idSolicitudExistente || solicitud.id;
+                idSolicitud = idSolicitudExistente;
 
-                mostrarAviso(mensaje, respuesta, true);
-                idSolicitud = solicitud.id;
-                cuerpo.id_solicitud = solicitud.id;
+                if (solicitud.id) {
+                    var url = new URL(window.location.href);
+                    url.searchParams.set('id_solicitud', solicitud.id);
+                    window.history.replaceState(window.history.state, '', url.toString());
+                }
 
                 if (!recurso) {
+                    mostrarAviso(mensaje, respuesta, true);
                     return respuesta;
                 }
+
+                cuerpo.id_solicitud = idSolicitudExistente;
 
                 return apiRequest(recurso, { metodo: 'POST', cuerpo: cuerpo });
             })

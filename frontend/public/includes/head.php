@@ -16,3 +16,4 @@ $tituloPagina = $tituloPagina ?? 'Patitas Seguras - Refugio de animales';
     <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 <body<?php echo !empty($cuerpoClase) ? ' class="' .  ($cuerpoClase) . '"' : ''; ?>>
+<?php require __DIR__ . '/loader.php'; ?>

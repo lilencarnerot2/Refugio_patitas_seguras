@@ -84,13 +84,13 @@ function apiRequest(recurso, opciones) {
   var config;
 
   if (!apiBaseUrl()) {
-    return Promise.reject(new Error(''));
+    return Promise.reject(new Error('El servicio no está disponible. Intentá nuevamente más tarde.'));
   }
 
   url = urlSolicitudApi(recurso, opts.parametros || {});
 
   if (!url) {
-    return Promise.reject(new Error(''));
+    return Promise.reject(new Error('No se pudo preparar la solicitud. Intentá nuevamente.'));
   }
 
   config = {
@@ -108,11 +108,14 @@ function apiRequest(recurso, opciones) {
 
   return fetch(url, config)
     .then(function (response) {
-      return response.json().catch(function () {
+      if (response.status === 204) {
         return null;
-      }).then(function (data) {
+      }
+
+      return response.json().then(function (data) {
         if (!response.ok || (data && data.success === false)) {
-          var textoError = mensajeDeApi(data);
+          var textoError = mensajeDeApi(data)
+            || 'No se pudo completar la solicitud. Intentá nuevamente.';
 
           var error = new Error(textoError);
           error.status = response.status;
@@ -121,7 +124,21 @@ function apiRequest(recurso, opciones) {
         }
 
         return data;
+      }, function () {
+        var mensaje = response.ok
+          ? 'El servidor devolvió una respuesta inválida. Intentá nuevamente más tarde.'
+          : 'No se pudo completar la solicitud. Intentá nuevamente.';
+        var error = new Error(mensaje);
+        error.status = response.status;
+        throw error;
       });
+    })
+    .catch(function (error) {
+      if (error instanceof TypeError && !error.status) {
+        throw new Error('No se pudo conectar con el servicio. Revisá tu conexión e intentá nuevamente.');
+      }
+
+      throw error;
     });
 }
 
@@ -130,7 +147,9 @@ function guardarCookie(nombre, valor) {
 }
 
 function borrarCookie(nombre) {
-  document.cookie = nombre + '=; path=/; SameSite=Lax; max-age=0';
+  ['/','/public','/admin','/user'].forEach(function (ruta) {
+    document.cookie = nombre + '=; path=' + ruta + '; SameSite=Lax; max-age=0';
+  });
 }
 
 function valorCookie(nombre) {
@@ -152,6 +171,7 @@ function valorCookie(nombre) {
 
 function guardarSesion(usuario) {
   usuario = usuario || {};
+  limpiarCookiesAplicacion();
   guardarCookie('usuario_id', usuario.id);
   guardarCookie('usuario_nombre', usuario.nombre);
   guardarCookie('usuario_apellido', usuario.apellido);
@@ -159,7 +179,7 @@ function guardarSesion(usuario) {
   guardarCookie('usuario_rol', usuario.id_rol);
 }
 
-function borrarSesion() {
+function limpiarCookiesAplicacion() {
   borrarCookie('usuario_id');
   borrarCookie('usuario_nombre');
   borrarCookie('usuario_apellido');
@@ -167,6 +187,11 @@ function borrarSesion() {
   borrarCookie('usuario_rol');
   borrarCookie('usuario_acceso_admin');
   borrarCookie('usuario_acceso_superadmin');
+}
+
+function borrarSesion() {
+  limpiarCookiesAplicacion();
+  borrarCookie('PHPSESSID');
 }
 
 
@@ -494,41 +519,6 @@ function marcarIntentoEnvio(formulario) {
   formulario.setAttribute('data-intento-envio', '1');
 }
 
-function formatosValidos(formulario, caja) {
-  var invalidos = [];
-  var avisos = [];
-
-  avisoDeApi(caja, '', true, formulario);
-
-  formulario.querySelectorAll('input[pattern]').forEach(function (campo) {
-    if (campo.disabled || campo.value === '') {
-      return;
-    }
-
-    if (campo.validity.patternMismatch) {
-      invalidos.push(campo);
-
-      if (campo.title && avisos.indexOf(campo.title) === -1) {
-        avisos.push(campo.title);
-      }
-    }
-  });
-
-  if (!invalidos.length) {
-    return true;
-  }
-
-  marcarIntentoEnvio(formulario);
-
-  invalidos.forEach(function (campo) {
-    campo.setAttribute('data-campo-estado', 'error');
-  });
-
-  avisoDeApi(caja, avisos.join(' '), false);
-
-  return false;
-}
-
 function limpiarMarcasCampos(formulario) {
   if (!formulario) {
     return;
@@ -724,7 +714,7 @@ function avisoDeApi(caja, origen, ok, formulario) {
 
 function enviarFormularioApi(formulario, caja, recurso, opciones) {
   if (formulario && formulario.getAttribute('data-enviando') === '1') {
-    return Promise.reject(new Error(''));
+    return Promise.reject(new Error('La solicitud ya se está enviando.'));
   }
 
   if (formulario) {
@@ -1316,19 +1306,13 @@ function cargarPerfilUsuario(idUsuario, opciones) {
   }
 
   tareas = [
-    apiRequest('usuarios', { parametros: { id: id } }).catch(function () {
-      return null;
-    })
+    apiRequest('usuarios', { parametros: { id: id } })
   ];
 
   if (opts.incluirContactosDomicilio) {
     tareas.push(
-      apiRequest('contactos', { parametros: paramsPerfil }).catch(function () {
-        return null;
-      }),
-      apiRequest('domicilios', { parametros: paramsPerfil }).catch(function () {
-        return null;
-      })
+      apiRequest('contactos', { parametros: paramsPerfil }),
+      apiRequest('domicilios', { parametros: paramsPerfil })
     );
   }
 

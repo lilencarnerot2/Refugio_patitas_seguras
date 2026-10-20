@@ -7,202 +7,89 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var raiz = document.getElementById('seguimiento-movimientos');
     var mensaje;
-    var grupos = [];
-    var lista = [];
-    var cargado = false;
-
-    function normalizarTexto(valor) {
-        return String(valor || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    }
-
-    function esDonacionPropia(item) {
-        return String(item && item.id_usuario) === String(valorCookie('usuario_id'))
-            && normalizarTexto(item.tipo_movimiento).indexOf('egreso') === -1;
-    }
-
-    function itemEnGrupo(item, card) {
-        var incluir = normalizarTexto(card.getAttribute('data-incluir-tipo-aporte'));
-        var excluir = normalizarTexto(card.getAttribute('data-excluir-tipo-aporte'));
-        var tipo = normalizarTexto(item && item.tipo_aporte);
-
-        if (incluir && tipo.indexOf(incluir) === -1) {
-            return false;
-        }
-
-        if (excluir && tipo.indexOf(excluir) !== -1) {
-            return false;
-        }
-
-        return true;
-    }
-
-    function columnasDeGrupo(card) {
-        var modelo = card && card.querySelector('template[data-modelo-cabecera-movimientos]');
-        var celdas;
-        var resultado = [];
-        var i;
-        var celda;
-
-        if (!modelo || !modelo.content) {
-            return resultado;
-        }
-
-        celdas = modelo.content.querySelectorAll('[data-campo]');
-
-        for (i = 0; i < celdas.length; i++) {
-            celda = celdas[i];
-            resultado.push({
-                campo: celda.getAttribute('data-campo'),
-                etiqueta: celda.getAttribute('data-etiqueta') || celda.getAttribute('data-campo')
-            });
-        }
-
-        return resultado;
-    }
+    var grupo;
+    var lista;
+    var modelo;
 
     if (!raiz || !valorCookie('usuario_id')) {
         return;
     }
 
     mensaje = raiz.querySelector('[data-mensaje-movimientos]');
+    grupo = raiz.querySelector('.donaciones-insumos-grupo');
+    lista = grupo && grupo.querySelector('[data-lista]');
+    modelo = raiz.querySelector('template[data-modelo-donacion]');
 
-    raiz.querySelectorAll('.tab-pane[data-clave]').forEach(function (pane) {
-        var card = pane.querySelector('.movimientos-donaciones-grupo');
-
-        if (!card) {
-            return;
-        }
-
-        grupos.push({
-            clave: pane.getAttribute('data-clave'),
-            card: card,
-            columnas: columnasDeGrupo(card),
-            cabecera: card.querySelector('[data-cabecera-movimientos]'),
-            cuerpo: card.querySelector('[data-cuerpo-movimientos]'),
-            cantidad: card.querySelector('[data-cantidad]'),
-            items: [],
-            pagina: 1
-        });
-    });
+    if (!grupo || !lista || !modelo) {
+        return;
+    }
 
     cargar();
 
-    function itemsDeGrupo(grupo) {
-        return lista.filter(function (item) {
-            return itemEnGrupo(item, grupo.card);
-        });
+    function normalizarTexto(valor) {
+        return String(valor || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     }
 
-    function valorCelda(clave, valor) {
-        if (valor === undefined || valor === null || valor === '') {
-            return '';
-        }
+    function esDonacionDeInsumos(item) {
+        var usuarioActual = String(valorCookie('usuario_id'));
+        var tipoAporte = normalizarTexto(item && item.tipo_aporte);
+        var tipoMovimiento = normalizarTexto(item && item.tipo_movimiento);
 
-        if (clave === 'fecha') {
-            return fechaCorta(valor);
-        }
-
-        return String(valor);
+        return String(item && item.id_usuario) === usuarioActual
+            && tipoMovimiento.indexOf('egreso') === -1
+            && tipoAporte.indexOf('dinero') === -1;
     }
 
-    function pintarTabla(grupo, items) {
-        var columnas = grupo.columnas;
-        var i;
-        var j;
-        var fila;
-        var celda;
-        var item;
-        var col;
+    function donacionesUnicas(donaciones) {
+        var vistos = Object.create(null);
 
-        if (!grupo.cuerpo) {
-            return;
-        }
+        return donaciones.filter(function (donacion) {
+            var id = String(donacion && donacion.id);
 
-        grupo.cuerpo.innerHTML = '';
-
-        if (grupo.cabecera) {
-            grupo.cabecera.innerHTML = '';
-
-            for (i = 0; i < columnas.length; i++) {
-                col = columnas[i];
-                celda = document.createElement('th');
-                celda.setAttribute('data-campo', col.campo);
-                celda.textContent = col.etiqueta;
-                grupo.cabecera.appendChild(celda);
-            }
-        }
-
-        for (i = 0; i < items.length; i++) {
-            item = items[i];
-            fila = document.createElement('tr');
-
-            if (item.id !== undefined) {
-                fila.setAttribute('data-id', String(item.id));
+            if (!id || id === 'undefined' || vistos[id]) {
+                return false;
             }
 
-            for (j = 0; j < columnas.length; j++) {
-                col = columnas[j];
-                celda = document.createElement('td');
-                celda.setAttribute('data-campo', col.campo);
-                celda.textContent = valorCelda(col.campo, item[col.campo]);
-                fila.appendChild(celda);
-            }
-
-            grupo.cuerpo.appendChild(fila);
-        }
+            vistos[id] = true;
+            return true;
+        });
     }
 
-    function pintarGrupo(grupo, nuevaPagina) {
-        var visibles;
-        var corte;
+    function pintarDonaciones(donaciones) {
+        var cantidad = grupo.querySelector('[data-cantidad]');
+        var contadorTotal = raiz.querySelector('[data-contador-total]');
+        var ultimoAporte = raiz.querySelector('[data-ultimo-aporte]');
 
-        visibles = itemsDeGrupo(grupo);
-        grupo.items = visibles;
+        lista.innerHTML = '';
+        donaciones.forEach(function (donacion) {
+            var copia = modelo.content.cloneNode(true);
+            var item = copia.firstElementChild;
+            var fecha = item.querySelector('[data-campo="fecha"]');
+            var descripcion = item.querySelector('[data-campo="descripcion"]');
 
-        if (nuevaPagina) {
-            grupo.pagina = nuevaPagina;
+            item.setAttribute('data-id', String(donacion.id));
+            item.querySelector('[data-campo="tipo_aporte"]').textContent = donacion.tipo_aporte || 'Donación de insumos';
+            fecha.textContent = donacion.fecha ? fechaCorta(donacion.fecha) : 'Sin fecha';
+            descripcion.textContent = donacion.descripcion || '';
+            descripcion.hidden = !donacion.descripcion;
+            lista.appendChild(copia);
+        });
+
+        grupo.setAttribute('data-total', String(donaciones.length));
+
+        if (cantidad) {
+            cantidad.textContent = String(donaciones.length);
         }
 
-        corte = armarPaginador(grupo.card, visibles.length, grupo.pagina, function (pagina) {
-            pintarGrupo(grupo, pagina);
-        });
-
-        grupo.pagina = corte.pagina;
-        grupo.card.setAttribute('data-total', String(visibles.length));
-
-        if (grupo.cantidad) {
-            grupo.cantidad.textContent = String(visibles.length);
+        if (contadorTotal) {
+            contadorTotal.textContent = String(donaciones.length);
         }
 
-        pintarTabla(grupo, visibles.slice(corte.desde, corte.hasta));
-    }
-
-    function pintarResumen() {
-        var total;
-        var monetarias;
-        var insumos;
-        var cardMonetaria;
-        var cardInsumos;
-
-        total = lista.length;
-        cardMonetaria = grupos.length ? grupos.find(function (g) {
-            return g.clave === 'monetaria';
-        }) : null;
-        cardInsumos = grupos.length ? grupos.find(function (g) {
-            return g.clave === 'insumos';
-        }) : null;
-        monetarias = cardMonetaria ? itemsDeGrupo(cardMonetaria).length : 0;
-        insumos = cardInsumos ? itemsDeGrupo(cardInsumos).length : 0;
-
-        raiz.querySelectorAll('[data-contador-total]').forEach(function (nodo) {
-            nodo.textContent = String(total);
-        });
-        raiz.querySelectorAll('[data-contador-monetaria]').forEach(function (nodo) {
-            nodo.textContent = String(monetarias);
-        });
-        raiz.querySelectorAll('[data-contador-insumos]').forEach(function (nodo) {
-            nodo.textContent = String(insumos);
-        });
+        if (ultimoAporte) {
+            ultimoAporte.textContent = donaciones.length && donaciones[0].fecha
+                ? fechaCorta(donaciones[0].fecha)
+                : '—';
+        }
     }
 
     function avisar(origen) {
@@ -218,30 +105,23 @@ document.addEventListener('DOMContentLoaded', function () {
         avisoDeApi(mensaje, origen, false);
     }
 
-    function repartirYpintar() {
-        pintarResumen();
-        grupos.forEach(function (grupo) {
-            pintarGrupo(grupo, 1);
-        });
-    }
-
     function cargar() {
-        if (cargado) {
-            return Promise.resolve();
-        }
-
         avisar(null);
         raiz.setAttribute('data-cargando', '1');
+        grupo.removeAttribute('data-error');
 
         return apiRequest('movimientos').then(function (respuesta) {
-            lista = listaMovimientosDe(respuesta).filter(esDonacionPropia);
-            repartirYpintar();
-            cargado = true;
+            var donaciones = donacionesUnicas(listaMovimientosDe(respuesta)
+                .filter(esDonacionDeInsumos)
+                .sort(function (a, b) {
+                    return String(b.fecha || '').localeCompare(String(a.fecha || ''))
+                        || Number(b.id) - Number(a.id);
+                }));
+
+            pintarDonaciones(donaciones);
         }).catch(function (error) {
+            grupo.setAttribute('data-error', '');
             avisar(error);
-            lista = [];
-            repartirYpintar();
-            cargado = true;
         }).then(function () {
             raiz.removeAttribute('data-cargando');
         });

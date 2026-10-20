@@ -4,12 +4,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var mensaje = raiz && raiz.querySelector('[data-mensaje-solicitudes]');
     var mensajeDetalle = modal && modal.querySelector('[data-mensaje-detalle]');
     var btnFormulario = modal && modal.querySelector('[data-ver-formulario]');
+    var btnCompletarFormulario = modal && modal.querySelector('[data-completar-formulario]');
     var panelFormulario = modal && modal.querySelector('[data-formulario-completado]');
     var grupo = raiz && raiz.querySelector('[data-grupo]');
     var lista = grupo && grupo.querySelector('[data-lista]');
     var modelo = raiz && raiz.querySelector('template[data-modelo]');
     var solicitudes = [];
     var abierta = null;
+    var errorDetalleMascota = null;
 
     if (!raiz || !valorCookie('usuario_id')) {
         return;
@@ -43,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function cargar() {
         avisar(mensaje, null);
         raiz.setAttribute('data-cargando', '1');
+        errorDetalleMascota = null;
 
         return apiRequest('solicitudes')
             .then(function (respuesta) {
@@ -59,6 +62,10 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(function () {
                 pintarLista();
                 pintarContadores();
+
+                if (errorDetalleMascota) {
+                    avisar(mensaje, errorDetalleMascota);
+                }
             })
             .catch(function (error) {
                 avisar(mensaje, error);
@@ -94,7 +101,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(function (respuesta) {
                     return datoDe(respuesta);
                 })
-                .catch(function () {
+                .catch(function (error) {
+                    if (!errorDetalleMascota) {
+                        errorDetalleMascota = error;
+                    }
+
                     return null;
                 });
         })).then(function (mascotas) {
@@ -211,6 +222,11 @@ document.addEventListener('DOMContentLoaded', function () {
             btnFormulario.disabled = false;
         }
 
+        if (btnCompletarFormulario) {
+            btnCompletarFormulario.hidden = true;
+            btnCompletarFormulario.removeAttribute('href');
+        }
+
         if (modal) {
             modal.removeAttribute('data-cargando');
         }
@@ -260,6 +276,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (abierta === String(id)) {
                     avisar(mensajeDetalle, error);
 
+                    if (error && error.status === 404 && btnCompletarFormulario) {
+                        var paginaFormulario = datos.clave === 'transito'
+                            ? 'solicitar_transito.php'
+                            : 'solicitar_adopcion.php';
+                        var url = new URL(paginaFormulario, window.location.href);
+
+                        url.searchParams.set('id', datos.id_mascota);
+                        url.searchParams.set('id_solicitud', id);
+                        btnCompletarFormulario.href = url.toString();
+                        btnCompletarFormulario.hidden = false;
+
+                        if (btnFormulario) {
+                            btnFormulario.hidden = true;
+                        }
+                    }
+
                     if (btnFormulario) {
                         btnFormulario.disabled = false;
                     }
@@ -270,11 +302,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     modal.removeAttribute('data-cargando');
                 }
             });
-    }
-
-    function abrirDetalle(id) {
-        prepararModal(id);
-        cargarFormularioCompletado(id);
     }
 
     function abrirDesdeUrl() {
@@ -289,11 +316,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         boton = lista.querySelector('[data-id="' + datos.id + '"] [data-bs-target="#' + modal.id + '"]');
 
-        bootstrap.Modal.getOrCreateInstance(modal).show(boton);
-
-        if (boton) {
-            abrirDetalle(datos.id);
+        if (!boton) {
+            return;
         }
+
+        bootstrap.Modal.getOrCreateInstance(modal).show(boton);
     }
 
     function llenarCampos(contenedor, datos) {

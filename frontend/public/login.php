@@ -1,5 +1,6 @@
 <?php
-$autenticado = !empty($_COOKIE['usuario_id']);
+require_once __DIR__ . '/includes/sesion.php';
+$autenticado = usuarioAutenticado();
 
 if (!isset($_GET['salir']) && $autenticado) {
     header('Location: /index.php');

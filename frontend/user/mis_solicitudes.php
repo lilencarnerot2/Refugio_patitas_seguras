@@ -116,6 +116,9 @@ require __DIR__ . '/includes/header.php';
                         <button type="button" class="btn btn-outline-success rounded-pill px-3" data-ver-formulario>
                             <i class="bi bi-file-earmark-text"></i> Ver mi formulario completado
                         </button>
+                        <a class="btn btn-outline-success rounded-pill px-3" data-completar-formulario hidden>
+                            <i class="bi bi-pencil-square"></i> Completar el formulario
+                        </a>
                     </div>
 
                     <dl class="mb-0 seguimiento-datos" data-formulario-completado hidden>
@@ -155,6 +158,6 @@ require __DIR__ . '/includes/header.php';
 <script src="../public/config.php"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/mi-perfil.js"></script>
-<script src="../assets/js/seguimiento-solicitudes.js"></script>
+<script src="../assets/js/seguimiento-solicitudes.js?v=<?php echo (int) @filemtime(__DIR__ . '/../assets/js/seguimiento-solicitudes.js'); ?>"></script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

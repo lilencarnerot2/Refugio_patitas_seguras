@@ -1,7 +1,6 @@
 <?php
 $tituloPagina = 'Recuperar contraseña - Patitas Seguras';
 $cuerpoClase = 'page-adapt';
-$reglas = require __DIR__ . '/includes/reglas_cuenta.php';
 require __DIR__ . '/includes/head.php';
 require __DIR__ . '/includes/header.php';
 ?>
@@ -16,7 +15,7 @@ require __DIR__ . '/includes/header.php';
         <form id="form-recuperar-email" class="public-form login-form" novalidate>
             <div class="mb-3">
                 <label class="form-label" for="email">Correo electrónico</label>
-                <input class="form-control" id="email" name="email" type="text" inputmode="email" autocomplete="email" maxlength="254" required pattern="<?php echo htmlspecialchars($reglas['patron_email'], ENT_QUOTES, 'UTF-8'); ?>" title="<?php echo htmlspecialchars($reglas['texto_email'], ENT_QUOTES, 'UTF-8'); ?>">
+                <input class="form-control" id="email" name="email" type="text" inputmode="email" autocomplete="email" required>
             </div>
 
             <p class="campo-obligatorio"></p>
@@ -33,14 +32,13 @@ require __DIR__ . '/includes/header.php';
             <div class="mb-3">
                 <label class="form-label" for="password">Nueva contraseña</label>
                 <div class="clave-wrap">
-                    <input class="form-control clave-campo" id="password" name="password" type="text" autocomplete="new-password" maxlength="64" required pattern="<?php echo htmlspecialchars($reglas['patron_clave'], ENT_QUOTES, 'UTF-8'); ?>" title="<?php echo htmlspecialchars($reglas['texto_clave'], ENT_QUOTES, 'UTF-8'); ?>">
+                    <input class="form-control clave-campo" id="password" name="password" type="text" autocomplete="new-password" required>
                     <input class="clave-toggle" id="ver-clave-recuperar" type="checkbox">
                     <label class="clave-ojo" for="ver-clave-recuperar" title="Mostrar u ocultar contraseña">
                         <i class="fa-regular fa-eye"></i>
                         <i class="fa-regular fa-eye-slash"></i>
                     </label>
                 </div>
-                <div class="form-text"><?php echo htmlspecialchars($reglas['ayuda_clave'], ENT_QUOTES, 'UTF-8'); ?></div>
             </div>
 
             <p class="campo-obligatorio"></p>

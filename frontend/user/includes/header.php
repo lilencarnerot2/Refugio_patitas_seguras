@@ -18,7 +18,7 @@ $inicialPerfil = mb_strtoupper(mb_substr($usuarioPerfil['nombre'] ?? '', 0, 1));
         </div>
 
         <a class="logo-container" href="mi_perfil.php">
-            <div class="logo-icon"><span class="icono-pata"></span></div>
+            <img class="logo-image" src="/assets/img/LogoPatitas.jpeg" alt="">
             <div class="logo-text">
                 <h1>PATITAS SEGURAS</h1>
                 <span>Mi perfil</span>
@@ -27,19 +27,14 @@ $inicialPerfil = mb_strtoupper(mb_substr($usuarioPerfil['nombre'] ?? '', 0, 1));
     </div>
 
     <div class="header-actions dropdown">
-        <button class="btn perfil-usuario dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn perfil-usuario dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
             <span class="perfil-avatar rounded-circle d-inline-flex align-items-center justify-content-center"><?php echo $inicialPerfil; ?></span>
             <span class="d-none d-sm-inline"><?php echo $nombrePerfil; ?></span>
         </button>
-        <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 p-2">
-            <li class="nav-panel" hidden>
-                <a class="dropdown-item rounded-3" href="/admin/dashboard.php">
-                    <i class="bi bi-speedometer2"></i> Panel
-                </a>
-            </li>
+        <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 p-2 perfil-panel-dropdown">
             <li>
                 <a class="dropdown-item rounded-3" href="/index.php">
-                    <i class="bi bi-globe"></i> Sitio
+                    <i class="bi bi-globe"></i> Volver al sitio
                 </a>
             </li>
             <li><hr class="dropdown-divider"></li>

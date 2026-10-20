@@ -74,7 +74,7 @@ require __DIR__ . '/../public/includes/header.php';
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label class="form-label" for="cantidad_integrantes">Cantidad de integrantes</label>
-                                            <input class="form-control" type="number" min="1" id="cantidad_integrantes" name="cantidad_integrantes" required>
+                                            <input class="form-control" type="number" min="1" step="1" id="cantidad_integrantes" name="cantidad_integrantes" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="horas_solo">Horas solo</label>
@@ -227,7 +227,7 @@ require __DIR__ . '/../public/includes/header.php';
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="contacto_emergencia">Contacto de emergencia</label>
-                                            <input class="form-control" type="tel" id="contacto_emergencia" name="contacto_emergencia" data-solo-contacto required>
+                                            <input class="form-control" type="tel" id="contacto_emergencia" name="contacto_emergencia" data-solo-contacto>
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label" for="observaciones">Observaciones</label>
@@ -272,7 +272,7 @@ require __DIR__ . '/../public/includes/header.php';
             </div>
             <div class="col-md-4">
                 <label class="form-label">Edad aproximada (años)</label>
-                <input class="form-control" type="number" min="1" step="1" name="edad_aproximada" required>
+                <input class="form-control" type="number" min="1" max="29" step="1" name="edad_aproximada" required>
             </div>
             <div class="col-md-4">
                 <label class="form-label">Sexo</label>
@@ -300,7 +300,7 @@ require __DIR__ . '/../public/includes/header.php';
             </div>
             <div class="col-12">
                 <label class="form-label">Enfermedad o condición</label>
-                <select class="form-select" name="id_enfermedad_condicion" data-catalogo="enfermedades_condiciones">
+                <select class="form-select" name="id_enfermedad_condicion" data-catalogo="enfermedades_condiciones" required>
                     <option value="" selected disabled></option>
                 </select>
             </div>
@@ -313,7 +313,7 @@ require __DIR__ . '/../public/includes/header.php';
 
 <script src="../public/config.php"></script>
 <script src="../assets/js/api.js"></script>
-<script src="../assets/js/formulario-solicitud.js"></script>
+<script src="../assets/js/formulario-solicitud.js?v=<?php echo (int) @filemtime(__DIR__ . '/../assets/js/formulario-solicitud.js'); ?>"></script>
 
 
 <?php require __DIR__ . '/../public/includes/footer.php'; ?>

@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/includes/sesion.php';
+$usuarioAutenticado = usuarioAutenticado();
+
 $tituloPagina = 'Donación de insumos - Patitas Seguras';
 $refugio = require __DIR__ . '/includes/datos_refugio.php';
 require __DIR__ . '/includes/head.php';
@@ -20,10 +23,10 @@ require __DIR__ . '/includes/header.php';
 <?php foreach ($refugio['insumos'] as $categoria) { ?>
             <div class="col-12 col-md-6">
                 <article class="info-card h-100">
-                    <h3><i class="bi <?php echo htmlspecialchars($categoria['icono'], ENT_QUOTES, 'UTF-8'); ?>" aria-hidden="true"></i> <?php echo htmlspecialchars($categoria['titulo'], ENT_QUOTES, 'UTF-8'); ?></h3>
+                    <h3><i class="bi <?php echo $categoria['icono']; ?>" aria-hidden="true"></i> <?php echo $categoria['titulo']; ?></h3>
                     <ul>
 <?php foreach ($categoria['items'] as $insumo) { ?>
-                        <li><?php echo htmlspecialchars($insumo, ENT_QUOTES, 'UTF-8'); ?></li>
+                        <li><?php echo $insumo; ?></li>
 <?php } ?>
                     </ul>
                 </article>
@@ -32,6 +35,7 @@ require __DIR__ . '/includes/header.php';
         </div>
         <p class="insumos-nota">Para coordinar la entrega de los insumos escribinos desde <a href="/public/contacto.php">Contacto</a>.</p>
 
+<?php if ($usuarioAutenticado) { ?>
         <div id="bloque-aportes" hidden>
             <form id="form-movimiento" class="public-form" novalidate autocomplete="off">
                 <h3>Registrar insumos</h3>
@@ -56,6 +60,13 @@ require __DIR__ . '/includes/header.php';
                 <button class="btn-donate mt-4" type="submit">Enviar registro</button>
             </form>
         </div>
+<?php } else { ?>
+        <div class="info-card info-card-single donacion-insumos-login text-center">
+            <h3><i class="bi bi-person-lock" aria-hidden="true"></i> Para donar insumos</h3>
+            <p>Iniciá sesión para registrar tu donación.</p>
+            <a class="btn-donate d-inline-flex" href="/public/login.php">Iniciar sesión</a>
+        </div>
+<?php } ?>
     </section>
 
 <script src="config.php"></script>

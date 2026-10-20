@@ -18,7 +18,7 @@ $menuSolicitudesActivo = $paginaAdmin === 'solicitudes'
     </div>
 
     <a class="logo-container" href="dashboard.php">
-        <div class="logo-icon"><span class="icono-pata"></span></div>
+        <img class="logo-image" src="/assets/img/LogoPatitas.jpeg" alt="">
         <div class="logo-text">
             <h1>PATITAS SEGURAS</h1>
             <span>Panel administrativo</span>
