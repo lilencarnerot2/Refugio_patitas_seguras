@@ -20,7 +20,7 @@ function obtener_usuarios(): array{
         FROM usuarios u
         INNER JOIN roles r
             ON r.id = u.id_rol
-        ORDER BY u.id
+        ORDER BY u.id DESC
     ";
 
     $consulta = $conexion->prepare($sql);

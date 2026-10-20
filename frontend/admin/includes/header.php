@@ -81,11 +81,6 @@ $menuSolicitudesActivo = $paginaAdmin === 'solicitudes'
         </li>
         <?php } ?>
 
-        <li>
-            <a href="configuracion.php"<?php echo $paginaAdmin === 'configuracion' ? ' class="active"' : ''; ?>>
-                <i class="bi bi-gear-fill"></i> Configuración
-            </a>
-        </li>
 
         <?php if ($esSuperadministrador) { ?>
         <li>

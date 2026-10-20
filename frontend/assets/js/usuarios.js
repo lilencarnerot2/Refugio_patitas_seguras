@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function dibujar() {
         var filtrada = lista.filter(coincide).sort(function (a, b) {
-            return Number(a.id) - Number(b.id);
+            return Number(b.id) - Number(a.id);
         });
 
         dibujarPaginador(filtrada.length);

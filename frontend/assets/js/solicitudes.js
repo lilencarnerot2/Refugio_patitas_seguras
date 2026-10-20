@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         var filas = lista.filter(coincide).sort(function (a, b) {
-            return Number(a.id) - Number(b.id);
+            return Number(b.id) - Number(a.id);
         });
 
         dibujarPaginador(filas.length);

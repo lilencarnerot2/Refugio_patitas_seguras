@@ -23,7 +23,7 @@ function obtenerMascotas()
         INNER JOIN razas r
             ON r.id = m.id_raza
         WHERE m.estado = TRUE
-        ORDER BY m.id
+        ORDER BY m.id DESC
     ";
 
     $consulta = $conexion->prepare($sql);
