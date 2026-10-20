@@ -99,12 +99,12 @@ return [
     'cuentas' => [
         [
             'medio' => 'Mercado Pago',
-            'alias' => 'PATITAS.SEGURAS.MP',
+            'alias' => 'patitasseguras1',
             'icono' => 'bi-wallet2',
             'datos' => [
-                'CVU' => '0000003100084739201847',
-                'CUIT' => $cuitRefugio,
-                'Titular' => 'Asociación Civil Patitas Seguras'
+                'CVU' => '0000003100020517981041',
+                'CUIT' => '27-43107169-5',
+                'Titular' => 'Marianella Lilen Carnero Toledo'
             ]
         ],
         [
@@ -118,13 +118,13 @@ return [
             ]
         ],
         [
-            'medio' => 'Banco Provincia',
-            'alias' => 'patitas.refugio.ba',
+            'medio' => 'Cuenta Dni',
+            'alias' => 'li.lilen.ct3',
             'icono' => 'bi-bank2',
             'datos' => [
-                'CBU' => '0140999803100051283920',
-                'CUIT' => $cuitRefugio,
-                'Titular' => 'Refugio Patitas Seguras'
+                'CBU' => '0140117803504760849077',
+                'CUIT' => '27-43107169-5',
+                'Titular' => 'Marianella Lilen Carnero Toledo'
             ]
         ]
     ],
